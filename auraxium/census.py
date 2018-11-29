@@ -4,6 +4,48 @@ import requests
 
 # This is the base URL used to access the Daybreak Game Company's server.
 _CENSUS_BASE_URL = 'http://census.daybreakgames.com/'
+_SERVICE_ID = 's:auraxiumdiscordbot'
+
+
+def census_request(url):
+    response_object = json.loads(requests.get(url).text)
+    # Raise issues?
+    return response_object
+
+
+class Collection():
+    """Represents a Planetside 2 game collection.
+
+    Do not instantiate manually.
+
+    Parameters
+    ----------
+    datatype_object : dict
+        Contains the information from the datatype_list returned by the
+        server.
+
+    Attributes
+    ----------
+    count : str
+        The number of items in the collection. Can be an int or "?".
+    name : str
+        The name of the collection.
+    hidden : type
+        Whether the collection's contents are publicly visible.
+    resolve_list : type
+        The list of resolvable fields for this collection.
+
+    """
+
+    def __init__(self, datatype_object):
+        self.count = datatype_object['count']
+        self.name = datatype_object['name']
+        self.hidden = datatype_object['hidden']
+        self.resolve_list = datatype_object['resolve_list']
+
+    def __str__(self):
+        """Allows using the collection object in a string."""
+        return self.name
 
 
 class Request():
@@ -222,7 +264,7 @@ class Request():
         self.joins.append(join)
         return join
 
-    def retrieve(self):
+    def __str__(self):
         """Performs the request and returns the server's response.
 
         Returns
@@ -410,3 +452,18 @@ class Request():
         response = json.loads(requests.get(url).text)
 
         return response
+
+
+_namespace = 'ps2'
+
+print('Retrieving collections for namespace "{}"...'.format(_namespace))
+# try statement?
+datatype_list = census_request(
+    _CENSUS_BASE_URL + 's:MUMSOutfitRoster/get/{}/'.format(_namespace))['datatype_list']
+print('Initializing {} collections...'.format(len(datatype_list)))
+
+collection = {}
+for datatype_object in datatype_list:
+    collection[datatype_object['name']] = Collection(datatype_object)
+
+print('Initialization complete.')
