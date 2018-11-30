@@ -100,21 +100,22 @@ async def steal_that_bastards_avatar(client, msg, words, help=False):
 
     help_text = 'Usage: ?steal_that_bastards_avatar CHANNEL_MENTION USER_MENTION'
 
-    # Get the channel
-    channel = words[0]
-
     # Get the user
-    user = words[1]
+    user = words[0]
 
     # Get the number of messages
-    if words[2]messages = words[2]
+    # if words[1] != '':
+    #     messages = words[1]
+    # else:
+    #     messages = 1000
+    messages = 1000
 
-    # # username#discriminator
-    # name, discriminator = words[1].split('#')
+    # username#discriminator
+    name, discriminator = words[0].split('#')
 
     # Cycle through the messages
     user_hash = ''
-    async for message in client.logs_from(msg.channel, limit=MESSAGE_COUNT):
+    async for message in client.logs_from(msg.channel, limit=messages):
         if message.author.name == name and message.author.discriminator == discriminator:
             user_hash = message.author.id
             break
