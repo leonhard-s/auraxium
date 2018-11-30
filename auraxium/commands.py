@@ -1,8 +1,13 @@
 import asyncio
 
 import discord
+from openpyxl import Workbook
 
 # All functions defined this module will be accessible to bot users.
+
+# Initialize Excel worksheets
+wb = Workbook()
+ws = wb.active
 
 
 # def online(msg, words, help=False):
@@ -89,51 +94,6 @@ async def echo(client, msg, words, help=False):
     await client.send_message(msg.channel, content=msg.content[5:])
 
 
-async def so_sad(client, msg, words, help=False):
-    """Alexa, this is so sad."""
-
-    pass
-
-
-async def steal_that_bastards_avatar(client, msg, words, help=False):
-    """Retrieves a user based on their discord name and posts their avatar."""
-
-    help_text = 'Usage: ?steal_that_bastards_avatar CHANNEL_MENTION USER_MENTION'
-
-    # Get the user
-    user = words[0]
-
-    # Get the number of messages
-    # if words[1] != '':
-    #     messages = words[1]
-    # else:
-    #     messages = 1000
-    messages = 1000
-
-    # username#discriminator
-    name, discriminator = words[0].split('#')
-
-    # Cycle through the messages
-    user_hash = ''
-    async for message in client.logs_from(msg.channel, limit=messages):
-        if message.author.name == name and message.author.discriminator == discriminator:
-            user_hash = message.author.id
-            break
-
-    # If no user was found
-    if user_hash == '':
-        content = ('{} I was unable to find a user matching the '
-                   'criteria.').format(msg.author.mention)
-
-        await client.send_message(msg.channel, content=content)
-        return
-    else:
-        user = await client.get_user_info(user_hash)
-        content = '{} I found a match: {}.'.format(msg.author.mention,
-                                                   user.avatar_url)
-        await client.send_message(msg.channel, content=content)
-
-
 async def juicy(client, msg, words, help=False):
     """Forwards any message send to the user Spidey to the #living-room channel.
     These two values are hard-coded as I do not see any reason to extend this
@@ -166,3 +126,57 @@ async def juicy(client, msg, words, help=False):
     await client.send_message(DEST_CHANNEL,
                               content=USER_SPIDEY.mention,
                               embed=embed)
+
+    elif words[0] == 'clear':
+        # Clear any notifications for this user
+        if < user exist >:
+            # Tell them you removed their entry
+            pass
+        else:
+            # Tell them there is nothing to remove
+            pass
+
+    else:
+        # Complain about usage
+        pass
+
+
+async def steal_that_bastards_avatar(client, msg, words, help=False):
+    """Retrieves a user based on their discord name and posts their avatar."""
+
+    help_text = 'Usage: ?steal_that_bastards_avatar CHANNEL_MENTION USER_MENTION'
+
+    # Get the user
+    user = words[0]
+
+    # The number of messagesto
+    messages = 1000
+
+    # username#discriminator
+    name, discriminator = words[0].split('#')
+
+    # Cycle through the messages
+    user_hash = ''
+    async for message in client.logs_from(msg.channel, limit=messages):
+        if message.author.name == name and message.author.discriminator == discriminator:
+            user_hash = message.author.id
+            break
+
+    # If no user was found
+    if user_hash == '':
+        content = ('{} I was unable to find a user matching the '
+                   'criteria.').format(msg.author.mention)
+
+        await client.send_message(msg.channel, content=content)
+        return
+    else:
+        user = await client.get_user_info(user_hash)
+        content = '{} I found a match: {}.'.format(msg.author.mention,
+                                                   user.avatar_url)
+        await client.send_message(msg.channel, content=content)
+
+
+async def so_sad(client, msg, words, help=False):
+    """Alexa, this is so sad."""
+
+    pass
