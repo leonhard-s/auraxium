@@ -44,18 +44,13 @@ async def on_message(msg):
     # Only respond to strings starting with this string, ignore any others
     _BOT_SIGN = '?'
 
-    # DEBUG: Prints debug information in the console.
-    print('Debug: New message by "{}" ({}) in "{}" ({}).'.format(
-        msg.author.name, msg.author.id,
-        msg.channel.name, msg.channel.id))
-
     message = msg.content
 
     # Only continue if the message starts with the bot's command prefix
-    if not message.startswith(_BOT_SIGN):
+    if not msg.content.startswith(_BOT_SIGN):
         return
     # Remove the command prefix from the message
-    message = message[len(_BOT_SIGN):]
+    message = msg.content[len(_BOT_SIGN):]
 
     # The first word is the command
     cmd = message.split()[0]

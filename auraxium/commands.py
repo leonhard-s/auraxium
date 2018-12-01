@@ -1,13 +1,17 @@
 import asyncio
 
 import discord
-from openpyxl import Workbook
+from openpyxl import Workbook, load_workbook
 
 # All functions defined this module will be accessible to bot users.
 
 # Initialize Excel worksheets
-wb = Workbook()
-ws = wb.active
+try:
+    wb = load_workbook('data/notifications.xlsx')
+except FileNotFoundError:
+    wb = Workbook()
+    wb.save('data/notifications.xlsx')
+sheet_notifications = wb.active
 
 
 # def online(msg, words, help=False):
@@ -94,6 +98,67 @@ async def echo(client, msg, words, help=False):
     await client.send_message(msg.channel, content=msg.content[5:])
 
 
+async def shutdown(client, msg, words, help=False):
+    """Ends the asyncio loop."""
+
+    await client.send_message(msg.channel, content='Shutting down... bye!')
+
+    # Cancel all running tasks, causing "run_forever" to finish
+    for task in asyncio.Task.all_tasks(client.loop):
+        task.cancel()
+
+
+# async def itsOPStime(client, msg, words, help=False):
+#     """Moves members into the voice channel of the user sending the command.
+#
+#     Any user that has been mentioned in this message and is connected to a
+#     voice channel in the current server will be moved to the voice channel of
+#     the user who sent the command.
+#     """
+#
+#     # Help text
+#     if help:
+#         return 'Usage: ?itsOPStime'
+#
+#     # Create a list of all users that have been mentioned in this message
+#     mentioned_users = [
+#         member for member in msg.server.members if member.mentioned_in(msg)]
+#     # for member in msg.server.members:
+#     #     if member.mentioned_in(msg):
+#     #         mentioned_users.append(member)
+#     print('{} members have been mentioned.'.format(len(mentioned_users)))
+#
+#     # Get a list of all voice channel users for this server
+#     voice_users = [
+#         voice_users + channel.voice_members for channel in msg.server.channels if len(channel.voice_members) > 0]
+#     # for channel in msg.server.channels:
+#     #     # Filters out empty and non-voice channels
+#     #     if len(channel.voice_members) > 0:
+#     #         voice_users += channel.voice_members
+#     print('{} members found in voice channels.'.format(len(voice_users)))
+#
+#     # Get a list of all members that are both mentioned and in voice channels
+#     mentioned_voice_members = [
+#         member for member in mentioned_users if member in voice_users]
+#     print('Intersection: {} members'.format(len(mentioned_voice_members)))
+#
+#     # Get the channel to move members into
+#     if msg.author.voice.voice_channel == None:
+#         await client.send_message(msg.channel, content='You are not connected to a voice channel - as far as I can tell.')
+#     else:
+#         channel = msg.author.voice.voice_channel
+#
+#     await client.send_message(msg.channel, content='Moving members to {}...'.format(channel.name))
+#
+#     # Move anyone who's not already in that voice channel there
+#     members_to_move = [
+#         member for member in mentioned_voice_members if not member in channel.voice_members and not member.voice.is_afk]
+#     # for member in mentioned_voice_members:
+#     #     if not member in channel.voice_members and not member.voice.is_afk:
+#     for member in members_to_move:
+#         await client.move_member(member, channel)
+
+
 async def juicy(client, msg, words, help=False):
     """Forwards any message send to the user Spidey to the #living-room channel.
     These two values are hard-coded as I do not see any reason to extend this
@@ -119,7 +184,8 @@ async def juicy(client, msg, words, help=False):
     embed = discord.Embed(colour=discord.Colour(0x8452ae),
                           description=msg.content[6:],
                           timestamp=msg.timestamp)
-    embed.set_author(name=msg.author.display_name, icon_url=author_icon_url)
+    embed.set_author(name=msg.author.display_name,
+                     icon_url=author_icon_url)
     embed.set_footer(text='# {}'.format(msg.channel.name))
 
     # Send the message
@@ -127,18 +193,112 @@ async def juicy(client, msg, words, help=False):
                               content=USER_SPIDEY.mention,
                               embed=embed)
 
-    elif words[0] == 'clear':
-        # Clear any notifications for this user
-        if < user exist >:
-            # Tell them you removed their entry
-            pass
-        else:
-            # Tell them there is nothing to remove
-            pass
 
+# async def notify(client, msg, words, help=False):
+#     """Allows users to notify their absence for upcoming Ops.
+#     Valid parameters are "absent", "late" and "clear".
+#     """
+#
+#     # Convert the author to the format "Name#0123"
+#     discord_user = str(msg.author)
+#
+#     # Fake names
+#     sheet_notifications['A4'].value = 'Leon#0201'
+#     sheet_notifications['B4'].value = 'Notified absent'
+#
+#     # Does the Discord user already exist in the worksheet?
+#     user_list = [cell.value for cell in sheet_notifications['A']]
+#     row = user_list.index(discord_user) + 1
+#     if row != 0:
+#         user_row = [cell.value for cell in sheet_notifications[row:row]]
+#         print(user_row)
+
+    # if words[0] == 'absent':
+    #     # Mark the Discord user as notified absent
+    #     if user_row >= 0:
+    #         if user_row
+    #     if discord_user in name_col:
+    #         if user_row == 'Notified absent':
+    #             # Tell them that you already marked them
+    #             reply = 'You are already notified absent.'
+    #         else:
+    #             # Mark them and thank them for telling you
+    #             reply = 'Copy that, I marked you as notified absent.'
+    #
+    # elif words[0] == 'late':
+    #     # Mark the user as notified late
+    #     if value == 'Notified late':
+    #         # Tell them that you already marked them
+    #         reply = 'You are already notified late.'
+    #     else:
+    #         # Mark them and thank them for telling you
+    #         reply = 'Copy that, I marked you as notified late.'
+    #
+    # elif words[0] == 'clear':
+    #     # Clear any notifications for this user
+    #     if name_exists:
+    #         # Tell them you removed their entry
+    #         reply = 'Copy that, I cleared any notifications for you.'
+    #     else:
+    #         # Tell them there is nothing to remove
+    #         reply = 'There are no notifications for you.'
+    #
+    # else:
+    #     # Complain about usage
+    #     reply = ('Wait, what?\nPlease make sure you only write `?notify '
+    #              'absent|late|clear` and nothing else.')
+
+
+async def ping(client, msg, words, help=False):
+    await client.send_message(msg.channel, content='{} Pong!'.format(msg.author.mention))
+
+
+async def OPStimeLegacy(client, msg, words, help=False):
+    """Moves members into the voice channel of the user sending the command.
+
+    Any user that has been mentioned in this message and is connected to a
+    voice channel in the current server will be moved to the voice channel of
+    the user who sent the command.
+    """
+
+    # Help text
+    if help:
+        return 'Usage: ?itsOPStime'
+
+    # Create a list of all users that have been mentioned in this message
+    mentioned_users = []
+    for member in msg.server.members:
+        if member.mentioned_in(msg):
+            mentioned_users.append(member)
+    print('{} members have been mentioned.'.format(len(mentioned_users)))
+
+    # Get a list of all voice channel users for this server
+    voice_users = []
+    for channel in msg.server.channels:
+        # Filters out empty and non-voice channels
+        if len(channel.voice_members) > 0:
+            voice_users += channel.voice_members
+    print('{} members found in voice channels.'.format(len(voice_users)))
+
+    # Get a list of all members that are both mentioned and in voice channels
+    mentioned_voice_members = [
+        member for member in mentioned_users if member in voice_users]
+    print('Intersection: {} members'.format(len(mentioned_voice_members)))
+
+    # Get the channel to move members into
+    if msg.author.voice.voice_channel == None:
+        await client.send_message(msg.channel, content='You are not connected to a voice channel - as far as I can tell.')
     else:
-        # Complain about usage
-        pass
+        channel = msg.author.voice.voice_channel
+
+    await client.send_message(msg.channel, content='Moving members to {}...'.format(channel.name))
+
+    # Move anyone who's not already in that voice channel there
+    for member in mentioned_voice_members:
+        if not member in channel.voice_members and not member.voice.is_afk:
+            await client.move_member(member, channel)
+
+    await client.send_message(msg.channel, content='Done')
 
 
 async def steal_that_bastards_avatar(client, msg, words, help=False):
@@ -149,7 +309,7 @@ async def steal_that_bastards_avatar(client, msg, words, help=False):
     # Get the user
     user = words[0]
 
-    # The number of messagesto
+    # The number of messages to scan
     messages = 1000
 
     # username#discriminator
