@@ -14,18 +14,6 @@ except FileNotFoundError:
 sheet_notifications = wb.active
 
 
-# def online(msg, words, help=False):
-#     # if msg, words[0] '-help':
-#     #     test = 'Displays a msg, words of all online outfit members. If no tag is ' +
-#     #     'specified, the default - MUMS - will be used instead.\n' +
-#     #     '?online [OUTFIT]'
-#     print('The command "?online" is not yet implemented.')
-
-
-# def help(msg, words, help=False):
-#     if help:
-#         return 'Displays a list of available commands.'
-
 # async def census(client, msg, words, help=False):
 # """Generic command for looking up information about ingame data."""
 
@@ -108,55 +96,6 @@ async def shutdown(client, msg, words, help=False):
         task.cancel()
 
 
-# async def itsOPStime(client, msg, words, help=False):
-#     """Moves members into the voice channel of the user sending the command.
-#
-#     Any user that has been mentioned in this message and is connected to a
-#     voice channel in the current server will be moved to the voice channel of
-#     the user who sent the command.
-#     """
-#
-#     # Help text
-#     if help:
-#         return 'Usage: ?itsOPStime'
-#
-#     # Create a list of all users that have been mentioned in this message
-#     mentioned_users = [
-#         member for member in msg.server.members if member.mentioned_in(msg)]
-#     # for member in msg.server.members:
-#     #     if member.mentioned_in(msg):
-#     #         mentioned_users.append(member)
-#     print('{} members have been mentioned.'.format(len(mentioned_users)))
-#
-#     # Get a list of all voice channel users for this server
-#     voice_users = [
-#         voice_users + channel.voice_members for channel in msg.server.channels if len(channel.voice_members) > 0]
-#     # for channel in msg.server.channels:
-#     #     # Filters out empty and non-voice channels
-#     #     if len(channel.voice_members) > 0:
-#     #         voice_users += channel.voice_members
-#     print('{} members found in voice channels.'.format(len(voice_users)))
-#
-#     # Get a list of all members that are both mentioned and in voice channels
-#     mentioned_voice_members = [
-#         member for member in mentioned_users if member in voice_users]
-#     print('Intersection: {} members'.format(len(mentioned_voice_members)))
-#
-#     # Get the channel to move members into
-#     if msg.author.voice.voice_channel == None:
-#         await client.send_message(msg.channel, content='You are not connected to a voice channel - as far as I can tell.')
-#     else:
-#         channel = msg.author.voice.voice_channel
-#
-#     await client.send_message(msg.channel, content='Moving members to {}...'.format(channel.name))
-#
-#     # Move anyone who's not already in that voice channel there
-#     members_to_move = [
-#         member for member in mentioned_voice_members if not member in channel.voice_members and not member.voice.is_afk]
-#     # for member in mentioned_voice_members:
-#     #     if not member in channel.voice_members and not member.voice.is_afk:
-#     for member in members_to_move:
-#         await client.move_member(member, channel)
 
 
 async def juicy(client, msg, words, help=False):
@@ -334,9 +273,3 @@ async def steal_that_bastards_avatar(client, msg, words, help=False):
         content = '{} I found a match: {}.'.format(msg.author.mention,
                                                    user.avatar_url)
         await client.send_message(msg.channel, content=content)
-
-
-async def so_sad(client, msg, words, help=False):
-    """Alexa, this is so sad."""
-
-    pass
