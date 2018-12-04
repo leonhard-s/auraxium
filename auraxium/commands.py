@@ -90,10 +90,8 @@ async def shutdown(client, msg, words, help=False):
     """Ends the asyncio loop."""
 
     await client.send_message(msg.channel, content='Shutting down... bye!')
+    await client.close()
 
-    # Cancel all running tasks, causing "run_forever" to finish
-    for task in asyncio.Task.all_tasks(client.loop):
-        task.cancel()
 
 
 
