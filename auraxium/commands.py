@@ -238,17 +238,13 @@ async def juicy(client, msg, words, help=False):
 
 
 async def ping(client, msg, words, help=False):
-    await client.send_message(msg.channel, content='{} Pong!'.format(msg.author.mention))
+    """Useful for testing whether a bot has permission to use a channel.
 
-
-async def OPStimeLegacy(client, msg, words, help=False):
-    """Moves members into the voice channel of the user sending the command.
-
-    Any user that has been mentioned in this message and is connected to a
-    voice channel in the current server will be moved to the voice channel of
-    the user who sent the command.
+    If the bot responds "Pong!", it has seen the message and can reply.
     """
 
+    await client.send_message(destination=msg.channel,
+                              content='{} Pong!'.format(msg.author.mention))
 
 
 
