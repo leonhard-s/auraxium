@@ -93,7 +93,58 @@ async def shutdown(client, msg, words, help=False):
     await client.close()
 
 
+async def dinnerTime(client, msg, words, help=False):
+    """Moves members into the voice channel of the user sending the command.
 
+    Any user that has been mentioned in this message and is connected to a
+    voice channel in the current server will be moved to the voice channel of
+    the user who sent the command.
+    """
+
+    # Check permissions
+    role = discord.utils.get(msg.server.roles, name='Son')
+    if msg.author.top_role < role:
+        content = ('Sorry {}, you need to have the rank of {} or higher to '
+                   'use this command.').format(msg.author.mention, role.name)
+        await client.send_message(msg.channel, content=content)
+        return
+
+    # Get the channel to move members into
+    if msg.author.voice.voice_channel == None:
+        content = '{} You are not connected to a voice channel.'.format(
+            msg.author.mention)
+        await client.send_message(msg.channel, content=content)
+        return
+    else:
+        author_channel = msg.author.voice.voice_channel
+
+    # Create a list of all users that have been mentioned in this message
+    mentioned_users = [m for m in msg.server.members if m.mentioned_in(msg)]
+
+    # Get a list of all non-afk members in voice channels
+    voice_users = [m for c in msg.server.channels if len(
+        c.voice_members) > 0 for m in c.voice_members]
+
+    # Get a list of all members that are both mentioned and in voice channels
+    members_to_move = [
+        m for m in mentioned_users if m in voice_users and not m in author_channel.voice_members and not m.voice.is_afk]
+
+    if len(members_to_move) == 0:
+        content = '{} I was unable to find members that can be moved to {}.'.format(
+            msg.author.mention, author_channel.name)
+        await client.send_message(msg.channel, content=content)
+        return
+    elif len(members_to_move) == 1:
+        content = '{} Moving 1 member to {}.'.format(
+            msg.author.mention, author_channel.name)
+        await client.send_message(msg.channel, content=content)
+    else:
+        content = '{} Moving {} members to {}.'.format(
+            msg.author.mention, len(members_to_move), author_channel.name)
+        await client.send_message(msg.channel, content=content)
+
+    for member in members_to_move:
+        await client.move_member(member, author_channel)
 
 
 async def juicy(client, msg, words, help=False):
@@ -198,44 +249,7 @@ async def OPStimeLegacy(client, msg, words, help=False):
     the user who sent the command.
     """
 
-    # Help text
-    if help:
-        return 'Usage: ?itsOPStime'
 
-    # Create a list of all users that have been mentioned in this message
-    mentioned_users = []
-    for member in msg.server.members:
-        if member.mentioned_in(msg):
-            mentioned_users.append(member)
-    print('{} members have been mentioned.'.format(len(mentioned_users)))
-
-    # Get a list of all voice channel users for this server
-    voice_users = []
-    for channel in msg.server.channels:
-        # Filters out empty and non-voice channels
-        if len(channel.voice_members) > 0:
-            voice_users += channel.voice_members
-    print('{} members found in voice channels.'.format(len(voice_users)))
-
-    # Get a list of all members that are both mentioned and in voice channels
-    mentioned_voice_members = [
-        member for member in mentioned_users if member in voice_users]
-    print('Intersection: {} members'.format(len(mentioned_voice_members)))
-
-    # Get the channel to move members into
-    if msg.author.voice.voice_channel == None:
-        await client.send_message(msg.channel, content='You are not connected to a voice channel - as far as I can tell.')
-    else:
-        channel = msg.author.voice.voice_channel
-
-    await client.send_message(msg.channel, content='Moving members to {}...'.format(channel.name))
-
-    # Move anyone who's not already in that voice channel there
-    for member in mentioned_voice_members:
-        if not member in channel.voice_members and not member.voice.is_afk:
-            await client.move_member(member, channel)
-
-    await client.send_message(msg.channel, content='Done')
 
 
 async def steal_that_bastards_avatar(client, msg, words, help=False):
