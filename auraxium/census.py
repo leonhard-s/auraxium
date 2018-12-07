@@ -1,469 +1,241 @@
 import json
+from enum import Enum
 
 import requests
 
-# This is the base URL used to access the Daybreak Game Company's server.
-_CENSUS_BASE_URL = 'http://census.daybreakgames.com/'
-_SERVICE_ID = 's:auraxiumdiscordbot'
+from .collections import get_collection
+from .exceptions import (APILimitationError, InvalidJoinError,
+                         ServiceIDMissingError, ServiceIDUnknownError,
+                         ServiceUnavailableError)
+
+# The endpoint used for all Census API requests.
+CENSUS_BASE_URL = 'http://census.daybreakgames.com/'
+# The Planetside 2 (PC) namespace. No PS4 support yet.
+NAMESPACE = 'ps2'
+
+# The id used to identify this service.
+service_id = 's:example'
 
 
-def census_request(url):
-    response_object = json.loads(requests.get(url).text)
-    # Raise issues?
-    return response_object
+class SearchModifier(Enum):
+    EQUAL_TO = 1
+    CONTAINS = 2
+    GREATER_THAN = 3
+    GREATER_OR_EQUAL = 4
+    LESS_THAN = 5
+    LESS_OR_EQUAL = 6
+    STARTS_WITH = 7
+    NOT_EQUAL_TO = 8
 
 
-class Collection():
-    """Represents a Planetside 2 game collection.
-
-    Do not instantiate manually.
-
-    Parameters
-    ----------
-    datatype_object : dict
-        Contains the information from the datatype_list returned by the
-        server.
-
-    Attributes
-    ----------
-    count : str
-        The number of items in the collection. Can be an int or "?".
-    name : str
-        The name of the collection.
-    hidden : type
-        Whether the collection's contents are publicly visible.
-    resolve_list : type
-        The list of resolvable fields for this collection.
-
-    """
-
-    def __init__(self, datatype_object):
-        self.count = datatype_object['count']
-        self.name = datatype_object['name']
-        self.hidden = datatype_object['hidden']
-        self.resolve_list = datatype_object['resolve_list']
+class Join():
+    def __init__(self, collection, hide=[], list=False, match=None,
+                 name=None, show=[]):
+        self.collection = collection
+        self.hide = hide
+        self.list = list
+        self.joins = []
+        self.match_this = match
+        self.match_parent = match
+        self.name = name
+        self.show = show
 
     def __str__(self):
-        """Allows using the collection object in a string."""
-        return self.name
+        """Converts the join into a string"""
+        # collection / type
+        string = str(self.collection)
+        # inject_at
+        if self.name == None:
+            string += '^inject_at:{}'.format(str(self.collection))
+            if self.list:
+                string += '_list'
+        # list
+        if self.list:
+            string += '^list:1'
+        # on
+        if self.match_this != None:
+            string += '^on:{}'.format(self.match_this)
+        # to
+        if self.match_parent != None:
+            string += '^to:{}'.format(self.match_parent)
+        # # outer
+        # if not self.is_outer_join:
+        #     string += '^outer:0'
+        # # terms
+        # if len(self.terms) > 0:
+        #     string += '^terms:'
+        #     # loop through all filter terms
+        #     for term in self.terms:
+        #         string += '{}\''.format(evaluate_term(term))
+        #     # Slice the final '-separator off
+        #     string = string[:-1]
 
+        # show
+        if len(self.show) > 0:
+            string += '^show:{}'.format('\''.join(turn_into_list(self.show)))
+        # hide
+        elif len(self.hide) > 0:
+            string += '^hide:{}'.format('\''.join(turn_into_list(self.hide)))
 
-class Request():
-    """Represents a request to make to the Census API server.
+        # nested joins
+        if len(self.joins) > 0:
+            # Enter another level of join-ception
+            string += '('
+            # Loop through all inner joins
+            for join in self.joins:
+                string += str(join)
+            string += ')'
 
-    A request instance provides an object-based way of generating the URL
-    required to retrieve the desired information from the API server. It can
-    also be kept around and retrieved repeatedly, which is helpful for
-    scheduled requests.
-
-    Parameters
-    ----------
-    collection : string
-        The Census API collection to access. Required.
-    namespace : string
-        The namespace for the request. Determines which collections will be
-        available. See 'http://census.daybreakgames.com/get/<namespace>/' for
-        a list of collections for a given namespace. Default: 'ps2'.
-    terms : list
-        A list containing filtering information telling the server which
-        elements of the collection we want to access. Optional.
-    verb : string
-        The operation we want the server to perform. Can be one of two strings:
-        'count' returns the number of matching items, 'get' will return a list
-        of matching items. Default: 'get'.
-    The following query commands are supported:
-        case (bool), distinct (bool), exact_match_first (bool),
-        has (list), hide (list), include_null (bool), lang (str), limit (int),
-        retry (bool), show (list), sort (list), start (int), timing (bool),
-        tree (list)
-    (Please refer to the query commands documentation for details.)
-
-    Attributes
-    ----------
-    joins : list
-        A list of Request.Join objects attached to the request. Do not add new
-        ones by hand, use the Request.join() method instead.
-    collection : string
-        The Census API collection to access.
-    commands : dict
-        A dictionary containing any query commands to send with this request.
-    terms: list
-        A list containing filtering information telling the server which
-        elements of the collection we want to access.
-    namespace : string
-        The namespace for the request; determines which collections will be
-        available.
-    verb : string
-        The operation we want the server to perform.
-
-    """
-
-    def __init__(
-            self, collection, namespace='ps2', terms=[], verb='get', **kwargs):
-        self.collection = collection
-        self.commands = {}
-        self.joins = []
-        self.namespace = namespace
-        self.terms = terms
-        self.verb = verb
-
-        # For every search term
-        for item in terms:
-            # If one of the lists only has two items, set its type to 'equals'
-            if len(item) == 2:
-                item.insert(1, 'equals')
-
-        # For every query command
-        for key, value in kwargs.items():
-            # Any kwargs are treated as query commands here, they will be
-            # checked as part of the Request.retrieve() method.
-            self.commands[key] = value
-
-    class Join():
-        """Represents a joined query inside a request.
-
-        Joined queries can/should be used to minimize the number of individual
-        requests sent to the server. Do not instantiate manually, use the
-        methods Request.join() and Join.join() instead.
-
-        Parameters
-        ----------
-        collection : string
-            The Census API collection the joined query will access. Required.
-        list : bool
-            Whether the joined data is going to be a list or not.
-            Default: False.
-        name : string
-            The name of the field where the joined data will be inserted into
-            the response. Default: `join_<collection>`.
-        on : string
-            The field on the parent collection to match to.
-            Default: `<parent_collection>_id`.
-        outer : bool
-            Decides whether non-matches will be included in the response. If
-            set to false, non-matches will not be included. Default: True.
-        terms : list
-            A list containing filtering information telling the server which
-            elements of the collection we want to access. Optional.
-        to : string
-            The field on the child collection to match with.
-            Default: `<child_collection>_id`.
-        The following query commands are supported:
-            hide (list), show (list)
-        (Please refer to the query commands documentation for details.)
-
-        Attributes
-        ----------
-        collection : string
-            The Census API collection the joined query will access.
-        commands : dict
-            A dictionary containing any query commands to send with the joined
-            request.
-        joins : list
-            A list of nested Request.Join objects attached to the Join. Do not
-            add new ones by hand, use the Join.join() method instead.
-        list : bool
-            Whether the joined data is going to be a list or not.
-        nickname : string
-            The name of the field where the joined data will be inserted into the response.
-        on : string
-            The field on the parent collection to match to.
-        outer : bool
-            Decides whether non-matches will be included in the response. If
-            set to false, non-matches will not be included.
-        terms : list
-            A list containing filtering information telling the server which
-            elements of the collection we want to access.
-        to : string
-            The field on the child collection to match with.
-
-        Methods
-        -------
-        join() : Request.Join
-            Creates a new join and appends it to the 'joins' attribute.
-
-        """
-
-        def __init__(
-                self, collection, nickname=None, list=False, on=None,
-                outer=True, terms=[], to=None, **kwargs):
-            self.collection = collection
-            self.commands = {}
-            self.joins = []
-            self.list = list
-            self.nickname = nickname
-            self.on = on
-            self.outer = outer
-            self.terms = terms
-            self.to = to
-
-            # Set concatenated default values
-            if self.nickname == None:
-                self.nickname = 'join_{}'.format(self.collection)
-            if self.on == None:
-                self.on = '{}_id'.format(self.collection)
-            if self.to == None:
-                self.to = '{}_id'.format(self.collection)
-
-            # For every query command
-            for key, value in kwargs.items():
-                if key == 'show':
-                    self.commands[key] = value
-                elif key == 'hide':
-                    self.commands[key] = value
-                else:
-                    print('Unsupported query command: "{}"'.format(key))
-
-        def join(self, collection, **kwargs):
-            """Creates a new Join for the Request.
-
-            The created Join object will automatically be appended to the
-            Request.joins list. The returned Join object may be referenced to
-            create nested joins using the Join.join() method.
-
-            Parameters
-            ----------
-            **kwargs
-                All keyword arguments will be forwarded to the Join object's
-                __init__() method.
-
-            Returns
-            -------
-            Request.Join
-                The created Join object. Added to the "joins" list
-                automatically, only reference for creating nested
-                joins.
-
-            """
-
-            join = Request.Join(collection, **kwargs)
-            self.inner_joins.append(join)
-            return join
+        # Return the string
+        print('[Census] Inner join generated:')
+        print(string)
+        return string
 
     def join(self, collection, **kwargs):
-        """Creates a new Join for the request.
-
-        Creates a new Join and appends it to the request's "joins" attribute.
-
-        Parameters
-        ----------
-        **kwargs
-            All keyword arguments will be forwarded to the Join object's
-            __init__() method.
-
-        Returns
-        -------
-        Request.Join
-            The created Join object. Added to the "joins" list
-            automatically, only reference for creating nested
-            joins.
-
-        """
-
-        join = self.Join(collection, **kwargs)
+        join = Join(collection, **kwargs)
         self.joins.append(join)
         return join
 
-    def __str__(self):
-        """Performs the request and returns the server's response.
 
-        Returns
-        -------
-        dict
-            The response of the server. In most cases, even a server error
-            will return a valid dictionary containing additional information.
+class Request():
+    def __init__(self, collection, hide, limit, show, terms, verb):
+        self.collection = collection
+        self.joins = []
+        self.hide = hide
+        self.limit = limit
+        self.show = show
+        self.terms = terms
+        self.url = ''
+        self.verb = verb
+        for term in self.terms:
+            if len(term) == 2:
+                term['modifier'] = SearchModifier.EQUAL_TO
 
+    def call(self):
+        """Retrieves the response for the request.
+        If the url does not exist, it is generated beforehand.
         """
-
-        def serialize_join(join):
-            """Converts a Join object into a string.
-
-            Generates the URL-friendly representation of the join and any
-            nested joins contained within.
-
-            Parameters
-            ----------
-            join : Request.Join
-                The Join object to serialize.
-
-            Returns
-            -------
-            str
-                The string representation of the join(s).
-
-            """
-
-            # Key: type
-            string = join.collection
-            # Key: inject_at
-            string += '^inject_at:{}'.format(join.nickname)
-            # Key: list
-            if join.list:
-                string += '^list:1'
-            # Key: on
-            string += '^on:{}'.format(join.on)
-            # Key: outer
-            if not join.outer:
-                string += '^outer:0'
-            # Key: terms
-            if len(join.terms) > 0:
-                string += '^terms:'
-                # Loop through all filter terms
-                for key in join.terms:
-                    string += '{}={}\''.format(key, join.terms[key])
-                # Slice the final '-separator off the end of the string
-                string = string[:-1]
-            # Key: to
-            string += '^to:{}'.format(join.to)
-
-            # If the 'show' list is not empty, add them
-            if 'show' in join.commands:
-                string += '^show:{}'.format('\''.join(join.commands['show']))
-            # Only use the 'hide' parameter if the 'show' list is empty
-            elif 'hide' in join.commands:
-                string += '^hide:{}'.format('\''.join(join.commands['hide']))
-
-            # If there are any inner joins
-            if len(join.joins) > 0:
-                # Enter a new layer of join-ception
-                string += '('
-                # Loop through the inner joins
-                for inner_join in join.joins:
-                    serialize_join(inner_join)
-                string += ')'
-            return string
-
-        # Concatenate the core parts of the request into a URL
-        url = '{}{}/{}/{}'.format(_CENSUS_BASE_URL, self.verb, self.namespace,
-                                  self.collection)
-
-        # Loop through any search modifiers that may have been specified
-        for item in self.terms:
-            url += '&'
-            # 'equals'
-            if item[1] == 'equals':
-                url += '{}={}'.format(item[0], item[-1])
-            elif item[1] == 'contains':
-                url += '{}=*{}'.format(item[0], item[-1])
-            # 'greater_or_equal'
-            elif item[1] == 'greater_or_equal':
-                url += '{}=]{}'.format(item[0], item[-1])
-            # 'greater_than'
-            elif item[1] == 'greater_than':
-                url += '{}=>{}'.format(item[0], item[-1])
-            # 'less_or_equal'
-            elif item[1] == 'less_or_equal':
-                url += '{}=[{}'.format(item[0], item[-1])
-            # 'less_than'
-            elif item[1] == 'less_than':
-                url += '{}=<{}'.format(item[0], item[-1])
-            # 'not'
-            elif item[1] == 'not':
-                url += '{}=!{}'.format(item[0], item[-1])
-            # 'starts_with'
-            elif item[1] == 'starts_with':
-                url += '{}=^{}'.format(item[0], item[-1])
-            else:
-                print('Error: Unknown search modifier: {}'.format(item[1]))
-
-        # Case
-        if 'case' in self.commands:
-            if not self.commands['case']:
-                url += '&c:case=false'
-
-        # Distinct
-        if 'distinct' in self.commands:
-            url += '&c:distinct={}'.format(self.commands['distinct'])
-
-        # Exact match first (overrides c:sort)
-        if 'exact_match_first' in self.commands:
-            if self.commands['exact_match_first']:
-                url += '&c:exactMatchFirst=true'
-
-        # Has
-        if 'has' in self.commands:
-            url += '&c:has='.format(','.join(self.commands['has']))
-
-        # Include null
-        if 'include_null' in self.commands:
-            if self.commands['include_null']:
-                url += 'c:includeNull=true'
-
-        # Language
-        if 'lang' in self.commands:
-            url += '&c:lang={}'.format(self.commands['lang'])
+        # If the url has not been setgenerate it.
+        if self.url == '':
+            print('[Census] Generating url...')
+            self.generate_url()
         else:
-            url += '&c:lang=en'
+            print('[Census] Using cached URL.')
 
-        # Limit
-        if 'limit' in self.commands:
-            url += '&c:limit={}'.format(self.commands['limit'])
+        # Retrieve the response from the server.
+        print('[Census] Retrieving response for the following URL:')
+        print(self.url)
+        response = json.loads(requests.get(self.url).text)
+        print('[Census] Response received:')
+        print(response)
 
-        # Limit per DB
-        if 'limit_per_db' in self.commands:
-            url += '&c:limit_per_db={}'.format(self.commands['limit_per_db'])
+        # Check for common errors
+        if 'error' in response.keys():
+            if response['error'] == 'service_unavailable':
+                raise ServiceUnavailableError()
+            elif response['error'].startswith('Provided Service ID is not'):
+                raise ServiceIDUnknownError()
+            elif response['error'].startswith('Missing Service ID.'):
+                raise ServiceIDMissingError()
+        elif 'count' in response.keys():
+            if response['count'] < 0:
+                raise APILimitationError('The collection "{}" cannot be '
+                                         'enumerated.'.format(self.collection))
 
-        # Retry
-        if 'retry' in self.commands:
-            if not self.commands['retry']:
-                url += '&c:retry=false'
-
-        # Sort
-        if 'sort' in self.commands:
-            url += '&c:sort='.format(','.join(self.commands['sort']))
-
-        # Start
-        if 'start' in self.commands:
-            url += '&c:start={}'.format(self.commands['start'])
-
-        # timing
-        if 'timing' in self.commands:
-            if self.commands['timing']:
-                url += '&c:timing=true'
-        # else:
-        #     # Use bot setting
-
-        # Tree
-        if 'tree' in self.commands:
-            url += '&c:tree={}'.format(self.commands['tree'])
-
-        # If the 'show' list is not empty, add them
-        if 'show' in self.commands:
-            url += '&c:show={}'.format(','.join(self.commands['show']))
-            # TODO: Add a warning to let the user know inputs are being ignored?
-            # if 'hide' in self.commands:
-            #     print('Info: c:show has been specified, omitting c:hide.')
-        # Only use the 'hide' parameter if the 'show' list is empty
-        elif 'hide' in self.commands:
-            url += '&c:hide={}'.format(','.join(self.commands['hide']))
-
-        # If there are any joins
-        if len(self.joins) > 0:
-            url += '&c:join='
-            # Loop through all outer joins
-            for join in self.joins:
-                url += serialize_join(join)
-
-        # In the above code, we never worried about which the first query
-        # was going to be and just used '&' everywhere. This is fixed here.
-        url = url.replace('&', '?', 1)
-        print(url)
-        # Get the response from the server and convert it to a dictionary
-        response = json.loads(requests.get(url).text)
-
+        # Return the response
         return response
 
+    def generate_url(self):
+        """Generates a DBG url using the object information for the request"""
+        # Concatenate the core elements of the URL
+        url = '{}{}/{}/{}/{}'.format(CENSUS_BASE_URL,
+                                     service_id,
+                                     self.verb,
+                                     NAMESPACE,
+                                     str(self.collection))
 
-_namespace = 'ps2'
+        # Terms
+        for term in self.terms:
+            url += '&{}'.format(evaluate_term(term))
 
-print('Retrieving collections for namespace "{}"...'.format(_namespace))
-# try statement?
-datatype_list = census_request(
-    _CENSUS_BASE_URL + 's:MUMSOutfitRoster/get/{}/'.format(_namespace))['datatype_list']
-print('Initializing {} collections...'.format(len(datatype_list)))
+        # Limit
+        if self.limit != 20:
+            url += '&c:limit={}'.format(self.limit)
 
-collection = {}
-for datatype_object in datatype_list:
-    collection[datatype_object['name']] = Collection(datatype_object)
+        # Show
+        if len(self.show) > 0:
+            url += '&c:show={}'.format(','.join(self.show))
+        # Hide
+        elif len(self.hide) > 0:
+            url += '&c:hide={}'.format(','.join(self.hide))
 
-print('Initialization complete.')
+        # Joins
+        if len(self.joins) > 0:
+            url += '&c:join='
+            for join in self.joins:
+                url += str(join)
+
+        # Replaces the first occurrence of "&" with "?"
+        url = url.replace('&', '?', 1)
+        print('[Census] URL generated:')
+        print(url)
+        self.url = url
+
+    def join(self, collection, **kwargs):
+        # Make sure the request is using the "get" verb before proceeding
+        if not self.verb == 'get':
+            raise InvalidJoinError(
+                'Joined queries can only be performed with the verb "get". '
+                'This request has the verb "{}".'.format(self.verb))
+            return
+
+        join = Join(collection, **kwargs)
+        self.joins.append(join)
+        return join
+
+
+def count(collection, terms=[], **kwargs):
+    """Sends a count request."""
+    # Create a new Request object
+    request = Request(collection=get_collection(collection),
+                      verb='get',
+                      **kwargs)
+    return request
+
+
+def evaluate_term(term):
+    """Converts a term dictionary into a string like "field=^value"."""
+    operator = '='
+
+    # This list contains the characters signifying their search modifier in the
+    # order they are listed in the enum.
+    char_list = ['', '*', '>', ']', '<', '[', '^', '!']
+    if 'modifier' in term.keys():
+        operator += char_list[term['modifier'].value - 1]
+
+    return term['field'] + operator + term['value']
+
+
+def get(collection, hide=[], limit=20, show=[], terms=[]):
+    request = Request(collection=get_collection(collection),
+                      hide=turn_into_list(hide),
+                      show=turn_into_list(show),
+                      limit=limit,
+                      # Show, Hide, Sort, Has, Resolve?, Case, Limit
+                      # LimitPerDb?, Start, IncludeNull, Lang, Join?,
+                      # Tree, Timing, exactMatchFirst, Distinct, Retry
+                      terms=turn_into_list(terms),
+                      verb='get')
+    return request
+
+
+def turn_into_list(object):
+    """Returns a list containing the object passed.
+
+    If a list is passed to this function, this function will not create a
+    nested list, it will instead just return the list itself."""
+
+    if isinstance(object, list):
+        return object
+    else:
+        return [object]

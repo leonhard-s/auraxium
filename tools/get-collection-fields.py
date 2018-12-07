@@ -3,12 +3,12 @@
 # This script retrieves the fields available in a collection and infers which
 # are optional and which ones are not.
 
+import json
 import os
 from contextlib import redirect_stdout
 from datetime import datetime
-from json import dump
 
-import auraxium.census as c
+import requests
 
 # SETTINGS
 COLLECTION = 'weapon_datasheet'
@@ -17,16 +17,16 @@ EXAMPLE_VALUES = 10
 
 
 print('Retrieving fields for collection "{}":'.format(COLLECTION))
-entries = c.census_request(
-    'https://census.daybreakgames.com/count/ps2/{}'.format(COLLECTION))['count']
+entries = json.loads(requests.get(
+    'https://census.daybreakgames.com/count/ps2/{}'.format(COLLECTION)).text)['count']
 
 print('Collection has {} entries.'.format(entries))
 # The census API will never return more than 100000 items
 if entries > 100000:
     print('Capping at 100000.')
 
-object_list = c.census_request('https://census.daybreakgames.com/get/ps2/{}?c:limit={}'.format(
-    COLLECTION, entries))['{}_list'.format(COLLECTION)]
+object_list = json.loads(requests.get('https://census.daybreakgames.com/get/ps2/{}?c:limit={}'.format(
+    COLLECTION, entries)).text)['{}_list'.format(COLLECTION)]
 
 # For every entry in the collection
 object_dict = {COLLECTION: {}}
@@ -56,7 +56,7 @@ filename = 'data/query-test_{}.json'.format(
     datetime.now().strftime('%Y%m%d_%H-%M-%S'))
 # Write the returned JSON data into a dump file
 with open(filename, 'w') as dump_file:
-    dump(object_dict, dump_file)
+    json.dump(object_dict, dump_file)
 print('JSON file generated.\n')
 
 # This hides the print statement returned when opening the file
