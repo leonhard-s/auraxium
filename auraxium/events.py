@@ -1,8 +1,12 @@
 import asyncio
 import json
+import logging
 from enum import Enum
 
 import websockets
+
+# Create a logger
+logger = logging.getLogger('auraxium.events')
 
 _BASE_URL = 'wss://push.planetside2.com/streaming'
 
@@ -77,17 +81,17 @@ class Client():
 
         # Subscription push echo
         if 'subscription' in response:
-            print('[SUBS] {}'.format(response))
+            logger.info('Subscription: {}'.format(response))
             return
 
         # Help message
         elif "send this for help" in response:
-            print('[HELP] {}'.format(response))
+            logger.info('Help: {}'.format(response))
             return
 
         # Login service
         elif response['service'] == "push":
-            print('[LOGIN] {}'.format(response))
+            logger.info('Login: {}'.format(response))
             return
 
         # Event streaming service
@@ -95,24 +99,23 @@ class Client():
 
             # Endpoint state change echo
             if response['type'] == 'serviceStateChanged':
-                print('[ENDPOINT] {}'.format(response))
+                logger.info('Endpoint: {}'.format(response))
                 return
 
             # Heartbeat
             if response['type'] == 'heartbeat':
-                print('[HEARTBEAT] {}'.format(response))
+                logger.info('Heartbeat: {}'.format(response))
                 return
 
             # Event responses
             if response['type'] == 'serviceMessage':
-                # print('[EVENT] {}'.format(response))
                 listeners_to_run = [l for l in self._listeners if l.__name__ == 'on_{}'.format(
                     response['payload']['event_name'].lower())]
                 for listener in listeners_to_run:
                     listener(response['payload'])
                 return
 
-        print('[WARNING] Unexpected response: {}'.format(response))
+        logger.warning('Unexpected response: {}'.format(response))
 
     def sub(self, event, **kwargs):
         """Shorthand for subscribe."""
@@ -127,8 +130,7 @@ class Client():
              'eventNames': [event],
              'service': 'event'})
 
-        print('[EVENTS] Subscribing using command:')
-        print(json_data)
+        logger.info('Subscribing using: {}'.format(json_data))
         self._send_queue.append(json_data)
         # await self.ws.send(json_data)
 
@@ -141,7 +143,7 @@ class Client():
         data = {'service': 'event',
                 'action': 'clearSubscribe',
                 'all': 'true'}
-        print('[EVENTS] Clearing all subscriptions...')
+        logger.info('Clearing all subscriptions...')
         # await self.ws.send(json.dumps(data))
 
     def unsub(self, **kwargs):
@@ -161,8 +163,7 @@ class Client():
                 'worlds': world_list}
 
         json_data = json.dumps(data)
-        print('[EVENTS] Subscribing using command:')
-        print(json_data)
+        logger.info('Unsubscribing using: {}'.format(json_data))
         # await self.ws.send(json_data)
 
 

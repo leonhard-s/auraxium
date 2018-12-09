@@ -1,8 +1,12 @@
 import datetime
+import logging
 
 import discord
 
 from . import census
+
+# Create a logger
+logger = logging.getLogger('auraxium.embed')
 
 
 def generate_embed(embed_identifier, string):
@@ -37,7 +41,7 @@ def generate_embed(embed_identifier, string):
         sub.join('character_name', on='character_id', inject_at='character',
                  show=['name.first'])
         response = req.retrieve()
-        print(response)
+        logger.debug(response)
 
         embed = discord.Embed(title="Outfit info: Members of the Utopian Mummy", colour=discord.Colour(
             0xc76ded), description="Members of the Utopian Mummy (MUMS) is a VS outfit on Cobalt. It has 49 members with a median Battle Rank of 38.", timestamp=datetime.datetime.utcfromtimestamp(1540460311))
@@ -58,5 +62,5 @@ def generate_embed(embed_identifier, string):
 
     else:
         embed = 0
-        print('Panic!')
+        logger.warning('Panic!')
     return embed

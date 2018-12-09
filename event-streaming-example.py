@@ -4,8 +4,28 @@
 # a particular outfit's members.
 
 import asyncio
+import logging
 
 from auraxium import *
+
+# Create a logger
+logger = logging.getLogger('auraxium')
+logger.setLevel(logging.DEBUG)
+# Create a file handler
+fh = logging.FileHandler('auraium.log')
+fh.setLevel(logging.DEBUG)
+# Create a console handler
+ch = logging.StreamHandler()
+ch.setLevel(logging.INFO)
+# Create a formatter
+formatter = logging.Formatter(
+    '%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+fh.setFormatter(formatter)
+ch.setFormatter(formatter)
+# add the handlers to the logger
+logger.addHandler(fh)
+logger.addHandler(ch)
+
 
 # Set our custom service id
 # census.service_id = 's:auraxiumdiscordbot'
@@ -40,7 +60,6 @@ event_client.subscribe('Death', character_list=member_dict.values())
 # @event_client.event
 # def on_event(event):
 #     """Runs whenever any message is received."""
-#     print('[EVENT] {}'.format(event))
 
 
 @event_client.event

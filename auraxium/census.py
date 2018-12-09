@@ -1,4 +1,5 @@
 import json
+import logging
 from enum import Enum
 
 import requests
@@ -7,6 +8,9 @@ from .collections import get_collection
 from .exceptions import (APILimitationError, InvalidJoinError,
                          ServiceIDMissingError, ServiceIDUnknownError,
                          ServiceUnavailableError)
+
+# Create a logger
+logger = logging.getLogger('auraxium.census')
 
 # The endpoint used for all Census API requests.
 CENSUS_BASE_URL = 'http://census.daybreakgames.com/'
@@ -86,9 +90,6 @@ class Join():
                 string += str(join)
             string += ')'
 
-        # Return the string
-        print('[Census] Inner join generated:')
-        print(string)
         return string
 
     def join(self, collection, **kwargs):
@@ -117,17 +118,15 @@ class Request():
         """
         # If the url has not been setgenerate it.
         if self.url == '':
-            print('[Census] Generating url...')
+            logger.debug('Generating URL.')
             self.generate_url()
         else:
-            print('[Census] Using cached URL.')
+            logger.debug('Reusing cached URL.')
 
         # Retrieve the response from the server.
-        print('[Census] Retrieving response for the following URL:')
-        print(self.url)
+        logger.debug('Sending request: "{}"'.format(self.url))
         response = json.loads(requests.get(self.url).text)
-        print('[Census] Response received:')
-        print(response)
+        logger.debug('Request received.')
 
         # Check for common errors
         if 'error' in response.keys():
@@ -176,10 +175,7 @@ class Request():
                 url += str(join)
 
         # Replaces the first occurrence of "&" with "?"
-        url = url.replace('&', '?', 1)
-        print('[Census] URL generated:')
-        print(url)
-        self.url = url
+        self.url = url.replace('&', '?', 1)
 
     def join(self, collection, **kwargs):
         # Make sure the request is using the "get" verb before proceeding

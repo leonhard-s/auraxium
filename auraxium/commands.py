@@ -1,6 +1,10 @@
 import asyncio
+import logging
 
 import discord
+
+# Create a logger
+logger = logging.getLogger('auraxium.commands')
 
 
 async def echo(client, msg, words, help=False):
