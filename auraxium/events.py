@@ -60,7 +60,7 @@ class Client():
                 try:
                     str = await websocket.recv()
                     # Process the response
-                    self._process_response(str)
+                    await self._process_response(str)
 
                     for item in self._send_queue:
                         await websocket.send(self._send_queue.pop())
@@ -74,10 +74,11 @@ class Client():
         self._listeners.append(func)
         return func
 
-    def _process_response(self, str):
+    async def _process_response(self, str):
         """Internal. Runs whenever a message is received."""
 
         response = json.loads(str)
+        logger.debug('Processing response: {}'.format(response))
 
         # Subscription push echo
         if 'subscription' in response:
@@ -104,7 +105,17 @@ class Client():
 
             # Heartbeat
             if response['type'] == 'heartbeat':
-                logger.info('Heartbeat: {}'.format(response))
+                # Process heartbeat information
+                log_msg = 'Heartbeat:'
+                for endpoint in response['online'].keys():
+                    if response['online'][endpoint] == 'true':
+                        log_msg += ' {}: online,'.format(endpoint[19:])
+                    else:
+                        log_msg += ' {}: offline,'.format(endpoint[19:])
+                online_endpoints = len(
+                    [e for e in response['online'] if response['online'][e] == 'true'])
+                logger.info('Heartbeat: Connected to {}/{} event streaming '
+                            'endpoints.'.format(online_endpoints, len(response['online'])))
                 return
 
             # Event responses
@@ -112,7 +123,11 @@ class Client():
                 listeners_to_run = [l for l in self._listeners if l.__name__ == 'on_{}'.format(
                     response['payload']['event_name'].lower())]
                 for listener in listeners_to_run:
-                    listener(response['payload'])
+                    # If is corooutine
+                    if asyncio.iscoroutinefunction(listener):
+                        await listener(response['payload'])
+                    else:
+                        listener(response['payload'])
                 return
 
         logger.warning('Unexpected response: {}'.format(response))
