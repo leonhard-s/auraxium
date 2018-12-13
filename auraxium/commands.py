@@ -3,6 +3,12 @@ import logging
 
 import discord
 
+from .sheets import Sheet, base_path
+
+# Initialize worksheets
+sheet_notifications = Sheet('Notifications')
+sheet_notifications.range(1, 1, 3).values = ['Timestamp', 'Username', 'Value']
+
 # Create a logger
 logger = logging.getLogger('auraxium.commands')
 
@@ -107,6 +113,84 @@ async def juicy(client, msg, words, help=False):
     await client.send_message(DEST_CHANNEL,
                               content=USER_SPIDEY.mention,
                               embed=embed)
+
+
+async def notify(client, msg, words, help=False):
+    """Allows discord users to announce their absence."""
+
+    author_fmt = '{}#{}'.format(msg.author.name, msg.author.discriminator)
+
+    user_row = sheet_notifications.find_in_column(column=2, value=author_fmt)
+
+    # Mark as absent
+    if len(words) == 0:
+        reply = 'Please provide an argument. Usage: `?notify absent|late|list|clear`'
+
+    elif words[0] == 'absent':
+        # If the user already has an entry in the worksheet
+        if user_row > 0:
+            cell = sheet_notifications.cell(row=user_row, column=3)
+            if cell.value == 'Notified absent':
+                # Tell them that you already marked them
+                reply = 'You are already notified absent.'
+            else:
+                # Overwrite whatever they had
+                cell.value = 'Notified absent'
+                reply = 'Copy that, I changed you to notified absent.'
+        else:
+            # Add a new entry for the user
+            sheet_notifications.append_row(
+                [msg.timestamp, author_fmt, 'Notified absent'])
+            reply = 'Copy that, I marked you as notified absent.'
+
+    # Mark as late
+    elif words[0] == 'late':
+        # If the user already has an entry in the worksheet
+        if user_row > 0:
+            cell = sheet_notifications.cell(row=user_row, column=3)
+            if cell.value == 'Notified late':
+                # Tell them that you already marked them
+                reply = 'You are already notified late.'
+            else:
+                # Overwrite whatever they had
+                cell.value = 'Notified late'
+                reply = 'Copy that, I changed you to notified late.'
+        else:
+            # Add a new entry for the user
+            sheet_notifications.append_row(
+                [msg.timestamp, author_fmt, 'Notified late'])
+            reply = 'Copy that, I marked you as notified late.'
+
+    # List notifications
+    elif words[0] == 'list':
+        if user_row != 0:
+            # Remove their entry
+            cell = sheet_notifications.cell(row=user_row, column=3)
+            if cell.value == 'Notified absent':
+                reply = 'You have been marked as notified absent.'
+            else:
+                reply = 'You have been marked as notified late.'
+        else:
+            # Tell them there is nothing to remove
+            reply = 'There are no notifications for you.'
+
+    # Clear notifications
+    elif words[0] == 'clear':
+        if user_row != 0:
+            # Remove their entry
+            sheet_notifications.delete_row(user_row)
+            reply = 'Copy that, I cleared any notifications for you.'
+        else:
+            # Tell them there is nothing to remove
+            reply = 'There are no notifications for you.'
+
+    # Complain about usage
+    else:
+        reply = ('Wait, what?\nPlease make sure you only write `?notify '
+                 'absent|late|list|clear` and nothing else.')
+
+    await client.send_message(destination=msg.channel,
+                              content='{} {}'.format(msg.author.mention, reply))
 
 
 async def ping(client, msg, words, help=False):
