@@ -32,7 +32,7 @@ class SearchModifier(Enum):
     NOT_EQUAL_TO = 8
 
 
-class Join():
+class Join(object):
     def __init__(self, collection, hide=[], list=False, match=None,
                  name=None, show=[]):
         self.collection = collection
@@ -98,7 +98,7 @@ class Join():
         return join
 
 
-class Request():
+class Request(object):
     def __init__(self, collection, hide, limit, show, terms, verb):
         self.collection = collection
         self.joins = []

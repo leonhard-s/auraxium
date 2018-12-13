@@ -15,20 +15,20 @@ _NAMESPACE = 'ps2'
 _SERVICE_ID = 's:example'
 
 
-class Event():
+class Event(object):
     def __init__(self, name, character_centric=False, exp_id=None,
                  world_centric=False):
         self.character_centric = character_centric
         self.exp_id = exp_id
         self.fields = {}
-        self.world_centric = world - world_centric
+        self.world_centric = world_centric
         self.name = name
 
     def __str__(self):
         return self.name
 
 
-class Client():
+class Client(object):
     """A PS2 Streaming event that can be subscribed to."""
 
     def __init__(self, loop=None):
@@ -57,16 +57,17 @@ class Client():
             self._ws = websocket
 
             while not self.is_closed:
-                try:
-                    str = await websocket.recv()
-                    # Process the response
-                    await self._process_response(str)
+                # try:
+                str = await websocket.recv()
+                # Process the response
+                await self._process_response(str)
 
-                    for item in self._send_queue:
-                        await websocket.send(self._send_queue.pop())
+                for item in self._send_queue:
+                    await websocket.send(self._send_queue.pop())
 
-                except websocket.ConnectionClosed as e:
-                    await self.close()
+                # except:
+                #     await self.close()
+                #     await self.connect()
 
     def event(self, func):
         """Decorator used for creating events."""
@@ -130,7 +131,7 @@ class Client():
                         listener(response['payload'])
                 return
 
-        logger.warning('Unexpected response: {}'.format(response))
+        logger.warning('Ignoring unexpected response: {}'.format(response))
 
     def sub(self, event, **kwargs):
         """Shorthand for subscribe."""

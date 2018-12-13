@@ -8,7 +8,7 @@ logger = logging.getLogger('auraxium.collections')
 _cache = {}
 
 
-class Collection():
+class Collection(object):
     """Represents a PlanetSide 2 census collection."""
 
     def __init__(self, name):
