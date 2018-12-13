@@ -122,7 +122,7 @@ class Client(object):
             # Event responses
             if response['type'] == 'serviceMessage':
                 listeners_to_run = [l for l in self._listeners if l.__name__ == 'on_{}'.format(
-                    response['payload']['event_name'].lower())]
+                    response['payload']['event_name'].lower()) or l.__name__ == 'on_event']
                 for listener in listeners_to_run:
                     # If is corooutine
                     if asyncio.iscoroutinefunction(listener):
