@@ -3,8 +3,6 @@ from os.path import isfile
 
 from openpyxl import Workbook, load_workbook
 
-from .exceptions import SheetRangeError
-
 # Create a logger
 logger = logging.getLogger('auraxium.sheets')
 
