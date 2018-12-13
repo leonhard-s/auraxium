@@ -8,6 +8,9 @@ import logging
 
 from auraxium import *
 
+# INITIALIZATION
+# --------------
+
 # Create a logger
 logger = logging.getLogger('auraxium')
 logger.setLevel(logging.DEBUG)
@@ -26,6 +29,10 @@ ch.setFormatter(logging.Formatter('[%(levelname)s] %(message)s'))
 logger.addHandler(fh)
 logger.addHandler(ch)
 
+# Initialize worksheets
+sheet_killspam = sheets.Sheet('Killspam')
+sheet_killspam.range(1, 1, 5).values = [
+    'Timestamp', 'Victim', 'Killer', 'Weapon', 'Note']
 
 # Set our custom service id
 # census.service_id = 's:auraxiumdiscordbot'
@@ -34,34 +41,29 @@ census.service_id = 's:MUMSOutfitRoster'
 # Instantiate the asyncio loop
 loop = asyncio.get_event_loop()
 
-# The outfit who's members will be tracked
-OUTFIT_ALIAS = 'mums'
-
-# Generate a request for an outfit with this alias
-request = census.get(collection='outfit',
-                     terms={'field': 'alias_lower', 'value': OUTFIT_ALIAS},
-                     show=['alias', 'name', 'outfit_id'])
-# Attach a request for outfit's member list
-member = request.join('outfit_member', list=True,
-                      resolve='character_name', show='character_id')
-# Attach a request for the member's name
-# member.join('character_name', match='character_id', show='name.first')
-# Create a dict of all outfit members and their ingame name
-member_dict = {
-    member['character_name']['name']['first']: member['character_id']
-    for member in request.call()['outfit_list'][0]['outfit_member_list']}
-
-
 # Create an event streaming client
 event_client = events.Client()
 
-# Subscribe to all outfit member death events
+# SUBSCRIBE TO EVENTS
+# -------------------
+
+OUTFIT_ALIAS = 'MUMS'
+# Generate a request for all outfit member names and character ids
+request = census.get(collection='outfit',
+                     terms={'field': 'alias_lower',
+                            'value': OUTFIT_ALIAS.lower()},
+                     show=['alias', 'name', 'outfit_id'])
+member = request.join('outfit_member', list=True, show='character_id')
+member.join('character_name', match='character_id', show='name.first')
+# Create a dict of the data returned
+member_dict = {
+    member['character_name']['name']['first']: member['character_id']
+    for member in request.call()['outfit_list'][0]['outfit_member_list']}
+# Subscribe to death events using the list generated
 event_client.subscribe('Death', character_list=member_dict.values())
 
-
-# @event_client.event
-# def on_event(event):
-#     """Runs whenever any message is received."""
+# ADD EVENT LISTENERS
+# -------------------
 
 
 @event_client.event
@@ -90,11 +92,26 @@ async def on_death(event):
         victim, attacker, weapon))
 
     # Check for team kills
-    if event['character_id'] in member_dict.values()
-    and event['attacker_character_id'] in member_dict.values():
-        print('***')
-        print('TEAMKILL ALERT!')
-        print('***')
+    if event['character_id'] in member_dict.values() and event['attacker_character_id'] in member_dict.values():
+
+        if event['character_id'] == event['attacker_character_id']:
+            values = [event['timestamp'], victim, attacker, weapon, 'Suicide']
+
+        else:
+            values = [event['timestamp'], victim, attacker, weapon, 'Teamkill']
+
+            # Auroram has died to the powers of Newtonian Physics.
+            # MegaCakeKnight was brutally stabbed to death by X.
+            # Spidey has been farmed by X using Banshee (Mosquito Nose Gun)
+            # SOMEONE has been blown up by PERSON using C-4.
+
+    else:
+        values = [event['timestamp'], victim, attacker, weapon]
+
+    sheet_killspam.append_row(values)
+
+# RUN EVENT LOOP
+# ----------------
 
 # Queue connect and run the loop
 loop.create_task(event_client.connect())
