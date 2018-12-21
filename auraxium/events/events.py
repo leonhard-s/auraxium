@@ -28,7 +28,7 @@ class Event(object):
         return self.name
 
 
-class Client(object):
+class EventClient(object):
     """A PS2 Streaming event that can be subscribed to."""
 
     def __init__(self, loop=None):
