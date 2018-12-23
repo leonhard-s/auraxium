@@ -38,10 +38,6 @@ The following example retrieves a character by name and prints basic information
 ```py
 import auraxium as arx
 
-# This list is used to convert the faction IDs to their string representation.
-FACTION_LIST = ['Nanite Systems', 'Vanu Sovereignty',
-                'New Conglomerate', 'Terran Republic']
-
 # This is the name of the player we want to look up
 character_name = 'Auroram'
 # Only show these fields
