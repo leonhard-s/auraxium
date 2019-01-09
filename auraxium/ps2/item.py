@@ -4,7 +4,7 @@ from .ability import Ability
 from .faction import Faction
 from .image import Image, ImageSet
 
-# from .skill import SkillSet
+# from .skillset import SkillSet
 
 
 class Item(InterimDatatype):
@@ -13,8 +13,7 @@ class Item(InterimDatatype):
 
     def __init__(self, id):
         self.id = id
-
-        data = Query(self.__class__, id=id).get_single()
+        data = super(Item, self).get_data(self)
 
         try:
             self.active_ability = Ability(data['activatable_ability_id'])
@@ -33,10 +32,10 @@ class Item(InterimDatatype):
             self.passive_ability = Ability(data['passive_ability_id'])
         except KeyError:
             self.passive_ability = None
-        try:
-            self.skill_set = SkillSet(data['skill_set'])
-        except KeyError:
-            self.skill_set = None
+        # try:
+        #     self.skill_set = SkillSet(data['skill_set'])
+        # except KeyError:
+        #     self.skill_set = None
         self.type = ItemType(data['item_type_id'])
 
         @property
@@ -55,8 +54,7 @@ class ItemCategory(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
-
-        data = Query(self.__cache__, id=id).get_single()
+        data = super(ItemCategory, self).get_data(self)
 
         self.name = data['name'][next(iter(data['name']))]
 
@@ -66,8 +64,7 @@ class ItemType(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
-
-        data = Query(self.__cache__, id=id).get_single()
+        data = super(ItemType, self).get_data(self)
 
         self.name = data['name']
         self.code = data['code']

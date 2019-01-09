@@ -1,5 +1,5 @@
 from ..census import Query
-from ..datatypes import StaticDatatype
+from ..datatypes import InterimDatatype, StaticDatatype
 from .ability import Ability
 
 
@@ -8,8 +8,8 @@ class Zone(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(Zone, self).get_data(self)
 
-        data = Quest(self.__class__, id=id).get_single()
         self.code = data['code']
         self.description = data['description'][next(iter(data['description']))]
         self.hex_size = int(data['hex_size'])
@@ -22,8 +22,8 @@ class ZoneEffect(InterimDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(ZoneEffect, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.ability = Ability(data['ability_id'])
         self.type = ZoneEffectType(data['zone_effect_type_id'])
         self.parameters = {}
@@ -41,8 +41,8 @@ class ZoneEffectType(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(ZoneEffectType, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.description = data['description']
         self.parameters = {}
         self.strings = {}

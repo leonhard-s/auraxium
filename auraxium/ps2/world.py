@@ -7,8 +7,7 @@ class Server(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
-
-        data = Query(self.__class__, id=id).get_single()
+        data = super(Server, self).get_data(self)
         self.name = data['name'][next(iter(data['name']))]
 
         @property

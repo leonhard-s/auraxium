@@ -7,8 +7,7 @@ class AlertState(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
-
-        data = Query(self.__class__, id=id).get_single()
+        data = super(AlertState, self).get_data(self)
         self.name = data['name']
 
 
@@ -17,8 +16,8 @@ class AlertType(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(AlertType, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.description = data['description'][next(iter(data['description']))]
         self.experience_bonus = int(data['experience_bonus'])
         self.name = data['name'][next(iter(data['name']))]

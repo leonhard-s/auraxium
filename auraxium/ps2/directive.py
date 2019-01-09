@@ -13,8 +13,7 @@ class Directive(InterimDatatype):
 
     def __init__(self, id):
         self.id = id
-
-        data = Query(self.__class__, id=id).get_single()
+        data = super(Directive, self).get_data(self)
 
         self.description = data['description'][next(iter(data['description']))]
         # self.image = Image()
@@ -35,8 +34,7 @@ class DirectiveTier(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
-
-        data = Query(self.__class__, id=id).get_single()
+        data = super(Currency, self).get_data(self)
 
         self.completion_count = int(data['completion_count'])
         self.directive_points = int(data['directive_points'])
@@ -59,8 +57,7 @@ class DirectiveTree(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
-
-        data = Query(self.__class__, id=id).get_single()
+        data = super(DirectiveTree, self).get_data(self)
 
         self.category = DirectiveTreeCategory(
             data['directive_tree_category_id'])
@@ -75,7 +72,6 @@ class DirectiveTreeCategory(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
-
-        data = Query(self.__class__, id=id).get_single()
+        data = super(DirectiveTreeCategory, self).get_data(self)
 
         self.name = data['name'][next(iter(data['name']))]

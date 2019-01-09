@@ -16,7 +16,7 @@ class Image(InterimDatatype):
             self.path = _CENSUS_BASE_URL + str(path)
             self.description = '(Skipped query)' if description == None else description
         else:
-            data = Query(self.__class__, id=id).get_single()
+            data = super(Image, self).get_data(self)
             try:
                 self.description = data['description']
             except KeyError:

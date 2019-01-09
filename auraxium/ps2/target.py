@@ -7,6 +7,5 @@ class TargetType(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
-
-        data = Query(self.__class__, id=id).get_single()
+        data = super(TargetType, self).get_data(self)
         self.description = data['description']

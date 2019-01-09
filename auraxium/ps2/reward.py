@@ -7,8 +7,8 @@ class Reward(InterimDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(Reward, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.count_max = int(data['count_max'])
         self.count_min = int(data['count_min'])
         self.type = RewardType(data['reward_type_id'])
@@ -25,8 +25,8 @@ class RewardType(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(RewardType, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.count_max = data['count_max']
         self.count_min = data['count_min']
         self.description = data['description']

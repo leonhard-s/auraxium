@@ -7,8 +7,7 @@ class PlayerState(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
-
-        data = Query(self.__class__, id=id).get_single()
+        data = super(PlayerState, self).get_data(self)
         self.description = data['description']
 
 # class PlayerStateGroup(InterimDatatype):

@@ -11,8 +11,7 @@ class Effect(InterimDatatype):
 
     def __init__(self, id):
         self.id = id
-
-        data = Query(self.__class__, id=id).get_single()
+        data = super(Effect, self).get_data(self)
 
         try:
             # self.ability = Ability(data['ability_id'])
@@ -47,11 +46,9 @@ class EffectType(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
-
-        data = Query(self.__class__, id=id).get_single()
+        data = super(EffectType, self).get_data(self)
 
         self.description = data['description']
-
         self.parameters = {}
         for i in range(14):
             try:

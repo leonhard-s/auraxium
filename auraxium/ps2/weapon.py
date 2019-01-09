@@ -15,8 +15,8 @@ class FireModeType(StaticDatatype):
 
     def __init__(self, id=id):
         self.id = id
+        data = super(FireModeType, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.description = data['description']
 
 
@@ -26,8 +26,8 @@ class Weapon(InterimDatatype):
 
     def __init__(self, id=id):
         self.id = id
+        data = super(Weapon, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.group = int(data['weapon_group_id'])
         self.turn_modifier = float(data['turn_modifier'])
         self.move_modifier = float(data['move_modifier'])
@@ -57,8 +57,8 @@ class WeaponAmmoSlot(InterimDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(WeaponAmmoSlot, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.capacity = int(data['capacity'])
         self.clip_size = int(data['clip_size'])
         self.refill_ammo_rate = int(data['refill_ammo_rate'])
@@ -72,8 +72,8 @@ class WeaponDatasheet(InterimDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(WeaponDatasheet, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.item_id = data['item_id']
         self.direct_damage = data['direct_damage']
         self.indirect_damage = data['indirect_damage']

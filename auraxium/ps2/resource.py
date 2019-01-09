@@ -7,6 +7,6 @@ class ResourceType(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(ResourceType, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.description = data['description']

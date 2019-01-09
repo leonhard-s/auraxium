@@ -10,8 +10,8 @@ class Skill(InterimDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(Skill, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.description = data['description'][next(iter(data['description']))]
         self.grant_item_id = int(data['grant_item_id'])
         self.image = Image(data['image_set_id'])
@@ -28,8 +28,8 @@ class SkillCategory(InterimDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(SkillCategory, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.description = data['description'][next(iter(data['description']))]
         self.image = Image(data['image_set_id'])
         self.image_set = ImageSet(data['image_id'])
@@ -45,8 +45,8 @@ class SkillLine(InterimDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(SkillLine, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.category = SkillCategory(data['skill_category_id'])
         self.category_index = int(data['skill_category_id'])
         self.description = data['description'][next(iter(data['description']))]
@@ -62,8 +62,8 @@ class SkillSet(InterimDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(SkillSet, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.description = data['description'][next(iter(data['description']))]
         self.image = Image(data['image_set_id'])
         self.image_set = ImageSet(data['image_id'])

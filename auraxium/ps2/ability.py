@@ -1,5 +1,3 @@
-from enum import Enum
-
 from ..census import Query
 from ..datatypes import InterimDatatype, StaticDatatype
 
@@ -15,31 +13,25 @@ class Ability(InterimDatatype):
 
     _collection = 'ability'
 
-    def __init__(self, id):
-        self.id = id  # ability_id
-
-        data = Query(self.__class__, id=id).get_single()
+    def __init__(self, id, data_override=None):
+        self.id = id
+        data = super(Ability, self).get_data(self)
 
         self.type = AbilityType(data['ability_type_id'])  # ability_type_id
-
-        # Remove the used fields from the data dictionary
-        del data['ability_id']
-        del data['ability_type_id']
-
-        # Iterate over the remaining entries
-        for k in data.keys():
-            # If the key is one of the parameters
-            if not k.startswith('param') and not k.startswith('string'):
-                # Add it as an attribute
-                exec('self.{} = None if data[k] == ''\'NULL\' '
-                     'else data[k]'.format(k))
+        self.expire_msec = data.get('expire_msec')
+        self.first_use_delay_msec = data.get('first_use_delay_msec')
+        self.next_use_delay_msec = data.get('next_use_delay_msec')
+        self.reuse_delay_msec = data.get('reuse_delay_msec')
+        self.resource_type = ResourceType(
+            data['resource_type']) if 'resource_type' in data.keys() else None
+        self.resource_first_cost = data.get('resource_first_cost')
+        self.resource_cost_per_msec = data.get('resource_cost_per_msec')
+        self.distance_max = data.get('distance_max')
+        self.radius_max = data.get('radius_max')
+        self.flag_toggle = data.get('flag_toggle')
 
         self.parameters = {}
         self.strings = {}
-
-        data = Query(self.__class__, id=id).get_single()
-        del data['ability_type_id']
-
         for i in range(14):
             try:
                 self.parameters[i] = data['param{}'.format(i + 1)]
@@ -60,14 +52,12 @@ class AbilityType(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(AbilityType, self).get_data(self)
 
-        self.description = ''
+        self.description = data.get('description', '')
+
         self.parameters = {}
         self.strings = {}
-
-        data = Query(self.__class__, id=id).get_single()
-        del data['ability_type_id']
-
         for i in range(14):
             try:
                 self.parameters[i] = data['param{}'.format(i + 1)]

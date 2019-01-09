@@ -1,3 +1,6 @@
+from .census import Query
+
+
 class DatatypeBase(object):
     """The base class for datatypes used by the Census APi wrapper.
 
@@ -6,7 +9,13 @@ class DatatypeBase(object):
 
     """
 
-    pass
+    def get_data(cls, instance, data_override=None):
+        # If data_override hasn't been specified, retrieve the data yourself
+        if data_override == None:
+            data = Query(instance.__class__, id=instance.id).get_single()
+        else:
+            data = data_override
+        return data
 
 
 class StaticDatatype(DatatypeBase):

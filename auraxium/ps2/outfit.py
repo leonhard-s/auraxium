@@ -1,4 +1,4 @@
-from datetime.datetime import utcfromtimestamp
+from datetime import datetime
 
 from ..census import Query
 from ..datatypes import InterimDatatype
@@ -11,13 +11,14 @@ class Outfit(InterimDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(Outfit, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.alias = data['alias']
         self.leader = Character(data['leader_character_id'])
         self.member_count = int(data['member_count'])
         self.name = data['name']
-        self.time_created = utcfromtimestamp(int(data['time_created']))
+        self.time_created = datetime.utcfromtimestamp(
+            int(data['time_created']))
 
         @property
         def members(self):
@@ -30,10 +31,11 @@ class OutfitMember(InterimDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(OutfitMember, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.character = Character(data['character_id'])
-        self.member_since = utcfromtimestamp(int(data['member_since']))
+        self.member_since = datetime.utcfromtimestamp(
+            int(data['member_since']))
         self.rank = data['rank']
         self.rank_ordinal = data['rank_ordinal']
 
@@ -44,8 +46,8 @@ class OutfitRank(InterimDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(OutfitRank, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.description = data['description']
         self.name = data['name']
         self.ordinal = int(data['ordinal'])

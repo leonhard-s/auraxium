@@ -17,8 +17,7 @@ class Loadout(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
-
-        data = Query(self.__class__, id=id).get_single()
+        data = super(Loadout, self).get_data(self)
 
         self.faction = Faction(data['faction_id'])
         self.name = data['code_name']

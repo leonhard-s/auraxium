@@ -8,8 +8,8 @@ class Projectile(InterimDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(Projectile, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.flight_type = ProjectileFlightType(
             data['projectile_flight_type_id'])
         self.speed = float(data['speed']) if data['speed'] != 'NULL' else None
@@ -51,6 +51,6 @@ class ProjectileFlightType(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(ProjectileFlightType, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.description = data['description']

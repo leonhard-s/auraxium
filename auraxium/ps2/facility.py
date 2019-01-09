@@ -1,7 +1,7 @@
 from ..census import Query
 from ..datatypes import InterimDatatype, StaticDatatype
-# from .zone import Zone
 from .faction import Faction
+from .zone import Zone
 
 # class Facility(InterimDatatype):
 #     _cache_size = 100
@@ -14,12 +14,11 @@ class Region(InterimDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(Region, self).get_data(self)
 
-        data = Query(self.__cache__, id=id).get_single()
         self.initial_faction = Faction(data['faction_id'])
         self.name = data['name'][next(iter(data['name']))]
-        # self.zone = Zone(data['zone_id'])
-        pass
+        self.zone = Zone(data['zone_id'])
 
 
 class FacilityLink(InterimDatatype):
@@ -28,8 +27,7 @@ class FacilityLink(InterimDatatype):
 
     def __init__(self, id):
         self.id = id
-
-        data = Query(self.__cache__, id=id).get_single()
+        data = super(FacilityLink, self).get_data(self)
 
         self.description = data['description']
         # self.facility_a = Facility(data['facility_id_a'])
@@ -43,7 +41,6 @@ class FacilityType(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
-
-        data = Query(self.__cache__, id=id).get_single()
+        data = super(FacilityType, self).get_data(self)
 
         self.description = data['description']

@@ -8,8 +8,7 @@ class Experience(InterimDatatype):
 
     def __init__(self, id):
         self.id = id
-
-        data = Query(self.__cache__, id=id).get_single()
+        data = super(Experience, self).get_data(self)
 
         self.description = data['description']
         self.amount = int(data['xp'])

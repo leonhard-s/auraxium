@@ -8,8 +8,8 @@ class ResistInfo(InterimDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(ResistInfo, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.description = data['description']
         self.headshot_multiplier = float(data['multiplier_when_headshot'])
         self.percent = int(data['resist_percent'])
@@ -21,6 +21,6 @@ class ResistType(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(ResistType, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.description = data['description']

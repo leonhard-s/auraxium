@@ -8,8 +8,8 @@ class Objective(InterimDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(Objective, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.type = ObjectiveType(data['objective_type_id'])
         # self.group = ObjectiveGroup(data['objective_group_id'])
         self.parameters = {}
@@ -25,8 +25,8 @@ class ObjectiveType(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
+        data = super(ObjectiveType, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.description = data['description']
         self.parameters = {}
         for i in range(9):

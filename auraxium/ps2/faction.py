@@ -14,8 +14,8 @@ class Faction(StaticDatatype):
 
     def __init__(self, id):
         self.id = id  # faction_id
+        data = super(Faction, self).get_data(self)
 
-        data = Query(self.__class__, id=id).get_single()
         self.name = data['name']
         self.playable = True if data['user_selectable'] == '1' else False
 

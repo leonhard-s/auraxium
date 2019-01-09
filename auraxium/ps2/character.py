@@ -1,4 +1,4 @@
-from datetime.datetime import utcfromtimestamp
+from datetime import datetime
 
 from ..census import Query
 from ..datatypes import DynamicDatatype, StaticDatatype
@@ -39,12 +39,7 @@ class Character(DynamicDatatype):
         self.daily_ribbon_count = None
         self.daily_ribbon_time = None
 
-        # Populate character
-        q = Query(self).add_filter('character_id', id)
-        q.hide('character_id', 'name.first_lower',
-               'times.creation_date', 'times.last_save_date',
-               'times.last_login_date', 'daily_ribbon.date')
-        data = q.get_single()
+        data = super(Character, self).get_data(self)
 
         self.asp = int(data['prestige_level'])  # ASP level / prestige level
         self.battle_rank = int(data['battle_rank']['value'])
@@ -59,16 +54,17 @@ class Character(DynamicDatatype):
         # self.faction =   # faction_id
         # self.head = None  # head_id
         # self.title = None  # title_id # NOTE: MAKE DYNAMIC?
-        self.time_created = utcfromtimestamp(int(data['times']['creation']))
-        self.time_last_saved = utcfromtimestamp(
+        self.time_created = datetime.utcfromtimestamp(
+            int(data['times']['creation']))
+        self.time_last_saved = datetime.utcfromtimestamp(
             int(data['times']['last_save']))
-        self.time_last_login = utcfromtimestamp(
+        self.time_last_login = datetime.utcfromtimestamp(
             int(data['times']['last_login']))
         self.login_count = int(data['times']['login_count'])
         self.minutes_played = int(data['times']['minutes_played'])
         # self.profile = None  # profile_id
         self.daily_ribbon_count = int(data['daily_ribbon']['count'])
-        self.daily_ribbon_time = utcfromtimestamp(int(
+        self.daily_ribbon_time = datetime.utcfromtimestamp(int(
             data['daily_ribbon']['time']))
 
     @property
