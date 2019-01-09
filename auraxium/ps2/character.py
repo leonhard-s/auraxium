@@ -1,14 +1,11 @@
 from datetime import datetime
 
 from ..census import Query
-from ..datatypes import DynamicDatatype
+from ..datatypes import DynamicDatatype, StaticDatatype
 
 
 class Character(DynamicDatatype):
-    """A PlanetSide 2 Character.
-
-    Can be directly queried by "id" or "name".
-    """
+    """A PlanetSide 2 character."""
 
     _collection = 'character'
 
@@ -152,6 +149,22 @@ class Character(DynamicDatatype):
         pass
 
 
-class Head(DynamicDatatype):
-    def __init__(self):
-        pass
+class Head(StaticDatatype):
+    """A head model a character can have.
+
+    Head models are not an explicit colletion in the API, so most attributes
+    have to be hard-coded to allow for display of player busts or icons.
+
+    """
+
+    def __init__(self, id):
+        self.id = id
+
+        # TODO: Link image object representing this head model
+        self.image = None
+
+        # Hard-coded head names, as they are never named in-game.
+        head_names = ['Caucasian Male', 'African Male', 'Hispanic Male',
+                      'Asian Male', 'Caucasian Female', 'African Female',
+                      'Hispanic Female', 'Asian Female']
+        self.name = head_names[id - 1]
