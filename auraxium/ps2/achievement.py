@@ -1,7 +1,7 @@
 from ..census import Query
 from ..datatypes import InterimDatatype
+from .image import Image, ImageSet
 
-# from .image import Image, ImageSet
 # from .item import Item
 # from .reward import Reward
 # from .objective import ObjectiveSet
@@ -29,8 +29,8 @@ class Achievement(InterimDatatype):
         # have not yet been implemented.
         self.description = data['description'][next(iter(data['description']))]
         self.item = None
-        self.image = None
-        self.image_set = None
+        self.image = Image(data['image_id'], path=data['image_path'])
+        self.image_set = ImageSet(data['image_set_id'])
         self.name = data['name'][next(iter(data['name']))]
         self.objective_group = None  # Identical to objective_set?
         self.repeatable = data['repeatable']
