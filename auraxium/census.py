@@ -11,7 +11,7 @@ from .exceptions import (APILimitationError, ServiceIDMissingError,
 logger = logging.getLogger('auraxium.census')
 
 # The endpoint used for all Census API requests.
-_CENSUS_BASE_URL = 'http://census.daybreakgames.com/'
+_CENSUS_BASE_URL = 'http://census.daybreakgames.com'
 # The PlanetSide 2 (PC) namespace. No PS4 support yet.
 _NAMESPACE = 'ps2'
 # The id used to identify this service.
@@ -401,8 +401,8 @@ class Query(object):
 
         collection = self.type._collection
 
-        url = '{}{}/{}/{}/{}'.format(_CENSUS_BASE_URL, service_id, verb,
-                                     _NAMESPACE, collection)
+        url = '{}/{}/{}/{}/{}'.format(_CENSUS_BASE_URL, service_id, verb,
+                                      _NAMESPACE, collection)
         for term in self._filter_terms:
             url += '&{}'.format(str(term))
         if not self.check_case:
