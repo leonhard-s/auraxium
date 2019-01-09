@@ -160,11 +160,10 @@ class Head(StaticDatatype):
     def __init__(self, id):
         self.id = id
 
-        # TODO: Link image object representing this head model
-        self.image = None
-
-        # Hard-coded head names, as they are never named in-game.
+        # Hard-coded head names and icons
         head_names = ['Caucasian Male', 'African Male', 'Hispanic Male',
                       'Asian Male', 'Caucasian Female', 'African Female',
                       'Hispanic Female', 'Asian Female']
+        head_image_ids = [1177, 1173, 1179, 1175, 1176, 1172, 1178, 1174]
+        self.name = Image(head_names[id - 1])
         self.name = head_names[id - 1]
