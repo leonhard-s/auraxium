@@ -171,7 +171,7 @@ class Join(object):
 
         """
 
-        s = 'type:'.format(self.type._collection)
+        s = '{}'.format(self.type._collection)  # "type:"" is optional
         if self.match != None:
             s += '^on:{}'.format(self.match)
         if self.match_parent != None:
@@ -210,6 +210,11 @@ class Join(object):
             s += ')'
         return s
 
+    def hide(self, *args):
+        # If the input is a list, keep it - if it's not, make it into one
+        self._hide = [*args]
+        return self
+
     def join(self, type, **kwargs):
         """Creates a new Join for this join.
 
@@ -234,6 +239,11 @@ class Join(object):
         join = Join(type, **kwargs)
         self.joins.append(join)
         return join
+
+    def show(self, *args):
+        # If the input is a list, keep it - if it's not, make it into one
+        self._show = [*args]
+        return self
 
 
 class Query(object):
@@ -332,7 +342,7 @@ class Query(object):
         self._tree = []
         self.type = type
 
-        # ID
+        # ID filtering shortcut
         if id != None:
             self.add_filter('{}_id'.format(type._collection), id)
 
@@ -373,7 +383,7 @@ class Query(object):
         r = self._retrieve(verb='count')
         return int(r['count'])
 
-    def _generate_url(self, verb, collection_override=None):
+    def _generate_url(self, verb):
         """Generates a Census API compatible URL respresenting this Query.
 
         Parameters
@@ -389,7 +399,7 @@ class Query(object):
 
         """
 
-        collection = self.type._collection if collection_override == None else collection_override
+        collection = self.type._collection
 
         url = '{}{}/{}/{}/{}'.format(_CENSUS_BASE_URL, service_id, verb,
                                      _NAMESPACE, collection)
@@ -461,7 +471,7 @@ class Query(object):
         """
 
         r = self._retrieve(verb='get')
-        return [self.type(input_dict=dict) for dict in r['{}_list'.format(self.type._collection)]]
+        return [dict for dict in r['{}_list'.format(self.type._collection)]]
 
     def get_single(self):
         """Performs a get query for the Query returning only one item.
@@ -510,7 +520,7 @@ class Query(object):
         self.joins.append(join)
         return join
 
-    def _retrieve(self, verb, collection_override=None):
+    def _retrieve(self, verb):
         """Performs the Query and retrieves the server's response.
 
         Parameters
@@ -536,7 +546,7 @@ class Query(object):
 
         """
 
-        url = self._generate_url(verb, collection_override=collection_override)
+        url = self._generate_url(verb)
         logger.debug('Performing {} request: {}'.format(verb, url))
         r = json.loads(requests.get(url).text)
 
