@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime.datetime import utcfromtimestamp
 
 from ..census import Query
 from ..datatypes import DynamicDatatype, StaticDatatype
@@ -59,17 +59,16 @@ class Character(DynamicDatatype):
         # self.faction =   # faction_id
         # self.head = None  # head_id
         # self.title = None  # title_id # NOTE: MAKE DYNAMIC?
-        self.time_created = datetime.utcfromtimestamp(int(
-            data['times']['creation']))
-        self.time_last_seen = datetime.utcfromtimestamp(int(
-            data['times']['last_save']))
-        self.time_last_login = datetime.utcfromtimestamp(int(
-            data['times']['last_login']))
+        self.time_created = utcfromtimestamp(int(data['times']['creation']))
+        self.time_last_saved = utcfromtimestamp(
+            int(data['times']['last_save']))
+        self.time_last_login = utcfromtimestamp(
+            int(data['times']['last_login']))
         self.login_count = int(data['times']['login_count'])
         self.minutes_played = int(data['times']['minutes_played'])
         # self.profile = None  # profile_id
         self.daily_ribbon_count = int(data['daily_ribbon']['count'])
-        self.daily_ribbon_time = datetime.utcfromtimestamp(int(
+        self.daily_ribbon_time = utcfromtimestamp(int(
             data['daily_ribbon']['time']))
 
     @property
