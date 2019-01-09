@@ -47,8 +47,6 @@ class Ability(InterimDatatype):
             except KeyError:
                 pass
 
-        print(self.__dict__)
-
 
 class AbilityType(StaticDatatype):
     """Represents a type of ability.
@@ -76,5 +74,3 @@ class AbilityType(StaticDatatype):
                 self.string[i] = data['string{}'.format(i + 1)]
             except KeyError:
                 pass
-
-        print(self.__dict__)
