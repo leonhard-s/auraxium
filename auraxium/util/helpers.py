@@ -1,5 +1,5 @@
 from ..census import Query
-from ..planetside import Character
+from ..ps2 import Character
 
 
 def name_to_id(data_type, name, check_case=False):
