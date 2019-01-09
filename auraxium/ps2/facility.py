@@ -1,7 +1,25 @@
 from ..census import Query
 from ..datatypes import InterimDatatype, StaticDatatype
-
 # from .zone import Zone
+from .faction import Faction
+
+# class Facility(InterimDatatype):
+#     _cache_size = 100
+#     _collection = 'map_region'
+
+
+class Region(InterimDatatype):
+    _cache_size = 100
+    _collection = 'region'
+
+    def __init__(self, id):
+        self.id = id
+
+        data = Query(self.__cache__, id=id).get_single()
+        self.initial_faction = Faction(data['faction_id'])
+        self.name = data['name'][next(iter(data['name']))]
+        # self.zone = Zone(data['zone_id'])
+        pass
 
 
 class FacilityLink(InterimDatatype):
