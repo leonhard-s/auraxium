@@ -22,7 +22,7 @@ class Outfit(InterimDatatype):
 
         @property
         def members(self):
-        pass
+            pass
 
 
 class OutfitMember(InterimDatatype):
@@ -30,14 +30,14 @@ class OutfitMember(InterimDatatype):
     _collection = 'outfit_member'
 
     def __init__(self, id):
-    self.id = id
-    data = super(OutfitMember, self).get_data(self)
+        self.id = id
+        data = super(OutfitMember, self).get_data(self)
 
-    self.character = Character(data.get('character_id'))
-    self.member_since = datetime.utcfromtimestamp(int(
-        data.get('member_since')))
-    self.rank = data.get('rank')
-    self.rank_ordinal = data.get('rank_ordinal')
+        self.character = Character(data.get('character_id'))
+        self.member_since = datetime.utcfromtimestamp(int(
+            data.get('member_since')))
+        self.rank = data.get('rank')
+        self.rank_ordinal = data.get('rank_ordinal')
 
 
 class OutfitRank(InterimDatatype):

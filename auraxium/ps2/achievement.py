@@ -28,6 +28,6 @@ class Achievement(InterimDatatype):
         self.image = Image(data.get('image_id'), path=data.get('image_path'))
         self.image_set = ImageSet(data.get('image_set_id'))
         self.name = data.get('name')
-        self.objective_group = None  # Identical to objective_set?
+        # self.objective_group = None  # Identical to objective_set?
         self.repeatable = data.get('repeatable')
         self.reward = Reward(data.get('reward_id'))

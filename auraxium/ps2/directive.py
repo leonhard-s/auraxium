@@ -1,8 +1,8 @@
 from ..census import Query
 from ..datatypes import InterimDatatype, StaticDatatype
 from .image import Image, ImageSet
-from .objective import ObjectiveSet
-from .reward import Reward, RewardSet
+# from .objective import ObjectiveSet
+from .reward import Reward  # , RewardSet
 
 
 class Directive(InterimDatatype):
@@ -18,7 +18,7 @@ class Directive(InterimDatatype):
         self.image = Image(data.get('image_id'))
         self.image_set = ImageSet(data.get('image_set_id'))
         self.name = data.get('name')
-        self.objective_set = ObjectiveSet(data.get('objective_set_id'))
+        # self.objective_set = ObjectiveSet(data.get('objective_set_id'))
         self.tier = DirectiveTier(data.get('directive_tier_id'))
         self.tree = DirectiveTree(data.get('directive_tree_id'))
 

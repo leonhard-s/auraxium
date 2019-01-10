@@ -30,7 +30,7 @@ def name_to_id(data_type, name, check_case=False):
                              Directive, DirectiveTier, DirectiveTree,
                              DirectiveTreeCategory, Faction, Item, Region,
                              Skill, SkillCategory, SkillLine, SkillSet, Title,
-                             Vehicle, World, Zone]
+                             Vehicle, Zone]
 
     q = Query(data_type)
     q.show('{}_id'.format(data_type._collection))

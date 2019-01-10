@@ -152,3 +152,25 @@ class WeaponDatasheet(InterimDatatype):
         self.show_clip_size = data.get('show_clip_size')
         self.show_fire_modes = data.get('show_fire_modes')
         self.show_range = data.get('show_range')
+
+
+def fire_group_to_fire_mode(fire_group):
+    data = Query('fire_group_to_fire_mode', limit=5).add_filter(
+        'fire_group_id', fire_group.id).get()
+    data.sort(key=lambda fire_mode: fire_mode['fire_mode_index'])
+    return [FireMode(d['fire_mode_id']) for d in data]
+
+
+def weapon_to_fire_group(weapon):
+    """Converts a weapon into a fire group.
+
+    Some weapon types have multiple fire modes (note that this is the ingame
+    fire mode term, not the datatype). These fire modes access different fire
+    groups, which in turn have their own fire modes.
+
+    """
+
+    data = Query('weapon_to_fire_group', limit=5).add_filter(
+        'weapon_id', weapon.id).get()
+    data.sort(key=lambda fire_group: fire_group['fire_group_index'])
+    return [FireGroup(d['fire_group_id']) for d in data]
