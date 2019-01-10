@@ -12,14 +12,14 @@ class Skill(InterimDatatype):
         self.id = id
         data = super(Skill, self).get_data(self)
 
-        self.description = data['description'][next(iter(data['description']))]
-        self.grant_item_id = int(data['grant_item_id'])
-        self.image = Image(data['image_set_id'])
-        self.image_set = ImageSet(data['image_id'])
-        self.name = data['name'][next(iter(data['name']))]
-        self.skill_line = SkillLine(data['skill_line_id'])
-        self.skill_line_index = int(data['skill_line_index'])
-        self.skill_points = int(data['skill_points'])
+        self.description = data.get('description')
+        self.grant_item_id = data.get('grant_item_id')
+        self.image = Image(data.get('image_set_id'))
+        self.image_set = ImageSet(data.get('image_id'))
+        self.name = data.get('name')
+        self.skill_line = SkillLine(data.get('skill_line_id'))
+        self.skill_line_index = data.get('skill_line_index')
+        self.skill_points = data.get('skill_points')
 
 
 class SkillCategory(InterimDatatype):
@@ -30,13 +30,13 @@ class SkillCategory(InterimDatatype):
         self.id = id
         data = super(SkillCategory, self).get_data(self)
 
-        self.description = data['description'][next(iter(data['description']))]
-        self.image = Image(data['image_set_id'])
-        self.image_set = ImageSet(data['image_id'])
-        self.name = data['name'][next(iter(data['name']))]
-        self.skill_points = int(data['skill_points'])
-        self.skill_set = SkillSet(data['skill_set_id'])
-        self.skill_set_index = int(data['skill_set_index'])
+        self.description = data.get('description')
+        self.image = Image(data.get('image_set_id'))
+        self.image_set = ImageSet(data.get('image_id'))
+        self.name = data.get('name')
+        self.skill_points = data.get('skill_points')
+        self.skill_set = SkillSet(data.get('skill_set_id'))
+        self.skill_set_index = data.get('skill_set_index')
 
 
 class SkillLine(InterimDatatype):
@@ -47,13 +47,13 @@ class SkillLine(InterimDatatype):
         self.id = id
         data = super(SkillLine, self).get_data(self)
 
-        self.category = SkillCategory(data['skill_category_id'])
-        self.category_index = int(data['skill_category_id'])
-        self.description = data['description'][next(iter(data['description']))]
-        self.image = Image(data['image_set_id'])
-        self.image_set = ImageSet(data['image_id'])
-        self.name = data['name'][next(iter(data['name']))]
-        self.skill_points = int(data['skill_points'])
+        self.category = SkillCategory(data.get('skill_category_id'))
+        self.category_index = data.get('skill_category_id')
+        self.description = data.get('description')
+        self.image = Image(data.get('image_set_id'))
+        self.image_set = ImageSet(data.get('image_id'))
+        self.name = data.get('name')
+        self.skill_points = data.get('skill_points')
 
 
 class SkillSet(InterimDatatype):
@@ -64,9 +64,9 @@ class SkillSet(InterimDatatype):
         self.id = id
         data = super(SkillSet, self).get_data(self)
 
-        self.description = data['description'][next(iter(data['description']))]
-        self.image = Image(data['image_set_id'])
-        self.image_set = ImageSet(data['image_id'])
-        self.name = data['name'][next(iter(data['name']))]
-        self.required_item = Item(data['required_item_id'])
-        self.skill_points = int(data['skill_points'])
+        self.description = data.get('description')
+        self.image = Image(data.get('image_set_id'))
+        self.image_set = ImageSet(data.get('image_id'))
+        self.name = data.get('name')
+        self.required_item = Item(data.get('required_item_id'))
+        self.skill_points = data.get('skill_points')

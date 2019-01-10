@@ -1,9 +1,8 @@
 from ..census import Query
 from ..datatypes import InterimDatatype, StaticDatatype
-
-# from .ability import Ability
-# from .resist import ResistType
-# from .target import TargetType
+from .ability import Ability
+from .resist import ResistType
+from .target import TargetType
 
 
 class Effect(InterimDatatype):
@@ -13,32 +12,16 @@ class Effect(InterimDatatype):
         self.id = id
         data = super(Effect, self).get_data(self)
 
-        try:
-            # self.ability = Ability(data['ability_id'])
-            self.ability = None
-        except KeyError:
-            self.ability = None
-
-        try:
-            self.duration = int(data['duration_seconds'])
-        except KeyError:
-            self.duration = -1
-
-        try:
-            self.is_drain = True if data['is_drain'] == 1 else False
-        except KeyError:
-            self.is_drain = False
-
-        # self.resist_type = ResistType(data['resist_type_id'])
-        # self.target_type = TargetType(data['target_type_id'])
-        self.type = EffectType(data['effect_type_id'])
+        self.ability = Ability(data.get('ability_id'))
+        self.duration = data.get('duration_seconds')
+        self.is_drain = True if data.get('is_drain') == '1' else False
+        self.resist_type = ResistType(data.get('resist_type_id'))
+        self.target_type = TargetType(data.get('target_type_id'))
+        self.type = EffectType(data.get('effect_type_id'))
 
         self.parameters = {}
         for i in range(14):
-            try:
-                self.parameters[i] = data['param{}'.format(i + 1)]
-            except KeyError:
-                pass
+            self.parameters[i] = data.get('param{}'.format(i + 1))
 
 
 class EffectType(StaticDatatype):
@@ -48,10 +31,7 @@ class EffectType(StaticDatatype):
         self.id = id
         data = super(EffectType, self).get_data(self)
 
-        self.description = data['description']
+        self.description = data.get('description')
         self.parameters = {}
         for i in range(14):
-            try:
-                self.parameters[i] = data['param{}'.format(i + 1)]
-            except KeyError:
-                pass
+            self.parameters[i] = data.get('param{}'.format(i + 1))

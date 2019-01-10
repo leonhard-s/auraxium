@@ -9,6 +9,14 @@ class DatatypeBase(object):
 
     """
 
+    def __new__(cls, id, *args, **kwargs):
+        # If the id of a datatype is None, return none instead of an object.
+        # This is done to allow the `<datatype>(data.get('id'))` syntax
+        if id == None:
+            return None
+        else:
+            return super(DatatypeBase, cls).__new__(cls)
+
     def get_data(cls, instance, data_override=None):
         # If data_override hasn't been specified, retrieve the data yourself
         if data_override == None:
@@ -29,12 +37,12 @@ class StaticDatatype(DatatypeBase):
 
     _cache = {}  # Downloaded items will be kept in this dictionary forever
 
-    def __new__(cls, id=0, *args, **kwargs):
+    def __new__(cls, id, *args, **kwargs):
         # If the ID already exists
         if id in cls._cache.keys():
             return cls._cache[id]  # Return the cached object
         else:
-            instance = super(StaticDatatype, cls).__new__(cls)
+            instance = super(StaticDatatype, cls).__new__(cls, id)
             cls._cache[id] = instance  # Store the new object
             return instance
 
@@ -52,12 +60,12 @@ class InterimDatatype(DatatypeBase):
     _cache_order = []
     _cache_size = 10  # The size of the cache (i.e. maximum number of items)
 
-    def __new__(cls, id=0, *args, **kwargs):
+    def __new__(cls, id, *args, **kwargs):
         # If the ID already exists
         if id in cls._cache.keys():
             return cls._cache[id]  # Returned the cached object
         else:
-            instance = super(InterimDatatype, cls).__new__(cls)
+            instance = super(InterimDatatype, cls).__new__(cls, id)
             # If the cache is full
             if len(cls._cache) >= cls._cache_size:
                 cls._cache_order.append(id)  # Append the new id to the list

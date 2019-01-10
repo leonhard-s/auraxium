@@ -6,22 +6,19 @@ class Image(InterimDatatype):
     _cache_size = 500
     _collection = 'image'
 
-    def __init__(self, id, description=None, path=None):
+    def __init__(self, id, path=None, description=None):
         self.id = id
 
         # If path is already set, there is no more information to query. The
         # creation of the image object is only there to allow for caching
-
         if path != None:
-            self.path = _CENSUS_BASE_URL + str(path)
             self.description = '(Skipped query)' if description == None else description
+            self.path = _CENSUS_BASE_URL + str(path)
+
         else:
             data = super(Image, self).get_data(self)
-            try:
-                self.description = data['description']
-            except KeyError:
-                self.description = 'None'
-            self.path = _CENSUS_BASE_URL + data['path']
+            self.description = data.get('description')
+            self.path = _CENSUS_BASE_URL + data.get('path')
 
 
 class ImageSet(InterimDatatype):

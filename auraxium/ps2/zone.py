@@ -9,11 +9,10 @@ class Zone(StaticDatatype):
     def __init__(self, id):
         self.id = id
         data = super(Zone, self).get_data(self)
-
-        self.code = data['code']
-        self.description = data['description'][next(iter(data['description']))]
-        self.hex_size = int(data['hex_size'])
-        self.name = data['name'][next(iter(data['name']))]
+        self.code = data.get('code')
+        self.description = data.get('description')
+        self.hex_size = data.get('hex_size')
+        self.name = data.get('name')
 
 
 class ZoneEffect(InterimDatatype):
@@ -23,17 +22,14 @@ class ZoneEffect(InterimDatatype):
     def __init__(self, id):
         self.id = id
         data = super(ZoneEffect, self).get_data(self)
+        self.ability = Ability(data.get('ability_id'))
+        self.type = ZoneEffectType(data.get('zone_effect_type_id'))
 
-        self.ability = Ability(data['ability_id'])
-        self.type = ZoneEffectType(data['zone_effect_type_id'])
         self.parameters = {}
         self.strings = {}
         for i in range(14):
-            try:
-                self.parameters[i] = data['param{}'.format(i + 1)]
-                self.string[i] = data['string{}'.format(i + 1)]
-            except KeyError:
-                pass
+            self.parameters[i] = data.get('param{}'.format(i + 1))
+            self.string[i] = data.get('string{}'.format(i + 1))
 
 
 class ZoneEffectType(StaticDatatype):
@@ -42,13 +38,10 @@ class ZoneEffectType(StaticDatatype):
     def __init__(self, id):
         self.id = id
         data = super(ZoneEffectType, self).get_data(self)
+        self.description = data.get('description')
 
-        self.description = data['description']
         self.parameters = {}
         self.strings = {}
         for i in range(14):
-            try:
-                self.parameters[i] = data['param{}'.format(i + 1)]
-                self.string[i] = data['string{}'.format(i + 1)]
-            except KeyError:
-                pass
+            self.parameters[i] = data.get('param{}'.format(i + 1))
+            self.string[i] = data.get('string{}'.format(i + 1))

@@ -8,4 +8,4 @@ class Title(InterimDatatype):
     def __init__(self, id):
         self.id = id
         data = super(Title, self).get_data(self)
-        self.name = data['name'][next(iter(data['name']))]
+        self.name = data.get('name')

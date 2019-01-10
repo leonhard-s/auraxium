@@ -9,7 +9,7 @@ class ArmorFacing(StaticDatatype):
         self.id = id
         data = super(ArmorFacing, self).get_data(self)
 
-        self.description = data['description']
+        self.description = data.get('description')
 
 
 class ArmorInfo(InterimDatatype):
@@ -19,11 +19,11 @@ class ArmorInfo(InterimDatatype):
         self.id = id
         data = super(ArmorInfo, self).get_data(self)
 
-        self.armor_facing = ArmorFacing(data['armor_facing_id'])
-        self.armor_percent = int(data['armor_percent'])
-        self.description = data['description']
+        self.armor_facing = ArmorFacing(data.get('armor_facing_id'))
+        self.armor_percent = data.get('armor_percent')
+        self.description = data.get('description')
 
         # This field has been set to NULL for every single entry. I commented
         # it out for the time being.
-        # self.armor_amount = int(data['armor_amount'])
+        # self.armor_amount = data.get('armor_amount'))
         pass

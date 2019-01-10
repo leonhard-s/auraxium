@@ -16,6 +16,6 @@ class Currency(StaticDatatype):
         self.id = id
         data = super(Currency, self).get_data(self)
 
-        self.name = data['name'][next(iter(data['name']))]
-        self.icon = ImageSet(data['icon_id'])
-        self.inventory_cap = int(data['inventory_cap'])
+        self.name = data.get('name')
+        self.icon = ImageSet(data.get('icon_id'))
+        self.inventory_cap = data.get('inventory_cap')

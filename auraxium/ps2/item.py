@@ -15,28 +15,21 @@ class Item(InterimDatatype):
         self.id = id
         data = super(Item, self).get_data(self)
 
-        try:
-            self.active_ability = Ability(data['activatable_ability_id'])
-        except KeyError:
-            self.active_ability = None
-        self.category = ItemCategory(data['item_category_id'])
-        self.description = data['description'][next(iter(data['description']))]
-        self.faction = Faction(data['faction_id'])
-        self.image = Image(data['image_id'], data['image_path'])
-        self.image_set = ImageSet(data['image_set_id'])
-        self.is_default_attachment = True if data['is_default_attachment'] == 1 else False
-        self.is_vehicle_weapon = True if data['is_vehicle_weapon'] == 1 else False
-        self.max_stack_size = data['max_stack_size']
-        self.name = data['name'][next(iter(data['name']))]
-        try:
-            self.passive_ability = Ability(data['passive_ability_id'])
-        except KeyError:
-            self.passive_ability = None
-        # try:
-        #     self.skill_set = SkillSet(data['skill_set'])
-        # except KeyError:
-        #     self.skill_set = None
-        self.type = ItemType(data['item_type_id'])
+        self.active_ability = Ability(data.get('activatable_ability_id'))
+        self.category = ItemCategory(data.get('item_category_id'))
+        self.description = data.get('description')
+        self.faction = Faction(data.get('faction_id'))
+        self.image = Image(data.get('image_id'), data.get('image_path'))
+        self.image_set = ImageSet(data.get('image_set_id'))
+        self.is_default_attachment = True if data.get(
+            'is_default_attachment') == '1' else False
+        self.is_vehicle_weapon = True if data.get(
+            'is_vehicle_weapon') == '1' else False
+        self.max_stack_size = data.get('max_stack_size')
+        self.name = data.get('name')
+        self.passive_ability = Ability(data.get('passive_ability_id'))
+        # self.skill_set = SkillSet(data.get('skill_set'))
+        self.type = ItemType(data.get('item_type_id'))
 
         @property
         def attachments(self):
@@ -55,8 +48,7 @@ class ItemCategory(StaticDatatype):
     def __init__(self, id):
         self.id = id
         data = super(ItemCategory, self).get_data(self)
-
-        self.name = data['name'][next(iter(data['name']))]
+        self.name = data.get('name')
 
 
 class ItemType(StaticDatatype):
@@ -65,6 +57,5 @@ class ItemType(StaticDatatype):
     def __init__(self, id):
         self.id = id
         data = super(ItemType, self).get_data(self)
-
-        self.name = data['name']
-        self.code = data['code']
+        self.name = data.get('name')
+        self.code = data.get('code')

@@ -17,8 +17,7 @@ class Profile(StaticDatatype):
     def __init__(self, id):
         self.id = id
         data = super(Profile, self).get_data(self)
-
-        self.description = data['description']
+        self.description = data.get('description')
 
         @property
         def armor_info(self):

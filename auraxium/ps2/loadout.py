@@ -18,7 +18,6 @@ class Loadout(StaticDatatype):
     def __init__(self, id):
         self.id = id
         data = super(Loadout, self).get_data(self)
-
-        self.faction = Faction(data['faction_id'])
-        self.name = data['code_name']
-        self.profile = Profile(data['profile_id'])
+        self.faction = Faction(data.get('faction_id'))
+        self.name = data.get('code_name')
+        self.profile = Profile(data.get('profile_id'))

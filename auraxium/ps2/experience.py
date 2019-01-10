@@ -9,6 +9,5 @@ class Experience(InterimDatatype):
     def __init__(self, id):
         self.id = id
         data = super(Experience, self).get_data(self)
-
-        self.description = data['description']
-        self.amount = int(data['xp'])
+        self.amount = data.get('xp')
+        self.description = data.get('description')

@@ -8,4 +8,4 @@ class TargetType(StaticDatatype):
     def __init__(self, id):
         self.id = id
         data = super(TargetType, self).get_data(self)
-        self.description = data['description']
+        self.description = data.get('description')

@@ -8,7 +8,7 @@ class PlayerState(StaticDatatype):
     def __init__(self, id):
         self.id = id
         data = super(PlayerState, self).get_data(self)
-        self.description = data['description']
+        self.description = data.get('description')
 
 # class PlayerStateGroup(InterimDatatype):
 #     """Controls CoF modifiers depending on what the player is doing.

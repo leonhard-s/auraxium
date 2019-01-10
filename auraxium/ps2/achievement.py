@@ -23,11 +23,11 @@ class Achievement(InterimDatatype):
         self.id = id
         data = super(Achievement, self).get_data(self)
 
-        self.description = data['description'][next(iter(data['description']))]
-        self.item = Item(data['item_id'])
-        self.image = Image(data['image_id'], path=data['image_path'])
-        self.image_set = ImageSet(data['image_set_id'])
-        self.name = data['name'][next(iter(data['name']))]
+        self.description = data.get('description')
+        self.item = Item(data.get('item_id'))
+        self.image = Image(data.get('image_id'), path=data.get('image_path'))
+        self.image_set = ImageSet(data.get('image_set_id'))
+        self.name = data.get('name')
         self.objective_group = None  # Identical to objective_set?
-        self.repeatable = data['repeatable']
-        self.reward = Reward(data['reward_id'])
+        self.repeatable = data.get('repeatable')
+        self.reward = Reward(data.get('reward_id'))

@@ -9,15 +9,13 @@ class Reward(InterimDatatype):
         self.id = id
         data = super(Reward, self).get_data(self)
 
-        self.count_max = int(data['count_max'])
-        self.count_min = int(data['count_min'])
-        self.type = RewardType(data['reward_type_id'])
+        self.count_max = data.get('count_max')
+        self.count_min = data.get('count_min')
+        self.type = RewardType(data.get('reward_type_id'))
+
         self.parameters = {}
         for i in range(5):
-            try:
-                self.parameters[i] = data['param{}'.format(i + 1)]
-            except KeyError:
-                pass
+            self.parameters[i] = data.get('param{}'.format(i + 1))
 
 
 class RewardType(StaticDatatype):
@@ -27,12 +25,10 @@ class RewardType(StaticDatatype):
         self.id = id
         data = super(RewardType, self).get_data(self)
 
-        self.count_max = data['count_max']
-        self.count_min = data['count_min']
-        self.description = data['description']
+        self.count_max = data.get('count_max')
+        self.count_min = data.get('count_min')
+        self.description = data.get('description')
+
         self.parameters = {}
         for i in range(5):
-            try:
-                self.parameters[i] = data['param{}'.format(i + 1)]
-            except KeyError:
-                pass
+            self.parameters[i] = data.get('param{}'.format(i + 1))

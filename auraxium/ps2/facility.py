@@ -15,10 +15,9 @@ class Region(InterimDatatype):
     def __init__(self, id):
         self.id = id
         data = super(Region, self).get_data(self)
-
-        self.initial_faction = Faction(data['faction_id'])
-        self.name = data['name'][next(iter(data['name']))]
-        self.zone = Zone(data['zone_id'])
+        self.initial_faction = Faction(data.get('faction_id'))
+        self.name = data.get('name')
+        self.zone = Zone(data.get('zone_id'))
 
 
 class FacilityLink(InterimDatatype):
@@ -28,12 +27,10 @@ class FacilityLink(InterimDatatype):
     def __init__(self, id):
         self.id = id
         data = super(FacilityLink, self).get_data(self)
-
-        self.description = data['description']
-        # self.facility_a = Facility(data['facility_id_a'])
-        # self.facility_b = Facility(data['facility_id_b'])
-        # self.zone = Zone(data['zone_id'])
-        pass
+        self.description = data.get('description')
+        self.facility_a = Region(data.get('facility_id_a'))
+        self.facility_b = Region(data.get('facility_id_b'))
+        self.zone = Zone(data.get('zone_id'))
 
 
 class FacilityType(StaticDatatype):
@@ -42,5 +39,4 @@ class FacilityType(StaticDatatype):
     def __init__(self, id):
         self.id = id
         data = super(FacilityType, self).get_data(self)
-
-        self.description = data['description']
+        self.description = data.get('description')

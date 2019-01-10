@@ -8,7 +8,7 @@ class AlertState(StaticDatatype):
     def __init__(self, id):
         self.id = id
         data = super(AlertState, self).get_data(self)
-        self.name = data['name']
+        self.name = data.get('name')
 
 
 class AlertType(StaticDatatype):
@@ -18,9 +18,9 @@ class AlertType(StaticDatatype):
         self.id = id
         data = super(AlertType, self).get_data(self)
 
-        self.description = data['description'][next(iter(data['description']))]
-        self.experience_bonus = int(data['experience_bonus'])
-        self.name = data['name'][next(iter(data['name']))]
+        self.description = data.get('description')
+        self.experience_bonus = data.get('experience_bonus')
+        self.name = data.get('name')
 
         # Hard-coded descriptions of the base alert types
         # 1 and 6 are currently unused.
@@ -29,4 +29,4 @@ class AlertType(StaticDatatype):
                             '8': 'Meltdown', '9': 'Unstable Meltdown',
                             '10': 'Aerial Anomalies'}
 
-        self.type = base_alert_types[data['type']]
+        self.type = base_alert_types[data.get('type')]

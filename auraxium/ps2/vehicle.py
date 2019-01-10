@@ -12,14 +12,14 @@ class Vehicle(StaticDatatype):
         self.id = id
         data = super(Vehicle, self).get_data(self)
 
-        self.cost = int(data['cost'])
-        self.description = data['description'][next(iter(data['description']))]
-        self.image = Image(data['image_set_id'])
-        self.image_set = ImageSet(data['image_id'])
-        self.name = data['name'][next(iter(data['name']))]
-        self.resource = Currency(data['cost_resource_id'])
-        self.type = int(data['type'])
-        self.type_name = data['type_name']
+        self.cost = data.get('cost')
+        self.description = data.get('description')
+        self.image = Image(data.get('image_set_id'))
+        self.image_set = ImageSet(data.get('image_id'))
+        self.name = data.get('name')
+        self.resource = Currency(data.get('cost_resource_id'))
+        self.type = data.get('type')
+        self.type_name = data.get('type_name')
 
         @property
         def faction(self):
@@ -38,7 +38,7 @@ class VehicleAttachment(InterimDatatype):
         self.id = id
         data = super(VehicleAttachment, self).get_data(self)
 
-        self.description = data['description']
-        self.faction = Faction(data['faction_id'])
-        self.slot_id = int(data['slot_id'])
-        self.vehicle = Vehicle(data['vehicle_id'])
+        self.description = data.get('description')
+        self.faction = Faction(data.get('faction_id'))
+        self.slot_id = data.get('slot_id')
+        self.vehicle = Vehicle(data.get('vehicle_id'))

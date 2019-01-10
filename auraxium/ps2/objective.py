@@ -10,14 +10,13 @@ class Objective(InterimDatatype):
         self.id = id
         data = super(Objective, self).get_data(self)
 
-        self.type = ObjectiveType(data['objective_type_id'])
-        # self.group = ObjectiveGroup(data['objective_group_id'])
+        self.type = ObjectiveType(data.get('objective_type_id'))
+        # I do not know what an objective group is, this will need testing
+        # self.group = ObjectiveGroup(data.get('objective_group_id'))
+
         self.parameters = {}
         for i in range(9):
-            try:
-                self.parameters[i] = data['param{}'.format(i + 1)]
-            except KeyError:
-                pass
+            self.parameters[i] = data.get('param{}'.format(i + 1))
 
 
 class ObjectiveType(StaticDatatype):
@@ -27,10 +26,8 @@ class ObjectiveType(StaticDatatype):
         self.id = id
         data = super(ObjectiveType, self).get_data(self)
 
-        self.description = data['description']
+        self.description = data.get('description')
+
         self.parameters = {}
         for i in range(9):
-            try:
-                self.parameters[i] = data['param{}'.format(i + 1)]
-            except KeyError:
-                pass
+            self.parameters[i] = data.get('param{}'.format(i + 1))

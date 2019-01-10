@@ -13,16 +13,16 @@ class Outfit(InterimDatatype):
         self.id = id
         data = super(Outfit, self).get_data(self)
 
-        self.alias = data['alias']
-        self.leader = Character(data['leader_character_id'])
-        self.member_count = int(data['member_count'])
-        self.name = data['name']
-        self.time_created = datetime.utcfromtimestamp(
-            int(data['time_created']))
+        self.alias = data.get('alias')
+        self.leader = Character(data.get('leader_character_id'))
+        self.member_count = data.get('member_count')
+        self.name = data.get('name')
+        self.time_created = datetime.utcfromtimestamp(int(
+            data.get('time_created')))
 
         @property
         def members(self):
-            pass
+        pass
 
 
 class OutfitMember(InterimDatatype):
@@ -30,14 +30,14 @@ class OutfitMember(InterimDatatype):
     _collection = 'outfit_member'
 
     def __init__(self, id):
-        self.id = id
-        data = super(OutfitMember, self).get_data(self)
+    self.id = id
+    data = super(OutfitMember, self).get_data(self)
 
-        self.character = Character(data['character_id'])
-        self.member_since = datetime.utcfromtimestamp(
-            int(data['member_since']))
-        self.rank = data['rank']
-        self.rank_ordinal = data['rank_ordinal']
+    self.character = Character(data.get('character_id'))
+    self.member_since = datetime.utcfromtimestamp(int(
+        data.get('member_since')))
+    self.rank = data.get('rank')
+    self.rank_ordinal = data.get('rank_ordinal')
 
 
 class OutfitRank(InterimDatatype):
@@ -48,7 +48,7 @@ class OutfitRank(InterimDatatype):
         self.id = id
         data = super(OutfitRank, self).get_data(self)
 
-        self.description = data['description']
-        self.name = data['name']
-        self.ordinal = int(data['ordinal'])
-        self.outfit = Outfit(data['outfit_id'])
+        self.description = data.get('description')
+        self.name = data.get('name')
+        self.ordinal = data.get('ordinal')
+        self.outfit = Outfit(data.get('outfit_id'))

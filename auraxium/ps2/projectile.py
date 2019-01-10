@@ -11,39 +11,24 @@ class Projectile(InterimDatatype):
         data = super(Projectile, self).get_data(self)
 
         self.flight_type = ProjectileFlightType(
-            data['projectile_flight_type_id'])
-        self.speed = float(data['speed']) if data['speed'] != 'NULL' else None
-        self.speed_max = float(
-            data['speed_max']) if data['speed_max'] != 'NULL' else None
-        self.acceleration = float(
-            data['acceleration']) if data['acceleration'] != 'NULL' else None
-        self.turn_rate = float(
-            data['turn_rate']) if data['turn_rate'] != 'NULL' else None
-        self.lifespan = float(
-            data['lifespan']) if data['lifespan'] != 'NULL' else None
-        self.turn_rate = float(
-            data['turn_rate']) if data['turn_rate'] != 'NULL' else None
-        self.drag = float(data['drag']) if data['drag'] != 'NULL' else None
-        self.gravity = float(
-            data['gravity']) if data['gravity'] != 'NULL' else None
-        self.lockon_acceleration = float(
-            data['lockon_acceleration']) if data['lockon_acceleration'] != 'NULL' else None
-        self.lockon_lifespan = float(
-            data['lockon_lifespan']) if data['lockon_lifespan'] != 'NULL' else None
-        self.arm_distance = float(
-            data['arm_distance']) if data['arm_distance'] != 'NULL' else None
-        self.tether_distance = float(
-            data['tether_distance']) if data['tether_distance'] != 'NULL' else None
-        self.detonate_distance = float(
-            data['detonate_distance']) if data['detonate_distance'] != 'NULL' else None
-        self.sticky = float(
-            data['sticky']) if data['sticky'] != 'NULL' else None
-        self.sticks_to_players = float(
-            data['sticks_to_players']) if data['sticks_to_players'] != 'NULL' else None
-        self.lockon_lose_angle = float(
-            data['lockon_lose_angle']) if data['lockon_lose_angle'] != 'NULL' else None
-        self.lockon_seek_in_flight = float(
-            data['lockon_seek_in_flight']) if data['lockon_seek_in_flight'] != 'NULL' else None
+            data.get('projectile_flight_type_id'))
+        self.speed = data.get('speed')
+        self.speed_max = data.get('speed_max')
+        self.acceleration = data.get('acceleration')
+        self.turn_rate = data.get('turn_rate')
+        self.lifespan = data.get('lifespan')
+        self.turn_rate = data.get('turn_rate')
+        self.drag = data.get('drag')
+        self.gravity = data.get('gravity')
+        self.lockon_acceleration = data.get('lockon_acceleration')
+        self.lockon_lifespan = data.get('lockon_lifespan')
+        self.arm_distance = data.get('arm_distance')
+        self.tether_distance = data.get('tether_distance')
+        self.detonate_distance = data.get('detonate_distance')
+        self.sticky = data.get('sticky')
+        self.sticks_to_players = data.get('sticks_to_players')
+        self.lockon_lose_angle = data.get('lockon_lose_angle')
+        self.lockon_seek_in_flight = data.get('lockon_seek_in_flight')
 
 
 class ProjectileFlightType(StaticDatatype):
@@ -52,5 +37,4 @@ class ProjectileFlightType(StaticDatatype):
     def __init__(self, id):
         self.id = id
         data = super(ProjectileFlightType, self).get_data(self)
-
-        self.description = data['description']
+        self.description = data.get('description')
