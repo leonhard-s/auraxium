@@ -50,3 +50,21 @@ def name_to_id(data_type, name, check_case=False):
     data = q._retrieve('get')['{}_list'.format(data_type._collection)][0]
 
     return int(data['{}_id'.format(data_type._collection)])
+
+
+def prune_dict(input_dict):
+    """Returns a copy of the dictionary without None values.
+
+    Returns a copy of the input dictionary that only contains keys that are not
+    equal to None.
+
+    """
+
+    output_dict = {}
+    for k in input_dict.keys():
+        if input_dict[k] != None and input_dict[k] != 'NULL':
+            output_dict[k] = input_dict[k]
+        # Recursively prune any inner dictionaries
+        elif isinstance(input_dict[k], dict):
+            output_dict[k] = prune_dict(input_dict[k].copy())
+    return output_dict
