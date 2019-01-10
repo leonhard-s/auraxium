@@ -1,5 +1,8 @@
 from ..census import Query
-from ..ps2 import Character
+from ..ps2 import (Achievement, AlertType, Character, Currency, Directive,
+                   DirectiveTier, DirectiveTree, DirectiveTreeCategory,
+                   Faction, Item, Region, Skill, SkillCategory, SkillLine,
+                   SkillSet, Title, Vehicle, Zone)
 
 
 def name_to_id(data_type, name, check_case=False):
@@ -23,6 +26,12 @@ def name_to_id(data_type, name, check_case=False):
 
     """
 
+    localized_collections = [Achievement, AlertType, Character, Currency,
+                             Directive, DirectiveTier, DirectiveTree,
+                             DirectiveTreeCategory, Faction, Item, Region,
+                             Skill, SkillCategory, SkillLine, SkillSet, Title,
+                             Vehicle, World, Zone]
+
     q = Query(data_type)
     q.show('{}_id'.format(data_type._collection))
 
@@ -31,10 +40,12 @@ def name_to_id(data_type, name, check_case=False):
         q.add_filter('name.first', name) if check_case else q.add_filter(
             'name.first_lower', name.lower())
 
-    else:
+    elif data_type in localized_collections:
         # Apply the filter term
-        q.add_filter('name', name) if check_case else q.add_filter(
-            'name_lower', name.lower())
+        q.add_filter('name.en', name)
+
+    else:
+        print('WARNING')
 
     data = q._retrieve('get')['{}_list'.format(data_type._collection)][0]
 
