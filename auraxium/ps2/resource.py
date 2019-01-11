@@ -9,3 +9,7 @@ class ResourceType(StaticDatatype):
         self.id = id
         data = super(ResourceType, self).get_data(self)
         self.description = data.get('description')
+
+    def __str__(self):
+        return 'ResourceType (ID: {}, Description: "{}")'.format(
+            self.id, self.description)

@@ -23,6 +23,9 @@ class Effect(InterimDatatype):
         for i in range(14):
             self.parameters[i] = data.get('param{}'.format(i + 1))
 
+    def __str__(self):
+        return 'Effect (ID: {})'.format(self.id)
+
 
 class EffectType(StaticDatatype):
     _collection = 'effect_type'
@@ -35,3 +38,7 @@ class EffectType(StaticDatatype):
         self.parameters = {}
         for i in range(14):
             self.parameters[i] = data.get('param{}'.format(i + 1))
+
+    def __str__(self):
+        return 'EffectType (ID: {}, Description: "{}")'.format(
+            self.id, self.description)

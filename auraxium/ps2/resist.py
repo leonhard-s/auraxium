@@ -14,6 +14,10 @@ class ResistInfo(InterimDatatype):
         self.percent = data.get('resist_percent')
         self.type = ResistType(data.get('resist_type_id'))
 
+    def __str__(self):
+        return 'ResistInfo (ID: {}, Description: "{}")'.format(
+            self.id, self.description)
+
 
 class ResistType(StaticDatatype):
     _collection = 'resist_type'
@@ -22,3 +26,7 @@ class ResistType(StaticDatatype):
         self.id = id
         data = super(ResistType, self).get_data(self)
         self.description = data.get('description')
+
+    def __str__(self):
+        return 'ResistInfo (ID: {}, Description: "{}")'.format(
+            self.id, self.description)

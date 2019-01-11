@@ -26,3 +26,7 @@ class Profile(StaticDatatype):
         @property
         def resist_info(self):
             pass
+
+    def __str__(self):
+        return 'Profile (ID: {}, Description: "{}")'.format(
+            self.id, self.description)

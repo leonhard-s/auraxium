@@ -24,6 +24,10 @@ class Outfit(InterimDatatype):
         def members(self):
             pass
 
+    def __str__(self):
+        return 'Outfit (ID: {}, Tag: "{}", Name[en]: "{}")'.format(
+            self.id, self.alias, self.name)
+
 
 class OutfitMember(InterimDatatype):
     _cache_size = 500
@@ -39,6 +43,10 @@ class OutfitMember(InterimDatatype):
         self.rank = data.get('rank')
         self.rank_ordinal = data.get('rank_ordinal')
 
+    def __str__(self):
+        return 'OutfitMember (ID: {}, Name: "{}")'.format(
+            self.id, self.character.name)
+
 
 class OutfitRank(InterimDatatype):
     _cache_size = 500
@@ -52,3 +60,7 @@ class OutfitRank(InterimDatatype):
         self.name = data.get('name')
         self.ordinal = data.get('ordinal')
         self.outfit = Outfit(data.get('outfit_id'))
+
+    def __str__(self):
+        return 'OutfitRank (ID: {}, Name: "{}")'.format(
+            self.id, self.name)

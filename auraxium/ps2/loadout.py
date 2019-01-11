@@ -21,3 +21,7 @@ class Loadout(StaticDatatype):
         self.faction = Faction(data.get('faction_id'))
         self.name = data.get('code_name')
         self.profile = Profile(data.get('profile_id'))
+
+    def __str__(self):
+        return 'Loadout (ID: {}, Name: "{}")'.format(
+            self.id, self.name)

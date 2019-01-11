@@ -11,6 +11,10 @@ class ArmorFacing(StaticDatatype):
 
         self.description = data.get('description')
 
+    def __str__(self):
+        return 'ArmorFacing (ID: {}, Description: "{}")'.format(
+            self.name, self.description)
+
 
 class ArmorInfo(InterimDatatype):
     _collection = 'armor_info'
@@ -27,3 +31,7 @@ class ArmorInfo(InterimDatatype):
         # it out for the time being.
         # self.armor_amount = data.get('armor_amount'))
         pass
+
+    def __str__(self):
+        return 'ArmorInfo (ID: {}, Description: "{}")'.format(
+            self.id, self.description)

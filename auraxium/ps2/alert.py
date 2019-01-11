@@ -10,6 +10,9 @@ class AlertState(StaticDatatype):
         data = super(AlertState, self).get_data(self)
         self.name = data.get('name')
 
+    def __str__(self):
+        return 'AlertState (ID: {}, Name: "{}")'.format(self.id, self.name)
+
 
 class AlertType(StaticDatatype):
     _collection = 'metagame_event'
@@ -30,3 +33,7 @@ class AlertType(StaticDatatype):
                             '10': 'Aerial Anomalies'}
 
         self.type = base_alert_types[data.get('type')]
+
+    def __str__(self):
+        return 'AlertType (ID: {}, Name[en]: "{}")'.format(
+            self.id, self.name['en'])

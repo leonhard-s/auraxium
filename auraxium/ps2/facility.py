@@ -19,6 +19,10 @@ class Region(InterimDatatype):
         self.name = data.get('name')
         self.zone = Zone(data.get('zone_id'))
 
+    def __str__(self):
+        return 'Region (ID: {}, Name[en]: "{}")'.format(
+            self.id, self.name['en'])
+
 
 class FacilityLink(InterimDatatype):
     _cache_size = 100
@@ -32,6 +36,10 @@ class FacilityLink(InterimDatatype):
         self.facility_b = Region(data.get('facility_id_b'))
         self.zone = Zone(data.get('zone_id'))
 
+    def __str__(self):
+        return 'FacilityLink (ID: {}, Description: "{}")'.format(
+            self.id, self.description)
+
 
 class FacilityType(StaticDatatype):
     _collection = 'facility_type'
@@ -40,3 +48,7 @@ class FacilityType(StaticDatatype):
         self.id = id
         data = super(FacilityType, self).get_data(self)
         self.description = data.get('description')
+
+    def __str__(self):
+        return 'FacilityType (ID: {}, Description: "{}")'.format(
+            self.id, self.description)

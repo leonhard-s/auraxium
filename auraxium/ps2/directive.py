@@ -27,6 +27,10 @@ class Directive(InterimDatatype):
         # self.qualify_requirement_id = #?!
         pass
 
+    def __str__(self):
+        return 'Directive (ID: {}, name[en]: "{}")'.format(
+            self.id, self.name['en'])
+
 
 class DirectiveTier(StaticDatatype):
     _collection = 'directive_tier'
@@ -42,6 +46,11 @@ class DirectiveTier(StaticDatatype):
         self.image_set = ImageSet(data.get('image_set_id'))
         self.name = data.get('name')
         # self.reward_set = RewardSet(data.get('reward_set_id'))
+        pass
+
+    def __str__(self):
+        return 'DirectiveTier (ID: {}, name[en]: "{}")'.format(
+            self.id, self.name['en'])
 
 
 class DirectiveTree(StaticDatatype):
@@ -58,6 +67,10 @@ class DirectiveTree(StaticDatatype):
         self.image_set = ImageSet(data.get('image_set_id'))
         self.name = data.get('name')
 
+    def __str__(self):
+        return 'DirectiveTree (ID: {}, name[en]: "{}")'.format(
+            self.id, self.name['en'])
+
 
 class DirectiveTreeCategory(StaticDatatype):
     _collection = 'directive_tree_category'
@@ -66,3 +79,7 @@ class DirectiveTreeCategory(StaticDatatype):
         self.id = id
         data = super(DirectiveTreeCategory, self).get_data(self)
         self.name = data.get('name')
+
+    def __str__(self):
+        return 'DirectiveTreeCategory (ID: {}, name[en]: "{}")'.format(
+            self.id, self.name['en'])

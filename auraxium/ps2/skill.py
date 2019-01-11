@@ -21,6 +21,10 @@ class Skill(InterimDatatype):
         self.skill_line_index = data.get('skill_line_index')
         self.skill_points = data.get('skill_points')
 
+    def __str__(self):
+        return 'Skill (ID: {}, Name[en]: "{}")'.format(
+            self.id, self.name['en'])
+
 
 class SkillCategory(InterimDatatype):
     _cache_size = 100
@@ -37,6 +41,10 @@ class SkillCategory(InterimDatatype):
         self.skill_points = data.get('skill_points')
         self.skill_set = SkillSet(data.get('skill_set_id'))
         self.skill_set_index = data.get('skill_set_index')
+
+    def __str__(self):
+        return 'SkillCategory (ID: {}, Name[en]: "{}")'.format(
+            self.id, self.name['en'])
 
 
 class SkillLine(InterimDatatype):
@@ -55,6 +63,10 @@ class SkillLine(InterimDatatype):
         self.name = data.get('name')
         self.skill_points = data.get('skill_points')
 
+    def __str__(self):
+        return 'SkillLine (ID: {}, Name[en]: "{}")'.format(
+            self.id, self.name['en'])
+
 
 class SkillSet(InterimDatatype):
     _cache_size = 100
@@ -70,3 +82,7 @@ class SkillSet(InterimDatatype):
         self.name = data.get('name')
         self.required_item = Item(data.get('required_item_id'))
         self.skill_points = data.get('skill_points')
+
+    def __str__(self):
+        return 'SkillSet (ID: {}, Name[en]: "{}")'.format(
+            self.id, self.name['en'])

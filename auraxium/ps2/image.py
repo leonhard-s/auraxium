@@ -20,6 +20,10 @@ class Image(InterimDatatype):
             self.description = data.get('description')
             self.path = _CENSUS_BASE_URL + data.get('path')
 
+    def __init__(self):
+        return 'Image (ID: {}, Description: "{}")'.format(
+            self.id, self.description)
+
 
 class ImageSet(InterimDatatype):
     _cache_size = 100
@@ -44,6 +48,10 @@ class ImageSet(InterimDatatype):
 
         self.default_image = self.images[data[0]
                                          ['image_set_default']['type_id']]
+
+    def __init__(self):
+        return 'ImageSet (ID: {}, Description: "{}")'.format(
+            self.id, self.description)
 
 
 class ImageSetDefault(object):

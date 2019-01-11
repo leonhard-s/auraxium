@@ -9,3 +9,7 @@ class Title(InterimDatatype):
         self.id = id
         data = super(Title, self).get_data(self)
         self.name = data.get('name')
+
+    def __str__(self):
+        return 'Title (ID: {}, Name[en]: "{}")'.format(
+            self.id, self.name['en'])

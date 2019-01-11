@@ -10,6 +10,10 @@ class PlayerState(StaticDatatype):
         data = super(PlayerState, self).get_data(self)
         self.description = data.get('description')
 
+    def __str__(self):
+        return 'PlayerState (ID: {}, Description: "{}")'.format(
+            self.id, self.Description)
+
 # class PlayerStateGroup(InterimDatatype):
 #     """Controls CoF modifiers depending on what the player is doing.
 #

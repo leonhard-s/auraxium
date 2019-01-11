@@ -31,3 +31,7 @@ class Achievement(InterimDatatype):
         # self.objective_group = None  # Identical to objective_set?
         self.repeatable = data.get('repeatable')
         self.reward = Reward(data.get('reward_id'))
+
+    def __str__(self):
+        return 'Achievement (ID: {}, Name[en]: "{}")'.format(
+            self.id, self.name['en'])

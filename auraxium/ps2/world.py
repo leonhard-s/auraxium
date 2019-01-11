@@ -14,3 +14,7 @@ class Server(StaticDatatype):
         def status(self):
             # perform request to get current state
             pass
+
+    def __str__(self):
+        return 'Server (ID: {}, Name[en]: "{}")'.format(
+            self.id, self.name['en'])

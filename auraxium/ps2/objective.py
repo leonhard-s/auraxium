@@ -18,6 +18,9 @@ class Objective(InterimDatatype):
         for i in range(9):
             self.parameters[i] = data.get('param{}'.format(i + 1))
 
+    def __str__(self):
+        return 'Objective (ID: {})'.format(self.id)
+
 
 class ObjectiveType(StaticDatatype):
     _collection = 'objective_type'
@@ -31,3 +34,7 @@ class ObjectiveType(StaticDatatype):
         self.parameters = {}
         for i in range(9):
             self.parameters[i] = data.get('param{}'.format(i + 1))
+
+    def __str__(self):
+        return 'ObjectiveType (ID: {}, Description: "{}")'.format(
+            self.id, self.description)

@@ -30,6 +30,9 @@ class Projectile(InterimDatatype):
         self.lockon_lose_angle = data.get('lockon_lose_angle')
         self.lockon_seek_in_flight = data.get('lockon_seek_in_flight')
 
+    def __str__(self):
+        return 'Projectile (ID: {})'.format(self.id)
+
 
 class ProjectileFlightType(StaticDatatype):
     _collection = 'projectile_flight_type'
@@ -38,3 +41,7 @@ class ProjectileFlightType(StaticDatatype):
         self.id = id
         data = super(ProjectileFlightType, self).get_data(self)
         self.description = data.get('description')
+
+    def __str__(self):
+        return 'ProjectileFlightType (ID: {}, Description: "{}")'.format(
+            self.id, self.description)

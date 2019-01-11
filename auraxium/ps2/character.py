@@ -118,6 +118,9 @@ class Character(DynamicDatatype):
     def world(self):
         pass
 
+    def __str__(self):
+        return 'Character (ID: {}, Name: "{}")'.format(self.id, self.name)
+
 
 class Head(StaticDatatype):
     """A head model a character can have.

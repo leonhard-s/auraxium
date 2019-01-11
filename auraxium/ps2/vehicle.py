@@ -29,6 +29,10 @@ class Vehicle(StaticDatatype):
         def skill_set(self):
             pass
 
+    def __str__(self):
+        return 'Vehicle (ID: {}, Name[en]: "{}")'.format(
+            self.id, self.name['en'])
+
 
 class VehicleAttachment(InterimDatatype):
     _cache_size = 100
@@ -42,3 +46,7 @@ class VehicleAttachment(InterimDatatype):
         self.faction = Faction(data.get('faction_id'))
         self.slot_id = data.get('slot_id')
         self.vehicle = Vehicle(data.get('vehicle_id'))
+
+    def __str__(self):
+        return 'VehicleAttachment (ID: {}, Description: "{}")'.format(
+            self.id, self.description)

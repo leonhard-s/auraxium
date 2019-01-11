@@ -19,3 +19,7 @@ class Currency(StaticDatatype):
         self.name = data.get('name')
         self.icon = ImageSet(data.get('icon_id'))
         self.inventory_cap = data.get('inventory_cap')
+
+    def __str__(self):
+        return 'Currency (ID: {}, Name[en]: "{}")'.format(
+            self.id, self.name['en'])

@@ -27,6 +27,9 @@ class Ability(InterimDatatype):
             self.parameters[i] = data.get('param{}'.format(i + 1))
             self.string[i] = data.get('string{}'.format(i + 1))
 
+    def __str__(self):
+        return 'Ability (ID: {})'.format(self.id)
+
 
 class AbilityType(StaticDatatype):
     """Represents a type of ability.
@@ -49,3 +52,7 @@ class AbilityType(StaticDatatype):
         for i in range(14):
             self.parameters[i] = data.get('param{}'.format(i + 1))
             self.string[i] = data.get('string{}'.format(i + 1))
+
+    def __str__(self):
+        return 'AbilityType (ID: {}, Description: "{}")'.format(
+            self.id, self.description)

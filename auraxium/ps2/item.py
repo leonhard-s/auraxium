@@ -41,6 +41,10 @@ class Item(InterimDatatype):
             # Return a list of classes that can use this item
             pass
 
+    def __str__(self):
+        return 'Item (ID: {}, Name[en]: "{}")'.format(
+            self.id, self.name['en'])
+
 
 class ItemCategory(StaticDatatype):
     _collection = 'item_category'
@@ -49,6 +53,10 @@ class ItemCategory(StaticDatatype):
         self.id = id
         data = super(ItemCategory, self).get_data(self)
         self.name = data.get('name')
+
+    def __str__(self):
+        return 'ItemCategory (ID: {}, Name[en]: "{}")'.format(
+            self.id, self.name['en'])
 
 
 class ItemType(StaticDatatype):
@@ -59,3 +67,7 @@ class ItemType(StaticDatatype):
         data = super(ItemType, self).get_data(self)
         self.name = data.get('name')
         self.code = data.get('code')
+
+    def __str__(self):
+        return 'ItemCategory (ID: {}, Name: "{}")'.format(
+            self.id, self.name)

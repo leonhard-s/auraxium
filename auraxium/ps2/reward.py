@@ -17,6 +17,9 @@ class Reward(InterimDatatype):
         for i in range(5):
             self.parameters[i] = data.get('param{}'.format(i + 1))
 
+    def __str__(self):
+        return 'Reward (ID: {})'.format(self.id)
+
 
 class RewardType(StaticDatatype):
     _collection = 'reward_type'
@@ -32,3 +35,7 @@ class RewardType(StaticDatatype):
         self.parameters = {}
         for i in range(5):
             self.parameters[i] = data.get('param{}'.format(i + 1))
+
+    def __str__(self):
+        return 'RewardType (ID: {}, Description: "{}")'.format(
+            self.id, self.description)

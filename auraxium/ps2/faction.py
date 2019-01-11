@@ -23,3 +23,7 @@ class Faction(StaticDatatype):
         # this section in a way that should be able to handle that gracefully.
         self.tag = 'NS' if data.get(
             'code_tag') == 'None' else data.get('code_tag')
+
+    def __str__(self, id):
+        return 'Faction (ID: {}, Name: "{}")'.format(
+            self.id, self.name['en'])

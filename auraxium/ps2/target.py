@@ -9,3 +9,7 @@ class TargetType(StaticDatatype):
         self.id = id
         data = super(TargetType, self).get_data(self)
         self.description = data.get('description')
+
+    def __str__(self):
+        return 'TargetType (ID: {}, Description: "{}")'.format(
+            self.id, self.description)

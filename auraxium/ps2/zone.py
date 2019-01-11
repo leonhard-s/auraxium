@@ -14,6 +14,10 @@ class Zone(StaticDatatype):
         self.hex_size = data.get('hex_size')
         self.name = data.get('name')
 
+    def __str__(self):
+        return 'Zone (ID: {}, Name[en]: "{}")'.format(
+            self.id, self.name['en'])
+
 
 class ZoneEffect(InterimDatatype):
     _cache_size = 100
@@ -31,6 +35,9 @@ class ZoneEffect(InterimDatatype):
             self.parameters[i] = data.get('param{}'.format(i + 1))
             self.string[i] = data.get('string{}'.format(i + 1))
 
+    def __str__(self):
+        return 'ZoneEffect (ID: {})'.format(self.id)
+
 
 class ZoneEffectType(StaticDatatype):
     _collection = 'zone_effect_type'
@@ -45,3 +52,7 @@ class ZoneEffectType(StaticDatatype):
         for i in range(14):
             self.parameters[i] = data.get('param{}'.format(i + 1))
             self.string[i] = data.get('string{}'.format(i + 1))
+
+    def __str__(self):
+        return 'ZoneEffectType (ID: {}, Description: "{}")'.format(
+            self.id, self.description)

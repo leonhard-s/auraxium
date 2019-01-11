@@ -22,6 +22,10 @@ class FireGroup(InterimDatatype):
         self.can_chamber_ironsights = data.get('can_chamber_ironsights')
 
 
+    def __str__(self):
+        return 'FireGroup (ID: {})'.format(self.id)
+
+
 class FireMode():
     _cache_size = 250
     _collection = 'fire_mode'
@@ -64,6 +68,11 @@ class FireMode():
             data.get('indirect_damage_resist_type'))
 
 
+    def __str__(self):
+        return 'FireMode (ID: {}, Description[en]: "{}")'.format(
+            self.id, self.description['en'])
+
+
 class FireModeType(StaticDatatype):
     _collection = 'fire_mode_type'
 
@@ -71,6 +80,10 @@ class FireModeType(StaticDatatype):
         self.id = id
         data = super(FireModeType, self).get_data(self)
         self.description = data.get('description')
+
+    def __str__(self):
+        return 'FireModeType (ID: {}, Description: "{}")'.format(
+            self.id, self.description)
 
 
 class Weapon(InterimDatatype):
@@ -103,9 +116,9 @@ class Weapon(InterimDatatype):
         def attachments(self):
             pass
 
-        @property
-        def fire_group(self):
-            pass
+    def __str__(self):
+        return 'Weapon (ID: {}, Name[en]: "{}")'.format(
+            self.id, self.item.name['en'])
 
 
 class WeaponAmmoSlot(InterimDatatype):
@@ -121,6 +134,9 @@ class WeaponAmmoSlot(InterimDatatype):
         self.refill_ammo_rate = data.get('refill_ammo_rate')
         self.refill_ammo_delay_ms = data.get('refill_ammo_delay_ms')
         self.weapon_slot_index = data.get('weapon_slot_index')
+
+    def __str__(self):
+        return 'WeaponAmmoSlot (ID: {})'.format(self.id)
 
 
 class WeaponDatasheet(InterimDatatype):
@@ -152,6 +168,9 @@ class WeaponDatasheet(InterimDatatype):
         self.show_clip_size = data.get('show_clip_size')
         self.show_fire_modes = data.get('show_fire_modes')
         self.show_range = data.get('show_range')
+
+    def __str__(self):
+        return 'WeaponDatasheet (ID: {})'.format(self.id)
 
 
 def fire_group_to_fire_mode(fire_group):
