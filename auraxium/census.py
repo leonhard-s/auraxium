@@ -154,7 +154,7 @@ class Join(object):
         self.is_outer_join = is_outer_join
         self.joins = []
         self.name = name
-        self.match = match if match != None else type._collection + '_id'
+        self.match = match if match != None else self.type + '_id'
         self.match_parent = match_parent if match_parent != None else self.match
         self._show = []
 
@@ -171,7 +171,7 @@ class Join(object):
 
         """
 
-        s = '{}'.format(self.type._collection)  # "type:"" is optional
+        s = '{}'.format(self.type)  # "type:"" is optional
         if self.match != None:
             s += '^on:{}'.format(self.match)
         if self.match_parent != None:
@@ -189,7 +189,7 @@ class Join(object):
         if not self.name == None:
             s += self.name
         else:
-            s += self.type._collection
+            s += self.type
             if self.is_list:
                 s += '_list'
         if len(self._filter_terms) > 0:
@@ -324,6 +324,7 @@ class Query(object):
                  limit=None, limit_per_db=None, retry=True, offset=0,
                  timing=False):
         self.check_case = check_case
+        self.type = type
         self.distinct_values = distinct_values
         self.exact_match_first = exact_match_first
         self._has_fields = []
@@ -340,11 +341,10 @@ class Query(object):
         self._filter_terms = []
         self.timing = timing
         self._tree = []
-        self.type = type
 
         # ID filtering shortcut
         if id != None:
-            self.add_filter('{}_id'.format(type._collection), id)
+            self.add_filter('{}_id'.format(self.type), id)
 
     def add_filter(self, *args):
         """Applies a filter term to the query performed.
@@ -399,10 +399,8 @@ class Query(object):
 
         """
 
-        collection = self.type._collection
-
         url = '{}/{}/{}/{}/{}'.format(_CENSUS_BASE_URL, service_id, verb,
-                                      _NAMESPACE, collection)
+                                      _NAMESPACE, self.type)
         for term in self._filter_terms:
             url += '&{}'.format(str(term))
         if not self.check_case:
@@ -426,7 +424,7 @@ class Query(object):
         if self.limit != None and self.limit > 1:
             url += '&c:limit={}'.format(self.limit)
         if self.limit_per_db != None:
-            if self.type._collection != 'character':
+            if self.type != 'character':
                 logger.warning('The query command "limit_per_db" is only '
                                'usable with the "character" collection. '
                                'Ignoring...')
@@ -471,7 +469,7 @@ class Query(object):
         """
 
         r = self._retrieve(verb='get')
-        return [dict for dict in r['{}_list'.format(self.type._collection)]]
+        return [dict for dict in r['{}_list'.format(self.type)]]
 
     def get_single(self):
         """Performs a get query for the Query returning only one item.
@@ -488,7 +486,7 @@ class Query(object):
         """
 
         r = self._retrieve(verb='get')
-        return r['{}_list'.format(self.type._collection)][0]
+        return r['{}_list'.format(self.type)][0]
 
     def hide(self, *args):
         # If the input is a list, keep it - if it's not, make it into one

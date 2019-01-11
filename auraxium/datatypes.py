@@ -14,16 +14,15 @@ class DatatypeBase(object):
         # This is done to allow the `<datatype>(data.get('id'))` syntax
         if id == None:
             return None
-        else:
-            return super(DatatypeBase, cls).__new__(cls)
 
-    def get_data(cls, instance, data_override=None):
+        return super(DatatypeBase, cls).__new__(cls)
+
+    def get_data(cls, obj, data_override=None):
         # If data_override hasn't been specified, retrieve the data yourself
-        if data_override == None:
-            data = Query(instance.__class__, id=instance.id).get_single()
-        else:
-            data = data_override
-        return data
+        if data_override != None:
+            return data_override
+
+        return Query(obj.__class__._collection, id=obj.id).get_single()
 
 
 class StaticDatatype(DatatypeBase):
@@ -41,10 +40,10 @@ class StaticDatatype(DatatypeBase):
         # If the ID already exists
         if id in cls._cache.keys():
             return cls._cache[id]  # Return the cached object
-        else:
-            instance = super(StaticDatatype, cls).__new__(cls, id)
-            cls._cache[id] = instance  # Store the new object
-            return instance
+
+        instance = super(StaticDatatype, cls).__new__(cls, id)
+        cls._cache[id] = instance  # Store the new object
+        return instance
 
 
 class InterimDatatype(DatatypeBase):
@@ -64,15 +63,15 @@ class InterimDatatype(DatatypeBase):
         # If the ID already exists
         if id in cls._cache.keys():
             return cls._cache[id]  # Returned the cached object
-        else:
-            instance = super(InterimDatatype, cls).__new__(cls, id)
-            # If the cache is full
-            if len(cls._cache) >= cls._cache_size:
-                cls._cache_order.append(id)  # Append the new id to the list
-                del_id = cls._cache_order.pop(0)  # Remove the oldest entry
-                del cls._cache[del_id]  # Delete the oldest cached object
-            cls._cache[id] = instance  # Store the new object
-            return instance
+
+        instance = super(InterimDatatype, cls).__new__(cls, id)
+        # If the cache is full
+        if len(cls._cache) >= cls._cache_size:
+            cls._cache_order.append(id)  # Append the new id to the list
+            del_id = cls._cache_order.pop(0)  # Remove the oldest entry
+            del cls._cache[del_id]  # Delete the oldest cached object
+        cls._cache[id] = instance  # Store the new object
+        return instance
 
 
 class DynamicDatatype(DatatypeBase):

@@ -32,7 +32,7 @@ def name_to_id(data_type, name, check_case=False):
                              Skill, SkillCategory, SkillLine, SkillSet, Title,
                              Vehicle, Zone]
 
-    q = Query(data_type)
+    q = Query(data_type._collection)
     q.show('{}_id'.format(data_type._collection))
 
     # Special case: character names
