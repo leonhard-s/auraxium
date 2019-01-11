@@ -35,7 +35,7 @@ class ImageSet(InterimDatatype):
 
         # Get a list of all images of this set, and join the default image
         q = Query(self.__class__, limit=10, id=id)
-        q.join(ImageSetDefault, match='image_set_id').show('type_id')
+        q.join('image_set_default', match='image_set_id').show('type_id')
         data = q.get()
 
         self.description = data[0]['description']
@@ -52,8 +52,3 @@ class ImageSet(InterimDatatype):
     def __str__(self):
         return 'ImageSet (ID: {}, Description: "{}")'.format(
             self.id, self.description)
-
-
-class ImageSetDefault(object):
-    # Dummy object to get the _collection attribute from
-    _collection = 'image_set_default'
