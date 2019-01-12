@@ -3,6 +3,7 @@ from datetime import datetime
 from ..census import Query
 from ..datatypes import DynamicDatatype, StaticDatatype
 from .faction import Faction
+from .image import Image
 from .profile import Profile
 from .title import Title
 
@@ -28,7 +29,8 @@ class Character(DynamicDatatype):
         self.name = data.get('name')['first']
         self.faction = Faction(data.get('faction_id'))
         self.head = Head(data.get('head_id'))
-        self.title = Title(data.get('title_id'))
+        self.title = Title(data.get('title_id')) if data.get(
+            'title_id') != '0' else None
         self.time_created = datetime.utcfromtimestamp(int(
             data.get('times')['creation']))
         self.time_last_saved = datetime.utcfromtimestamp(int(
@@ -138,5 +140,5 @@ class Head(StaticDatatype):
                       'Asian Male', 'Caucasian Female', 'African Female',
                       'Hispanic Female', 'Asian Female']
         head_image_ids = [1177, 1173, 1179, 1175, 1176, 1172, 1178, 1174]
-        self.name = Image(head_names[id - 1])
-        self.name = head_names[id - 1]
+        self.image = Image(head_image_ids[int(id) - 1])
+        self.name = head_names[int(id) - 1]
