@@ -16,7 +16,7 @@ class Profile(StaticDatatype):
 
     def __init__(self, id):
         self.id = id
-        data = super(Profile, self).get_data(self)
+        data = super(Profile, self).get_data(self, id_field_name='profile_id')
         self.description = data.get('description')
 
         @property

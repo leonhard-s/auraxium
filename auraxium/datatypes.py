@@ -17,12 +17,16 @@ class DatatypeBase(object):
 
         return super(DatatypeBase, cls).__new__(cls)
 
-    def get_data(cls, obj, data_override=None):
+    def get_data(cls, obj, data_override=None, id_field_name=None):
         # If data_override hasn't been specified, retrieve the data yourself
         if data_override != None:
             return data_override
 
-        return Query(obj.__class__._collection, id=obj.id).get_single()
+        if id_field_name == None:
+            return Query(obj.__class__._collection, id=obj.id).get_single()
+
+        return Query(obj.__class__._collection).add_filter(
+            id_field_name, obj.id).get_single()
 
 
 class StaticDatatype(DatatypeBase):
