@@ -44,81 +44,81 @@ class Character(DynamicDatatype):
         self.daily_ribbon_time = datetime.utcfromtimestamp(int(
             data.get('daily_ribbon')['time']))
 
-    @property
-    def achievements(self):
-        pass
+        @property
+        def achievements(self):
+            pass
 
-    @property
-    def currency(self):
-        pass
+        @property
+        def currency(self):
+            pass
 
-    @property
-    def directive(self):
-        pass
+        @property
+        def directive(self):
+            pass
 
-    @property
-    def directive_objective(self):
-        pass
+        @property
+        def directive_objective(self):
+            pass
 
-    @property
-    def directive_tier(self):
-        pass
+        @property
+        def directive_tier(self):
+            pass
 
-    @property
-    def directive_tree(self):
-        pass
+        @property
+        def directive_tree(self):
+            pass
 
-    @property
-    def event(self):
-        pass
+        @property
+        def event(self):
+            pass
 
-    @property
-    def event_grouped(self):
-        pass
+        @property
+        def event_grouped(self):
+            pass
 
-    @property
-    def friends(self):
-        pass
+        @property
+        def friends(self):
+            pass
 
-    @property
-    def items(self):
-        pass
+        @property
+        def items(self):
+            pass
 
-    @property
-    def leaderboard(self):
-        pass
+        @property
+        def leaderboard(self):
+            pass
 
-    @property
-    def online_status(self):
-        pass
+        @property
+        def online_status(self):
+            pass
 
-    @property
-    def skill(self):  # certification?
-        pass
+        @property
+        def skill(self):  # certification?
+            pass
 
-    @property
-    def stat(self):
-        pass
+        @property
+        def stat(self):
+            pass
 
-    @property
-    def stat_by_faction(self):
-        pass
+        @property
+        def stat_by_faction(self):
+            pass
 
-    @property
-    def stat_history(self):
-        pass
+        @property
+        def stat_history(self):
+            pass
 
-    @property
-    def weapon_stat(self):
-        pass
+        @property
+        def weapon_stat(self):
+            pass
 
-    @property
-    def weapon_stat_by_faction(self):
-        pass
+        @property
+        def weapon_stat_by_faction(self):
+            pass
 
-    @property
-    def world(self):
-        pass
+        @property
+        def world(self):
+            pass
 
     def __str__(self):
         return 'Character (ID: {}, Name: "{}")'.format(self.id, self.name)
