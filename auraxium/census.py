@@ -16,8 +16,7 @@ _CENSUS_BASE_URL = 'http://census.daybreakgames.com'
 _NAMESPACE = 'ps2'
 # The id used to identify this service.
 service_id = 's:example'
-# The default locale to use when no other is specified.
-default_locale = 'en'
+# service_id = 's:example'
 # Forces all Querys to provide timing information.
 timing_override = True
 
@@ -330,7 +329,7 @@ class Query(object):
         self._has_fields = []
         self._hide = []
         self.include_empty = include_empty
-        self.locale = default_locale if locale is None else locale
+        self.locale = locale
         self.limit = limit
         self.limit_per_db = limit_per_db
         self.joins = []
@@ -419,8 +418,6 @@ class Query(object):
             url += '&c:includeNull=true'
         if self.locale != None:
             url += '&c:lang={}'.format(self.locale)
-        elif default_locale != None:
-            url += '&c:lang={}'.format(default_locale)
         if self.limit != None and self.limit > 1:
             url += '&c:limit={}'.format(self.limit)
         if self.limit_per_db != None:
