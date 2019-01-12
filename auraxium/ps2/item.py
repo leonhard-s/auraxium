@@ -60,7 +60,7 @@ class ItemCategory(StaticDatatype):
 
 
 class ItemType(StaticDatatype):
-    _collection = 'item_category'
+    _collection = 'item_type'
 
     def __init__(self, id):
         self.id = id
