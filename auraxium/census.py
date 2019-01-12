@@ -483,7 +483,10 @@ class Query(object):
         """
 
         r = self._retrieve(verb='get')
-        return r['{}_list'.format(self.type)][0]
+        try:
+            return r['{}_list'.format(self.type)][0]
+        except IndexError:
+            return None
 
     def hide(self, *args):
         # If the input is a list, keep it - if it's not, make it into one
