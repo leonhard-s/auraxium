@@ -21,12 +21,16 @@ class FireGroup(InterimDatatype):
             'spool_up_initial_refire_ms')
         self.can_chamber_ironsights = data.get('can_chamber_ironsights')
 
+        @property
+        def fire_modes(self):
+            # Return a list of all fire modes in this fire group
+            pass
 
     def __str__(self):
         return 'FireGroup (ID: {})'.format(self.id)
 
 
-class FireMode():
+class FireMode(InterimDatatype):
     _cache_size = 250
     _collection = 'fire_mode'
 
@@ -67,6 +71,7 @@ class FireMode():
         self.indirect_damage_resist_type = ResistType(
             data.get('indirect_damage_resist_type'))
 
+        # Add "weapons" property to retrieve (all) weapon(s) that use this?
 
     def __str__(self):
         return 'FireMode (ID: {}, Description[en]: "{}")'.format(
@@ -94,7 +99,9 @@ class Weapon(InterimDatatype):
         self.id = id
         data = super(Weapon, self).get_data(self)
 
-        self.ammo = WeaponAmmoSlot(data.get('weapon_ammo_slot'))
+        self.ammo = weapon_to_ammo_slot(weapon=self)
+        self.fire_groups = weapon_to_fire_group(weapon=self)
+        self.item = Item(self.id)
         self.turn_modifier = data.get('turn_modifier')
         self.move_modifier = data.get('move_modifier')
         self.sprint_recovery_ms = data.get('sprint_recovery_ms')
@@ -121,22 +128,19 @@ class Weapon(InterimDatatype):
             self.id, self.item.name['en'])
 
 
-class WeaponAmmoSlot(InterimDatatype):
-    _cache_size = 500
-    _collection = 'weapon_ammo_slot'
+class WeaponAmmoSlot(DynamicDatatype):
 
-    def __init__(self, id):
-        self.id = id
-        data = super(WeaponAmmoSlot, self).get_data(self)
-
-        self.capacity = data.get('capacity')
-        self.clip_size = data.get('clip_size')
-        self.refill_ammo_rate = data.get('refill_ammo_rate')
-        self.refill_ammo_delay_ms = data.get('refill_ammo_delay_ms')
-        self.weapon_slot_index = data.get('weapon_slot_index')
+    def __init__(self, weapon, dict):
+        self.capacity = dict.get('capacity')
+        self.clip_size = dict.get('clip_size')
+        self.refill_ammo_rate = dict.get('refill_ammo_rate')
+        self.refill_ammo_delay_ms = dict.get('refill_ammo_delay_ms')
+        self.weapon = weapon
+        self.weapon_ammo_slot = dict.get('weapon_slot_index')
 
     def __str__(self):
-        return 'WeaponAmmoSlot (ID: {})'.format(self.id)
+        return 'WeaponAmmoSlot (Weapon: {}, Slot: {})'.format(
+            self.weapon.id, self.weapon_ammo_slot)
 
 
 class WeaponDatasheet(InterimDatatype):
@@ -178,6 +182,16 @@ def fire_group_to_fire_mode(fire_group):
         'fire_group_id', fire_group.id).get()
     data.sort(key=lambda fire_mode: fire_mode['fire_mode_index'])
     return [FireMode(d['fire_mode_id']) for d in data]
+
+
+def weapon_to_ammo_slot(weapon):
+    """Converts a weapon to its ammo slot"""
+
+    data = Query('weapon_ammo_slot', limit=5).add_filter(
+        'weapon_id', weapon.id).get()
+    data.sort(
+        key=lambda weapon_ammo_slot: weapon_ammo_slot['weapon_slot_index'])
+    return [WeaponAmmoSlot(weapon, d) for d in data]
 
 
 def weapon_to_fire_group(weapon):
