@@ -34,7 +34,7 @@ class ImageSet(InterimDatatype):
         self.images = {}
 
         # Get a list of all images of this set, and join the default image
-        q = Query(self.__class__, limit=10, id=id)
+        q = Query(self.__class__._collection, limit=10, id=id)
         q.join('image_set_default', match='image_set_id').show('type_id')
         data = q.get()
 
