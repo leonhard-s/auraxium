@@ -3,6 +3,7 @@ from ..datatypes import InterimDatatype, StaticDatatype
 
 
 class Ability(InterimDatatype):
+    _cache_size = 100
     _collection = 'ability'
 
     def __init__(self, id):
