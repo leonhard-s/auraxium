@@ -1,5 +1,5 @@
 from ..census import Query
-from ..datatypes import InterimDatatype, StaticDatatype
+from ..datatypes import DynamicDatatype, InterimDatatype, StaticDatatype
 from .item import Item
 # from .playerstate import PlayerStateGroup
 from .resist import ResistType
