@@ -19,7 +19,7 @@ _NAMESPACE = 'ps2'
 service_id = 's:example'
 # service_id = 's:example'
 # Forces all Querys to provide timing information.
-timing_override = True
+timing_override = False
 
 
 class SearchModifier(Enum):
@@ -346,7 +346,7 @@ class Query(object):
         if id != None:
             self.add_filter('{}_id'.format(self.type), id)
 
-    def add_filter(self, *args):
+    def add_filter(self, *args, **kwargs):
         """Applies a filter term to the query performed.
 
         Parameters
@@ -362,7 +362,7 @@ class Query(object):
 
         """
 
-        term = FilterTerm(*args)
+        term = FilterTerm(*args, **kwargs)
         self._filter_terms.append(term)
         return self
 
@@ -448,6 +448,8 @@ class Query(object):
             url += '&c:join='
             for join in self.joins:
                 url += str(join)
+                url += ','
+            url = url[:-1]  # Strip off the last comma as it is unnecessary
         # Replace the first occurrence of "&" with "?" to fix the syntax
         return url.replace('&', '?', 1)
 
@@ -486,7 +488,11 @@ class Query(object):
         r = self._retrieve(verb='get')
         try:
             return r['{}_list'.format(self.type)][0]
+        except KeyError:
+            print(r)
+            return None
         except IndexError:
+            print(r)
             return None
 
     def hide(self, *args):
@@ -546,8 +552,8 @@ class Query(object):
         """
 
         url = self._generate_url(verb)
-        logger.debug('Performing {} request: {}'.format(verb, url))
         r = json.loads(requests.get(url).text)
+        logger.debug('Sending API request (URL: {})'.format(url))
 
         # Check for common errors
         if 'error' in r.keys():
@@ -564,7 +570,7 @@ class Query(object):
         if 'timing' in r.keys():
             timing_list = ['{}: {} ms'.format(
                 s[:-3], r['timing'][s]) for s in r['timing'].keys()]
-            logger.info('Query profiling: ' + ', '.join(timing_list))
+            logger.debug('Query profiling: ' + ', '.join(timing_list))
         return r
 
     def show(self, *args):
