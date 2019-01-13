@@ -1,6 +1,7 @@
 import json
 import logging
 from enum import Enum
+from urllib import parse
 
 import requests
 
@@ -96,7 +97,7 @@ class FilterTerm(object):
         # This list contains the string representations of the search modifiers in
         # the order they have been defined in the SearchModifier enum:
         MODIFIERS = ['=', '=*', '=>', '=]', '=<', '=[', '=^', '=!']
-        return self.field + MODIFIERS[self.modifier.value - 1] + str(self.value)
+        return self.field + MODIFIERS[self.modifier.value - 1] + parse.quote_plus(str(self.value))
 
 
 class Join(object):
