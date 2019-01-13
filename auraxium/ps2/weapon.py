@@ -10,9 +10,13 @@ class FireGroup(InterimDatatype):
     _cache_size = 100
     _collection = 'fire_group'
 
-    def __init__(self, id):
+    def __init__(self, id, data_override=None):
         self.id = id
-        data = super(FireGroup, self).get_data(self)
+
+        if super().is_cached(self):  # If the object is cached, skip
+            return
+
+        data = data_override if data_override != None else super().get_data(self)
 
         self.chamber_duration_ms = data.get('chamber_duration_ms')
         self.transition_duration_ms = data.get('transition_duration_ms')
@@ -26,6 +30,8 @@ class FireGroup(InterimDatatype):
             # Return a list of all fire modes in this fire group
             pass
 
+        super()._add_to_cache(self)  # Cache this instance for future use
+
     def __str__(self):
         return 'FireGroup (ID: {})'.format(self.id)
 
@@ -33,16 +39,21 @@ class FireGroup(InterimDatatype):
 class FireMode(InterimDatatype):
     _cache_size = 250
     _collection = 'fire_mode'
+    _join = ['item', 'player_state_group']
 
-    def __init__(self, id):
+    def __init__(self, id, data_override=None):
         self.id = id
-        data = super(FireGroup, self).get_data(self)
 
-        self.item = Item(data.get('item_id'))
+        if super().is_cached(self):  # If the object is cached, skip
+            return
+
+        data = data_override if data_override != None else super().get_data(self)
+
+        self.item = Item(data.get('item_id'), data_override=data.get('item'))
         self.type = FireModeType(data.get('type'))
         self.description = data.get('description')
         self.player_state_group = PlayerStateGroup(
-            data.get('player_state_group_id'))
+            data.get('player_state_group_id'), data_override=data.get('player_state_group'))
         self.cof_recoil = data.get('cof_recoil')
         self.reload_time_ms = data.get('reload_time_ms')
         self.reload_chamber_time_ms = data.get('reload_chamber_time_ms')
@@ -73,6 +84,8 @@ class FireMode(InterimDatatype):
 
         # Add "weapons" property to retrieve (all) weapon(s) that use this?
 
+        super()._add_to_cache(self)  # Cache this instance for future use
+
     def __str__(self):
         return 'FireMode (ID: {}, Description[en]: "{}")'.format(
             self.id, self.description['en'])
@@ -81,10 +94,17 @@ class FireMode(InterimDatatype):
 class FireModeType(StaticDatatype):
     _collection = 'fire_mode_type'
 
-    def __init__(self, id):
+    def __init__(self, id, data_override=None):
         self.id = id
-        data = super(FireModeType, self).get_data(self)
+
+        if super().is_cached(self):  # If the object is cached, skip
+            return
+
+        data = data_override if data_override != None else super().get_data(self)
+
         self.description = data.get('description')
+
+        super()._add_to_cache(self)  # Cache this instance for future use
 
     def __str__(self):
         return 'FireModeType (ID: {}, Description: "{}")'.format(
@@ -95,12 +115,16 @@ class Weapon(InterimDatatype):
     _cache_size = 500
     _collection = 'weapon'
 
-    def __init__(self, id):
+    def __init__(self, id, data_override=None):
         self.id = id
-        data = super(Weapon, self).get_data(self)
 
-        self.ammo = weapon_to_ammo_slot(weapon=self)
-        self.fire_groups = weapon_to_fire_group(weapon=self)
+        if super().is_cached(self):  # If the object is cached, skip
+            return
+
+        data = data_override if data_override != None else super().get_data(self)
+
+        #  self.ammo = weapon_to_ammo_slot(weapon=self)
+        #  self.fire_groups = weapon_to_fire_group(weapon=self)
         self.item = Item(self.id)
         self.turn_modifier = data.get('turn_modifier')
         self.move_modifier = data.get('move_modifier')
@@ -122,6 +146,8 @@ class Weapon(InterimDatatype):
         @property
         def attachments(self):
             pass
+
+        super()._add_to_cache(self)  # Cache this instance for future use
 
     def __str__(self):
         return 'Weapon (ID: {}, Name[en]: "{}")'.format(
@@ -149,7 +175,8 @@ class WeaponDatasheet(InterimDatatype):
 
     def __init__(self, id):
         self.id = id
-        data = super(WeaponDatasheet, self).get_data(self)
+
+        data = data_override if data_override != None else super().get_data(self)
 
         self.item_id = data.get('item_id')
         self.direct_damage = data.get('direct_damage')
@@ -172,6 +199,8 @@ class WeaponDatasheet(InterimDatatype):
         self.show_clip_size = data.get('show_clip_size')
         self.show_fire_modes = data.get('show_fire_modes')
         self.show_range = data.get('show_range')
+
+        super()._add_to_cache(self)  # Cache this instance for future use
 
     def __str__(self):
         return 'WeaponDatasheet (ID: {})'.format(self.id)

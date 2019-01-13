@@ -14,13 +14,23 @@ class Loadout(StaticDatatype):
     """
 
     _collection = 'loadout'
+    _join = ['faction', 'profile']
 
-    def __init__(self, id):
+    def __init__(self, id, data_override=None):
         self.id = id
-        data = super(Loadout, self).get_data(self)
-        self.faction = Faction(data.get('faction_id'))
+
+        if super().is_cached(self):  # If the object is cached, skip
+            return
+
+        data = data_override if data_override != None else super().get_data(self)
+
+        self.faction = Faction(data.get('faction_id'),
+                               data_override=data.get('faction'))
         self.name = data.get('code_name')
-        self.profile = Profile(data.get('profile_id'))
+        self.profile = Profile(data.get('profile_id'),
+                               data_override=data.get('profile'))
+
+        super()._add_to_cache(self)  # Cache this instance for future use
 
     def __str__(self):
         return 'Loadout (ID: {}, Name: "{}")'.format(

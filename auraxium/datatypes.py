@@ -1,32 +1,108 @@
+import logging
+from datetime import datetime
+
 from .census import Query
+
+# Create a logger
+logger = logging.getLogger('auraxium.census')
+
+
+class Cache(object):
+    """A cache stores instances of other objects.
+
+    Caches are used to reduce the number of times an object needs to be
+    re-created to reduce network traffic. They can be size-limited (only keep
+    x items and discard the oldest ones), age-limited (keep items for y seconds
+    before discarding them) or both.
+
+    """
+
+    def __init__(self, max_size=None, max_age=None):
+        self._contents = {}
+        self.max_age = max_age
+        self.max_size = max_size
+        self._meta_list = []  # Contains tuples like (<id>, <time_added>)
+
+    def __contains__(self, item):
+        return True if item in self._contents.keys() else False
+
+    def __getitem__(self, key):
+        return self._contents[key]
+
+    def __len__(self):
+        return len(self._meta_list)
+
+    def add(self, item):
+        """Adds a new item to the cache."""
+        # No caching of non-existing objects
+        if item == None:
+            return
+
+        # Only proceed if the item has not already been cached
+        if item in self._contents:
+            return
+
+        try:
+            # If the cache is full, delete the oldest item
+            if len(self._meta_list) >= self.max_size:
+                del self.contents[self._meta_list.pop(0)[0]]
+        except TypeError:
+            # The TypeError is raised in case max_size has not been set
+            pass
+
+        self._contents[str(item.id)] = item
+        self._meta_list.append((str(item.id), datetime.utcnow()))
+
+    def clear(self):
+        """Removes all stored items from the cache."""
+        self._contents = {}
+        self._order = []
+
+    def trim(self):
+        """Checks if any items are scheduled for deletion."""
+        now = datetime.utcnow()
+        trim_list = [t for t in self._meta_list if now > t[1] + self.max_age]
+        for t in trim_list:
+            del self._contents[t[0]]
+            self._meta_list.remove(t)
 
 
 class DatatypeBase(object):
     """The base class for datatypes used by the Census APi wrapper.
 
-    All other datatype objects are subclassed to this class. It currently does
-    not have any active components. If needed, it's there.
+    All other datatype objects are subclassed to this class.
 
     """
 
-    def __new__(cls, id, *args, **kwargs):
-        # If the id of a datatype is None, return none instead of an object.
-        # This is done to allow the `<datatype>(data.get('id'))` syntax
-        if id == None:
-            return None
+    def get_data(cls, instance):
+        try:
+            joins = instance._join
+            if not isinstance(joins, list):
+                joins = [joins]
+        except:
+            joins = []
+        # Some collections, such as `profile_2`, don't have id field names that
+        # match their collection name. For these, the _id_field class attribute
+        # is used instead.
+        try:
+            id_field = cls._id_field
+        except AttributeError:
+            id_field = cls._collection + '_id'
 
-        return super(DatatypeBase, cls).__new__(cls)
+        # Create a new request
+        q = Query(cls._collection).add_filter(
+            field=id_field, value=instance.id)
+        # Apply the default join for any collection listed in `join`
+        for j in joins:
+            q.join(j)
+        return q.get_single()
 
-    def get_data(cls, obj, data_override=None, id_field_name=None):
-        # If data_override hasn't been specified, retrieve the data yourself
-        if data_override != None:
-            return data_override
-
-        if id_field_name == None:
-            return Query(obj.__class__._collection, id=obj.id).get_single()
-
-        return Query(obj.__class__._collection).add_filter(
-            id_field_name, obj.id).get_single()
+    def is_cached(cls, instance):
+        is_cached = True if instance.id in cls._cache else False
+        s = 'Retrieving' if is_cached else 'Creating'
+        logger.debug('{} {} (ID: {}).'.format(
+            s, instance.__class__.__name__, instance.id))
+        return is_cached
 
 
 class StaticDatatype(DatatypeBase):
@@ -38,16 +114,25 @@ class StaticDatatype(DatatypeBase):
 
     """
 
-    _cache = {}  # Downloaded items will be kept in this dictionary forever
+    def __new__(cls, id=None, *args, **kwargs):
+        # We don't cache nobody! But we will cache anybody...
+        if id == None:
+            return
 
-    def __new__(cls, id, *args, **kwargs):
-        # If the ID already exists
-        if id in cls._cache.keys():
-            return cls._cache[id]  # Return the cached object
+        # If the id exists in the cache, return it. If the cache doesn't exist,
+        # create it.
+        try:
+            len(cls._cache)
+        except AttributeError:
+            cls._cache = Cache()
 
-        instance = super(StaticDatatype, cls).__new__(cls, id)
-        cls._cache[id] = instance  # Store the new object
-        return instance
+        if id in cls._cache:
+            return cls._cache[id]
+
+        return super().__new__(cls)
+
+    def _add_to_cache(cls, instance):
+        cls._cache.add(instance)
 
 
 class InterimDatatype(DatatypeBase):
@@ -58,24 +143,24 @@ class InterimDatatype(DatatypeBase):
 
     """
 
-    _cache = {}  # Cached items are kept in this dictionary
-    # This list keeps track of the order the items were added to the dictionary
-    _cache_order = []
-    _cache_size = 10  # The size of the cache (i.e. maximum number of items)
+    _cache_lifespan = None
+    _cache_size = None
 
-    def __new__(cls, id, *args, **kwargs):
-        # If the ID already exists
-        if id in cls._cache.keys():
-            return cls._cache[id]  # Returned the cached object
+    def __new__(cls, id=None, *args, **kwargs):
+        # We don't cache nobody! But we will cache anybody...
+        if id == None:
+            return
 
-        instance = super(InterimDatatype, cls).__new__(cls, id)
-        # If the cache is full
-        if len(cls._cache) >= cls._cache_size:
-            cls._cache_order.append(id)  # Append the new id to the list
-            del_id = cls._cache_order.pop(0)  # Remove the oldest entry
-            del cls._cache[del_id]  # Delete the oldest cached object
-        cls._cache[id] = instance  # Store the new object
-        return instance
+        try:
+            if id in cls._cache and id != None:
+                return cls._cache[id]
+        except AttributeError:
+            cls._cache = Cache(cls._cache_size, cls._cache_lifespan)
+
+        return super().__new__(cls)
+
+    def _add_to_cache(cls, instance):
+        cls._cache.add(instance)
 
 
 class DynamicDatatype(DatatypeBase):

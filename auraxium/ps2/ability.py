@@ -5,12 +5,18 @@ from ..datatypes import InterimDatatype, StaticDatatype
 class Ability(InterimDatatype):
     _cache_size = 100
     _collection = 'ability'
+    _join = ['ability_type']
 
-    def __init__(self, id):
+    def __init__(self, id, data_override=None):
         self.id = id
-        data = super(Ability, self).get_data(self)
 
-        self.type = AbilityType(data.get('ability_type_id'))
+        if super().is_cached(self):  # If the object is cached, skip
+            return
+
+        data = data_override if data_override != None else super().get_data(self)
+
+        self.type = AbilityType(
+            data.get('ability_type_id'), data_override=data.get('ability_type'))
         self.expire_msec = data.get('expire_msec')
         self.first_use_delay_msec = data.get('first_use_delay_msec')
         self.next_use_delay_msec = data.get('next_use_delay_msec')
@@ -28,6 +34,8 @@ class Ability(InterimDatatype):
             self.parameters[i] = data.get('param{}'.format(i + 1))
             self.string[i] = data.get('string{}'.format(i + 1))
 
+        super()._add_to_cache(self)  # Cache this instance for future use
+
     def __str__(self):
         return 'Ability (ID: {})'.format(self.id)
 
@@ -42,9 +50,13 @@ class AbilityType(StaticDatatype):
 
     _collection = 'ability_type'
 
-    def __init__(self, id):
+    def __init__(self, id, data_override=None):
         self.id = id
-        data = super(AbilityType, self).get_data(self)
+
+        if super().is_cached(self):  # If the object is cached, skip
+            return
+
+        data = data_override if data_override != None else super().get_data(self)
 
         self.description = data.get('description')
 
@@ -53,6 +65,8 @@ class AbilityType(StaticDatatype):
         for i in range(14):
             self.parameters[i] = data.get('param{}'.format(i + 1))
             self.string[i] = data.get('string{}'.format(i + 1))
+
+        super()._add_to_cache(self)  # Cache this instance for future use
 
     def __str__(self):
         return 'AbilityType (ID: {}, Description: "{}")'.format(

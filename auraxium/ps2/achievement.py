@@ -18,19 +18,28 @@ class Achievement(InterimDatatype):
     # their cache size can be safely increased.
     _cache_size = 100
     _collection = 'achievement'
+    _join = ['item', 'image_set', 'reward']
 
-    def __init__(self, id):
+    def __init__(self, id, data_override=None):
         self.id = id
-        data = super(Achievement, self).get_data(self)
+
+        if super().is_cached(self):  # If the object is cached, skip
+            return
+
+        data = data_override if data_override != None else super().get_data(self)
 
         self.description = data.get('description')
-        self.item = Item(data.get('item_id'))
-        self.image = Image(data.get('image_id'), path=data.get('image_path'))
-        self.image_set = ImageSet(data.get('image_set_id'))
+        self.item = Item(data.get('item_id'), data_override=data.get('item'))
+        self.image = Image(data.get('image_id'))
+        self.image_set = ImageSet(
+            data.get('image_set_id'), data_override=data.get('image_set'))
         self.name = data.get('name')
         # self.objective_group = None  # Identical to objective_set?
         self.repeatable = data.get('repeatable')
-        self.reward = Reward(data.get('reward_id'))
+        self.reward = Reward(data.get('reward_id'),
+                             data_override=data.get('reward'))
+
+        super()._add_to_cache(self)  # Cache this instance for future use
 
     def __str__(self):
         return 'Achievement (ID: {}, Name[en]: "{}")'.format(

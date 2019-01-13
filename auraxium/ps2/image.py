@@ -6,31 +6,31 @@ class Image(InterimDatatype):
     _cache_size = 500
     _collection = 'image'
 
-    def __init__(self, id, path=None, description=None):
+    def __init__(self, id, data_override=None):
         self.id = id
 
-        # If path is already set, there is no more information to query. The
-        # creation of the image object is only there to allow for caching
-        if path != None:
-            self.description = '(Skipped query)' if description == None else description
-            self.path = _CENSUS_BASE_URL + str(path)
+        if super().is_cached(self):  # If the object is cached, skip
+            return
 
-        else:
-            data = super(Image, self).get_data(self)
-            self.description = data.get('description')
-            self.path = _CENSUS_BASE_URL + data.get('path')
+        self.path = _CENSUS_BASE_URL + \
+            '/files/ps2/images/static/{}.png'.format(id)
+
+        super()._add_to_cache(self)  # Cache this instance for future use
 
     def __str__(self):
-        return 'Image (ID: {}, Description: "{}")'.format(
-            self.id, self.description)
+        return 'Image (ID: {})'.format(self.id)
 
 
 class ImageSet(InterimDatatype):
     _cache_size = 100
     _collection = 'image_set'
 
-    def __init__(self, id):
+    def __init__(self, id, data_override=None):
         self.id = id
+
+        if super().is_cached(self):  # If the object is cached, skip
+            return
+
         self.images = {}
 
         # Get a list of all images of this set, and join the default image
@@ -43,11 +43,12 @@ class ImageSet(InterimDatatype):
         for image_set in data:
             desc = '{} - {}'.format(image_set['description'],
                                     image_set['type_description'])
-            self.images[image_set['type_id']] = Image(
-                image_set['image_id'], description=desc, path=image_set['image_path'])
+            self.images[image_set['type_id']] = Image(image_set['image_id'])
 
         self.default_image = self.images[data[0]
                                          ['image_set_default']['type_id']]
+
+        super()._add_to_cache(self)  # Cache this instance for future use
 
     def __str__(self):
         return 'ImageSet (ID: {}, Description: "{}")'.format(

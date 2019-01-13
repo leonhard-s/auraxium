@@ -12,10 +12,12 @@ class Character(DynamicDatatype):
     """A PlanetSide 2 character."""
 
     _collection = 'character'
+    _join = ['faction', 'profile', 'title']
 
-    def __init__(self, id, populate=True):
-        self.id = id  # character_id
-        data = super(Character, self).get_data(self)
+    def __init__(self, id, data_override=None):
+        self.id = id
+
+        data = data_override if data_override != None else super().get_data(self)
 
         self.asp = data.get('prestige_level')
         self.battle_rank = data.get('battle_rank')['value']
@@ -26,23 +28,25 @@ class Character(DynamicDatatype):
         self.certs_gifted = data.get('certs')['gifted_points']
         self.certs_spent = data.get('certs')['spent_points']
         self.certs_progress_to_next = data.get('certs')['percent_to_next']
-        self.name = data.get('name')['first']
-        self.faction = Faction(data.get('faction_id'))
+        self.daily_ribbon_count = data.get('daily_ribbon')['count']
+        self.daily_ribbon_time = datetime.utcfromtimestamp(int(
+            data.get('daily_ribbon')['time']))
+        self.faction = Faction(id=data.get('faction_id'),
+                               data_override=data.get('faction'))
+        self.login_count = data.get('times')['login_count']
         self.head = Head(data.get('head_id'))
-        self.title = Title(data.get('title_id')) if data.get(
-            'title_id') != '0' else None
+        self.minutes_played = data.get('times')['minutes_played']
+        self.name = data.get('name')['first']
+        self.profile = Profile(id=data.get('profile_id'),
+                               data_override=data.get('profile'))
         self.time_created = datetime.utcfromtimestamp(int(
             data.get('times')['creation']))
         self.time_last_saved = datetime.utcfromtimestamp(int(
             data.get('times')['last_save']))
         self.time_last_login = datetime.utcfromtimestamp(int(
             data.get('times')['last_login']))
-        self.login_count = data.get('times')['login_count']
-        self.minutes_played = data.get('times')['minutes_played']
-        self.profile = Profile(data.get('profile_id'))
-        self.daily_ribbon_count = data.get('daily_ribbon')['count']
-        self.daily_ribbon_time = datetime.utcfromtimestamp(int(
-            data.get('daily_ribbon')['time']))
+        self.title = Title(id=data.get('title_id'), data_override=data.get(
+            'title')) if data.get('title_id') != '0' else None
 
         @property
         def achievements(self):
@@ -135,6 +139,9 @@ class Head(StaticDatatype):
     def __init__(self, id):
         self.id = id
 
+        if super().is_cached(self):
+            return
+
         # Hard-coded head names and icons
         head_names = ['Caucasian Male', 'African Male', 'Hispanic Male',
                       'Asian Male', 'Caucasian Female', 'African Female',
@@ -142,3 +149,5 @@ class Head(StaticDatatype):
         head_image_ids = [1177, 1173, 1179, 1175, 1176, 1172, 1178, 1174]
         self.image = Image(head_image_ids[int(id) - 1])
         self.name = head_names[int(id) - 1]
+
+        super()._add_to_cache(self)  # Cache this instance for future use
