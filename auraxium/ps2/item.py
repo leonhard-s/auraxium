@@ -1,98 +1,176 @@
-from ..census import _CENSUS_BASE_URL, Query
-from ..datatypes import InterimDatatype, StaticDatatype
+from ..census import Query
+from ..datatypes import CachableDataType, EnumeratedDataType
+from ..misc import LocalizedString
 from .ability import Ability
 from .faction import Faction
 from .image import Image, ImageSet
+from .skill import SkillSet
 
-# from .skillset import SkillSet
 
+class Item(CachableDataType):
+    """A PS2 item.
 
-class Item(InterimDatatype):
-    _cache_size = 250
-    _collection = 'item'
-    join = ['faction', 'image_set', 'item_category', 'item_type']
+    An item is a player-bound entity in the game world. This includes obvious
+    examples like weapons or consumables, but also depot items like camo or
+    cosmetics.
 
-    def __init__(self, id, data_override=None):
+    """
+
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self._active_ability_id = None
+        self.description = None
+        self._faction_id = None
+        self._image_id = None
+        self._image_set_id = None
+        self.is_default_attachment = None
+        self.is_vehicle_weapon = None
+        self.max_stack_size = None
+        self.name = None
+        self._passive_ability_id = None
+        self._skill_set_id = None
 
-        data = data_override if data_override != None else super().get_data(self)
-
-        self.active_ability = Ability(data.get('activatable_ability_id'))
-        self.category = ItemCategory(
-            data.get('item_category_id'), data_override=data.get('item_category'))
-        self.description = data.get('description')
-        self.faction = Faction(data.get('faction_id'),
-                               data_override=data.get('faction'))
-        self.image = Image(data.get('image_id'))
-        self.image_set = ImageSet(
-            data.get('image_set_id'), data_override=data.get('image_set'))
-        self.is_default_attachment = True if data.get(
-            'is_default_attachment') == '1' else False
-        self.is_vehicle_weapon = True if data.get(
-            'is_vehicle_weapon') == '1' else False
-        self.max_stack_size = data.get('max_stack_size')
-        self.name = data.get('name')
-        self.passive_ability = Ability(data.get('passive_ability_id'))
-        # self.skill_set = SkillSet(data.get('skill_set'))
-        self.type = ItemType(data.get('item_type_id'),
-                             data_override=data.get('item_type'))
+        # Define properties
+        @property
+        def active_ability(self):
+            try:
+                return self._active_ability
+            except AttributeError:
+                self._active_ability = Ability.get(id=self._active_ability_id)
+                return self._active_ability
 
         @property
         def attachments(self):
-            # Return a list of all attachments that are linked to this weapon
-            pass
+            try:
+                return self._attachments
+            except AttributeError:
+                q = Query(type='item_attachment')
+                data = q.add_filter(field='item_id', value=self.id).get()
+                self._attachments = Item.list(
+                    [i['attachment_item_id'] for i in data])
+                return self._attachments
+
+        @property
+        def faction(self):
+            try:
+                return self._faction
+            except AttributeError:
+                self._faction = Faction.get(id=self._faction_id)
+                return self._faction
+
+        @property
+        def image(self):
+            try:
+                return self._image
+            except AttributeError:
+                self._image = Image.get(id=self._image_id)
+                return self._image
+
+        @property
+        def image_set(self):
+            try:
+                return self._image_set
+            except AttributeError:
+                self._image_set = ImageSet.get(id=self._image_set_id)
+                return self._image_set
+
+        @property
+        def passive_ability(self):
+            try:
+                return self._passive_ability
+            except AttributeError:
+                self._passive_ability = Ability.get(
+                    id=self._passive_ability_id)
+                return self._passive_ability
 
         @property
         def profiles(self):
-            # Return a list of classes that can use this item
-            pass
+            try:
+                return self._profiles
+            except AttributeError:
+                q = Query(type='item_profile')
+                data = q.add_filter(field='item_id', value=self.id).get()
+                self._profiles = Profile.list([i['profile_id'] for i in data])
+                return self._profiles
 
-        super()._add_to_cache(self)  # Cache this instance for future use
+        @property
+        def skill_set(self):
+            try:
+                return self._skill_set
+            except AttributeError:
+                self._skill_set = SkillSet.get(id=self._skill_set_id)
+                return self._skill_set
 
-    def __str__(self):
-        return 'Item (ID: {}, Name[en]: "{}")'.format(
-            self.id, self.name['en'])
+    def _populate(self, data_override=None):
+        data = data_override if data_override != None else super().get(self.id)
+
+        # Set attribute values
+        self._active_ability_id = data.get('activatable_ability_id')
+        self.description = LocalizedString(data['description'])
+        self._faction_id = data['faction_id']
+        self._image_id = data['image_id']
+        self._image_set_id = data['image_set_id']
+        self.is_default_attachment = data['is_default_attachment']
+        self.is_vehicle_weapon = data['is_vehicle_weapon']
+        self.max_stack_size = data['max_stack_size']
+        self.name = LocalizedString(data['name'])
+        self._passive_ability_id = data.get('passive_ability_id')
+        self._skill_set_id = data.get('skill_set_id')
 
 
-class ItemCategory(StaticDatatype):
-    _collection = 'item_category'
+class ItemCategory(EnumeratedDataType):
+    """The category of an item.
 
-    def __init__(self, id, data_override=None):
+    Groups items into groups.
+    Examples include "Knife", "Assault Rifle" or "VO Pack".
+
+    """
+
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self.name = None
 
-        data = data_override if data_override != None else super().get_data(self)
+        # Define properties
+        @property
+        def items(self):
+            """Returns a list of all items that belong to this category."""
+            try:
+                return self._items
+            except AttributeError:
+                q = Query(type='item')
+                data = q.add_filter(field='item_category', value=self.id).get()
+                self._items = Item.list([i['item_id'] for i in data])
+                return self._items
 
-        self.name = data.get('name')
+    def _populate(self, data_override=None):
+        data = data_override if data_override != None else super().get(self.id)
 
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'ItemCategory (ID: {}, Name[en]: "{}")'.format(
-            self.id, self.name['en'])
+        # Set attribute values
+        self.name = LocalizedString(data['name'])
 
 
-class ItemType(StaticDatatype):
-    _collection = 'item_type'
+class ItemType(EnumeratedDataType):
+    """The type of item.
 
-    def __init__(self, id, data_override=None):
+    This includes entries like "Attachment" or "Weapon", but also abstract
+    objects like "Give Currency" or "Reward Set".
+
+    """
+
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self.code = None
+        self.name = None
 
-        data = data_override if data_override != None else super().get_data(self)
+    def _populate(self, data_override=None):
+        data = data_override if data_override != None else super().get(self.id)
 
-        self.name = data.get('name')
-        self.code = data.get('code')
-
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'ItemCategory (ID: {}, Name: "{}")'.format(
-            self.id, self.name)
+        # Set attribute values
+        self.code = data['code']
+        self.name = data['name']
