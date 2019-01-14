@@ -1,61 +1,103 @@
 from ..census import Query
-from ..datatypes import InterimDatatype, StaticDatatype
+from ..datatypes import CachableDataType, EnumeratedDataType
 from .ability import Ability
 from .resist import ResistType
 from .target import TargetType
 
 
-class Effect(InterimDatatype):
-    _collection = 'effect'
-    _join = ['ability', 'effect_type', 'resist_type', 'target_type']
+class Effect(CachableDataType):
+    """Represents an effect.
 
-    def __init__(self, id, data_override=None):
+    An effect acts upon entities in the game world. Its most common application
+    is for dealing damage to items or players.
+
+    """
+
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self._ability_id = 0
+        self.duration = None
+        self._effect_type_id = 0
+        self.is_drain = 0
+        self._resist_type_id = 0
+        self._target_type_id = 0
+        # Set default values for attributes "param1" through "param13"
+        s = ''
+        for i in range(13):
+            s += 'self.param{} = None\n'.format(i + 1)
+        exec(s)
 
-        data = data_override if data_override != None else super().get_data(self)
+        # Define properties
+        @property
+        def ability(self):
+            try:
+                return self._ability
+            except AttributeError:
+                self._ability = Ability.get(id=self._ability_id)
+                return self._ability
 
-        self.ability = Ability(data.get('ability_id'),
-                               data_override=data.get('ability'))
+        @property
+        def effect_type(self):
+            try:
+                return self._effect_type
+            except AttributeError:
+                self._effect_type = EffectType.get(id=self._effect_type_id)
+                return self._effect_type
+
+        @property
+        def resist_type(self):
+            try:
+                return self._resist_type
+            except AttributeError:
+                self._resist_type = EffectType.get(id=self._resist_type_id)
+                return self._resist_type
+
+        @property
+        def target_type(self):
+            try:
+                return self._target_type
+            except AttributeError:
+                self._target_type = TargetType.get(id=self._target_type_id)
+                return self._target_type
+
+    def _populate(self, data_override=None):
+        data = data_override if data_override != None else super().get(self.id)
+
+        # Set attribute values
+        self.ability_id = data.get('effect_type_id')
         self.duration = data.get('duration_seconds')
-        self.is_drain = True if data.get('is_drain') == '1' else False
-        self.resist_type = ResistType(
-            data.get('resist_type_id'), data_override=data.get('resist_type'))
-        self.target_type = TargetType(
-            data.get('target_type_id'), data_override=data.get('target_type'))
-        self.type = EffectType(data.get('effect_type_id'),
-                               data_override=data.get('effect_type'))
-
-        self.parameters = {}
-        for i in range(14):
-            self.parameters[i] = data.get('param{}'.format(i + 1))
-
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'Effect (ID: {})'.format(self.id)
+        self.effect_type_id = data['effect_type_id']
+        self.is_drain = data.get('is_drain')
+        self.resist_type_id = data.get('resist_type_id')
+        self.target_type_id = data.get('target_type_id')
+        # Set attributes "param1" through "param13"
+        s = ''
+        for i in range(13):
+            s += 'self.param{0} = data.get(\'param{0}\')\n'.format(i + 1)
+        exec(s)
 
 
-class EffectType(StaticDatatype):
-    _collection = 'effect_type'
-
-    def __init__(self, id, data_override=None):
+class EffectType(EnumeratedDataType):
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
-
-        data = data_override if data_override != None else super().get_data(self)
-
-        self.description = data.get('description')
-        self.parameters = {}
+        # Set default values
+        self.description = None
+        # Set default values for attributes "param1" through "param13"
+        s = ''
         for i in range(14):
-            self.parameters[i] = data.get('param{}'.format(i + 1))
+            s += 'self.param{} = None\n'.format(i + 1)
+        exec(s)
 
-        super()._add_to_cache(self)  # Cache this instance for future use
+    def _populate(self, data_override=None):
+        data = data_override if data_override != None else super().get(self.id)
 
-    def __str__(self):
-        return 'EffectType (ID: {}, Description: "{}")'.format(
-            self.id, self.description)
+        # Set attribute values
+        self.description = data.get('description')
+        # Set attributes "param1" through "param13"
+        s = ''
+        for i in range(14):
+            s += 'self.param{0} = data.get(\'param{0}\')\n'.format(i + 1)
+        exec(s)
