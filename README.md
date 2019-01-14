@@ -1,3 +1,7 @@
+# Notice
+
+This wrapper is currently undergoing a near-complete rewrite due to a number of poor decisions. I highly advise you come back in a week or two and see if this message has been removed.
+
 # Auraxium
 
 A Python wrapper meant to facilitate the use of the [Daybreak Game Company Census API](https://census.daybreakgames.com/). While the API is compatible with a number of different DBG titles, this module is currently only being developed and tested for use with [PlanetSide 2](https://www.planetside2.com/).
