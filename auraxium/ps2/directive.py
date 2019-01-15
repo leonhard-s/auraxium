@@ -1,117 +1,253 @@
 from ..census import Query
-from ..datatypes import InterimDatatype, StaticDatatype
+from ..datatypes import CachableDataType, EnumeratedDataType
+from ..misc import LocalizedString
 from .image import Image, ImageSet
-# from .objective import ObjectiveSet
-from .reward import Reward  # , RewardSet
+from .objective import ObjectiveSet
+from .reward import Reward, RewardSet
 
 
-class Directive(InterimDatatype):
-    """A directive in PlanetSide 2."""
+class Directive(CachableDataType):
+    """A directive in PlanetSide 2.
 
-    _collection = 'directive'
-    _join = ['directive_tier', 'directive_tree', 'image_set']
+    A directive is a requirement that gives progress towards the next directive
+    tier.
 
-    def __init__(self, id, data_override=None):
+     """
+
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default value
+        self.description = None
+        self._image_id = None
+        self._image_set = None
+        self.name = None
+        self._objective_set_id = None
+        self._directive_tier_id = None
+        self._directive_tree_id = None
+        self.qualify_requirement_id = None
 
-        data = data_override if data_override != None else super().get_data(self)
+        # Define properties
+        @property
+        def image(self):
+            try:
+                return self._image
+            except AttributeError:
+                self._image = Image.get(id=self._image_id)
+                return self._image
 
-        self.description = data.get('description')
-        self.image = Image(data.get('image_id'))
-        self.image_set = ImageSet(
-            data.get('image_set_id'), data_override=data.get('image_set'))
-        self.name = data.get('name')
-        # self.objective_set = ObjectiveSet(data.get('objective_set_id'))
-        self.tier = DirectiveTier(
-            data.get('directive_tier_id'), data_override=data.get('directive_tier'))
-        self.tree = DirectiveTree(
-            data.get('directive_tree_id'), data_override=data.get('directive_tree'))
+        @property
+        def image_set(self):
+            try:
+                return self._image_set
+            except AttributeError:
+                self._image_set = ImageSet.get(id=self._image_set_id)
+                return self._image_set
 
-        # I have no clue what this is linked to. qualify_requirement_id is not
-        # a collection, so it might not be accessible to the API.
-        # self.qualify_requirement_id = #?!
+        @property
+        def objective_set(self):
+            try:
+                return self._objective_set
+            except AttributeError:
+                self._objective_set = ObjectiveSet.get(
+                    id=self._objective_set_id)
+                return self._objective_set
 
-        super()._add_to_cache(self)  # Cache this instance for future use
+        @property
+        def directive_tier(self):
+            try:
+                return self._directive_tier
+            except AttributeError:
+                self._directive_tier = DirectiveTier.get(
+                    id=self._directive_tier_id)
+                return self._directive_tier
 
-    def __str__(self):
-        return 'Directive (ID: {}, name[en]: "{}")'.format(
-            self.id, self.name['en'])
+        @property
+        def directive_tree(self):
+            try:
+                return self._directive_tree
+            except AttributeError:
+                self._directive_tree = DirectiveTree.get(
+                    id=self._directive_tree_id)
+                return self._directive_tree
+
+    def _populate(self, data_override=None):
+        data = data_override if data_override != None else super().get(self.id)
+
+        # Set attribute values
+        self.description = LocalizedString(data['description'])
+        self._image_id = data['image_id']
+        self._image_set_id = data['image_set_id']
+        self.name = LocalizedString(data['name'])
+        self.objective_set = data['objective_set_id']
+        self.tier = data['directive_tier_id']
+        self.tree = data['directive_tree_id']
+        self.qualify_requirement_id = data.get('qualify_requirement_id')
 
 
-class DirectiveTier(StaticDatatype):
-    _collection = 'directive_tier'
-    _join = ['directive_tree', 'image_set']
+class DirectiveTier(EnumeratedDataType):
+    """A directive tier.
 
-    def __init__(self, id, data_override=None):
+    Examples include "Carbines: Novice" and "Combat Medic: Master".
+
+    """
+
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self.required_for_completion = None
+        self.directive_points = None
+        self._directive_tree_id = None
+        self._image_id = None
+        self._image_set_id = None
+        self.name = None
+        self._reward_set_id = None
 
-        data = data_override if data_override != None else super().get_data(self)
+        # Define properties
+        @property
+        def directive_tree(self):
+            try:
+                return self._directive_tree
+            except AttributeError:
+                self._directive_tree = DirectiveTree.get(
+                    id=self._directive_tree_id)
+                return self._directive_tree
 
-        self.completion_count = data.get('completion_count')
-        self.directive_points = data.get('directive_points')
-        self.directive_tree = DirectiveTree(
-            data.get('directive_tree_id'), data_override=data.get('directive_tree'))
-        self.image = Image(data.get('image_id'))
-        self.image_set = ImageSet(data.get('image_set_id'),
-                                  data_override=data.get('image_set'))
-        self.name = data.get('name')
-        # self.reward_set = RewardSet(data.get('reward_set_id'))
+        @property
+        def image(self):
+            try:
+                return self._image
+            except AttributeError:
+                self._image = Image.get(id=self._image_id)
+                return self._image
 
-        super()._add_to_cache(self)  # Cache this instance for future use
+        @property
+        def image_set(self):
+            try:
+                return self._image_set
+            except AttributeError:
+                self._image_set = ImageSet.get(id=self._image_set_id)
+                return self._image_set
 
-    def __str__(self):
-        return 'DirectiveTier (ID: {}, name[en]: "{}")'.format(
-            self.id, self.name['en'])
+        @property
+        def reward_set(self):
+            try:
+                return self._reward_set
+            except AttributeError:
+                self._reward_set = RewardSet.get(id=self._reward_set_id)
+                return self._reward_set
+
+    def _populate(self, data_override=None):
+        data = data_override if data_override != None else super().get(self.id)
+
+        # Set attribute values
+        self.required_for_completion = data['completion_count']
+        self.directive_points = data['directive_points']
+        self._directive_tree_id = data['directive_tree_id']
+        self._image_id = data['image_id']
+        self._image_set_id = data['image_set_id']
+        self.name = LocalizedString(data['name'])
+        self.reward_set = data.get('reward_set_id')
 
 
-class DirectiveTree(StaticDatatype):
-    _collection = 'directive_tree'
-    _join = ['directive_tree_category', 'image_set']
+class DirectiveTree(EnumeratedDataType):
+    """A directive tree.
 
-    def __init__(self, id, data_override=None):
+    Directive trees are an entry for a directive category. Examples for
+    directive trees from the "Weapons" category would be "Carbines" or
+    "Pistols".
+
+    """
+
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self._category_id = None
+        self.description = None
+        self._image_id = None
+        self._image_set_id = None
+        self.name = None
 
-        data = data_override if data_override != None else super().get_data(self)
+        # Define properties
+        @property
+        def category(self):
+            try:
+                return self._category
+            except AttributeError:
+                self._category = DirectiveTreeCategory.get(
+                    id=self._category_id)
+                return self._category
 
-        self.category = DirectiveTreeCategory(
-            data.get('directive_tree_category_id'), data_override=data.get('directive_tree_category'))
-        self.description = data.get('description')
-        self.image = Image(data.get('image_id'))
-        self.image_set = ImageSet(data.get('image_set_id'),
-                                  data_override=data.get('image_set'))
-        self.name = data.get('name')
+        @property
+        def directives(self):
+            try:
+                return self._directives
+            except AttributeError:
+                q = Query(type='directive')
+                q.add_filter(field='directive_tree_id', value=self.id)
+                data = q.get()
+                self._directives = Directive.list(
+                    [i['directive_id'] for i in data])
+                return self._directives
 
-        super()._add_to_cache(self)  # Cache this instance for future use
+        @property
+        def image(self):
+            try:
+                return self._image
+            except AttributeError:
+                self._image = Image.get(id=self._image_id)
+                return self._image
 
-    def __str__(self):
-        return 'DirectiveTree (ID: {}, name[en]: "{}")'.format(
-            self.id, self.name['en'])
+        @property
+        def image_set(self):
+            try:
+                return self._image_set
+            except AttributeError:
+                self._image_set = ImageSet.get(id=self._image_set_id)
+                return self._image_set
+
+    def _populate(self, data_override=None):
+        data = data_override if data_override != None else super().get(self.id)
+
+        # Set attribute values
+        self._category_id = data['directive_tree_category_id']
+        self.description = LocalizedString(data['description'])
+        self._image_id = data['image_id']
+        self._image_set_id = data['image_set_id']
+        self.name = LocalizedString(data['name'])
 
 
-class DirectiveTreeCategory(StaticDatatype):
-    _collection = 'directive_tree_category'
+class DirectiveTreeCategory(EnumeratedDataType):
+    """A category of directive trees.
 
-    def __init__(self, id, data_override=None):
+    Examples for directive tree categories are "Infantry", "Vehicle" or
+    "Weapons".
+
+    """
+
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self.name = None
 
-        data = data_override if data_override != None else super().get_data(self)
+        # Define properties
+        @property
+        def directive_trees(self):
+            try:
+                return self._directive_trees
+            except AttributeError:
+                q = Query(type='directive_tree')
+                q.add_filter(field='directive_tree_category_id', value=self.id)
+                data = q.get()
+                self._directive_trees = DirectiveTree.list(
+                    [i['directive_tree_id'] for i in data])
+                return self._directive_trees
 
-        self.name = data.get('name')
+    def _populate(self, data_override=None):
+        data = data_override if data_override != None else super().get(self.id)
 
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'DirectiveTreeCategory (ID: {}, name[en]: "{}")'.format(
-            self.id, self.name['en'])
+        # Set attribute values
+        self.name = LocalizedString(data.get('name'))
