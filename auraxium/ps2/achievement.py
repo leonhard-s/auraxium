@@ -45,7 +45,7 @@ class Achievement(CachableDataType):
                 self._image = Image.get(id=self._image_id)
                 return self._image
 
-                @property
+        @property
         def image_set(self):
             try:
                 return self._image_set
