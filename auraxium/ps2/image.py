@@ -1,55 +1,74 @@
 from ..census import _CENSUS_BASE_URL, Query
-from ..datatypes import InterimDatatype, StaticDatatype
+from ..datatypes import CachableDataType
 
 
-class Image(InterimDatatype):
-    _cache_size = 500
-    _collection = 'image'
+class Image(CachableDataType):
+    """An image object.
 
-    def __init__(self, id, data_override=None):
+    Image objects contain information about a given image file. Note that not
+    all images exist, the path generated might point to an empty image.
+
+    """
+
+    def __init__(self, id, light=False):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self.description = None
+        self.path = None if not light else None(_CENSUS_BASE_URL
+                                                + '/files/ps2/images/static/{}.png'.format(id))
 
-        self.path = _CENSUS_BASE_URL + \
-            '/files/ps2/images/static/{}.png'.format(id)
+    def _populate(self, data_override=None):
+        data = data_override if data_override != None else super().get(self.id)
 
-        super()._add_to_cache(self)  # Cache this instance for future use
+        # Set attribute values
+        self.description = data.get('description')
+        self.path = data['path']
 
-    def __str__(self):
-        return 'Image (ID: {})'.format(self.id)
 
+class ImageSet(CachableDataType):
+    """An image set.
 
-class ImageSet(InterimDatatype):
-    _cache_size = 100
-    _collection = 'image_set'
+    Image sets are used to group versions of the same image together, mostly
+    to provide a set of sizes to choose from depending on the application.
 
-    def __init__(self, id, data_override=None):
+    """
+
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self.description = None
 
-        self.images = {}
+        # Define properties
+        @property
+        def default_image(self):
+            try:
+                return self._default_image
+            except AttributeError:
+                q = Query(type='image_set_default')
+                q.add_filter(field='image_set_id', value=self.id)
+                data = q.get_single()
+                self._default_image = Image.get(data['profile_id'])
+                return self._default_image
 
-        # Get a list of all images of this set, and join the default image
-        q = Query(self.__class__._collection, limit=10, id=id)
-        q.join('image_set_default', match='image_set_id').show('type_id')
-        data = q.get()
+        @property
+        def members(self):
+            try:
+                return self._members
+            except AttributeError:
+                data = Query(type='image_set', id=self.id).get()
+                Image.list([i['image_id'] for i in data])
+                # NOTE: This is not very elegant, but calling the `list()`
+                # method for all images for this image type makes sure they
+                # are cached using a single query.
+                self._members = {i['type_id']: Image.get(
+                    i['image_id']) for i in data}
+                return self._members
 
-        self.description = data[0]['description']
+    def _populate(self, data_override=None):
+        data = data_override if data_override != None else super().get(self.id)
 
-        for image_set in data:
-            desc = '{} - {}'.format(image_set['description'],
-                                    image_set['type_description'])
-            self.images[image_set['type_id']] = Image(image_set['image_id'])
-
-        self.default_image = self.images[data[0]
-                                         ['image_set_default']['type_id']]
-
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'ImageSet (ID: {}, Description: "{}")'.format(
-            self.id, self.description)
+        # Set attribute values
+        self.description = data.get('description')
+        self._default_image_id = data.get()
