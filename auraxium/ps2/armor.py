@@ -1,50 +1,60 @@
 from ..census import Query
-from ..datatypes import InterimDatatype, StaticDatatype
+from ..datatypes import CachableDataType, EnumeratedDataType
 
 
-class ArmorFacing(StaticDatatype):
-    _collection = 'armor_facing'
+class ArmorFacing(EnumeratedDataType):
+    """The direction a vehicle is being attacked from.
 
-    def __init__(self, id, data_override=None):
+    Enumerates the directions a vehicle can be attacked from. This is used as
+    part of the armor info system to determine armor modifiers based on the
+    angle of attack.
+
+    """
+
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self.description = None
 
-        data = data_override if data_override != None else super().get_data(self)
+    def _populate(self, data_override=None):
+        data = data_override if data_override != None else super().get(self.id)
 
+        # Set attribute values
         self.description = data.get('description')
 
-        super()._add_to_cache(self)  # Cache this instance for future use
 
-    def __str__(self):
-        return 'ArmorFacing (ID: {}, Description: "{}")'.format(
-            self.name, self.description)
+class ArmorInfo(CachableDataType):
+    """Armor information.
 
+    Contains information about how armor is calculated based on the attack
+    direction and entity type.
 
-class ArmorInfo(InterimDatatype):
-    _collection = 'armor_info'
-    _join = 'armor_facing'
+    """
 
-    def __init__(self, id, data_override=None):
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self._armor_facing_id = None
+        # self.armor_amount = None  # Removed from the game
+        self.armor_percent = None
+        self.description = None
 
-        data = data_override if data_override != None else super().get_data(self)
+        # Define properties
+        @property
+        def armor_facing(self):
+            try:
+                return self._armor_facing
+            except AttributeError:
+                self._armor_facing = ArmorFacing.get(id=self._armor_facing_id)
+                return self._armor_facing
 
-        self.armor_facing = ArmorFacing(
-            data.get('armor_facing_id'), data_override=data.get('armor_facing'))
+    def _populate(self, data_override=None):
+        data = data_override if data_override != None else super().get(self.id)
+
+        # Set attribute values
+        self._armor_facing_id = data.get('armor_facing_id')
+        # self.armor_amount = data.get('armor_amount')  # Removed from the game
         self.armor_percent = data.get('armor_percent')
         self.description = data.get('description')
-
-        # This field has been set to NULL for every single entry. I commented
-        # it out for the time being.
-        # self.armor_amount = data.get('armor_amount'))
-
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'ArmorInfo (ID: {}, Description: "{}")'.format(
-            self.id, self.description)
