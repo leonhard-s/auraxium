@@ -1,59 +1,88 @@
-from ..census import Query
-from ..datatypes import InterimDatatype, StaticDatatype
+from ..datatypes import CachableDataType, EnumeratedDataType
 
 
-class Projectile(InterimDatatype):
-    _cache_size = 100
+class Projectile(CachableDataType):
+    """A projectile.
+
+    Anything that moves predictably, such as bullets or grenades.
+
+    """
+
     _collection = 'projectile'
-    _join = 'projectile_flight_type'
 
-    def __init__(self, id, data_override=None):
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self._projectile_flight_type_id = None
+        self.speed = None
+        self.speed_max = None
+        self.acceleration = None
+        self.turn_rate = None
+        self.drag = None
+        self.gravity = None
+        self.lockon_acceleration = None
+        self.lockon_lifespan = None
+        self.arm_distance = None
+        self.tether_distance = None
+        self.detonate_distance = None
+        self.is_sicky = None
+        self.sticks_to_players = None
+        self.lockon_lose_angle = None
+        self.lockon_seek_in_flight = None
 
-        data = data_override if data_override != None else super().get_data(self)
+        # Define properties
+        @property
+        def projectile_flight_type(self):
+            try:
+                return self._projectile_flight_type
+            except AttributeError:
+                self._projectile_flight_type = ProjectileFlightType.get(
+                    cls=self.__class__, id=self._projectile_flight_type_id)
+                return self._projectile_flight_type
 
-        self.flight_type = ProjectileFlightType(
-            data.get('projectile_flight_type_id'), data_override=data.get('projectile_flight_type'))
-        self.speed = data.get('speed')
-        self.speed_max = data.get('speed_max')
-        self.acceleration = data.get('acceleration')
-        self.turn_rate = data.get('turn_rate')
-        self.lifespan = data.get('lifespan')
-        self.turn_rate = data.get('turn_rate')
-        self.drag = data.get('drag')
-        self.gravity = data.get('gravity')
-        self.lockon_acceleration = data.get('lockon_acceleration')
-        self.lockon_lifespan = data.get('lockon_lifespan')
-        self.arm_distance = data.get('arm_distance')
-        self.tether_distance = data.get('tether_distance')
-        self.detonate_distance = data.get('detonate_distance')
-        self.sticky = data.get('sticky')
-        self.sticks_to_players = data.get('sticks_to_players')
-        self.lockon_lose_angle = data.get('lockon_lose_angle')
-        self.lockon_seek_in_flight = data.get('lockon_seek_in_flight')
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'Projectile (ID: {})'.format(self.id)
+        # Set attribute values
+        self._projectile_flight_type_id = d['projectile_flight_type_id']
+        self.speed = d.get('speed')
+        self.speed_max = d.get('speed_max')
+        self.acceleration = d.get('acceleration')
+        self.turn_rate = d.get('turn_rate')
+        self.lifespan = d.get('lifespan')
+        self.turn_rate = d.get('turn_rate')
+        self.drag = d.get('drag')
+        self.gravity = d.get('gravity')
+        self.lockon_acceleration = d.get('lockon_acceleration')
+        self.lockon_lifespan = d.get('lockon_lifespan')
+        self.arm_distance = d.get('arm_distance')
+        self.tether_distance = d.get('tether_distance')
+        self.detonate_distance = d.get('detonate_distance')
+        self.is_sticky = d.get('sticky')
+        self.sticks_to_players = d.get('sticks_to_players')
+        self.lockon_lose_angle = d.get('lockon_lose_angle')
+        self.lockon_seek_in_flight = d.get('lockon_seek_in_flight')
 
 
-class ProjectileFlightType(StaticDatatype):
+class ProjectileFlightType(EnumeratedDataType):
+    """A flight type for a projectile.
+
+    Lists the flight types available for projectiles, such as "hurled across
+    the room", "hitscan" or "pseudo-ballistic".
+
+    """
+
     _collection = 'projectile_flight_type'
 
-    def __init__(self, id, data_override=None):
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self.description = None
 
-        data = data_override if data_override != None else super().get_data(self)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
-        self.description = data.get('description')
-
-    def __str__(self):
-        return 'ProjectileFlightType (ID: {}, Description: "{}")'.format(
-            self.id, self.description)
+        # Set attribute values
+        self.description = d.get('description')

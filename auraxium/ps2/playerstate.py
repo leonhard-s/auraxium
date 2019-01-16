@@ -1,25 +1,29 @@
 from ..census import Query
-from ..datatypes import InterimDatatype, StaticDatatype
+from ..datatypes import EnumeratedDataType
 
 
-class PlayerState(StaticDatatype):
+class PlayerState(EnumeratedDataType):
+    """A player state.
+
+    Used to handle changing cone of fires and other fields based on what the
+    player is doing.
+
+    """
+
     _collection = 'player_state'
 
-    def __init__(self, id, data_override=None):
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self.description = None
 
-        data = data_override if data_override != None else super().get_data(self)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
-        self.description = data.get('description')
+        # Set attribute values
+        self.description = d.get('description')
 
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'PlayerState (ID: {}, Description: "{}")'.format(
-            self.id, self.Description)
 
 # class PlayerStateGroup(InterimDatatype):
 #     """Controls CoF modifiers depending on what the player is doing.
@@ -35,10 +39,10 @@ class PlayerState(StaticDatatype):
 #     def __init__(self, id):
 #         self.id = id
 #
-#         data = Query(self.__class__, id=id, limit=10).get()
+#         d = Query(self.__class__, id=id, limit=10).get()
 #         self.player_state =
 #
-#         for state in data:
+#         for state in d:
 #             self.player_state
 #             # "player_state_group_id": "1",
 #             "player_state_id": "0",

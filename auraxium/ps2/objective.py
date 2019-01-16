@@ -1,6 +1,5 @@
 from ..census import Query
 from ..datatypes import CachableDataType, EnumeratedDataType
-from .objective import ObjectiveType
 
 
 class Objective(CachableDataType):
@@ -29,20 +28,20 @@ class Objective(CachableDataType):
             try:
                 return self._objective_type
             except AttributeError:
-                self._objective_type = ObjectiveType.get(
-                    id=self._objective_type_id)
+                self._objective_type = ObjectiveType.get(cls=self.__class__,
+                                                         id=self._objective_type_id)
                 return self._objective_type
 
-    def _populate(self, data_override=None):
-        data = data_override if data_override != None else super().get(self.id)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
         # Set attribute values
-        self.objective_group_id = data.get('objective_group_id')
-        self._objective_type_id = data['objective_type_id']
+        self.objective_group_id = d.get('objective_group_id')
+        self._objective_type_id = d['objective_type_id']
         # Set attributes "param1" through "param13"
         s = ''
         for i in range(13):
-            s += 'self.param{0} = data.get(\'param{0}\')\n'.format(i + 1)
+            s += 'self.param{0} = d.get(\'param{0}\')\n'.format(i + 1)
         exec(s)
 
 
@@ -65,13 +64,13 @@ class ObjectiveType(EnumeratedDataType):
             s += 'self.param{} = None\n'.format(i + 1)
         exec(s)
 
-    def _populate(self, data_override=None):
-        data = data_override if data_override != None else super().get(self.id)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
         # Set attribute values
-        self.description = data['description']
+        self.description = d['description']
         # Set attributes "param1" through "param13"
         s = ''
         for i in range(13):
-            s += 'self.param{0} = data.get(\'param{0}\')\n'.format(i + 1)
+            s += 'self.param{0} = d.get(\'param{0}\')\n'.format(i + 1)
         exec(s)

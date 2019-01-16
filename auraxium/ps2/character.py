@@ -7,6 +7,7 @@ from .faction import Faction
 from .image import Image
 from .profile import Profile
 from .title import Title
+from .world import World
 
 
 class Character(CachableDataType):
@@ -65,9 +66,9 @@ class Character(CachableDataType):
                 return self._currency
             except AttributeError:
                 q = Query(type='characters_currency')
-                data = q.add_filter(field='character_id', value=self.id).get()
-                self._currency = Currency.list(
-                    [c['currency_id'] for c in data])
+                d = q.add_filter(field='character_id', value=self.id).get()
+                self._currency = Currency.list(cls=self.__class__,
+                                               ids=[c['currency_id'] for c in d])
                 return self._currency
 
         @property
@@ -75,7 +76,8 @@ class Character(CachableDataType):
             try:
                 return self._faction
             except AttributeError:
-                self._faction = Faction.get(id=self._faction_id)
+                self._faction = Faction.get(cls=self.__class__,
+                                            id=self._faction_id)
                 return self._faction
 
         @property
@@ -84,8 +86,9 @@ class Character(CachableDataType):
                 return self._world
             except AttributeError:
                 q = Query(type='item_profile')
-                data = q.add_filter(field='item_id', value=self.id).get()
-                self._profiles = Profile.list([i['profile_id'] for i in data])
+                d = q.add_filter(field='item_id', value=self.id).get()
+                self._profiles = Profile.list(cls=self.__class__,
+                                              ids=[i['profile_id'] for i in d])
                 return self._profiles
 
         @property
@@ -100,8 +103,8 @@ class Character(CachableDataType):
         def online_status(self):
             q = Query(type='characters_online_status')
             q.add_filter(field='character_id', value=self.id)
-            data =
-            return data['online_status']
+            d = q.get_single()
+            return d['online_status']
 
         @property
         def profile(self):
@@ -126,38 +129,38 @@ class Character(CachableDataType):
             except AttributeError:
                 q = Query(type='characters_world')
                 q.add_filter(field='character_id', value=self.id)
-                data = q.get_single()
-                self._world = World.get(data['world_id'])
+                d = q.get_single()
+                self._world = World.get(d['world_id'])
                 return self._world
 
-    def _populate(self, data_override=None):
-        data = data_override if data_override != None else super().get(self.id)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
         # Set attribute values
-        self.asp_rank = data['prestige_level']
-        self.battle_rank = data['battle_rank']['value']
-        self.battle_rank_percent = data['battle_rank']['percent_to_next']
-        self.certs_available = data['certs']['available_points']
-        self.certs_earned = data['certs']['earned_points']
-        self.certs_gifted = data['certs']['gifted_points']
-        self.certs_spent = data['certs']['spent_points']
-        self.cert_percent = data['certs']['percent_to_next']
-        self.daily_ribbon_bonus_count = data['daily_ribbon']['count']
+        self.asp_rank = d['prestige_level']
+        self.battle_rank = d['battle_rank']['value']
+        self.battle_rank_percent = d['battle_rank']['percent_to_next']
+        self.certs_available = d['certs']['available_points']
+        self.certs_earned = d['certs']['earned_points']
+        self.certs_gifted = d['certs']['gifted_points']
+        self.certs_spent = d['certs']['spent_points']
+        self.cert_percent = d['certs']['percent_to_next']
+        self.daily_ribbon_bonus_count = d['daily_ribbon']['count']
         self.daily_ribbon_bonus_last = datetime.utcfromtimestamp(int(
-            data['daily_ribbon']['time']))
-        self._faction_id = data['faction_id']
-        self.login_count = data['times']['login_count']
-        self._head_id = data['head_id']
-        self.play_time = data['times']['minutes_played'] / 60.0
-        self.name = data['name']['first']
-        self._profile_id = data['profile_id']
+            d['daily_ribbon']['time']))
+        self._faction_id = d['faction_id']
+        self.login_count = d['times']['login_count']
+        self._head_id = d['head_id']
+        self.play_time = d['times']['minutes_played'] / 60.0
+        self.name = d['name']['first']
+        self._profile_id = d['profile_id']
         self.time_created = datetime.utcfromtimestamp(int(
-            data['times']['creation']))
+            d['times']['creation']))
         self.time_last_saved = datetime.utcfromtimestamp(int(
-            data['times']['last_save']))
+            d['times']['last_save']))
         self.time_last_login = datetime.utcfromtimestamp(int(
-            data['times']['last_login']))
-        self._title_id = data.get('title_id')
+            d['times']['last_login']))
+        self._title_id = d.get('title_id')
 
 
 class Head(object):
@@ -187,5 +190,5 @@ class Head(object):
             try:
                 return self._image
             except AttributeError:
-                self._image = Image.get(id=self._image_id)
+                self._image = Image.get(cls=self.__class__, id=self._image_id)
                 return self._image

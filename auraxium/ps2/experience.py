@@ -15,9 +15,9 @@ class Experience(CachableDataType):
         self.amount = None
         self.description = None
 
-    def _populate(self, data_override=None):
-        data = data_override if data_override != None else super().get(self.id)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
         # Set attribute values
-        self.amount = data['xp']
-        self.description = data['description']
+        self.amount = d['xp']
+        self.description = d['description']

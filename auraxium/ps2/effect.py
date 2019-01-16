@@ -35,7 +35,8 @@ class Effect(CachableDataType):
             try:
                 return self._ability
             except AttributeError:
-                self._ability = Ability.get(id=self._ability_id)
+                self._ability = Ability.get(cls=self.__class__,
+                                            id=self._ability_id)
                 return self._ability
 
         @property
@@ -43,7 +44,8 @@ class Effect(CachableDataType):
             try:
                 return self._effect_type
             except AttributeError:
-                self._effect_type = EffectType.get(id=self._effect_type_id)
+                self._effect_type = EffectType.get(cls=self.__class__,
+                                                   id=self._effect_type_id)
                 return self._effect_type
 
         @property
@@ -51,7 +53,8 @@ class Effect(CachableDataType):
             try:
                 return self._resist_type
             except AttributeError:
-                self._resist_type = EffectType.get(id=self._resist_type_id)
+                self._resist_type = EffectType.get(cls=self.__class__,
+                                                   id=self._resist_type_id)
                 return self._resist_type
 
         @property
@@ -62,20 +65,20 @@ class Effect(CachableDataType):
                 self._target_type = TargetType.get(id=self._target_type_id)
                 return self._target_type
 
-    def _populate(self, data_override=None):
-        data = data_override if data_override != None else super().get(self.id)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
         # Set attribute values
-        self.ability_id = data.get('effect_type_id')
-        self.duration = data.get('duration_seconds')
-        self.effect_type_id = data['effect_type_id']
-        self.is_drain = data.get('is_drain')
-        self.resist_type_id = data.get('resist_type_id')
-        self.target_type_id = data.get('target_type_id')
+        self.ability_id = d.get('effect_type_id')
+        self.duration = d.get('duration_seconds')
+        self.effect_type_id = d['effect_type_id']
+        self.is_drain = d.get('is_drain')
+        self.resist_type_id = d.get('resist_type_id')
+        self.target_type_id = d.get('target_type_id')
         # Set attributes "param1" through "param13"
         s = ''
         for i in range(13):
-            s += 'self.param{0} = data.get(\'param{0}\')\n'.format(i + 1)
+            s += 'self.param{0} = d.get(\'param{0}\')\n'.format(i + 1)
         exec(s)
 
 
@@ -91,13 +94,13 @@ class EffectType(EnumeratedDataType):
             s += 'self.param{} = None\n'.format(i + 1)
         exec(s)
 
-    def _populate(self, data_override=None):
-        data = data_override if data_override != None else super().get(self.id)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
         # Set attribute values
-        self.description = data.get('description')
+        self.description = d.get('description')
         # Set attributes "param1" through "param13"
         s = ''
         for i in range(14):
-            s += 'self.param{0} = data.get(\'param{0}\')\n'.format(i + 1)
+            s += 'self.param{0} = d.get(\'param{0}\')\n'.format(i + 1)
         exec(s)

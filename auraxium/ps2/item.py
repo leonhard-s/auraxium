@@ -5,6 +5,7 @@ from .ability import Ability
 from .faction import Faction
 from .image import Image, ImageSet
 from .skill import SkillSet
+from .profile import Profile
 
 
 class Item(CachableDataType):
@@ -38,7 +39,8 @@ class Item(CachableDataType):
             try:
                 return self._active_ability
             except AttributeError:
-                self._active_ability = Ability.get(id=self._active_ability_id)
+                self._active_ability = Ability.get(cls=self.__class__,
+                                                   id=self._active_ability_id)
                 return self._active_ability
 
         @property
@@ -47,9 +49,9 @@ class Item(CachableDataType):
                 return self._attachments
             except AttributeError:
                 q = Query(type='item_attachment')
-                data = q.add_filter(field='item_id', value=self.id).get()
-                self._attachments = Item.list(
-                    [i['attachment_item_id'] for i in data])
+                d = q.add_filter(field='item_id', value=self.id).get()
+                self._attachments = Item.list(cls=self.__class__,
+                                              ids=[i['attachment_item_id'] for i in d])
                 return self._attachments
 
         @property
@@ -57,7 +59,8 @@ class Item(CachableDataType):
             try:
                 return self._faction
             except AttributeError:
-                self._faction = Faction.get(id=self._faction_id)
+                self._faction = Faction.get(cls=self.__class__,
+                                            id=self._faction_id)
                 return self._faction
 
         @property
@@ -65,7 +68,7 @@ class Item(CachableDataType):
             try:
                 return self._image
             except AttributeError:
-                self._image = Image.get(id=self._image_id)
+                self._image = Image.get(cls=self.__class__, id=self._image_id)
                 return self._image
 
         @property
@@ -73,7 +76,8 @@ class Item(CachableDataType):
             try:
                 return self._image_set
             except AttributeError:
-                self._image_set = ImageSet.get(id=self._image_set_id)
+                self._image_set = ImageSet.get(cls=self.__class__,
+                                               id=self._image_set_id)
                 return self._image_set
 
         @property
@@ -81,8 +85,8 @@ class Item(CachableDataType):
             try:
                 return self._passive_ability
             except AttributeError:
-                self._passive_ability = Ability.get(
-                    id=self._passive_ability_id)
+                self._passive_ability = Ability.get(cls=self.__class__,
+                                                    id=self._passive_ability_id)
                 return self._passive_ability
 
         @property
@@ -91,8 +95,9 @@ class Item(CachableDataType):
                 return self._profiles
             except AttributeError:
                 q = Query(type='item_profile')
-                data = q.add_filter(field='item_id', value=self.id).get()
-                self._profiles = Profile.list([i['profile_id'] for i in data])
+                d = q.add_filter(field='item_id', value=self.id).get()
+                self._profiles = Profile.list(cls=self.__class__, ids=[
+                                              i['profile_id'] for i in d])
                 return self._profiles
 
         @property
@@ -100,24 +105,25 @@ class Item(CachableDataType):
             try:
                 return self._skill_set
             except AttributeError:
-                self._skill_set = SkillSet.get(id=self._skill_set_id)
+                self._skill_set = SkillSet.get(
+                    cls=self.__class__, id=self._skill_set_id)
                 return self._skill_set
 
-    def _populate(self, data_override=None):
-        data = data_override if data_override != None else super().get(self.id)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
         # Set attribute values
-        self._active_ability_id = data.get('activatable_ability_id')
-        self.description = LocalizedString(data['description'])
-        self._faction_id = data['faction_id']
-        self._image_id = data['image_id']
-        self._image_set_id = data['image_set_id']
-        self.is_default_attachment = data['is_default_attachment']
-        self.is_vehicle_weapon = data['is_vehicle_weapon']
-        self.max_stack_size = data['max_stack_size']
-        self.name = LocalizedString(data['name'])
-        self._passive_ability_id = data.get('passive_ability_id')
-        self._skill_set_id = data.get('skill_set_id')
+        self._active_ability_id = d.get('activatable_ability_id')
+        self.description = LocalizedString(d['description'])
+        self._faction_id = d['faction_id']
+        self._image_id = d['image_id']
+        self._image_set_id = d['image_set_id']
+        self.is_default_attachment = d['is_default_attachment']
+        self.is_vehicle_weapon = d['is_vehicle_weapon']
+        self.max_stack_size = d['max_stack_size']
+        self.name = LocalizedString(d['name'])
+        self._passive_ability_id = d.get('passive_ability_id')
+        self._skill_set_id = d.get('skill_set_id')
 
 
 class ItemCategory(EnumeratedDataType):
@@ -142,15 +148,16 @@ class ItemCategory(EnumeratedDataType):
                 return self._items
             except AttributeError:
                 q = Query(type='item')
-                data = q.add_filter(field='item_category', value=self.id).get()
-                self._items = Item.list([i['item_id'] for i in data])
+                d = q.add_filter(field='item_category', value=self.id).get()
+                self._items = Item.list(cls=self.__class__, ids=[
+                                        i['item_id'] for i in d])
                 return self._items
 
-    def _populate(self, data_override=None):
-        data = data_override if data_override != None else super().get(self.id)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
         # Set attribute values
-        self.name = LocalizedString(data['name'])
+        self.name = LocalizedString(d['name'])
 
 
 class ItemType(EnumeratedDataType):
@@ -168,9 +175,9 @@ class ItemType(EnumeratedDataType):
         self.code = None
         self.name = None
 
-    def _populate(self, data_override=None):
-        data = data_override if data_override != None else super().get(self.id)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
         # Set attribute values
-        self.code = data['code']
-        self.name = data['name']
+        self.code = d['code']
+        self.name = d['name']

@@ -1,22 +1,24 @@
-from ..census import Query
-from ..datatypes import InterimDatatype, StaticDatatype
+from ..datatypes import EnumeratedDataType
 
 
-class ResourceType(StaticDatatype):
+class ResourceType(EnumeratedDataType):
+    """A resource in PS2.
+
+    A resource fuels abilities like the Combat Medic's AoE heal or the Heavy
+    Assault's overshield.
+
+    """
+
     _collection = 'resource_type'
 
-    def __init__(self, id, data_override=None):
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self.description = None
 
-        data = data_override if data_override != None else super().get_data(self)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
-        self.description = data.get('description')
-
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'ResourceType (ID: {}, Description: "{}")'.format(
-            self.id, self.description)
+        # Set attribute values
+        self.description = d['description']

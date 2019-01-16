@@ -28,7 +28,7 @@ class Faction(EnumeratedDataType):
             try:
                 return self._image
             except AttributeError:
-                self._image = Image.get(id=self._image_id)
+                self._image = Image.get(cls=self.__class__, id=self._image_id)
                 return self._image
 
         @property
@@ -36,18 +36,19 @@ class Faction(EnumeratedDataType):
             try:
                 return self._image_set
             except AttributeError:
-                self._image_set = ImageSet.get(id=self._image_set_id)
+                self._image_set = ImageSet.get(cls=self.__class__,
+                                               id=self._image_set_id)
                 return self._image_set
 
-    def _populate(self, data_override=None):
-        data = data_override if data_override != None else super().get(self.id)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
         # Set attribute values
-        self.name = LocalizedString(data['name'])
-        self._image_id = data['image_id']
-        self._image_set_id = data['image_set_id']
-        self.is_playable = True if data['user_selectable'] == '1' else False
+        self.name = LocalizedString(d['name'])
+        self._image_id = d['image_id']
+        self._image_set_id = d['image_set_id']
+        self.is_playable = True if d['user_selectable'] == '1' else False
         # NOTE: As of the writing of this module, Nanite Systems does not have
         # a tag. As this might change with the introduction of combat robots, I
         # wrote this section in a way that should be able to handle that.
-        self.tag = 'NS' if data['code_tag'] == 'None' else data['code_tag']
+        self.tag = 'NS' if d['code_tag'] == 'None' else d['code_tag']

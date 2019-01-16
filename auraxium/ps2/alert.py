@@ -16,11 +16,11 @@ class AlertState(EnumeratedDataType):
         # Set default values
         self.name = None
 
-    def _populate(self, data_override=None):
-        data = data_override if data_override != None else super().get(self.id)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
         # Set attribute values
-        self.name = data['name']
+        self.name = d['name']
 
 
 class Alert(EnumeratedDataType):
@@ -40,16 +40,16 @@ class Alert(EnumeratedDataType):
         self.name = None
         self.type = None
 
-    def _populate(self, data_override=None):
-        data = data_override if data_override != None else super().get(self.id)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
         # Set attribute values
-        self.description = LocalizedString(data['description'])
-        self.experience_bonus = data['experience_bonus']
-        self.name = LocalizedString(data['name'])
+        self.description = LocalizedString(d['description'])
+        self.experience_bonus = d['experience_bonus']
+        self.name = LocalizedString(d['name'])
         # Hard-coded descriptions of the base alert types, 1 and 6 are unused.
         alert_types = {'1': 'Territory Control', '2': 'Facility Type',
                             '5': 'Warpgates Stabilizing', '6': 'Conquest',
                             '8': 'Meltdown', '9': 'Unstable Meltdown',
                             '10': 'Aerial Anomalies'}
-        self.type = alert_types[data['type']]
+        self.type = alert_types[d['type']]

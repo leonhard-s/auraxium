@@ -35,14 +35,15 @@ class Achievement(CachableDataType):
             try:
                 return self._item
             except AttributeError:
-                self._item = Item.get(id=self._item_id)
+                self._item = Item.get(cls=self.__class__, id=self._item_id)
                 return self._item
 
         @property
         def image(self):
             try:
-                return self._image:
-                self._image = Image.get(id=self._image_id)
+                return self._image
+            except AttributeError:
+                self._image = Image.get(cls=self.__class__, id=self._image_id)
                 return self._image
 
         @property
@@ -50,7 +51,8 @@ class Achievement(CachableDataType):
             try:
                 return self._image_set
             except AttributeError:
-                self._image_set = ImageSet.get(id=self._image_set_id)
+                self._image_set = ImageSet.get(
+                    cls=self.__class__, id=self._image_set_id)
                 return self._image_set
 
         # @property
@@ -59,7 +61,7 @@ class Achievement(CachableDataType):
         #         return self._objective_group
         #     except AttributeError:
         #         self._objective_group = ObjectiveGroup.get(
-        #             id=self._objective_group_id)
+        #             cls=self.__class__, id=self._objective_group_id)
         #         return self._objective_group
 
         @property
@@ -67,18 +69,19 @@ class Achievement(CachableDataType):
             try:
                 return self._reward
             except AttributeError:
-                self._reward = Reward.get(id=self._reward_id)
+                self._reward = Reward.get(
+                    cls=self.__class__, id=self._reward_id)
                 return self._reward
 
-    def _populate(self, data_override=None):
-        data = data_override if data_override != None else super().get(self.id)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
         # Set attribute values
-        self.description = LocalizedString(data.get('description'))
-        self._item_id = data.get('item_id')
-        self._image_id = data.get('image_id')
-        self._image_set_id = data.get('image_set_id')
-        self.name = LocalizedString(data.get('name'))
-        # self._objective_group_id = data.get('objective_group_id')
-        self.repeatable = data.get('repeatable')
-        self._reward_id = data.get('reward_id')
+        self.description = LocalizedString(d.get('description'))
+        self._item_id = d.get('item_id')
+        self._image_id = d.get('image_id')
+        self._image_set_id = d.get('image_set_id')
+        self.name = LocalizedString(d.get('name'))
+        # self._objective_group_id = d.get('objective_group_id')
+        self.repeatable = d.get('repeatable')
+        self._reward_id = d.get('reward_id')

@@ -1,4 +1,3 @@
-from ..census import Query
 from ..datatypes import CachableDataType, EnumeratedDataType
 
 
@@ -17,11 +16,11 @@ class ArmorFacing(EnumeratedDataType):
         # Set default values
         self.description = None
 
-    def _populate(self, data_override=None):
-        data = data_override if data_override != None else super().get(self.id)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
         # Set attribute values
-        self.description = data.get('description')
+        self.description = d.get('description')
 
 
 class ArmorInfo(CachableDataType):
@@ -47,14 +46,15 @@ class ArmorInfo(CachableDataType):
             try:
                 return self._armor_facing
             except AttributeError:
-                self._armor_facing = ArmorFacing.get(id=self._armor_facing_id)
+                self._armor_facing = ArmorFacing.get(
+                    cls=self.__class__, id=self._armor_facing_id)
                 return self._armor_facing
 
-    def _populate(self, data_override=None):
-        data = data_override if data_override != None else super().get(self.id)
+    def _populate(self, data=None):
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
-        self._armor_facing_id = data.get('armor_facing_id')
-        # self.armor_amount = data.get('armor_amount')  # Removed from the game
-        self.armor_percent = data.get('armor_percent')
-        self.description = data.get('description')
+        self._armor_facing_id = d.get('armor_facing_id')
+        # self.armor_amount = d.get('armor_amount')  # Removed from the game
+        self.armor_percent = d.get('armor_percent')
+        self.description = d.get('description')

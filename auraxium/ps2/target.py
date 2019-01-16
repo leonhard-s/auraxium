@@ -1,22 +1,24 @@
-from ..census import Query
-from ..datatypes import StaticDatatype
+from ..datatypes import EnumeratedDataType
 
 
-class TargetType(StaticDatatype):
+class TargetType(EnumeratedDataType):
+    """A type of target.
+
+    Enumerates the types of target available, currently "Self", "Any, "Ally"
+    and "Enemy".
+
+    """
+
     _collection = 'target_type'
 
-    def __init__(self, id, data_override=None):
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self.description = None
 
-        data = data_override if data_override != None else super().get_data(self)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
-        self.description = data.get('description')
-
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'TargetType (ID: {}, Description: "{}")'.format(
-            self.id, self.description)
+        # Set attribute values
+        self.description = d['description']

@@ -26,7 +26,8 @@ class Loadout(EnumeratedDataType):
             try:
                 return self._faction
             except AttributeError:
-                self._faction = Faction.get(id=self._faction_id)
+                self._faction = Faction.get(
+                    cls=self.__class__, id=self._faction_id)
                 return self._faction
 
         @property
@@ -37,10 +38,10 @@ class Loadout(EnumeratedDataType):
                 self._profile = Profile.get(id=self._profile_id)
                 return self._profile
 
-    def _populate(self, data_override=None):
-        data = data_override if data_override != None else super().get(self.id)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
         # Set attribute values
-        self._faction_id = data['faction_id']
-        self.name = data['code_name']
-        self._profile_id = data['profile_id']
+        self._faction_id = d['faction_id']
+        self.name = d['code_name']
+        self._profile_id = d['profile_id']

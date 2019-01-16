@@ -1,238 +1,332 @@
 from ..census import Query
-from ..datatypes import DynamicDatatype, InterimDatatype, StaticDatatype
+from ..datatypes import CachableDataType, EnumeratedDataType
 from .item import Item
-# from .playerstate import PlayerStateGroup
-from .resist import ResistType
-from .target import TargetType
+from .projectile import Projectile
 
 
-class FireGroup(InterimDatatype):
-    _cache_size = 100
-    _collection = 'fire_group'
+class AmmoSlot(object):
+    """Represents an ammo slot for a weapon.
 
-    def __init__(self, id, data_override=None):
-        self.id = id
+    A weapon's ammo slot is a type of ammunition this weapon can fire. This
+    mainly concerns underbarrel attachments like grenade launchers or shotguns.
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+    """
 
-        data = data_override if data_override != None else super().get_data(self)
-
-        self.chamber_duration_ms = data.get('chamber_duration_ms')
-        self.transition_duration_ms = data.get('transition_duration_ms')
-        self.spool_up_ms = data.get('spool_up_ms')
-        self.spool_up_initial_refire_ms = data.get(
-            'spool_up_initial_refire_ms')
-        self.can_chamber_ironsights = data.get('can_chamber_ironsights')
-
-        @property
-        def fire_modes(self):
-            # Return a list of all fire modes in this fire group
-            pass
-
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'FireGroup (ID: {})'.format(self.id)
+    def __init__(self, d):
+        # Set attribute values
+        self.capacity = d['capacity']
+        self.clip_size = d['clip_size']
+        self.refill_ammo_delay = d.get('refill_ammo_delay_ms')
+        self.refill_ammo_rate = d.get('refill_ammo_rate')
+        self.weapon_slot_index = d['weapon_slot_index']
 
 
-class FireMode(InterimDatatype):
-    _cache_size = 250
-    _collection = 'fire_mode'
-    _join = ['item', 'player_state_group']
+class FireGroup(CachableDataType):
+    """The fire group for a weapon.
 
-    def __init__(self, id, data_override=None):
-        self.id = id
+    A fire group groups represents a fire mode available to a given weapon.
+    Some weapons, like the VS Equinox VE2, have multiple ones.
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
-
-        data = data_override if data_override != None else super().get_data(self)
-
-        self.item = Item(data.get('item_id'), data_override=data.get('item'))
-        self.type = FireModeType(data.get('type'))
-        self.description = data.get('description')
-        self.player_state_group = PlayerStateGroup(
-            data.get('player_state_group_id'), data_override=data.get('player_state_group'))
-        self.cof_recoil = data.get('cof_recoil')
-        self.reload_time_ms = data.get('reload_time_ms')
-        self.reload_chamber_time_ms = data.get('reload_chamber_time_ms')
-        self.pellets_per_shot = data.get('pellets_per_shot')
-        self.pellet_spread = data.get('pellet_spread')
-        self.default_zoom = data.get('default_zoom')
-        self.muzzle_velocity = data.get('muzzle_velocity')
-        self.speed = data.get('speed')
-        self.max_speed = data.get('max_speed')
-        self.damage_radius = data.get('damage_radius')
-        self.projectile_description = data.get('projectile_description')
-        self.damage_type = data.get('damage_type')
-        self.damage = data.get('damage')
-        self.damage_min = data.get('damage_min')
-        self.damage_max = data.get('damage_max')
-        self.damage_min_range = data.get('damage_min_range')
-        self.damage_max_range = data.get('damage_max_range')
-        self.damage_target_type = TargetType(data.get('damage_target_type'))
-        self.damage_resist_type = ResistType(data.get('damage_resist_type'))
-        self.indirect_damage_max = data.get('indirect_damage_max')
-        self.indirect_damage_max_range = data.get('indirect_damage_max_range')
-        self.indirect_damage_min = data.get('indirect_damage_min')
-        self.indirect_damage_min_range = data.get('indirect_damage_min_range')
-        self.indirect_damage_target_type = TargetType(
-            data.get('indirect_damage_target_type'))
-        self.indirect_damage_resist_type = ResistType(
-            data.get('indirect_damage_resist_type'))
-
-        # Add "weapons" property to retrieve (all) weapon(s) that use this?
-
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'FireMode (ID: {}, Description[en]: "{}")'.format(
-            self.id, self.description['en'])
-
-
-class FireModeType(StaticDatatype):
-    _collection = 'fire_mode_type'
-
-    def __init__(self, id, data_override=None):
-        self.id = id
-
-        if super().is_cached(self):  # If the object is cached, skip
-            return
-
-        data = data_override if data_override != None else super().get_data(self)
-
-        self.description = data.get('description')
-
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'FireModeType (ID: {}, Description: "{}")'.format(
-            self.id, self.description)
-
-
-class Weapon(InterimDatatype):
-    _cache_size = 500
-    _collection = 'weapon'
-
-    def __init__(self, id, data_override=None):
-        self.id = id
-
-        if super().is_cached(self):  # If the object is cached, skip
-            return
-
-        data = data_override if data_override != None else super().get_data(self)
-
-        #  self.ammo = weapon_to_ammo_slot(weapon=self)
-        #  self.fire_groups = weapon_to_fire_group(weapon=self)
-        self.item = Item(self.id)
-        self.turn_modifier = data.get('turn_modifier')
-        self.move_modifier = data.get('move_modifier')
-        self.sprint_recovery_ms = data.get('sprint_recovery_ms')
-        self.equip_ms = data.get('equip_ms')
-        self.unequip_ms = data.get('unequip_ms')
-        self.to_iron_sights_ms = data.get('to_iron_sights_ms')
-        self.from_iron_sights_ms = data.get('from_iron_sights_ms')
-        self.heat_capacity = data.get('heat_capacity')
-        self.heat_bleed_off_rate = data.get('heat_bleed_off_rate')
-        self.heat_overheat_penalty_ms = data.get('heat_overheat_penalty_ms')
-        self.melee_detect_width = data.get('melee_detect_width')
-        self.melee_detect_height = data.get('melee_detect_height')
-
-        # I was unable to find any rhyme or reason to the assignment of
-        # weapon groups. I omitted them for the time being.
-        # self.group = data.get('weapon_group_id')
-
-        @property
-        def attachments(self):
-            pass
-
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'Weapon (ID: {}, Name[en]: "{}")'.format(
-            self.id, self.item.name['en'])
-
-
-class WeaponAmmoSlot(DynamicDatatype):
-
-    def __init__(self, weapon, dict):
-        self.capacity = dict.get('capacity')
-        self.clip_size = dict.get('clip_size')
-        self.refill_ammo_rate = dict.get('refill_ammo_rate')
-        self.refill_ammo_delay_ms = dict.get('refill_ammo_delay_ms')
-        self.weapon = weapon
-        self.weapon_ammo_slot = dict.get('weapon_slot_index')
-
-    def __str__(self):
-        return 'WeaponAmmoSlot (Weapon: {}, Slot: {})'.format(
-            self.weapon.id, self.weapon_ammo_slot)
-
-
-class WeaponDatasheet(InterimDatatype):
-    _cache_size = 500
-    _collection = 'weapon_datasheet'
+    """
 
     def __init__(self, id):
         self.id = id
 
-        data = data_override if data_override != None else super().get_data(self)
+        # Set default values
+        self.chamber_duration = None
+        self.transition_duration = None
+        self.spool_up = None
+        self.spool_up_initial_refire = None
+        self.can_chamber_ironsights = None
 
-        self.item_id = data.get('item_id')
-        self.direct_damage = data.get('direct_damage')
-        self.indirect_damage = data.get('indirect_damage')
-        self.damage = data.get('damage')
-        self.damage_min = data.get('damage_min')
-        self.damage_max = data.get('damage_max')
-        self.fire_cone = data.get('fire_cone')
-        self.fire_cone_min = data.get('fire_cone_min')
-        self.fire_cone_max = data.get('fire_cone_max')
-        self.fire_rate_ms = data.get('fire_rate_ms')
-        self.fire_rate_ms_min = data.get('fire_rate_ms_min')
-        self.fire_rate_mx_max = data.get('fire_rate_mx_max')
-        self.reload_ms = data.get('reload_ms')
-        self.reload_ms_min = data.get('reload_ms_min')
-        self.reload_ms_max = data.get('reload_ms_max')
-        self.clip_size = data.get('clip_size')
-        self.capacity = data.get('capacity')
-        self.range = data.get('range')
-        self.show_clip_size = data.get('show_clip_size')
-        self.show_fire_modes = data.get('show_fire_modes')
-        self.show_range = data.get('show_range')
+        # Define properties
+        @property
+        def fire_modes(self):
+            try:
+                return self._fire_modes
+            except AttributeError:
+                q = Query(type='fire_group_to_fire_mode')
+                d = q.add_filter(field='fire_group_id', value=self.id).get()
+                self._fire_modes = FireMode.list(cls=self.__class__,
+                                                 ids=[i['fire_mode_id'] for i in d])
+                return self._fire_modes
 
-        super()._add_to_cache(self)  # Cache this instance for future use
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
-    def __str__(self):
-        return 'WeaponDatasheet (ID: {})'.format(self.id)
-
-
-def fire_group_to_fire_mode(fire_group):
-    data = Query('fire_group_to_fire_mode', limit=5).add_filter(
-        'fire_group_id', fire_group.id).get()
-    data.sort(key=lambda fire_mode: fire_mode['fire_mode_index'])
-    return [FireMode(d['fire_mode_id']) for d in data]
+        # Set attribute values
+        self.chamber_duration = d.get('chamber_duration_ms') / 1000
+        self.transition_duration = d.get('transition_duration_ms') / 100
+        self.spool_up = d.get('spool_up_ms') / 1000
+        self.spool_up_initial_refire = d.get(
+            'spool_up_initial_refire_ms') / 1000
+        self.can_chamber_ironsights = d.get('can_chamber_ironsights')
 
 
-def weapon_to_ammo_slot(weapon):
-    """Converts a weapon to its ammo slot"""
+class FireMode(CachableDataType):
+    """A weapon fire mode.
 
-    data = Query('weapon_ammo_slot', limit=5).add_filter(
-        'weapon_id', weapon.id).get()
-    data.sort(
-        key=lambda weapon_ammo_slot: weapon_ammo_slot['weapon_slot_index'])
-    return [WeaponAmmoSlot(weapon, d) for d in data]
-
-
-def weapon_to_fire_group(weapon):
-    """Converts a weapon into a fire group.
-
-    Some weapon types have multiple fire modes (note that this is the ingame
-    fire mode term, not the datatype). These fire modes access different fire
-    groups, which in turn have their own fire modes.
+    A fire mode contains detailed information about the how the firing
+    mechanics of the weapons using it operate.
+    This object contains the merged information from the "fire_mode" and
+    "fire_mode_2" collections.
 
     """
 
-    data = Query('weapon_to_fire_group', limit=5).add_filter(
-        'weapon_id', weapon.id).get()
-    data.sort(key=lambda fire_group: fire_group['fire_group_index'])
-    return [FireGroup(d['fire_group_id']) for d in data]
+    def __init__(self, id, data=None):
+        self.id = id
+
+        # Set default values
+
+        # "item_id": "2"
+        self.type = None
+        self.description = None
+        self.player_state_group_id = None  # property
+        self.cof_recoil = None
+        self.reload_time = None  # reload_time_ms
+        self.reload_chamber_time = None  # reload_chamber_time_ms
+        self.pellets_per_shot = None
+        self.pellets_spread = None
+        self.iron_sight_zoom = None  # default_zoom
+        # "muzzle_velocity": "375",
+        # "speed": "375",
+        # "max_speed": "0",
+        # "damage_radius": "0",
+        # "projectile_description": "NC Pistol: Mid",
+        # "damage_type": "DamageFalloff",
+        # "damage": "NULL",
+        # "damage_min": "112",
+        # "damage_max": "200",
+        # "damage_min_range": "60",
+        # "damage_max_range": "10",
+        # "damage_target_type": "2",
+        # "damage_resist_type": "2",
+        # "indirect_damage_max": "NULL",
+        # "indirect_damage_max_range": "NULL",
+        # "indirect_damage_min": "NULL",
+        # "indirect_damage_min_range": "NULL",
+        # "indirect_damage_target_type": "NULL",
+        # "indirect_damage_resist_type": "NULL""fire_mode_id": "102",
+        self.fire_mode_type_id = None  # fire_mode_type_id
+        self.ability_id = None  # ability_id
+        # self.ammo_slot
+        # "automatic": "0",
+        # "grief_immune": "0",
+        # "iron_sights": "1",
+        self.laser_guided = None
+        # self.mode_speed_modifier = None # move_modifier
+        # "projectile_speed_override": "375",
+        self.can_fire_while_sprinting = None  # sprint_fire
+        # "turn_modifier": "1",
+        # "use_in_water": "0",
+        # "zoom_default": "1.3500000000000001",
+        # "cof_override": "0",
+        # "cof_pellet_spread": "0",
+        # "cof_range": "100",
+        # "cof_recoil": "0.14",
+        # "cof_scalar": "1",
+        # "cof_scalar_moving": "1",
+        # "damage_direct_effect_id": "13",
+        self.headshot_multiplier = None
+        self.damage_indirect_effect_id = None
+        self.legshot_multiplier = None  # damage_legs_multiplier
+        self.ammo_per_shot = None
+        self.auto_fire = None
+        # "fire_auto_fire_ms": "0",
+        # "fire_burst_count": "1",
+        # "fire_charge_up_ms": "0",
+        # "fire_delay_ms": "0",
+        # "fire_detect_range": "40",
+        # "fire_duration_ms": "NULL",
+        # "fire_refire_ms": "171",
+        # "fire_pellets_per_shot": "1",
+        # "heat_per_shot": "NULL",
+        # "heat_recovery_delay_ms": "NULL",
+        # "heat_threshold": "NULL",
+        # "lockon_acquire_close_ms": "NULL",
+        # "lockon_acquire_far_ms": "NULL",
+        # "lockon_acquire_ms": "NULL",
+        # "lockon_angle": "NULL",
+        # "lockon_lose_ms": "NULL",
+        # "lockon_maintain": "NULL",
+        # "lockon_radius": "NULL",
+        # "lockon_range": "NULL",
+        # "lockon_range_close": "NULL",
+        # "lockon_range_far": "NULL",
+        # "lockon_required": "NULL",
+        # "recoil_angle_max": "0",
+        # "recoil_angle_min": "0",
+        # "recoil_first_shot_modifier": "1",
+        # "recoil_horizontal_max": "0.10000000000000001",
+        # "recoil_horizontal_max_increase": "NULL",
+        # "recoil_horizontal_min": "0.10000000000000001",
+        # "recoil_horizontal_min_increase": "NULL",
+        # "recoil_horizontal_tolerance": "0.29999999999999999",
+        # "recoil_increase": "0",
+        # "recoil_increase_crouched": "0",
+        # "recoil_magnitude_max": "0.80000000000000004",
+        # "recoil_magnitude_min": "0.80000000000000004",
+        # "recoil_max_total_magnitude": "0",
+        # "recoil_recovery_acceleration": "1000",
+        # "recoil_recovery_delay_ms": "0",
+        # "recoil_recovery_rate": "18",
+        # "recoil_shots_at_min_magnitude": "0",
+        # "reload_block_auto": "NULL",
+        # "reload_continuous": "NULL",
+        # "reload_ammo_fill_ms": "1425",
+        # "reload_chamber_ms": "300",
+        # "reload_loop_start_ms": "NULL",
+        # "reload_loop_end_ms": "NULL",
+        # "reload_time_ms": "1600",
+        # "sway_amplitude_x": "NULL",
+        # "sway_amplitude_y": "NULL",
+        # "sway_can_steady": "NULL",
+        # "sway_period_x": "NULL",
+        # "sway_period_y": "NULL",
+        # "armor_penetration": "0",
+        # "max_damage": "200",
+        # "max_damage_ind": "NULL",
+        # "max_damage_ind_radius": "NULL",
+        # "max_damage_range": "10",
+        # "min_damage": "112",
+        # "min_damage_ind": "NULL",
+        # "min_damage_ind_radius": "NULL",
+        # "min_damage_range": "60",
+        # "shield_bypass_pct": "0",
+        # "description"
+
+        # Define properties
+        @property
+        def projectile(self):
+            """Lists the attachments available for this weapon."""
+            try:
+                return self._projectile
+            except AttributeError:
+                q = Query(type='fire_mode_to_projectile')
+                q.add_filter(field='fire_mode_id', value=self.id)
+                q.join(type='projectile')
+                d = q.get_single()
+                self._projectile = Projectile.get(cls=self.__class__,
+                                                  id=d['projectile_id'])
+                return self._projectile
+
+
+class FireModeType(EnumeratedDataType):
+    """The fire mode type for a given fire mode.
+
+    Fire mode types provide a basic classification of how a given weapon
+    operates.
+    Examples are "Melee", "Projectile" and "Trigger Item Ability".
+
+    """
+
+    def __init__(self, id):
+        self.id = id
+
+        # Set default values
+        self.description = None
+
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
+
+        # Set attribute values
+        self.description = d.get('description')
+
+
+class Weapon(CachableDataType):
+    """Contains information about a weapon.
+
+    This d type can be seen as an extension to the corresponding `item`
+    object. It contains weapon-specific information and connects the item with
+    internal mechanics like fire modes or projectiles.
+
+    """
+
+    def __init__(self, id):
+        self.id = id
+
+        # Set default values
+        self.equip_time = None
+        self.group_id = None
+        self.heat_bleed_off_rate = None
+        self.heat_capacity = None
+        self.heat_overheat_cooldown = None
+        self.iron_sights_enter_ads = None
+        self.iron_sights_exit_ads = None
+        self.melee_detect_height = None
+        self.melee_detect_width = None
+        self.move_speed_modifier = None
+        self.sprint_recovery = None
+        self.turn_speed_modifier = None
+        self.unequip_time = None
+
+        # Define properties
+        @property
+        def ammo_slot(self):
+            """Lists the attachments available for this weapon."""
+            try:
+                return self._ammo_slot
+            except AttributeError:
+                q = Query(type='weapon_ammo_slot')
+                d = q.add_filter(field='weapon_id', value=self.id).get()
+                # The following line is not an error, AmmoSlot does not have a
+                # list() method as it does not generate any network traffic.
+                self._ammo_slot = [AmmoSlot(a) for a in d]
+                return self._ammo_slot
+
+        @property
+        def attachments(self):
+            """Lists the attachments available for this weapon."""
+            try:
+                return self._attachments
+            except AttributeError:
+                q = Query(type='weapon_to_attachment')
+                d = q.add_filter(field='weapon_id', value=self.id).get()
+                self._attachments = Item.list(cls=self.__class__, ids=[
+                                              i['item_id'] for i in d])
+                return self._attachments
+
+        @property
+        def item(self):
+            """Links a weapon to its item."""
+            try:
+                return self._item
+            except AttributeError:
+                q = Query(type='item_to_weapon')
+                q.add_filter(field='weapon_id', value=self.id)
+                q.join(type='item')
+                d = q.get_single()
+                self._item = Item.get(cls=self.__class__,
+                                      id=d['item_id'], data=d)
+                return self._item
+
+        @property
+        def fire_group(self):
+            """The fire group used by this weapon."""
+            try:
+                return self._fire_group
+            except AttributeError:
+                q = Query(type='weapon_to_fire_group')
+                d = q.add_filter(field='weapon_id', value=self.id).get()
+                self._fire_group = FireGroup.list(cls=self.__class__,
+                                                  ids=[f['fire_group_id'] for f in d])
+                return self._fire_group
+
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
+
+        # Set attribute values
+        self.equip_time = d.get('equip_ms') / 1000
+        self.group_id = d.get('weapon_group_id')
+        self.heat_bleed_off_rate = d.get('heat_bleed_off_rate')  # Unit?
+        self.heat_capacity = d.get('heat_capacity')
+        self.heat_overheat_cooldown = d.get(
+            'heat_overheat_penalty_ms') / 1000
+        self.iron_sights_enter_ads = d.get('to_iron_sights_ms') / 1000
+        self.iron_sights_exit_ads = d.get('from_iron_sights_ms') / 1000
+        self.melee_detect_height = d.get('melee_detect_height')
+        self.melee_detect_width = d.get('melee_detect_width')
+        self.move_speed_modifier = d.get('move_modifier')
+        self.sprint_recovery = d.get('sprint_recovery_ms') / 1000
+        self.turn_speed_modifier = d.get('turn_modifier')
+        self.unequip_time = d.get('unequip_ms') / 1000
