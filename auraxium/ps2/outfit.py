@@ -57,7 +57,7 @@ class Outfit(CachableDataType):
             return  # TODO: Replace with exception
 
         # Retrieve and return the object
-        instance = Weapon.get(id=d['outfit_id'], data=d)
+        instance = Outfit.get(id=d['outfit_id'], data=d)
         return instance
 
     def _populate(self, data=None):

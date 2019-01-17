@@ -16,8 +16,7 @@ _CENSUS_BASE_URL = 'http://census.daybreakgames.com'
 # The PlanetSide 2 (PC) namespace. No PS4 support yet.
 _NAMESPACE = 'ps2'
 # The id used to identify this service.
-# service_id = 's:example'
-service_id = 's:MUMSOutfitRoster'
+service_id = 's:example'
 # Forces all Querys to provide timing information.
 timing_override = False
 
