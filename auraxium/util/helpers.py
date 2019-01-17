@@ -1,7 +1,7 @@
 from ..census import Query
 from ..ps2 import (Achievement, Alert, Character, Currency, Directive,
                    DirectiveTier, DirectiveTree, DirectiveTreeCategory,
-                   Faction, Item, Region, Skill, SkillCategory, SkillLine,
+                   Faction, Item, Outfit, Region, Skill, SkillCategory, SkillLine,
                    #    SkillSet,
                    Title, Vehicle, Zone)
 
@@ -20,7 +20,7 @@ def get_by_name(datatype, name, ignore_case=False, locale=None):
 
     # If case is to be ignored
     if ignore_case:
-        if datatype in [Characer, Outfit]:
+        if datatype in [Character, Outfit]:
             # Use the lowercase version of the field
             field_name += '_lower'
             q = Query(type=datatype._collection)
@@ -34,8 +34,10 @@ def get_by_name(datatype, name, ignore_case=False, locale=None):
             field=field_name, value=name)
 
     data = q.get_single()
-    id = data.get(datatype._collection + '_id')
-    return datatype(id=id, data_override=data)
+
+    datatype(id=data[datatype._collection + '_id'])
+    datatype._populate(data_override=data)
+    return datatype
 
 
 def name_to_id(datatype, name, check_case=False):
@@ -59,10 +61,10 @@ def name_to_id(datatype, name, check_case=False):
 
     """
 
-    localized_collections = [Achievement, AlertType, Character, Currency,
+    localized_collections = [Achievement, Character, Currency,
                              Directive, DirectiveTier, DirectiveTree,
                              DirectiveTreeCategory, Faction, Item, Region,
-                             Skill, SkillCategory, SkillLine, SkillSet, Title,
+                             Skill, SkillCategory, SkillLine, Title,
                              Vehicle, Zone]
 
     q = Query(datatype._collection)
