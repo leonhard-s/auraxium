@@ -330,9 +330,8 @@ class Weapon(CachableDataType):
         except TypeError:
             return  # TODO: Replace with exception
 
-        # Create and return a weapon object
-        instance = Weapon(id=d['weapon_id'])
-        instance._populate(data=d)
+        # Retrieve and return the object
+        instance = Weapon.get(id=d['weapon_id'], data=d)
         return instance
 
     def _populate(self, data=None):

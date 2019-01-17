@@ -29,7 +29,7 @@ class DataType(object):
         return s + ') at 0x{0:0{1}X}'.format(id(self), 16)
 
     @classmethod
-    def get(cls, id, field=None):
+    def get(cls, id, data=None, field=None):
         """Retrieves a single entry of the given datatype."""
         # id_field = field if field != None else cls._collection + '_id'
 
@@ -39,12 +39,12 @@ class DataType(object):
                 instance = cls._cache.load(id)
             else:
                 instance = cls(id=id)
-                instance._populate()
+                instance._populate(data=data)
                 cls._cache.add(instance)
         except AttributeError:
             cls._cache = Cache()
             instance = cls(id=id)
-            instance._populate()
+            instance._populate(data=data)
             cls._cache.add(instance)
 
         return instance
@@ -123,7 +123,6 @@ class NamedDataType(object):
         if len(d) == 0:
             return  # TODO: Replace with exception
 
-        # Create and return a weapon object
-        instance = cls(id=d[cls._collection + '_id'])
-        instance._populate(data=d)
+        # Retrieve and return the object
+        instance = cls.get(id=d[cls._collection + '_id'], data=d)
         return instance

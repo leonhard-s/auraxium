@@ -103,9 +103,8 @@ class Character(CachableDataType):
         if len(d) == 0:
             return  # TODO: Replace with exception
 
-        # Create and return a weapon object
-        instance = Character(id=d['character_id'])
-        instance._populate(data=d)
+        # Retrieve and return the object
+        instance = Character.get(id=d['character_id'], data=d)
         return instance
 
     @property

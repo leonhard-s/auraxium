@@ -56,9 +56,8 @@ class Outfit(CachableDataType):
         if len(d) == 0:
             return  # TODO: Replace with exception
 
-        # Create and return a weapon object
-        instance = Outfit(id=d['outfit_id'])
-        instance._populate(data=d)
+        # Retrieve and return the object
+        instance = Weapon.get(id=d['outfit_id'], data=d)
         return instance
 
     def _populate(self, data=None):
