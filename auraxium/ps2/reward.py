@@ -1,4 +1,3 @@
-from ..census import Query
 from ..datatypes import CachableDataType, EnumeratedDataType
 
 
@@ -25,16 +24,13 @@ class Reward(CachableDataType):
             s += 'self.param{} = None\n'.format(i + 1)
         exec(s)
 
-        # Define properties
-        @property
-        def reward_type(self):
-            try:
-                return self._reward_type
-            except AttributeError:
-                self._reward_type = RewardType.get(id=self._reward_type_id)
+    # Define properties
+    @property
+    def reward_type(self):
+        RewardType.get(id=self._reward_type_id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.count_max = d.get('count_max')
@@ -72,7 +68,7 @@ class RewardType(EnumeratedDataType):
         exec(s)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.count_max = d.get('count_max')

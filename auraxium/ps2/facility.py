@@ -25,22 +25,14 @@ class Region(CachableDataType):
     # Define properties
     @property
     def initial_faction(self):
-        try:
-            return self._initial_faction
-        except AttributeError:
-            self._initial_faction = Faction.get(id=self._initial_faction_id)
-            return self._initial_faction
+        return Faction.get(id=self._initial_faction_id)
 
     @property
     def zone(self):
-        try:
-            return self._zone
-        except AttributeError:
-            self._zone = Zone.get(id=self._zone_id)
-            return self._zone
+        return Zone.get(id=self._zone_id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self._initial_faction_id = d.get('initial_faction_id')
@@ -70,30 +62,18 @@ class FacilityLink(CachableDataType):
     # Define properties
     @property
     def facility_a(self):
-        try:
-            return self._facility_a
-        except AttributeError:
-            self._facility_a = Region.get(id=self._facility_a_id)
-            return self._facility_a
+        return Region.get(id=self._facility_a_id)
 
     @property
     def facility_b(self):
-        try:
-            return self._facility_b
-        except AttributeError:
-            self._facility_b = Region.get(id=self._facility_b_id)
-            return self._facility_b
+        return Region.get(id=self._facility_b_id)
 
     @property
     def zone(self):
-        try:
-            return self._zone
-        except AttributeError:
-            self._zone = Zone.get(id=self._zone_id)
-            return self._zone
+        return Zone.get(id=self._zone_id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.description = d['description']
@@ -118,7 +98,7 @@ class FacilityType(EnumeratedDataType):
         self.description = None
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.description = d['description']

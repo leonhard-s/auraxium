@@ -29,7 +29,7 @@ class Event(object):
         return self.name
 
 
-class EventClient(object):
+class Client(object):
     """The Auraxium Event Streaming Service client."""
 
     def __init__(self, loop=None):

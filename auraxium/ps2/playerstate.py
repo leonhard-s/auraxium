@@ -19,7 +19,7 @@ class PlayerState(EnumeratedDataType):
         self.description = None
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.description = d.get('description')
@@ -39,6 +39,9 @@ class PlayerStateGroup(CachableDataType):
     def __init__(self, id):
         self.id = id
 
+        # Set default values
+        self._player_states = None  # Internal (See properties)
+
     # Define properties
     @property
     def player_states(self):
@@ -47,10 +50,10 @@ class PlayerStateGroup(CachableDataType):
         except AttributeError:
             q = Query('player_state_group_2', limit=6)
             data = q.add_filter(
-                field=self.__class__._id_field, value=self.id).get()
+                field='player_state_group_id', value=self.id).get()
             self._player_states = [
                 PlayerStateGroupEntry(data=ps) for ps in data]
-            self._player_states.sort(key=lambda ps: ps._player_state_id)
+            self._player_states.sort(key=lambda ps: ps.player_state_id)
             return self._player_states
 
 
@@ -69,12 +72,8 @@ class PlayerStateGroupEntry(object):
         self.cof_recovery_delay_threshold = data.get(
             'cof_recovery_delay_threshold')
         self.cof_turn_penalty = data.get('cof_turn_penalty')
-        self._player_state_id = data.get('player_state_id')
+        self.player_state_id = data.get('player_state_id')
 
     @property
     def player_state(self):
-        try:
-            return self._player_state
-        except AttributeError:
-            self._player_state = PlayerState.get(id=self._player_state_id)
-            return self._player_state
+        return PlayerState.get(id=self.player_state_id)

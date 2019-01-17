@@ -5,8 +5,8 @@ from urllib import parse
 
 import requests
 
-from .exceptions import (APILimitationError, ServiceIDMissingError,
-                         ServiceIDUnknownError, ServiceUnavailableError)
+from .exceptions import (ServiceIDMissingError, ServiceIDUnknownError,
+                         ServiceUnavailableError)
 
 # Create a logger
 logger = logging.getLogger('auraxium.census')
@@ -153,8 +153,8 @@ class Join(object):
         self.is_outer_join = is_outer_join
         self.joins = []
         self.name = name
-        self.match = match if match != None else self.type + '_id'
-        self.match_parent = match_parent if match_parent != None else self.match
+        self.match = match if match is not None else self.type + '_id'
+        self.match_parent = match_parent if match_parent is not None else self.match
         self._show = []
 
     def __str__(self):
@@ -171,32 +171,32 @@ class Join(object):
         """
 
         s = '{}'.format(self.type)  # "type:"" is optional
-        if self.match != None:
+        if self.match is not None:
             s += '^on:{}'.format(self.match)
-        if self.match_parent != None:
+        if self.match_parent is not None:
             s += '^to:{}'.format(self.match_parent)
         if self.is_list:
             s += '^list:1'
         if not self.is_outer_join:
             s += '^outer:0'
 
-        if len(self._show) > 0:
+        if self._show:
             s += '^show:{}'.format('\''.join(self._show))
-        elif len(self._hide) > 0:
+        elif self._hide:
             s += '^hide:{}'.format('\''.join(self._hide))
         s += '^inject_at:'
-        if not self.name == None:
+        if self.name is not None:
             s += self.name
         else:
             s += self.type
             if self.is_list:
                 s += '_list'
-        if len(self._filter_terms) > 0:
+        if self._filter_terms:
             s += '^terms:'
             for term in self._filter_terms:
                 s += '{}\''.format(str(term))
             s = s[:-1]  # Remove the final '-separator
-        if len(self.joins) > 0:
+        if self.joins:
             # Enter another level of join-ception
             s += '('
             # Loop through all inner joins
@@ -342,7 +342,7 @@ class Query(object):
         self._tree = []
 
         # ID filtering shortcut
-        if id != None:
+        if id is not None:
             self.add_filter('{}_id'.format(self.type), id)
 
     def add_filter(self, *args, **kwargs):
@@ -410,20 +410,20 @@ class Query(object):
                                'and/or "alias" fields. It is highly '
                                'advisable to use those instead as they are '
                                'far more performant than ignoring case.')
-        if not self.distinct_values == None:
+        if self.distinct_values is not None:
             url += '&c:distinct={}'.format(self.distinct_values)
         if self.exact_match_first:
             url += '&c:exactMatchFirst=true'
-        if len(self._has_fields) > 0:
+        if self._has_fields:
             url += '&c:has={}'.format(','.join(self._has_fields))
         if self.include_empty:
             url += '&c:includeNull=true'
-        if self.locale != None:
+        if self.locale is not None:
             url += '&c:lang={}'.format(self.locale)
-        if self.limit != None and self.limit > 1:
+        if self.limit is not None and self.limit > 1:
             url += '&c:limit={}'.format(self.limit)
-        if self.limit_per_db != None:
-            if self.type != 'character':
+        if self.limit_per_db is not None:
+            if self.type is not 'character':
                 logger.warning('The query command "limit_per_db" is only '
                                'usable with the "character" collection. '
                                'Ignoring...')
@@ -431,21 +431,21 @@ class Query(object):
                 url += '&c:limitPerDb={}'.format(self.limit_per_db)
         if not self.retry:
             url += '&c:retry=false'
-        if len(self._sort_by) > 0:
+        if self._sort_by:
             # TODO: Sort by
             logger.warning('c:sort is not yet implemented. Skipping...')
         if self.offset > 0:
             url += '&c:start={}'.format(self.offset)
         if self.timing or timing_override:
             url += '&c:timing=true'
-        if len(self._tree) > 0:
+        if self._tree:
             # TODO: Tree view
             logger.warning('c:tree is not yet implemented. Skipping...')
-        if len(self._show) > 0:
+        if self._show:
             url += '&c:show={}'.format(','.join(self._show))
-        elif len(self._hide) > 0:
+        elif self._hide:
             url += '&c:hide={}'.format(','.join(self._hide))
-        if len(self.joins) > 0:
+        if self.joins:
             url += '&c:join='
             for join in self.joins:
                 url += str(join)
@@ -575,7 +575,8 @@ class Query(object):
         if 'timing' in r.keys():
             timing_list = ['{}: {} ms'.format(
                 s[:-3], r['timing'][s]) for s in r['timing'].keys()]
-            logger.debug('Query profiling: ' + ', '.join(timing_list))
+            s = 'Query profiling: ' + ', '.join(timing_list)
+            logger.debug(s)
         return r
 
     def show(self, *args):

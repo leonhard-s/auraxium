@@ -6,6 +6,7 @@ from .ability import Ability
 from .effect import Effect
 from .playerstate import PlayerStateGroup
 from ..misc import LocalizedString
+from ..exceptions import NoMatchesFoundError
 
 
 class AmmoSlot(object):
@@ -40,6 +41,7 @@ class FireGroup(CachableDataType):
 
         # Set default values
         self.chamber_duration = None
+        self._fire_modes = None  # Internal (See properties)
         self.transition_duration = None
         self.spool_up = None
         self.spool_up_initial_refire = None
@@ -58,17 +60,19 @@ class FireGroup(CachableDataType):
             return self._fire_modes
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.chamber_duration = float(d.get(
             'chamber_duration_ms')) / 1000.0 if d.get('chamber_duration_ms') is not None else None
         self.transition_duration = float(d.get(
-            'transition_duration_ms')) / 1000.0 if d.get('transition_duration_ms') is not None else None
+            'transition_duration_ms')) / 1000.0 if d.get(
+                'transition_duration_ms') is not None else None
         self.spool_up = float(d.get('spool_up_ms')) / \
             1000.0 if d.get('spool_up_ms') is not None else None
         self.spool_up_initial_refire = float(d.get(
-            'spool_up_initial_refire_ms')) / 1000 if d.get('spool_up_initial_refire_ms') is not None else None
+            'spool_up_initial_refire_ms')) / 1000 if d.get(
+                'spool_up_initial_refire_ms') is not None else None
         self.can_chamber_ironsights = d.get('can_chamber_ironsights')
 
 
@@ -140,6 +144,7 @@ class FireMode(CachableDataType):
         self.min_damage_range = None
         self.move_modifier = None
         self._player_state_group_id = None
+        self._projectile = None  # Internal (See properties)
         self.projectile_speed_override = None
         self.recoil_angle_max = None
         self.recoil_angle_min = None
@@ -179,46 +184,23 @@ class FireMode(CachableDataType):
     # Define properties
     @property
     def ability(self):
-        try:
-            return self._ability
-        except AttributeError:
-            self._ability = Ability.get(id=self._ability_id)
-            return self._ability
+        return Ability.get(id=self._ability_id)
 
     @property
     def damage_direct_effect(self):
-        try:
-            return self._damage_direct_effect
-        except AttributeError:
-            self._damage_direct_effect = Effect.get(
-                id=self._damage_direct_effect_id)
-            return self._damage_direct_effect
+        return Effect.get(id=self._damage_direct_effect_id)
 
     @property
     def damage_indirect_effect(self):
-        try:
-            return self._damage_indirect_effect
-        except AttributeError:
-            self._damage_indirect_effect = Effect.get(
-                id=self._damage_indirect_effect_id)
-            return self._damage_indirect_effect
+        return Effect.get(id=self._damage_indirect_effect_id)
 
     @property
     def fire_mode_type(self):
-        try:
-            return self._fire_mode_type
-        except AttributeError:
-            self._fire_mode_type = FireModeType.get(id=self._fire_mode_type_id)
-            return self._fire_mode_type
+        return FireModeType.get(id=self._fire_mode_type_id)
 
     @property
     def player_state_group(self):
-        try:
-            return self._player_state_group
-        except AttributeError:
-            self._player_state_group = PlayerStateGroup.get(
-                id=self._player_state_group_id)
-            return self._player_state_group
+        return PlayerStateGroup.get(id=self._player_state_group_id)
 
     @property
     def projectile(self):
@@ -234,7 +216,7 @@ class FireMode(CachableDataType):
             return self._projectile
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self._ability_id = d.get('ability_id')
@@ -348,7 +330,7 @@ class FireModeType(EnumeratedDataType):
         self.description = None
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.description = d.get('description')
@@ -369,8 +351,12 @@ class Weapon(CachableDataType):
         self.id = id
 
         # Set default values
+        self._ammo_slot = None  # Internal (See properties)
+        self._attachments = None  # Internal (See properties)
         self.equip_time = None
+        self._fire_groups = None  # Internal (See properties)
         self.group_id = None
+        self._item = None  # Internal (See properties)
         self.heat_bleed_off_rate = None
         self.heat_capacity = None
         self.heat_overheat_cooldown = None
@@ -441,21 +427,19 @@ class Weapon(CachableDataType):
             q = Query(type='item', check_case=False)
         else:
             q = Query(type='item')
-
         q.add_filter(field='name.' + locale, value=name)
         q.join(type='item_to_weapon', match='item_id').join(type='weapon',
                                                             match='weapon_id')
         try:
             d = q.get_single()['item_to_weapon']['weapon']
         except TypeError:
-            return  # TODO: Replace with exception
-
+            raise NoMatchesFoundError
         # Retrieve and return the object
         instance = Weapon.get(id=d['weapon_id'], data=d)
         return instance
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.equip_time = float(d.get('equip_ms')) / \
@@ -464,11 +448,13 @@ class Weapon(CachableDataType):
         self.heat_bleed_off_rate = d.get('heat_bleed_off_rate')  # Unit?
         self.heat_capacity = d.get('heat_capacity')
         self.heat_overheat_cooldown = float(d.get(
-            'heat_overheat_penalty_ms')) / 1000.0 if d.get('heat_overheat_penalty_ms') is not None else None
+            'heat_overheat_penalty_ms')) / 1000.0 if d.get(
+                'heat_overheat_penalty_ms') is not None else None
         self.iron_sights_enter_ads = float(d.get(
             'to_iron_sights_ms')) / 1000.0 if d.get('to_iron_sights_ms') is not None else None
         self.iron_sights_exit_ads = float(
-            d.get('from_iron_sights_ms')) / 1000.0 if d.get('from_iron_sights_ms') is not None else None
+            d.get('from_iron_sights_ms')) / 1000.0 if d.get(
+                'from_iron_sights_ms') is not None else None
         self.melee_detect_height = d.get('melee_detect_height')
         self.melee_detect_width = d.get('melee_detect_width')
         self.move_speed_modifier = d.get('move_modifier')

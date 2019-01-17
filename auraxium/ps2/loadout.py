@@ -1,4 +1,3 @@
-from ..census import _CENSUS_BASE_URL, Query
 from ..datatypes import EnumeratedDataType
 from .faction import Faction
 from .profile import Profile
@@ -25,22 +24,14 @@ class Loadout(EnumeratedDataType):
     # Define properties
     @property
     def faction(self):
-        try:
-            return self._faction
-        except AttributeError:
-            self._faction = Faction.get(id=self._faction_id)
-            return self._faction
+        return Faction.get(id=self._faction_id)
 
     @property
     def profile(self):
-        try:
-            return self._profile
-        except AttributeError:
-            self._profile = Profile.get(id=self._profile_id)
-            return self._profile
+        return Profile.get(id=self._profile_id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self._faction_id = d['faction_id']

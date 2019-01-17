@@ -3,6 +3,7 @@ from datetime import datetime
 from ..census import Query
 from ..datatypes import CachableDataType
 from .character import Character
+from ..exceptions import NoMatchesFoundError
 
 
 class Outfit(CachableDataType):
@@ -21,17 +22,14 @@ class Outfit(CachableDataType):
         self.alias = None
         self._leader_id = None
         self.member_count = None
+        self._members = None  # Internal (See properties)
         self.name = None
         self.date_created = None
 
     # Define properties
     @property
     def leader(self):
-        try:
-            return self._leader
-        except AttributeError:
-            self._leader = Character.get(id=self._leader_id)
-            return self._leader
+        return Character.get(id=self._leader_id)
 
     @property
     def members(self):
@@ -40,7 +38,8 @@ class Outfit(CachableDataType):
         except AttributeError:
             q = Query(type='outfit_member')
             d = q.add_filter(field='outfit_id', value=self.id).get()
-            self._members = OutfitMember.list(ids=[i['profile_id'] for i in d])
+            self._members = OutfitMember.list(
+                ids=[i['character_id'] for i in d])
             return self._members
 
     @staticmethod
@@ -53,15 +52,15 @@ class Outfit(CachableDataType):
             q.add_filter(field='name', value=name)
 
         d = q.get_single()
-        if len(d) == 0:
-            return  # TODO: Replace with exception
+        if not d:
+            raise NoMatchesFoundError
 
         # Retrieve and return the object
         instance = Outfit.get(id=d['outfit_id'], data=d)
         return instance
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.alias = d.get('alias')
@@ -94,14 +93,10 @@ class OutfitMember(CachableDataType):
     # Define properties
     @property
     def character(self):
-        try:
-            return self._character
-        except AttributeError:
-            self._character = Character.get(id=self._character_id)
-            return self._character
+        return Character.get(id=self._character_id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self._character_id = d['character_id']

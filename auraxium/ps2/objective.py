@@ -1,4 +1,3 @@
-from ..census import Query
 from ..datatypes import CachableDataType, EnumeratedDataType
 
 
@@ -27,15 +26,10 @@ class Objective(CachableDataType):
     # Define properties
     @property
     def objective_type(self):
-        try:
-            return self._objective_type
-        except AttributeError:
-            self._objective_type = ObjectiveType.get(
-                id=self._objective_type_id)
-            return self._objective_type
+        return ObjectiveType.get(id=self._objective_type_id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.objective_group_id = d.get('objective_group_id')
@@ -69,7 +63,7 @@ class ObjectiveType(EnumeratedDataType):
         exec(s)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.description = d['description']

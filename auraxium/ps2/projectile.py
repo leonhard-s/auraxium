@@ -14,35 +14,31 @@ class Projectile(CachableDataType):
         self.id = id
 
         # Set default values
-        self._projectile_flight_type_id = None
-        self.speed = None
-        self.speed_max = None
         self.acceleration = None
-        self.turn_rate = None
+        self.arm_distance = None
+        self.detonate_distance = None
         self.drag = None
         self.gravity = None
+        self.is_sticky = None
+        self.lifespan = None
         self.lockon_acceleration = None
         self.lockon_lifespan = None
-        self.arm_distance = None
-        self.tether_distance = None
-        self.detonate_distance = None
-        self.is_sicky = None
-        self.sticks_to_players = None
         self.lockon_lose_angle = None
         self.lockon_seek_in_flight = None
+        self._projectile_flight_type_id = None
+        self.sticks_to_players = None
+        self.speed = None
+        self.speed_max = None
+        self.tether_distance = None
+        self.turn_rate = None
 
     # Define properties
     @property
     def projectile_flight_type(self):
-        try:
-            return self._projectile_flight_type
-        except AttributeError:
-            self._projectile_flight_type = ProjectileFlightType.get(
-                id=self._projectile_flight_type_id)
-            return self._projectile_flight_type
+        return ProjectileFlightType.get(id=self._projectile_flight_type_id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self._projectile_flight_type_id = d['projectile_flight_type_id']
@@ -82,7 +78,7 @@ class ProjectileFlightType(EnumeratedDataType):
         self.description = None
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.description = d.get('description')

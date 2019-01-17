@@ -8,6 +8,7 @@ from .image import Image
 from .profile import Profile
 from .title import Title
 from .world import World
+from ..exceptions import NoMatchesFoundError
 
 
 class Character(CachableDataType):
@@ -27,8 +28,10 @@ class Character(CachableDataType):
     #     directive_tree
     #     event
     #     event_grouped
+    #     friends
     #     items
     #     leaderboard
+    #     online_status
     #     skill
     #     stat
     #     stat_by_faction
@@ -48,6 +51,7 @@ class Character(CachableDataType):
         self.certs_gifted = None
         self.certs_spent = None
         self.cert_percent = None
+        self._currency = None  # Internal (See properties)
         self.daily_ribbon_bonus_count = None
         self.daily_ribbon_bonus_last = None
         self._faction_id = None
@@ -56,10 +60,12 @@ class Character(CachableDataType):
         self.play_time = None
         self.name = None
         self._profile_id = None
+        self._profiles = None  # Internal (See properties)
         self.time_created = None
         self.time_last_saved = None
         self.time_last_login = None
         self._title_id = None
+        self._world = None  # Internal (See properties)
 
     # Define properties
     @property
@@ -74,21 +80,7 @@ class Character(CachableDataType):
 
     @property
     def faction(self):
-        try:
-            return self._faction
-        except AttributeError:
-            self._faction = Faction.get(id=self._faction_id)
-            return self._faction
-
-    @property
-    def friends(self):
-        try:
-            return self._world
-        except AttributeError:
-            q = Query(type='item_profile')
-            d = q.add_filter(field='item_id', value=self.id).get()
-            self._profiles = Profile.list(ids=[i['profile_id'] for i in d])
-            return self._profiles
+        return Faction.get(id=self._faction_id)
 
     @staticmethod
     def get_by_name(name, ignore_case=True):
@@ -98,45 +90,24 @@ class Character(CachableDataType):
             q.add_filter(field='name.first_lower', value=name.lower())
         else:
             q.add_filter(field='name.first', value=name)
-
         d = q.get_single()
-        if len(d) == 0:
-            return  # TODO: Replace with exception
-
+        if not d:
+            raise NoMatchesFoundError
         # Retrieve and return the object
         instance = Character.get(id=d['character_id'], data=d)
         return instance
 
     @property
     def head(self):
-        try:
-            return self._head
-        except AttributeError:
-            self._head = Head(id=self._head_id)
-            return self._head
-
-    @property
-    def online_status(self):
-        q = Query(type='characters_online_status')
-        q.add_filter(field='character_id', value=self.id)
-        d = q.get_single()
-        return d['online_status']
+        return Head(id=self._head_id)
 
     @property
     def profile(self):
-        try:
-            return self._profile
-        except AttributeError:
-            self._profile = Profile.get(id=self._profile_id)
-            return self._profile
+        return Profile.get(id=self._profile_id)
 
     @property
     def title(self):
-        try:
-            return self._title
-        except AttributeError:
-            self._title = Title.get(id=self._title_id)
-            return self._title
+        return Title.get(id=self._title_id)
 
     @property
     def world(self):
@@ -150,7 +121,7 @@ class Character(CachableDataType):
             return self._world
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.asp_rank = d['prestige_level']
@@ -203,8 +174,4 @@ class Head(object):
     # Define properties
     @property
     def image(self):
-        try:
-            return self._image
-        except AttributeError:
-            self._image = Image.get(id=self._image_id)
-            return self._image
+        return Image.get(id=self._image_id)

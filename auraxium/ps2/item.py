@@ -4,7 +4,7 @@ from ..misc import LocalizedString
 from .ability import Ability
 from .faction import Faction
 from .image import Image, ImageSet
-# from .skill import SkillSet
+from .skill import SkillSet
 from .profile import Profile
 
 
@@ -24,25 +24,24 @@ class Item(CachableDataType, NamedDataType):
 
         # Set default values
         self._active_ability_id = None
+        self._attachments = None  # Internal (See properties)
         self.description = None
         self._faction_id = None
         self._image_id = None
         self._image_set_id = None
         self.is_default_attachment = None
         self.is_vehicle_weapon = None
+        self._items = None  # Internal (See properties)
         self.max_stack_size = None
         self.name = None
         self._passive_ability_id = None
+        self._profiles = None  # Internal (See properties)
         self._skill_set_id = None
 
     # Define properties
     @property
     def active_ability(self):
-        try:
-            return self._active_ability
-        except AttributeError:
-            self._active_ability = Ability.get(id=self._active_ability_id)
-            return self._active_ability
+        return Ability.get(id=self._active_ability_id)
 
     @property
     def attachments(self):
@@ -57,35 +56,19 @@ class Item(CachableDataType, NamedDataType):
 
     @property
     def faction(self):
-        try:
-            return self._faction
-        except AttributeError:
-            self._faction = Faction.get(id=self._faction_id)
-            return self._faction
+        return Faction.get(id=self._faction_id)
 
     @property
     def image(self):
-        try:
-            return self._image
-        except AttributeError:
-            self._image = Image.get(id=self._image_id)
-            return self._image
+        return Image.get(id=self._image_id)
 
     @property
     def image_set(self):
-        try:
-            return self._image_set
-        except AttributeError:
-            self._image_set = ImageSet.get(id=self._image_set_id)
-            return self._image_set
+        return ImageSet.get(id=self._image_set_id)
 
     @property
     def passive_ability(self):
-        try:
-            return self._passive_ability
-        except AttributeError:
-            self._passive_ability = Ability.get(id=self._passive_ability_id)
-            return self._passive_ability
+        return Ability.get(id=self._passive_ability_id)
 
     @property
     def profiles(self):
@@ -99,15 +82,10 @@ class Item(CachableDataType, NamedDataType):
 
     @property
     def skill_set(self):
-        try:
-            return self._skill_set
-        except AttributeError:
-            self._skill_set = None  # SkillSet.get(
-            #    id=self._skill_set_id)
-            return self._skill_set
+        return SkillSet(id=self._skill_set_id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self._active_ability_id = d.get('activatable_ability_id')
@@ -137,6 +115,7 @@ class ItemCategory(EnumeratedDataType, NamedDataType):
         self.id = id
 
         # Set default values
+        self._items = None  # Internal (See properties)
         self.name = None
 
     # Define properties
@@ -152,7 +131,7 @@ class ItemCategory(EnumeratedDataType, NamedDataType):
             return self._items
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.name = LocalizedString(d['name'])
@@ -176,7 +155,7 @@ class ItemType(EnumeratedDataType):
         self.name = None
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.code = d['code']

@@ -1,4 +1,3 @@
-from ..census import Query
 from ..datatypes import CachableDataType, EnumeratedDataType
 from .ability import Ability
 from .resist import ResistType
@@ -34,46 +33,30 @@ class Effect(CachableDataType):
     # Define properties
     @property
     def ability(self):
-        try:
-            return self._ability
-        except AttributeError:
-            self._ability = Ability.get(id=self._ability_id)
-            return self._ability
+        return Ability.get(id=self._ability_id)
 
     @property
     def effect_type(self):
-        try:
-            return self._effect_type
-        except AttributeError:
-            self._effect_type = EffectType.get(id=self._effect_type_id)
-            return self._effect_type
+        return EffectType.get(id=self._effect_type_id)
 
     @property
     def resist_type(self):
-        try:
-            return self._resist_type
-        except AttributeError:
-            self._resist_type = EffectType.get(id=self._resist_type_id)
-            return self._resist_type
+        return ResistType.get(id=self._resist_type_id)
 
     @property
     def target_type(self):
-        try:
-            return self._target_type
-        except AttributeError:
-            self._target_type = TargetType.get(id=self._target_type_id)
-            return self._target_type
+        TargetType.get(id=self._target_type_id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
-        self.ability_id = d.get('effect_type_id')
+        self._ability_id = d.get('ability_id')
         self.duration = d.get('duration_seconds')
-        self.effect_type_id = d['effect_type_id']
+        self._effect_type_id = d['effect_type_id']
         self.is_drain = d.get('is_drain')
-        self.resist_type_id = d.get('resist_type_id')
-        self.target_type_id = d.get('target_type_id')
+        self._resist_type_id = d.get('resist_type_id')
+        self._target_type_id = d.get('target_type_id')
         # Set attributes "param1" through "param13"
         s = ''
         for i in range(13):
@@ -103,7 +86,7 @@ class EffectType(EnumeratedDataType):
         exec(s)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.description = d.get('description')

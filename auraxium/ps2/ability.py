@@ -1,7 +1,5 @@
-from ..census import Query
 from ..datatypes import CachableDataType, EnumeratedDataType
 from .resource import ResourceType
-from .target import TargetType
 
 
 class Ability(CachableDataType):
@@ -44,22 +42,14 @@ class Ability(CachableDataType):
     # Define properties
     @property
     def ability_type(self):
-        try:
-            return self._ability_type
-        except AttributeError:
-            self._ability_type = AbilityType.get(id=self._ability_type_id)
-            return self._ability_type
+        return AbilityType.get(id=self._ability_type_id)
 
     @property
     def resource_type(self):
-        try:
-            return self._resource_type
-        except AttributeError:
-            self._resource_type = ResourceType.get(id=self._resource_type_id)
-            return self._resource_type
+        return ResourceType.get(id=self._resource_type_id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self._ability_type_id = d.get('ability_type_id')
@@ -67,14 +57,17 @@ class Ability(CachableDataType):
         self.expires_after = float(
             d.get('expire_msec')) / 1000.0 if d.get('expire_msec') is not None else None
         self.first_use_delay = float(d.get('first_use_delay_msec')) / \
-            1000.0 if d.get('first_use_delay_msec') is not None else None
+            1000.0 if d.get(
+                'first_use_delay_msec') is not None else None
         self.is_toggle = d.get('flag_toggle')
         self.next_use_delay = float(d.get('next_use_delay_msec')) / \
-            1000.0 if d.get('next_use_delay_msec') is not None else None
+            1000.0 if d.get(
+                'next_use_delay_msec') is not None else None
         self.radius_max = d.get('radius_max')
         self.resource_cast_cost = d.get('resource_first_cost')
         self.resource_cost = float(d.get('resource_cost_per_msec')) / \
-            1000.0 if d.get('resource_cost_per_msec') is not None else None
+            1000.0 if d.get(
+                'resource_cost_per_msec') is not None else None
         self._resource_type_id = d.get('resource_type_id')
         self.reuse_delay = float(d.get('reuse_delay_msec')) / \
             1000.0 if d.get('reuse_delay_msec') is not None else None
@@ -101,7 +94,7 @@ class AbilityType(EnumeratedDataType):
 
     _collection = 'ability_type'
 
-    def __init__(self, id, data=None):
+    def __init__(self, id):
         self.id = id
 
         self.description = None
@@ -117,7 +110,7 @@ class AbilityType(EnumeratedDataType):
         exec(s)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.description = d.get('description')

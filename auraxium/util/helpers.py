@@ -1,8 +1,7 @@
 from ..census import Query
-from ..ps2 import (Achievement, Alert, Character, Currency, Directive,
-                   DirectiveTier, DirectiveTree, DirectiveTreeCategory,
-                   Faction, Item, Outfit, Region, Skill, SkillCategory, SkillLine,
-                   #    SkillSet,
+from ..ps2 import (Achievement, Character, Currency, Directive, DirectiveTier,
+                   DirectiveTree, DirectiveTreeCategory, Faction, Item,
+                   Outfit, Region, Skill, SkillCategory, SkillLine,
                    Title, Vehicle, Zone)
 
 
@@ -15,7 +14,7 @@ def get_by_name(datatype, name, ignore_case=False, locale=None):
         field_name += '.first'
 
     # If a locale has been specified, append the locale subkey
-    if locale != None:
+    if locale is not None:
         field_name += '.' + locale
 
     # If case is to be ignored
@@ -72,7 +71,7 @@ def name_to_id(datatype, name, check_case=False):
 
     # Special case: character names
     if datatype == Character:
-        q.add_filter('name.first', name) if check_case else q.add_filter(
+        _ = q.add_filter('name.first', name) if check_case else q.add_filter(
             'name.first_lower', name.lower())
 
     elif datatype in localized_collections:
@@ -97,7 +96,7 @@ def prune_dict(input_dict):
 
     output_dict = {}
     for k in input_dict.keys():
-        if input_dict[k] != None and input_dict[k] != 'NULL':
+        if input_dict[k] is not None and input_dict[k] != 'NULL':
             output_dict[k] = input_dict[k]
         # Recursively prune any inner dictionaries
         elif isinstance(input_dict[k], dict):

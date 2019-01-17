@@ -1,6 +1,5 @@
 class AuraxiumBaseError(Exception):
     """The base exception for all the module's exceptions."""
-    pass
 
 
 class ServiceUnavailableError(AuraxiumBaseError):
@@ -12,13 +11,11 @@ class ServiceUnavailableError(AuraxiumBaseError):
     The corresponding server response will look something like this:
     {"error":"service_unavailable"}
     """
-    pass
 
 
 class APILimitationError(AuraxiumBaseError):
     """Raised when a known limitation is breached.
     """
-    pass
 
 
 class UnknownCollectionError(AuraxiumBaseError):
@@ -30,14 +27,12 @@ class UnknownCollectionError(AuraxiumBaseError):
     The corresponding server response will look something like this:
     {"error":"No data found."}
     """
-    pass
 
 
 class InvalidJoinError(AuraxiumBaseError):
     """Raised when attempting to perform a joined query while using the count
     verb.
     """
-    pass
 
 
 class InvalidSearchTermError(AuraxiumBaseError):
@@ -48,9 +43,18 @@ class InvalidSearchTermError(AuraxiumBaseError):
     documentation for more information).
 
     The corresponding server response will look something like this:
-    {"errorCode":"SERVER_ERROR","errorMessage":"INVALID_SEARCH_TERM: Invalid search term. Valid search terms: [description_t4id, name_t4id, state, world_id]"}
+    {"errorCode":"SERVER_ERROR","errorMessage":"INVALID_SEARCH_TERM:
+    Invalid search term. Valid search terms: [description_t4id, name_t4id,
+    state, world_id]"}
     """
-    pass
+
+
+class NoMatchesFoundError(AuraxiumBaseError):
+    """Raised when a search is valid but turns up empty.
+
+    Raised whenever a `get_by_name` method call returns an empty list or NoneType.
+
+    """
 
 
 class ServiceIDMissingError(AuraxiumBaseError):
@@ -60,9 +64,10 @@ class ServiceIDMissingError(AuraxiumBaseError):
     service IDs. For more bandwidth, a service ID has to be provided.
 
     The corresponding server response will look something like this:
-    {"error":"Missing Service ID.  A valid Service ID is required for continued api use.  The Service ID s:example is for casual use only.  (http://census.daybreakgames.com/#devSignup)"}
+    {"error":"Missing Service ID.  A valid Service ID is required for
+    continued api use.  The Service ID s:example is for casual use only.
+    (http://census.daybreakgames.com/#devSignup)"}
     """
-    pass
 
 
 class ServiceIDUnknownError(AuraxiumBaseError):
@@ -73,6 +78,7 @@ class ServiceIDUnknownError(AuraxiumBaseError):
     In the latter case, the issue will resolve itself with a bit more time.
 
     The corresponding server response will look something like this:
-    {"error":"Provided Service ID is not registered.  A valid Service ID is required for continued api use. (http://census.daybreakgames.com/#devSignup)"}#
+    {"error":"Provided Service ID is not registered.  A valid Service ID is
+    required for continued api use.
+    (http://census.daybreakgames.com/#devSignup)"}
     """
-    pass

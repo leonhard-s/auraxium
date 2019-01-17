@@ -3,7 +3,7 @@ from ..datatypes import CachableDataType, NamedDataType
 from ..misc import LocalizedString
 from .image import Image, ImageSet
 from .item import Item
-# from .objetive import ObjectiveGroup
+from .objective import Objective
 from .reward import Reward
 
 
@@ -26,7 +26,8 @@ class Achievement(CachableDataType, NamedDataType):
         self._image_id = None
         self._image_set_id = None
         self.name = None
-        # self._objective_group = None  # Always identical to the id?
+        self._objectives = None  # Internal (See properties)
+        self._objective_group_id = None
         self.repeatable = None
         self.resource_cast_cost = None
         self._reward_id = None
@@ -34,46 +35,35 @@ class Achievement(CachableDataType, NamedDataType):
     # Define properties
     @property
     def item(self):
-        try:
-            return self._item
-        except AttributeError:
-            self._item = Item.get(id=self._item_id)
-            return self._item
+        return Item.get(id=self._item_id)
 
     @property
     def image(self):
-        try:
-            return self._image
-        except AttributeError:
-            self._image = Image.get(id=self._image_id)
-            return self._image
+        return Image.get(id=self._image_id)
 
     @property
     def image_set(self):
-        try:
-            return self._image_set
-        except AttributeError:
-            self._image_set = ImageSet.get(id=self._image_set_id)
-            return self._image_set
+        return ImageSet.get(id=self._image_set_id)
 
-    # @property
-    # def objective_group(self):
-    #     try:
-    #         return self._objective_group
-    #     except AttributeError:
-    #         self._objective_group = ObjectiveGroup.get(id=self._objective_group_id)
-    #         return self._objective_group
+    @property
+    def objectives(self):
+        try:
+            return self._objectives
+        except AttributeError:
+            q = Query(type='objective', limit=100)
+            q.add_filter(field='objective_group_id',
+                         value=self._objective_group_id)
+            data = q.get()
+            self._objectives = Objective.list(
+                ids=[o['objective_id'] for o in data])
+            return self._objectives
 
     @property
     def reward(self):
-        try:
-            return self._reward
-        except AttributeError:
-            self._reward = Reward.get(id=self._reward_id)
-            return self._reward
+        return Reward.get(id=self._reward_id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.description = LocalizedString(d.get('description'))
@@ -81,6 +71,6 @@ class Achievement(CachableDataType, NamedDataType):
         self._image_id = d.get('image_id')
         self._image_set_id = d.get('image_set_id')
         self.name = LocalizedString(d.get('name'))
-        # self._objective_group_id = d.get('objective_group_id')
+        self._objective_group_id = d.get('objective_group_id')
         self.repeatable = d.get('repeatable')
         self._reward_id = d.get('reward_id')

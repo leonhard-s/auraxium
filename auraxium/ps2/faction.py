@@ -1,4 +1,3 @@
-from ..census import Query
 from ..datatypes import EnumeratedDataType, NamedDataType
 from ..misc import LocalizedString
 from .image import Image, ImageSet
@@ -27,22 +26,14 @@ class Faction(EnumeratedDataType, NamedDataType):
     # Define properties
     @property
     def image(self):
-        try:
-            return self._image
-        except AttributeError:
-            self._image = Image.get(id=self._image_id)
-            return self._image
+        return Image.get(id=self._image_id)
 
     @property
     def image_set(self):
-        try:
-            return self._image_set
-        except AttributeError:
-            self._image_set = ImageSet.get(id=self._image_set_id)
-            return self._image_set
+        return ImageSet.get(id=self._image_set_id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.name = LocalizedString(d['name'])

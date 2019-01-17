@@ -1,5 +1,4 @@
-from ..census import Query
-from ..datatypes import CachableDataType, EnumeratedDataType, NamedDataType
+from ..datatypes import EnumeratedDataType, NamedDataType
 from .currency import Currency
 from .faction import Faction
 from .image import Image, ImageSet
@@ -15,7 +14,7 @@ class Vehicle(EnumeratedDataType, NamedDataType):
 
     _collection = 'vehicle'
 
-    def __init__(self, id, data=None):
+    def __init__(self, id):
         self.id = id
 
         # Set default values
@@ -33,46 +32,26 @@ class Vehicle(EnumeratedDataType, NamedDataType):
     # Define properties
     @property
     def currency(self):
-        try:
-            return self._currency
-        except AttributeError:
-            self._currency = Currency.get(id=self._currency_id)
-            return self._currency
+        return Currency.get(id=self._currency_id)
 
     @property
     def faction(self):
-        try:
-            return self._faction
-        except AttributeError:
-            self._faction = Faction.get(id=self._faction_id)
-            return self._faction
+        return Faction.get(id=self._faction_id)
 
     @property
     def image(self):
-        try:
-            return self._image
-        except AttributeError:
-            self._image = Image.get(id=self._image_id)
-            return self._image
+        return Image.get(id=self._image_id)
 
     @property
     def image_set(self):
-        try:
-            return self._image_set
-        except AttributeError:
-            self._image_set = ImageSet.get(id=self._image_set_id)
-            return self._image_set
+        return ImageSet.get(id=self._image_set_id)
 
     @property
     def skill_set(self):
-        try:
-            return self._skill_set
-        except AttributeError:
-            self._skill_set = ImageSet.get(id=self._skill_set_id)
-            return self._skill_set
+        return ImageSet.get(id=self._skill_set_id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.cost = d.get('cost')

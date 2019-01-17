@@ -22,29 +22,22 @@ class Directive(CachableDataType, NamedDataType):
         # Set default value
         self.description = None
         self._image_id = None
-        self._image_set = None
+        self._image_set_id = None
         self.name = None
         self._objective_set_id = None
         self._directive_tier_id = None
         self._directive_tree_id = None
+        self._objectives = None  # Internal (See properties)
         self.qualify_requirement_id = None
 
     # Define properties
     @property
     def image(self):
-        try:
-            return self._image
-        except AttributeError:
-            self._image = Image.get(id=self._image_id)
-            return self._image
+        return Image.get(id=self._image_id)
 
     @property
     def image_set(self):
-        try:
-            return self._image_set
-        except AttributeError:
-            self._image_set = ImageSet.get(id=self._image_set_id)
-            return self._image_set
+        return ImageSet.get(id=self._image_set_id)
 
     @property
     def objectives(self):
@@ -62,24 +55,14 @@ class Directive(CachableDataType, NamedDataType):
 
     @property
     def directive_tier(self):
-        try:
-            return self._directive_tier
-        except AttributeError:
-            self._directive_tier = DirectiveTier.get(
-                id=self._directive_tier_id)
-            return self._directive_tier
+        return DirectiveTier.get(id=self._directive_tier_id)
 
     @property
     def directive_tree(self):
-        try:
-            return self._directive_tree
-        except AttributeError:
-            self._directive_tree = DirectiveTree.get(
-                id=self._directive_tree_id)
-            return self._directive_tree
+        return DirectiveTree.get(id=self._directive_tree_id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.description = LocalizedString(d['description'])
@@ -87,8 +70,8 @@ class Directive(CachableDataType, NamedDataType):
         self._image_set_id = d['image_set_id']
         self.name = LocalizedString(d['name'])
         self._objective_set_id = d['objective_set_id']
-        self.tier = d['directive_tier_id']
-        self.tree = d['directive_tree_id']
+        self._directive_tier_id = d['directive_tier_id']
+        self._directive_tree_id = d['directive_tree_id']
         self.qualify_requirement_id = d.get('qualify_requirement_id')
 
 
@@ -105,39 +88,27 @@ class DirectiveTier(EnumeratedDataType, NamedDataType):
         self.id = id
 
         # Set default values
-        self.required_for_completion = None
         self.directive_points = None
         self._directive_tree_id = None
         self._image_id = None
         self._image_set_id = None
         self.name = None
+        self.required_for_completion = None
+        self._rewards = None  # Internal (See properties)
         self._reward_set_id = None
 
     # Define properties
     @property
     def directive_tree(self):
-        try:
-            return self._directive_tree
-        except AttributeError:
-            self._directive_tree = DirectiveTree.get(
-                id=self._directive_tree_id)
-            return self._directive_tree
+        return DirectiveTree.get(id=self._directive_tree_id)
 
     @property
     def image(self):
-        try:
-            return self._image
-        except AttributeError:
-            self._image = Image.get(id=self._image_id)
-            return self._image
+        return Image.get(id=self._image_id)
 
     @property
     def image_set(self):
-        try:
-            return self._image_set
-        except AttributeError:
-            self._image_set = ImageSet.get(id=self._image_set_id)
-            return self._image_set
+        return ImageSet.get(id=self._image_set_id)
 
     @property
     def rewards(self):
@@ -146,23 +117,24 @@ class DirectiveTier(EnumeratedDataType, NamedDataType):
         except AttributeError:
             q = Query(type='reward_set_to_reward_group')
             q.add_filter(field='reward_set_id', value=self._reward_set_id)
-            q.join(type='reward_group_to_reward', is_list=True, match='reward_group_id')
+            q.join(type='reward_group_to_reward',
+                   is_list=True, match='reward_group_id')
             data = q.get_single()
             self._rewards = Reward.list(
                 ids=[r['reward_id'] for r in data['reward_group']['reward_list']])
             return self._rewards
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
-        self.required_for_completion = d['completion_count']
         self.directive_points = d['directive_points']
         self._directive_tree_id = d['directive_tree_id']
         self._image_id = d['image_id']
         self._image_set_id = d['image_set_id']
         self.name = LocalizedString(d['name'])
-        self.reward_set = d.get('reward_set_id')
+        self.required_for_completion = d['completion_count']
+        self._reward_set_id = d.get('reward_set_id')
 
 
 class DirectiveTree(EnumeratedDataType, NamedDataType):
@@ -182,6 +154,7 @@ class DirectiveTree(EnumeratedDataType, NamedDataType):
         # Set default values
         self._category_id = None
         self.description = None
+        self._directives = None  # Internal (See properties)
         self._image_id = None
         self._image_set_id = None
         self.name = None
@@ -189,11 +162,7 @@ class DirectiveTree(EnumeratedDataType, NamedDataType):
     # Define properties
     @property
     def category(self):
-        try:
-            return self._category
-        except AttributeError:
-            self._category = DirectiveTreeCategory.get(id=self._category_id)
-            return self._category
+        return DirectiveTreeCategory.get(id=self._category_id)
 
     @property
     def directives(self):
@@ -209,22 +178,14 @@ class DirectiveTree(EnumeratedDataType, NamedDataType):
 
     @property
     def image(self):
-        try:
-            return self._image
-        except AttributeError:
-            self._image = Image.get(id=self._image_id)
-            return self._image
+        return Image.get(id=self._image_id)
 
     @property
     def image_set(self):
-        try:
-            return self._image_set
-        except AttributeError:
-            self._image_set = ImageSet.get(id=self._image_set_id)
-            return self._image_set
+        return ImageSet.get(id=self._image_set_id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self._category_id = d['directive_tree_category_id']
@@ -248,6 +209,7 @@ class DirectiveTreeCategory(EnumeratedDataType, NamedDataType):
         self.id = id
 
         # Set default values
+        self._directive_trees = None
         self.name = None
 
     # Define properties
@@ -264,7 +226,7 @@ class DirectiveTreeCategory(EnumeratedDataType, NamedDataType):
             return self._directive_trees
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.name = LocalizedString(d.get('name'))

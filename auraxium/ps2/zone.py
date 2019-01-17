@@ -1,4 +1,3 @@
-from ..census import Query
 from ..datatypes import CachableDataType, EnumeratedDataType, NamedDataType
 from .ability import Ability
 from ..misc import LocalizedString
@@ -23,7 +22,7 @@ class Zone(EnumeratedDataType, NamedDataType):
         self.name = None
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.code = d['code']
@@ -61,23 +60,14 @@ class ZoneEffect(CachableDataType):
     # Define properties
     @property
     def ability(self):
-        try:
-            return self._ability
-        except AttributeError:
-            self._ability = Ability.get(id=self._ability_id)
-            return self._ability
+        return Ability.get(id=self._ability_id)
 
     @property
     def zone_effect_type(self):
-        try:
-            return self._zone_effect_type
-        except AttributeError:
-            self._zone_effect_type = ZoneEffectType.get(
-                id=self._zone_effect_type_id)
-            return self._zone_effect_type
+        return ZoneEffectType.get(id=self._zone_effect_type_id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self._ability_id = d.get('ability_id')
@@ -121,7 +111,7 @@ class ZoneEffectType(EnumeratedDataType):
         exec(s)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.description = d.get('description')

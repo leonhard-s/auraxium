@@ -1,4 +1,3 @@
-from ..census import Query
 from ..datatypes import EnumeratedDataType, NamedDataType
 from ..misc import LocalizedString
 
@@ -23,7 +22,7 @@ class Alert(EnumeratedDataType, NamedDataType):
         self.type = None
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.description = LocalizedString(d['description'])
@@ -31,9 +30,9 @@ class Alert(EnumeratedDataType, NamedDataType):
         self.name = LocalizedString(d['name'])
         # Hard-coded descriptions of the base alert types, 1 and 6 are unused.
         alert_types = {'1': 'Territory Control', '2': 'Facility Type',
-                            '5': 'Warpgates Stabilizing', '6': 'Conquest',
-                            '8': 'Meltdown', '9': 'Unstable Meltdown',
-                            '10': 'Aerial Anomalies'}
+                       '5': 'Warpgates Stabilizing', '6': 'Conquest',
+                       '8': 'Meltdown', '9': 'Unstable Meltdown',
+                       '10': 'Aerial Anomalies'}
         self.type = alert_types[d['type']]
 
 
@@ -53,7 +52,7 @@ class AlertState(EnumeratedDataType):
         self.name = None
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.name = d['name']

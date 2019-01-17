@@ -21,7 +21,7 @@ class Image(CachableDataType):
             '/files/ps2/images/static/{}.png'.format(id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.description = d.get('description')
@@ -42,7 +42,9 @@ class ImageSet(CachableDataType):
         self.id = id
 
         # Set default values
+        self._default_image = None  # Internal (See properties)
         self.description = None
+        self._members = None  # Internal (See properties)
 
     # Define properties
     @property
@@ -53,7 +55,7 @@ class ImageSet(CachableDataType):
             q = Query(type='image_set_default')
             q.add_filter(field='image_set_id', value=self.id)
             d = q.get_single()
-            self._default_image = Image.get(id=d['profile_id'])
+            self._default_image = Image.get(id=d['default_image_id'])
             return self._default_image
 
     @property
@@ -71,8 +73,7 @@ class ImageSet(CachableDataType):
             return self._members
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.description = d.get('description')
-        self._default_image_id = d.get()

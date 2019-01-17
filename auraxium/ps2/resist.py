@@ -1,4 +1,3 @@
-from ..census import Query
 from ..datatypes import CachableDataType, EnumeratedDataType
 
 
@@ -24,19 +23,13 @@ class ResistInfo(CachableDataType):
     # Define properties
     @property
     def resist_type(self):
-        try:
-            return self._resist_type
-        except AttributeError:
-            self._resist_type = ResistType.get(id=self._resist_type_id)
-            return self._resist_type
+        return ResistType.get(id=self._resist_type_id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.description = d.get('description')
-
-        self.description = d['description']
         self.headshot_multiplier = d.get('multiplier_when_headshot')
         self.percent = d['resist_percent']
         self._resist_type_id = d.get('resist_type_id')
@@ -58,8 +51,8 @@ class ResistType(EnumeratedDataType):
         # Set default values
         self.description = None
 
-        def _populate(self, data=None):
-            d = data if data != None else super()._get_data(self.id)
+    def _populate(self, data=None):
+        d = data if data is not None else super()._get_data(self.id)
 
-            # Set attribute values
-            self.description = d['description']
+        # Set attribute values
+        self.description = d['description']

@@ -18,7 +18,7 @@ class TargetType(EnumeratedDataType):
         self.description = None
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.description = d['description']

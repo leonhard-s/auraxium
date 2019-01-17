@@ -30,46 +30,30 @@ class Skill(CachableDataType, NamedDataType):
     # Define properties
     @property
     def grant_item(self):
-        try:
-            return self._grant_item
-        except AttributeError:
-            self._grant_item = Item.get(id=self._grant_item_id)
-            return self._grant_item
+        return Item.get(id=self._grant_item_id)
 
     @property
     def image(self):
-        try:
-            return self._image
-        except AttributeError:
-            self._image = Image.get(id=self._image_id)
-            return self._image
+        return Image.get(id=self._image_id)
 
     @property
     def image_set(self):
-        try:
-            return self._image_set
-        except AttributeError:
-            self._image_set = ImageSet.get(id=self._image_set_id)
-            return self._image_set
+        ImageSet.get(id=self._image_set_id)
 
     @property
     def skill_line(self):
-        try:
-            return self._skill_line
-        except AttributeError:
-            self._skill_line = SkillLine.get(id=self._skill_line_id)
-            return self._skill_line
+        SkillLine.get(id=self._skill_line_id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.description = LocalizedString(d['description'])
-        self.grant_item_id = d.get('grant_item_id')
-        self.image = d.get('image_id')
-        self.image_set = d.get('image_set_id')
+        self._grant_item_id = d.get('grant_item_id')
+        self._image_id = d.get('image_id')
+        self._image_set_id = d.get('image_set_id')
         self.name = LocalizedString(d['name'])
-        self.skill_line = d.get('skill_line_id')
+        self._skill_line_id = d.get('skill_line_id')
         self.skill_line_index = d.get('skill_line_index')
         self.skill_points = d['skill_points']
 
@@ -93,36 +77,24 @@ class SkillCategory(CachableDataType, NamedDataType):
         self._image_set_id = None
         self.name = None
         self.skill_points = None
-        self._skill_set = None
+        self._skill_set_id = None
         self.skill_set_index = None
 
     # Define properties
     @property
     def image(self):
-        try:
-            return self._image
-        except AttributeError:
-            self._image = Image.get(id=self._image_id)
-            return self._image
+        return Image.get(id=self._image_id)
 
     @property
     def image_set(self):
-        try:
-            return self._image_set
-        except AttributeError:
-            self._image_set = ImageSet.get(id=self._image_set_id)
-            return self._image_set
+        return ImageSet.get(id=self._image_set_id)
 
     @property
     def skill_set(self):
-        try:
-            return self._skill_set
-        except AttributeError:
-            self._skill_set = ImageSet.get(id=self._skill_set_id)
-            return self._skill_set
+        return ImageSet.get(id=self._skill_set_id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.description = LocalizedString(d['description'])
@@ -157,38 +129,25 @@ class SkillLine(CachableDataType, NamedDataType):
     # Define properties
     @property
     def image(self):
-        try:
-            return self._image
-        except AttributeError:
-            self._image = Image.get(id=self._image_id)
-            return self._image
+        return Image.get(id=self._image_id)
 
     @property
     def image_set(self):
-        try:
-            return self._image_set
-        except AttributeError:
-            self._image_set = ImageSet.get(id=self._image_set_id)
-            return self._image_set
+        return ImageSet.get(id=self._image_set_id)
 
     @property
     def skill_category(self):
-        try:
-            return self._skill_category
-        except AttributeError:
-            self._skill_category = SkillCategory.get(
-                id=self._skill_category_id)
-            return self._skill_category
+        return SkillCategory.get(id=self._skill_category_id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.description = d['description']
-        self.image = d['image_id']
-        self.image_set = d['image_set_id']
+        self._image_id = d['image_id']
+        self._image_set_id = d['image_set_id']
         self.name = LocalizedString(d['name'])
-        self._skill_ctegory_id = d['skill_category_id']
+        self._skill_category_id = d['skill_category_id']
         self.skill_category_index = d['skill_category_id']
         self.skill_points = d.get('skill_points')
 
@@ -217,30 +176,18 @@ class SkillSet(CachableDataType, NamedDataType):
     # Define properties
     @property
     def image(self):
-        try:
-            return self._image
-        except AttributeError:
-            self._image = Image.get(id=self._image_id)
-            return self._image
+        return Image.get(id=self._image_id)
 
     @property
     def image_set(self):
-        try:
-            return self._image_set
-        except AttributeError:
-            self._image_set = ImageSet.get(id=self._image_set_id)
-            return self._image_set
+        return ImageSet.get(id=self._image_set_id)
 
     @property
     def required_item(self):
-        try:
-            return self._required_item
-        except AttributeError:
-            self._required_item = Item.get(id=self._required_item_id)
-            return self._required_item
+        return Item.get(id=self._required_item_id)
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.description = LocalizedString(d['description'])

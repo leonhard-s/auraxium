@@ -20,14 +20,16 @@ class Profile(EnumeratedDataType, NamedDataType):
         self.id = id
 
         # Set default values
-        self.profile_type_id = None
-        self.profile_type_description = None
-        self._faction_id = None
+        self._armor_info = None  # Internal (See properties)
         self.description = None
-        self.name = None
+        self._faction_id = None
         self._image_id = None
         self._image_set_id = None
         self.movement_speed = None
+        self.name = None
+        self.profile_type_id = None
+        self.profile_type_description = None
+        self._resist_info = None  # Internal (See properties)
         self.reverse_speed = None
         self.sprint_speed_modifier = None
         self.strafe_speed_modifier = None
@@ -46,27 +48,15 @@ class Profile(EnumeratedDataType, NamedDataType):
 
     @property
     def faction(self):
-        try:
-            return self._faction
-        except AttributeError:
-            self._faction = Faction.get(id=self._faction_id)
-            return self._faction
+        return Faction.get(id=self._faction_id)
 
     @property
     def image(self):
-        try:
-            return self._image
-        except AttributeError:
-            self._image = Image.get(id=self._image_id)
-            return self._image
+        return Image.get(id=self._image_id)
 
     @property
     def image_set(self):
-        try:
-            return self._image_set
-        except AttributeError:
-            self._image_set = ImageSet.get(id=self._image_set_id)
-            return self._image_set
+        return ImageSet.get(id=self._image_set_id)
 
     @property
     def resist_info(self):
@@ -80,7 +70,7 @@ class Profile(EnumeratedDataType, NamedDataType):
             return self._resist_info
 
     def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
         self.profile_type_id = d['profile_type_id']
