@@ -1,175 +1,101 @@
-import logging
-from datetime import datetime
-
 from .census import Query
+from .caching import Cache
+from .misc import LocalizedString
 
-# Create a logger
-logger = logging.getLogger('auraxium.census')
 
+class DataType(object):
+    """The base datatype object.
 
-class Cache(object):
-    """A cache stores instances of other objects.
-
-    Caches are used to reduce the number of times an object needs to be
-    re-created to reduce network traffic. They can be size-limited (only keep
-    x items and discard the oldest ones), age-limited (keep items for y seconds
-    before discarding them) or both.
+    All PS2 data types are subclasses to this class. It also provides the base
+    methods required for retrieving and caching instances.
 
     """
 
-    def __init__(self, max_size=None, max_age=None):
-        self._contents = {}
-        self.max_age = max_age
-        self.max_size = max_size
-        self._meta_list = []  # Contains tuples like (<id>, <time_added>)
+    _collection = '<no_collection>'
 
-    def __contains__(self, item):
-        return True if item in self._contents.keys() else False
-
-    def __getitem__(self, key):
-        return self._contents[key]
-
-    def __len__(self):
-        return len(self._meta_list)
-
-    def add(self, item):
-        """Adds a new item to the cache."""
-        # No caching of non-existing objects
-        if item == None:
-            return
-
-        # Only proceed if the item has not already been cached
-        if item in self._contents:
-            return
+    def __str__(self):
+        s = 'PS2 {} ('.format(self.__class__.__name__)
 
         try:
-            # If the cache is full, delete the oldest item
-            if len(self._meta_list) >= self.max_size:
-                del self.contents[self._meta_list.pop(0)[0]]
-        except TypeError:
-            # The TypeError is raised in case max_size has not been set
+            if isinstance(self.name, LocalizedString):
+                s += 'Name[en]: "{}", '.format(self.name.en)
+            else:
+                s += 'Name: "{}", '.format(self.name)
+        except AttributeError:
             pass
 
-        self._contents[str(item.id)] = item
-        self._meta_list.append((str(item.id), datetime.utcnow()))
+        s += 'ID: {}'.format(self.id)
 
-    def clear(self):
-        """Removes all stored items from the cache."""
-        self._contents = {}
-        self._order = []
+        return s + ') at 0x{0:0{1}X}'.format(id(self), 16)
 
-    def trim(self):
-        """Checks if any items are scheduled for deletion."""
-        now = datetime.utcnow()
-        trim_list = [t for t in self._meta_list if now > t[1] + self.max_age]
-        for t in trim_list:
-            del self._contents[t[0]]
-            self._meta_list.remove(t)
+    @classmethod
+    def get(cls, id, field=None):
+        """Retrieves a single entry of the given datatype."""
+        # id_field = field if field != None else cls._collection + '_id'
 
-
-class DatatypeBase(object):
-    """The base class for datatypes used by the Census APi wrapper.
-
-    All other datatype objects are subclassed to this class.
-
-    """
-
-    def get_data(cls, instance):
+        # Retrieve or create the instance
         try:
-            joins = instance._join
-            if not isinstance(joins, list):
-                joins = [joins]
-        except:
-            joins = []
-        # Some collections, such as `profile_2`, don't have id field names that
-        # match their collection name. For these, the _id_field class attribute
-        # is used instead.
-        try:
-            id_field = cls._id_field
-        except AttributeError:
-            id_field = cls._collection + '_id'
-
-        # Create a new request
-        q = Query(cls._collection).add_filter(
-            field=id_field, value=instance.id)
-        # Apply the default join for any collection listed in `join`
-        for j in joins:
-            q.join(j)
-        return q.get_single()
-
-    def is_cached(cls, instance):
-        is_cached = True if instance.id in cls._cache else False
-        s = 'Retrieving' if is_cached else 'Creating'
-        logger.debug('{} {} (ID: {}).'.format(
-            s, instance.__class__.__name__, instance.id))
-        return is_cached
-
-
-class StaticDatatype(DatatypeBase):
-    """The base class for all static datatypes used by the Census API wrapper.
-
-    Static datatypes are only retrieved once, after which they will be cached
-    in a class attribute. Be mindful of which collections you make into a
-    static datatype, as the cache is never emptied.
-
-    """
-
-    def __new__(cls, id=None, *args, **kwargs):
-        # We don't cache nobody! But we will cache anybody...
-        if id == None:
-            return
-
-        # If the id exists in the cache, return it. If the cache doesn't exist,
-        # create it.
-        try:
-            len(cls._cache)
+            if id in cls._cache:
+                instance = cls._cache.load(id)
+            else:
+                instance = cls(id=id)
+                instance._populate()
+                cls._cache.add(instance)
         except AttributeError:
             cls._cache = Cache()
+            instance = cls(id=id)
+            instance._populate()
+            cls._cache.add(instance)
 
-        if id in cls._cache:
-            return cls._cache[id]
+        return instance
 
-        return super().__new__(cls)
+    @classmethod
+    def _get_data(cls, id, field=None):
+        """Retrieves a single object used to populate the data type."""
+        id_field = field if field != None else cls._collection + '_id'
 
-    def _add_to_cache(cls, instance):
-        cls._cache.add(instance)
+        if field == None:
+            q = Query(cls._collection, id=id)
+        else:
+            q = Query(cls._collection).add_filter(field=id_field, value=id)
 
+        return q.get_single()
 
-class InterimDatatype(DatatypeBase):
-    """The base class for datatypes that are neither static nor dynamic.
+    @classmethod
+    def list(cls, ids, field=None):
+        """Retrieves a list of entries of a given datatype."""
+        id_field = field if field != None else cls._collection + '_id'
 
-    An interim datatype will be retrieved and kept in storage until it is
-    overridden by a newer entry.
-
-    """
-
-    _cache_lifespan = None
-    _cache_size = None
-
-    def __new__(cls, id=None, *args, **kwargs):
-        # We don't cache nobody! But we will cache anybody...
-        if id == None:
-            return
-
+        # Create a list of all object instances that are not cached
         try:
-            if id in cls._cache and id != None:
-                return cls._cache[id]
+            ids_to_download = [i for i in ids if not i in cls._cache]
         except AttributeError:
-            cls._cache = Cache(cls._cache_size, cls._cache_lifespan)
+            cls._cache = Cache()
+            ids_to_download = ids
 
-        return super().__new__(cls)
+        # Download the missing entries
+        q = Query(cls._collection, limit=len(ids_to_download))
+        q.add_filter(field=id_field, value=','.join(ids_to_download))
+        data = q.get()
 
-    def _add_to_cache(cls, instance):
-        cls._cache.add(instance)
+        # Create an instance for all of the downloaded objects
+        instances = [cls(id=d[id_field])._populate(data_override=d)
+                     for d in data]
+
+        # Cache all the newly added instances
+        [cls._cache.add(i) for i in instances]
+
+        # Create a list of all cached items
+        cached_items = [cls._cache.load(i) for i in ids if i in cls._cache]
+
+        # Join the two lists and sort the list by id
+        instances.extend(cached_items).sort(key=lambda i: i.id)
+        return instances
 
 
-class DynamicDatatype(DatatypeBase):
-    """The base class for datatypes that are always retrieved without caching.
+class CachableDataType(DataType):
+    pass
 
-    Use this base class for datatypes that are either too unique to bother
-    keeping (such as leaderboard information), or that are expected to change
-    too regularly (such as player or weapon statistics).
 
-    """
-
+class EnumeratedDataType(DataType):
     pass

@@ -31,15 +31,15 @@ class Projectile(CachableDataType):
         self.lockon_lose_angle = None
         self.lockon_seek_in_flight = None
 
-        # Define properties
-        @property
-        def projectile_flight_type(self):
-            try:
-                return self._projectile_flight_type
-            except AttributeError:
-                self._projectile_flight_type = ProjectileFlightType.get(
-                    cls=self.__class__, id=self._projectile_flight_type_id)
-                return self._projectile_flight_type
+    # Define properties
+    @property
+    def projectile_flight_type(self):
+        try:
+            return self._projectile_flight_type
+        except AttributeError:
+            self._projectile_flight_type = ProjectileFlightType.get(
+                id=self._projectile_flight_type_id)
+            return self._projectile_flight_type
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)

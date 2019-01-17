@@ -9,9 +9,13 @@ class LocalizedString(object):
     """
 
     def __init__(self, data):
-        self.de = data.get('de')
-        self.en = data.get('en')
-        self.es = data.get('es')
-        self.fr = data.get('fr')
-        self.it = data.get('it')
-        self.tr = data.get('tr')
+        if data is None:
+            d = {}
+        else:
+            d = data
+        self.de = d.get('de')
+        self.en = d.get('en')
+        self.es = d.get('es')
+        self.fr = d.get('fr')
+        self.it = d.get('it')
+        self.tr = d.get('tr')

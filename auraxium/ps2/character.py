@@ -17,6 +17,8 @@ class Character(CachableDataType):
 
     """
 
+    _collection = 'character'
+
     # Missing related collections:
     #     achievements
     #     directive
@@ -59,79 +61,76 @@ class Character(CachableDataType):
         self.time_last_login = None
         self._title_id = None
 
-        # Define properties
-        @property
-        def currency(self):
-            try:
-                return self._currency
-            except AttributeError:
-                q = Query(type='characters_currency')
-                d = q.add_filter(field='character_id', value=self.id).get()
-                self._currency = Currency.list(cls=self.__class__,
-                                               ids=[c['currency_id'] for c in d])
-                return self._currency
+    # Define properties
+    @property
+    def currency(self):
+        try:
+            return self._currency
+        except AttributeError:
+            q = Query(type='characters_currency')
+            d = q.add_filter(field='character_id', value=self.id).get()
+            self._currency = Currency.list(ids=[c['currency_id'] for c in d])
+            return self._currency
 
-        @property
-        def faction(self):
-            try:
-                return self._faction
-            except AttributeError:
-                self._faction = Faction.get(cls=self.__class__,
-                                            id=self._faction_id)
-                return self._faction
+    @property
+    def faction(self):
+        try:
+            return self._faction
+        except AttributeError:
+            self._faction = Faction.get(id=self._faction_id)
+            return self._faction
 
-        @property
-        def friends(self):
-            try:
-                return self._world
-            except AttributeError:
-                q = Query(type='item_profile')
-                d = q.add_filter(field='item_id', value=self.id).get()
-                self._profiles = Profile.list(cls=self.__class__,
-                                              ids=[i['profile_id'] for i in d])
-                return self._profiles
+    @property
+    def friends(self):
+        try:
+            return self._world
+        except AttributeError:
+            q = Query(type='item_profile')
+            d = q.add_filter(field='item_id', value=self.id).get()
+            self._profiles = Profile.list(ids=[i['profile_id'] for i in d])
+            return self._profiles
 
-        @property
-        def head(self):
-            try:
-                return self._head
-            except AttributeError:
-                self._head = Head(id=self._head_id)
-                return self._head
+    @property
+    def head(self):
+        try:
+            return self._head
+        except AttributeError:
+            self._head = Head(id=self._head_id)
+            return self._head
 
-        @property
-        def online_status(self):
-            q = Query(type='characters_online_status')
+    @property
+    def online_status(self):
+        q = Query(type='characters_online_status')
+        q.add_filter(field='character_id', value=self.id)
+        d = q.get_single()
+        return d['online_status']
+
+    @property
+    def profile(self):
+        try:
+            return self._profile
+        except AttributeError:
+            self._profile = Profile.get(id=self._profile_id)
+            return self._profile
+
+    @property
+    def title(self):
+        try:
+            return self._title
+        except AttributeError:
+            self._title = Title.get(id=self._title_id)
+            return self._title
+
+    @property
+    def world(self):
+        try:
+            return self._world
+        except AttributeError:
+            q = Query(type='characters_world')
             q.add_filter(field='character_id', value=self.id)
             d = q.get_single()
-            return d['online_status']
-
-        @property
-        def profile(self):
-            try:
-                return self._profile
-            except AttributeError:
-                self._profile = Profile.get(id=self._profile_id)
-                return self._profile
-
-        @property
-        def title(self):
-            try:
-                return self._title
-            except AttributeError:
-                self._title = Title.get(id=self._title_id)
-                return self._title
-
-        @property
-        def world(self):
-            try:
-                return self._world
-            except AttributeError:
-                q = Query(type='characters_world')
-                q.add_filter(field='character_id', value=self.id)
-                d = q.get_single()
-                self._world = World.get(d['world_id'])
-                return self._world
+            self._world = World.get(id=d['world_id'])
+            return self._world
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)
@@ -151,7 +150,7 @@ class Character(CachableDataType):
         self._faction_id = d['faction_id']
         self.login_count = d['times']['login_count']
         self._head_id = d['head_id']
-        self.play_time = d['times']['minutes_played'] / 60.0
+        self.play_time = float(d['times']['minutes_played']) / 60.0
         self.name = d['name']['first']
         self._profile_id = d['profile_id']
         self.time_created = datetime.utcfromtimestamp(int(
@@ -184,11 +183,11 @@ class Head(object):
         self._image_id = head_image_ids[int(id) - 1]
         self.name = head_names[int(id) - 1]
 
-        # Define properties
-        @property
-        def image(self):
-            try:
-                return self._image
-            except AttributeError:
-                self._image = Image.get(cls=self.__class__, id=self._image_id)
-                return self._image
+    # Define properties
+    @property
+    def image(self):
+        try:
+            return self._image
+        except AttributeError:
+            self._image = Image.get(id=self._image_id)
+            return self._image

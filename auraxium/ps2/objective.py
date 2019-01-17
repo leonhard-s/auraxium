@@ -10,6 +10,8 @@ class Objective(CachableDataType):
 
     """
 
+    _collection = 'objective'
+
     def __init__(self, id):
         self.id = id
 
@@ -22,15 +24,15 @@ class Objective(CachableDataType):
             s += 'self.param{} = None\n'.format(i + 1)
         exec(s)
 
-        # Define properties
-        @property
-        def objective_type(self):
-            try:
-                return self._objective_type
-            except AttributeError:
-                self._objective_type = ObjectiveType.get(cls=self.__class__,
-                                                         id=self._objective_type_id)
-                return self._objective_type
+    # Define properties
+    @property
+    def objective_type(self):
+        try:
+            return self._objective_type
+        except AttributeError:
+            self._objective_type = ObjectiveType.get(
+                id=self._objective_type_id)
+            return self._objective_type
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)
@@ -52,6 +54,8 @@ class ObjectiveType(EnumeratedDataType):
     the purpose of the "param" attributes.
 
     """
+
+    _collection = 'objective_type'
 
     def __init__(self, id):
         self.id = id

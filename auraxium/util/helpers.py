@@ -1,8 +1,9 @@
 from ..census import Query
-from ..ps2 import (Achievement, AlertType, Character, Currency, Directive,
+from ..ps2 import (Achievement, Alert, Character, Currency, Directive,
                    DirectiveTier, DirectiveTree, DirectiveTreeCategory,
                    Faction, Item, Region, Skill, SkillCategory, SkillLine,
-                   SkillSet, Title, Vehicle, Zone)
+                   #    SkillSet,
+                   Title, Vehicle, Zone)
 
 
 def get_by_name(datatype, name, ignore_case=False, locale=None):

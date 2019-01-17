@@ -15,6 +15,8 @@ class Achievement(CachableDataType):
 
     """
 
+    _collection = 'achievement'
+
     def __init__(self, id):
         self.id = id
 
@@ -29,49 +31,46 @@ class Achievement(CachableDataType):
         self.resource_cast_cost = None
         self._reward_id = None
 
-        # Define properties
-        @property
-        def item(self):
-            try:
-                return self._item
-            except AttributeError:
-                self._item = Item.get(cls=self.__class__, id=self._item_id)
-                return self._item
+    # Define properties
+    @property
+    def item(self):
+        try:
+            return self._item
+        except AttributeError:
+            self._item = Item.get(id=self._item_id)
+            return self._item
 
-        @property
-        def image(self):
-            try:
-                return self._image
-            except AttributeError:
-                self._image = Image.get(cls=self.__class__, id=self._image_id)
-                return self._image
+    @property
+    def image(self):
+        try:
+            return self._image
+        except AttributeError:
+            self._image = Image.get(id=self._image_id)
+            return self._image
 
-        @property
-        def image_set(self):
-            try:
-                return self._image_set
-            except AttributeError:
-                self._image_set = ImageSet.get(
-                    cls=self.__class__, id=self._image_set_id)
-                return self._image_set
+    @property
+    def image_set(self):
+        try:
+            return self._image_set
+        except AttributeError:
+            self._image_set = ImageSet.get(id=self._image_set_id)
+            return self._image_set
 
-        # @property
-        # def objective_group(self):
-        #     try:
-        #         return self._objective_group
-        #     except AttributeError:
-        #         self._objective_group = ObjectiveGroup.get(
-        #             cls=self.__class__, id=self._objective_group_id)
-        #         return self._objective_group
+    # @property
+    # def objective_group(self):
+    #     try:
+    #         return self._objective_group
+    #     except AttributeError:
+    #         self._objective_group = ObjectiveGroup.get(id=self._objective_group_id)
+    #         return self._objective_group
 
-        @property
-        def reward(self):
-            try:
-                return self._reward
-            except AttributeError:
-                self._reward = Reward.get(
-                    cls=self.__class__, id=self._reward_id)
-                return self._reward
+    @property
+    def reward(self):
+        try:
+            return self._reward
+        except AttributeError:
+            self._reward = Reward.get(id=self._reward_id)
+            return self._reward
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)

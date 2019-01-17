@@ -27,41 +27,38 @@ class Skill(CachableDataType):
         self.skill_line_index = None
         self.skill_points = None
 
-        # Define properties
-        @property
-        def grant_item(self):
-            try:
-                return self._grant_item
-            except AttributeError:
-                self._grant_item = Item.get(
-                    cls=self.__class__, id=self._grant_item_id)
-                return self._grant_item
+    # Define properties
+    @property
+    def grant_item(self):
+        try:
+            return self._grant_item
+        except AttributeError:
+            self._grant_item = Item.get(id=self._grant_item_id)
+            return self._grant_item
 
-        @property
-        def image(self):
-            try:
-                return self._image
-            except AttributeError:
-                self._image = Image.get(cls=self.__class__, id=self._image_id)
-                return self._image
+    @property
+    def image(self):
+        try:
+            return self._image
+        except AttributeError:
+            self._image = Image.get(id=self._image_id)
+            return self._image
 
-        @property
-        def image_set(self):
-            try:
-                return self._image_set
-            except AttributeError:
-                self._image_set = ImageSet.get(cls=self.__class__,
-                                               id=self._image_set_id)
-                return self._image_set
+    @property
+    def image_set(self):
+        try:
+            return self._image_set
+        except AttributeError:
+            self._image_set = ImageSet.get(id=self._image_set_id)
+            return self._image_set
 
-        @property
-        def skill_line(self):
-            try:
-                return self._skill_line
-            except AttributeError:
-                self._skill_line = SkillLine.get(cls=self.__class__,
-                                                 id=self._skill_line_id)
-                return self._skill_line
+    @property
+    def skill_line(self):
+        try:
+            return self._skill_line
+        except AttributeError:
+            self._skill_line = SkillLine.get(id=self._skill_line_id)
+            return self._skill_line
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)
@@ -99,32 +96,30 @@ class SkillCategory(CachableDataType):
         self._skill_set = None
         self.skill_set_index = None
 
-        # Define properties
-        @property
-        def image(self):
-            try:
-                return self._image
-            except AttributeError:
-                self._image = Image.get(cls=self.__class__, id=self._image_id)
-                return self._image
+    # Define properties
+    @property
+    def image(self):
+        try:
+            return self._image
+        except AttributeError:
+            self._image = Image.get(id=self._image_id)
+            return self._image
 
-        @property
-        def image_set(self):
-            try:
-                return self._image_set
-            except AttributeError:
-                self._image_set = ImageSet.get(cls=self.__class__,
-                                               id=self._image_set_id)
-                return self._image_set
+    @property
+    def image_set(self):
+        try:
+            return self._image_set
+        except AttributeError:
+            self._image_set = ImageSet.get(id=self._image_set_id)
+            return self._image_set
 
-        @property
-        def skill_set(self):
-            try:
-                return self._skill_set
-            except AttributeError:
-                self._skill_set = ImageSet.get(cls=self.__class__,
-                                               id=self._skill_set_id)
-                return self._skill_set
+    @property
+    def skill_set(self):
+        try:
+            return self._skill_set
+        except AttributeError:
+            self._skill_set = ImageSet.get(id=self._skill_set_id)
+            return self._skill_set
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)
@@ -159,32 +154,31 @@ class SkillLine(CachableDataType):
         self.skill_category_index = None
         self.skill_points = None
 
-        # Define properties
-        @property
-        def image(self):
-            try:
-                return self._image
-            except AttributeError:
-                self._image = Image.get(cls=self.__class__, id=self._image_id)
-                return self._image
+    # Define properties
+    @property
+    def image(self):
+        try:
+            return self._image
+        except AttributeError:
+            self._image = Image.get(id=self._image_id)
+            return self._image
 
-        @property
-        def image_set(self):
-            try:
-                return self._image_set
-            except AttributeError:
-                self._image_set = ImageSet.get(cls=self.__class__,
-                                               id=self._image_set_id)
-                return self._image_set
+    @property
+    def image_set(self):
+        try:
+            return self._image_set
+        except AttributeError:
+            self._image_set = ImageSet.get(id=self._image_set_id)
+            return self._image_set
 
-        @property
-        def skill_category(self):
-            try:
-                return self._skill_category
-            except AttributeError:
-                self._skill_category = SkillCategory.get(cls=self.__class__,
-                                                         id=self._skill_category_id)
-                return self._skill_category
+    @property
+    def skill_category(self):
+        try:
+            return self._skill_category
+        except AttributeError:
+            self._skill_category = SkillCategory.get(
+                id=self._skill_category_id)
+            return self._skill_category
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)
@@ -220,32 +214,30 @@ class SkillSet(CachableDataType):
         self._required_item_id = None
         self.skill_points = None
 
-        # Define properties
-        @property
-        def image(self):
-            try:
-                return self._image
-            except AttributeError:
-                self._image = Image.get(cls=self.__class__, id=self._image_id)
-                return self._image
+    # Define properties
+    @property
+    def image(self):
+        try:
+            return self._image
+        except AttributeError:
+            self._image = Image.get(id=self._image_id)
+            return self._image
 
-        @property
-        def image_set(self):
-            try:
-                return self._image_set
-            except AttributeError:
-                self._image_set = ImageSet.get(cls=self.__class__,
-                                               id=self._image_set_id)
-                return self._image_set
+    @property
+    def image_set(self):
+        try:
+            return self._image_set
+        except AttributeError:
+            self._image_set = ImageSet.get(id=self._image_set_id)
+            return self._image_set
 
-        @property
-        def required_item(self):
-            try:
-                return self._required_item
-            except AttributeError:
-                self._required_item = Item.get(cls=self.__class__,
-                                               id=self._required_item_id)
-                return self._required_item
+    @property
+    def required_item(self):
+        try:
+            return self._required_item
+        except AttributeError:
+            self._required_item = Item.get(id=self._required_item_id)
+            return self._required_item
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)

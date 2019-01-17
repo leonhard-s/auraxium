@@ -32,54 +32,52 @@ class Profile(EnumeratedDataType):
         self.sprint_speed_modifier = None
         self.strafe_speed_modifier = None
 
-        # Define properties
-        @property
-        def armor_info(self):
-            try:
-                return self._armor_info
-            except AttributeError:
-                q = Query(type='profile_armor_map', limit=100)
-                d = q.add_filter(field='profile_id', value=self.id).get()
-                self._armor_info = ArmorInfo.list(cls=self.__class__, ids=[
-                    i['armor_info_id'] for i in d])
-                return self._armor_info
+    # Define properties
+    @property
+    def armor_info(self):
+        try:
+            return self._armor_info
+        except AttributeError:
+            q = Query(type='profile_armor_map', limit=100)
+            d = q.add_filter(field='profile_id', value=self.id).get()
+            self._armor_info = ArmorInfo.list(
+                ids=[i['armor_info_id'] for i in d])
+            return self._armor_info
 
-        @property
-        def faction(self):
-            try:
-                return self._faction
-            except AttributeError:
-                self._faction = Faction.get(
-                    cls=self.__class__, id=self._faction_id)
-                return self._faction
+    @property
+    def faction(self):
+        try:
+            return self._faction
+        except AttributeError:
+            self._faction = Faction.get(id=self._faction_id)
+            return self._faction
 
-        @property
-        def image(self):
-            try:
-                return self._image
-            except AttributeError:
-                self._image = Image.get(cls=self.__class__, id=self._image_id)
-                return self._image
+    @property
+    def image(self):
+        try:
+            return self._image
+        except AttributeError:
+            self._image = Image.get(id=self._image_id)
+            return self._image
 
-        @property
-        def image_set(self):
-            try:
-                return self._image_set
-            except AttributeError:
-                self._image_set = ImageSet.get(
-                    cls=self.__class__, id=self._image_set_id)
-                return self._image_set
+    @property
+    def image_set(self):
+        try:
+            return self._image_set
+        except AttributeError:
+            self._image_set = ImageSet.get(id=self._image_set_id)
+            return self._image_set
 
-        @property
-        def resist_info(self):
-            try:
-                return self._resist_info
-            except AttributeError:
-                q = Query(type='profile_resist_map', limit=100)
-                d = q.add_filter(field='profile_id', value=self.id).get()
-                self._resist_info = ResistInfo.list(cls=self.__class__, ids=[
-                    i['resist_info_id'] for i in d])
-                return self._resist_info
+    @property
+    def resist_info(self):
+        try:
+            return self._resist_info
+        except AttributeError:
+            q = Query(type='profile_resist_map', limit=100)
+            d = q.add_filter(field='profile_id', value=self.id).get()
+            self._resist_info = ResistInfo.list(
+                ids=[i['resist_info_id'] for i in d])
+            return self._resist_info
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)

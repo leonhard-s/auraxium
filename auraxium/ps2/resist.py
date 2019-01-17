@@ -21,15 +21,14 @@ class ResistInfo(CachableDataType):
         self.percent = None
         self._resist_type_id = None
 
-        # Define properties
-        @property
-        def resist_type(self):
-            try:
-                return self._resist_type
-            except AttributeError:
-                self._resist_type = ResistType.get(cls=self.__class__,
-                                                   id=self._resist_type_id)
-                return self._resist_type
+    # Define properties
+    @property
+    def resist_type(self):
+        try:
+            return self._resist_type
+        except AttributeError:
+            self._resist_type = ResistType.get(id=self._resist_type_id)
+            return self._resist_type
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)

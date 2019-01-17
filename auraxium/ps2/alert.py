@@ -3,26 +3,6 @@ from ..datatypes import EnumeratedDataType
 from ..misc import LocalizedString
 
 
-class AlertState(EnumeratedDataType):
-    """The state of an alert.
-
-    Lists the states an alert can be in, like "started".
-
-    """
-
-    def __init__(self, id):
-        self.id = id
-
-        # Set default values
-        self.name = None
-
-    def _populate(self, data=None):
-        d = data if data != None else super()._get_data(self.id)
-
-        # Set attribute values
-        self.name = d['name']
-
-
 class Alert(EnumeratedDataType):
     """An alert/event.
 
@@ -30,6 +10,8 @@ class Alert(EnumeratedDataType):
     currently enabled in-game.
 
     """
+
+    _collection = 'metagame_event'
 
     def __init__(self, id):
         self.id = id
@@ -53,3 +35,25 @@ class Alert(EnumeratedDataType):
                             '8': 'Meltdown', '9': 'Unstable Meltdown',
                             '10': 'Aerial Anomalies'}
         self.type = alert_types[d['type']]
+
+
+class AlertState(EnumeratedDataType):
+    """The state of an alert.
+
+    Lists the states an alert can be in, like "started".
+
+    """
+
+    _collection = 'metagame_event_state'
+
+    def __init__(self, id):
+        self.id = id
+
+        # Set default values
+        self.name = None
+
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
+
+        # Set attribute values
+        self.name = d['name']

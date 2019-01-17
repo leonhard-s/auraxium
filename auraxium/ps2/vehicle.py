@@ -30,50 +30,46 @@ class Vehicle(EnumeratedDataType):
         self.type_id = None
         self.type_name = None
 
-       # Define properties
-        @property
-        def currency(self):
-            try:
-                return self._currency
-            except AttributeError:
-                self._currency = Currency.get(
-                    cls=self.__class__, id=self._currency_id)
-                return self._currency
+    # Define properties
+    @property
+    def currency(self):
+        try:
+            return self._currency
+        except AttributeError:
+            self._currency = Currency.get(id=self._currency_id)
+            return self._currency
 
-        @property
-        def faction(self):
-            try:
-                return self._faction
-            except AttributeError:
-                self._faction = Faction.get(
-                    cls=self.__class__, id=self._faction_id)
-                return self._faction
+    @property
+    def faction(self):
+        try:
+            return self._faction
+        except AttributeError:
+            self._faction = Faction.get(id=self._faction_id)
+            return self._faction
 
-        @property
-        def image(self):
-            try:
-                return self._image
-            except AttributeError:
-                self._image = Image.get(cls=self.__class__, id=self._image_id)
-                return self._image
+    @property
+    def image(self):
+        try:
+            return self._image
+        except AttributeError:
+            self._image = Image.get(id=self._image_id)
+            return self._image
 
-        @property
-        def image_set(self):
-            try:
-                return self._image_set
-            except AttributeError:
-                self._image_set = ImageSet.get(cls=self.__class__,
-                                               id=self._image_set_id)
-                return self._image_set
+    @property
+    def image_set(self):
+        try:
+            return self._image_set
+        except AttributeError:
+            self._image_set = ImageSet.get(id=self._image_set_id)
+            return self._image_set
 
-        @property
-        def skill_set(self):
-            try:
-                return self._skill_set
-            except AttributeError:
-                self._skill_set = ImageSet.get(cls=self.__class__,
-                                               id=self._skill_set_id)
-                return self._skill_set
+    @property
+    def skill_set(self):
+        try:
+            return self._skill_set
+        except AttributeError:
+            self._skill_set = ImageSet.get(id=self._skill_set_id)
+            return self._skill_set
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)

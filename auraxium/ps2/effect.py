@@ -13,6 +13,8 @@ class Effect(CachableDataType):
 
     """
 
+    _collection = 'effect'
+
     def __init__(self, id):
         self.id = id
 
@@ -29,41 +31,38 @@ class Effect(CachableDataType):
             s += 'self.param{} = None\n'.format(i + 1)
         exec(s)
 
-        # Define properties
-        @property
-        def ability(self):
-            try:
-                return self._ability
-            except AttributeError:
-                self._ability = Ability.get(cls=self.__class__,
-                                            id=self._ability_id)
-                return self._ability
+    # Define properties
+    @property
+    def ability(self):
+        try:
+            return self._ability
+        except AttributeError:
+            self._ability = Ability.get(id=self._ability_id)
+            return self._ability
 
-        @property
-        def effect_type(self):
-            try:
-                return self._effect_type
-            except AttributeError:
-                self._effect_type = EffectType.get(cls=self.__class__,
-                                                   id=self._effect_type_id)
-                return self._effect_type
+    @property
+    def effect_type(self):
+        try:
+            return self._effect_type
+        except AttributeError:
+            self._effect_type = EffectType.get(id=self._effect_type_id)
+            return self._effect_type
 
-        @property
-        def resist_type(self):
-            try:
-                return self._resist_type
-            except AttributeError:
-                self._resist_type = EffectType.get(cls=self.__class__,
-                                                   id=self._resist_type_id)
-                return self._resist_type
+    @property
+    def resist_type(self):
+        try:
+            return self._resist_type
+        except AttributeError:
+            self._resist_type = EffectType.get(id=self._resist_type_id)
+            return self._resist_type
 
-        @property
-        def target_type(self):
-            try:
-                return self._target_type
-            except AttributeError:
-                self._target_type = TargetType.get(id=self._target_type_id)
-                return self._target_type
+    @property
+    def target_type(self):
+        try:
+            return self._target_type
+        except AttributeError:
+            self._target_type = TargetType.get(id=self._target_type_id)
+            return self._target_type
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)
@@ -83,6 +82,15 @@ class Effect(CachableDataType):
 
 
 class EffectType(EnumeratedDataType):
+    """A type of effect.
+
+    The effect type contains informatino about what the "param" fields of the
+    corresponding effect's purpose is.
+
+    """
+
+    _collection = 'effect_type'
+
     def __init__(self, id):
         self.id = id
 

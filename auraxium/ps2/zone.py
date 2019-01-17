@@ -41,7 +41,7 @@ class ZoneEffect(CachableDataType):
 
     _collection = 'zone_effect'
 
-    def __init__(self, id)
+    def __init__(self, id):
         self.id = id
 
         # Set default values
@@ -58,22 +58,23 @@ class ZoneEffect(CachableDataType):
             s += 'self.string{0} = None\n'.format(i + 1)
         exec(s)
 
-        # Define properties
-        @property
-        def ability(self):
-            try:
-                return self._ability
-            except AttributeError:
-                self._ability = Ability.get(cls=self.__class__, id=self._ability_id)
-                return self._ability
-        
-        @property
-        def zone_effect_type(self):
-            try:
-                return self._zone_effect_type
-            except AttributeError:
-                self._zone_effect_type = ZoneEffectType.get(cls=self.__class__, id=self._zone_effect_type_id)
-                return self._zone_effect_type
+    # Define properties
+    @property
+    def ability(self):
+        try:
+            return self._ability
+        except AttributeError:
+            self._ability = Ability.get(id=self._ability_id)
+            return self._ability
+
+    @property
+    def zone_effect_type(self):
+        try:
+            return self._zone_effect_type
+        except AttributeError:
+            self._zone_effect_type = ZoneEffectType.get(
+                id=self._zone_effect_type_id)
+            return self._zone_effect_type
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)
@@ -118,7 +119,7 @@ class ZoneEffectType(EnumeratedDataType):
         for i in range(4):
             s += 'self.string{0} = None\n'.format(i + 1)
         exec(s)
-        
+
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)
 

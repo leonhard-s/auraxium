@@ -10,6 +10,8 @@ class ArmorFacing(EnumeratedDataType):
 
     """
 
+    _collection = 'armor_facing'
+
     def __init__(self, id):
         self.id = id
 
@@ -31,6 +33,8 @@ class ArmorInfo(CachableDataType):
 
     """
 
+    _collection = 'armor_info'
+
     def __init__(self, id):
         self.id = id
 
@@ -40,15 +44,14 @@ class ArmorInfo(CachableDataType):
         self.armor_percent = None
         self.description = None
 
-        # Define properties
-        @property
-        def armor_facing(self):
-            try:
-                return self._armor_facing
-            except AttributeError:
-                self._armor_facing = ArmorFacing.get(
-                    cls=self.__class__, id=self._armor_facing_id)
-                return self._armor_facing
+    # Define properties
+    @property
+    def armor_facing(self):
+        try:
+            return self._armor_facing
+        except AttributeError:
+            self._armor_facing = ArmorFacing.get(id=self._armor_facing_id)
+            return self._armor_facing
 
     def _populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)

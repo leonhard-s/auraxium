@@ -11,6 +11,8 @@ class Currency(EnumeratedDataType):
 
     """
 
+    _collection = 'currency'
+
     def __init__(self, id):
         self.id = id
 
@@ -19,15 +21,14 @@ class Currency(EnumeratedDataType):
         self._image_set_id = None
         self.inventory_cap = None
 
-        # Define properties
-        @property
-        def image_set(self):
-            try:
-                return self._image_set
-            except AttributeError:
-                self._image_set = ImageSet.get(cls=self.__class__,
-                                               id=self._image_set_id)
-                return self._image_set
+    # Define properties
+    @property
+    def image_set(self):
+        try:
+            return self._image_set
+        except AttributeError:
+            self._image_set = ImageSet.get(id=self._image_set_id)
+            return self._image_set
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)

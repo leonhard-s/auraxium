@@ -12,6 +12,8 @@ class Outfit(CachableDataType):
 
     """
 
+    _collection = 'outfit'
+
     def __init__(self, id):
         self.id = id
 
@@ -22,26 +24,25 @@ class Outfit(CachableDataType):
         self.name = None
         self.date_created = None
 
-        # Define properties
-        @property
-        def leader(self):
-            try:
-                return self._leader
-            except AttributeError:
-                self._leader = Character.get(
-                    self.__class__, id=self._leader_id)
-                return self._leader
+    # Define properties
+    @property
+    def leader(self):
+        try:
+            return self._leader
+        except AttributeError:
+            self._leader = Character.get(
+                self.__class__, id=self._leader_id)
+            return self._leader
 
-        @property
-        def members(self):
-            try:
-                return self._members
-            except AttributeError:
-                q = Query(type='outfit_member')
-                d = q.add_filter(field='outfit_id', value=self.id).get()
-                self._members = OutfitMember.list(cls=self.__clas__,
-                                                  ids=[i['profile_id'] for i in d])
-                return self._members
+    @property
+    def members(self):
+        try:
+            return self._members
+        except AttributeError:
+            q = Query(type='outfit_member')
+            d = q.add_filter(field='outfit_id', value=self.id).get()
+            self._members = OutfitMember.list(ids=[i['profile_id'] for i in d])
+            return self._members
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)
@@ -63,6 +64,8 @@ class OutfitMember(CachableDataType):
 
     """
 
+    _collection = 'outfit_type'
+
     def __init__(self, id):
         self.id = id
 
@@ -72,14 +75,14 @@ class OutfitMember(CachableDataType):
         self.rank_name = None
         self.rank_ordinal = None
 
-        # Define properties
-        def character(self):
-            try:
-                return self._character
-            except AttributeError:
-                self._character = Character.get(
-                    self.__class__, id=self._character_id)
-                return self._character
+    # Define properties
+    @property
+    def character(self):
+        try:
+            return self._character
+        except AttributeError:
+            self._character = Character.get(id=self._character_id)
+            return self._character
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)

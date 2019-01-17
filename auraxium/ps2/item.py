@@ -4,7 +4,7 @@ from ..misc import LocalizedString
 from .ability import Ability
 from .faction import Faction
 from .image import Image, ImageSet
-from .skill import SkillSet
+# from .skill import SkillSet
 from .profile import Profile
 
 
@@ -16,6 +16,8 @@ class Item(CachableDataType):
     cosmetics.
 
     """
+
+    _collection = 'item'
 
     def __init__(self, id):
         self.id = id
@@ -33,88 +35,83 @@ class Item(CachableDataType):
         self._passive_ability_id = None
         self._skill_set_id = None
 
-        # Define properties
-        @property
-        def active_ability(self):
-            try:
-                return self._active_ability
-            except AttributeError:
-                self._active_ability = Ability.get(cls=self.__class__,
-                                                   id=self._active_ability_id)
-                return self._active_ability
+    # Define properties
+    @property
+    def active_ability(self):
+        try:
+            return self._active_ability
+        except AttributeError:
+            self._active_ability = Ability.get(id=self._active_ability_id)
+            return self._active_ability
 
-        @property
-        def attachments(self):
-            try:
-                return self._attachments
-            except AttributeError:
-                q = Query(type='item_attachment')
-                d = q.add_filter(field='item_id', value=self.id).get()
-                self._attachments = Item.list(cls=self.__class__,
-                                              ids=[i['attachment_item_id'] for i in d])
-                return self._attachments
+    @property
+    def attachments(self):
+        try:
+            return self._attachments
+        except AttributeError:
+            q = Query(type='item_attachment')
+            d = q.add_filter(field='item_id', value=self.id).get()
+            self._attachments = Item.list(
+                ids=[i['attachment_item_id'] for i in d])
+            return self._attachments
 
-        @property
-        def faction(self):
-            try:
-                return self._faction
-            except AttributeError:
-                self._faction = Faction.get(cls=self.__class__,
-                                            id=self._faction_id)
-                return self._faction
+    @property
+    def faction(self):
+        try:
+            return self._faction
+        except AttributeError:
+            self._faction = Faction.get(id=self._faction_id)
+            return self._faction
 
-        @property
-        def image(self):
-            try:
-                return self._image
-            except AttributeError:
-                self._image = Image.get(cls=self.__class__, id=self._image_id)
-                return self._image
+    @property
+    def image(self):
+        try:
+            return self._image
+        except AttributeError:
+            self._image = Image.get(id=self._image_id)
+            return self._image
 
-        @property
-        def image_set(self):
-            try:
-                return self._image_set
-            except AttributeError:
-                self._image_set = ImageSet.get(cls=self.__class__,
-                                               id=self._image_set_id)
-                return self._image_set
+    @property
+    def image_set(self):
+        try:
+            return self._image_set
+        except AttributeError:
+            self._image_set = ImageSet.get(id=self._image_set_id)
+            return self._image_set
 
-        @property
-        def passive_ability(self):
-            try:
-                return self._passive_ability
-            except AttributeError:
-                self._passive_ability = Ability.get(cls=self.__class__,
-                                                    id=self._passive_ability_id)
-                return self._passive_ability
+    @property
+    def passive_ability(self):
+        try:
+            return self._passive_ability
+        except AttributeError:
+            self._passive_ability = Ability.get(id=self._passive_ability_id)
+            return self._passive_ability
 
-        @property
-        def profiles(self):
-            try:
-                return self._profiles
-            except AttributeError:
-                q = Query(type='item_profile')
-                d = q.add_filter(field='item_id', value=self.id).get()
-                self._profiles = Profile.list(cls=self.__class__, ids=[
-                                              i['profile_id'] for i in d])
-                return self._profiles
+    @property
+    def profiles(self):
+        try:
+            return self._profiles
+        except AttributeError:
+            q = Query(type='item_profile')
+            d = q.add_filter(field='item_id', value=self.id).get()
+            self._profiles = Profile.list(ids=[i['profile_id'] for i in d])
+            return self._profiles
 
-        @property
-        def skill_set(self):
-            try:
-                return self._skill_set
-            except AttributeError:
-                self._skill_set = SkillSet.get(
-                    cls=self.__class__, id=self._skill_set_id)
-                return self._skill_set
+    @property
+    def skill_set(self):
+        try:
+            return self._skill_set
+        except AttributeError:
+            self._skill_set = None  # SkillSet.get(
+            #    id=self._skill_set_id)
+            return self._skill_set
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)
 
         # Set attribute values
         self._active_ability_id = d.get('activatable_ability_id')
-        self.description = LocalizedString(d['description'])
+        self.description = LocalizedString(d.get('description'))
         self._faction_id = d['faction_id']
         self._image_id = d['image_id']
         self._image_set_id = d['image_set_id']
@@ -134,24 +131,25 @@ class ItemCategory(EnumeratedDataType):
 
     """
 
+    _collection = 'item_category'
+
     def __init__(self, id):
         self.id = id
 
         # Set default values
         self.name = None
 
-        # Define properties
-        @property
-        def items(self):
-            """Returns a list of all items that belong to this category."""
-            try:
-                return self._items
-            except AttributeError:
-                q = Query(type='item')
-                d = q.add_filter(field='item_category', value=self.id).get()
-                self._items = Item.list(cls=self.__class__, ids=[
-                                        i['item_id'] for i in d])
-                return self._items
+    # Define properties
+    @property
+    def items(self):
+        """Returns a list of all items that belong to this category."""
+        try:
+            return self._items
+        except AttributeError:
+            q = Query(type='item')
+            d = q.add_filter(field='item_category', value=self.id).get()
+            self._items = Item.list(ids=[i['item_id'] for i in d])
+            return self._items
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)
@@ -167,6 +165,8 @@ class ItemType(EnumeratedDataType):
     objects like "Give Currency" or "Reward Set".
 
     """
+
+    _collection = 'item_type'
 
     def __init__(self, id):
         self.id = id

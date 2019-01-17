@@ -13,6 +13,8 @@ class Ability(CachableDataType):
 
     """
 
+    _collection = 'ability'
+
     def __init__(self, id):
         self.id = id
 
@@ -39,24 +41,22 @@ class Ability(CachableDataType):
             s += 'self.string{0} = None\n'.format(i + 1)
         exec(s)
 
-        # Define properties
-        @property
-        def ability_type(self):
-            try:
-                return self._ability_type
-            except AttributeError:
-                self._ability_type = AbilityType.get(
-                    self.__class__, id=self._ability_type_id)
-                return self._ability_type
+    # Define properties
+    @property
+    def ability_type(self):
+        try:
+            return self._ability_type
+        except AttributeError:
+            self._ability_type = AbilityType.get(id=self._ability_type_id)
+            return self._ability_type
 
-        @property
-        def resource_type(self):
-            try:
-                return self._resource_type
-            except AttributeError:
-                self._resource_type = ResourceType.get(
-                    id=self._resource_type_id)
-                return self._resource_type
+    @property
+    def resource_type(self):
+        try:
+            return self._resource_type
+        except AttributeError:
+            self._resource_type = ResourceType.get(id=self._resource_type_id)
+            return self._resource_type
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)
@@ -64,15 +64,20 @@ class Ability(CachableDataType):
         # Set attribute values
         self._ability_type_id = d.get('ability_type_id')
         self.distance_max = d.get('distance_max')
-        self.expires_after = d.get('expire_msec') / 1000
-        self.first_use_delay = d.get('first_use_delay_msec') / 1000
+        self.expires_after = float(
+            d.get('expire_msec')) / 1000.0 if d.get('expire_msec') is not None else None
+        self.first_use_delay = float(d.get('first_use_delay_msec')) / \
+            1000.0 if d.get('first_use_delay_msec') is not None else None
         self.is_toggle = d.get('flag_toggle')
-        self.next_use_delay = d.get('next_use_delay_msec') / 1000
+        self.next_use_delay = float(d.get('next_use_delay_msec')) / \
+            1000.0 if d.get('next_use_delay_msec') is not None else None
         self.radius_max = d.get('radius_max')
         self.resource_cast_cost = d.get('resource_first_cost')
-        self.resource_cost = d.get('resource_cost_per_msec') / 1000
+        self.resource_cost = float(d.get('resource_cost_per_msec')) / \
+            1000.0 if d.get('resource_cost_per_msec') is not None else None
         self._resource_type_id = d.get('resource_type_id')
-        self.reuse_delay = d.get('reuse_delay_msec') / 1000
+        self.reuse_delay = float(d.get('reuse_delay_msec')) / \
+            1000.0 if d.get('reuse_delay_msec') is not None else None
         # Set attributes "param1" through "param14"
         s = ''
         for i in range(14):

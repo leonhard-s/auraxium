@@ -19,9 +19,9 @@ class World(EnumeratedDataType):
         # Set default values
         self.name = None
 
-        @property
-        def status(self):
-            print('NYI')
+    @property
+    def status(self):
+        print('NYI')
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)

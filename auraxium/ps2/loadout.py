@@ -12,6 +12,8 @@ class Loadout(EnumeratedDataType):
 
     """
 
+    _collection = 'loadout'
+
     def __init__(self, id):
         self.id = id
 
@@ -20,23 +22,22 @@ class Loadout(EnumeratedDataType):
         self.name = None
         self._profile_id = None
 
-        # Define properties
-        @property
-        def faction(self):
-            try:
-                return self._faction
-            except AttributeError:
-                self._faction = Faction.get(
-                    cls=self.__class__, id=self._faction_id)
-                return self._faction
+    # Define properties
+    @property
+    def faction(self):
+        try:
+            return self._faction
+        except AttributeError:
+            self._faction = Faction.get(id=self._faction_id)
+            return self._faction
 
-        @property
-        def profile(self):
-            try:
-                return self._profile
-            except AttributeError:
-                self._profile = Profile.get(id=self._profile_id)
-                return self._profile
+    @property
+    def profile(self):
+        try:
+            return self._profile
+        except AttributeError:
+            self._profile = Profile.get(id=self._profile_id)
+            return self._profile
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)

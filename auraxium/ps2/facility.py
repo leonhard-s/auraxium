@@ -12,6 +12,8 @@ class Region(CachableDataType):
 
     """
 
+    _collection = 'region'
+
     def __init__(self, id):
         self.id = id
 
@@ -20,23 +22,22 @@ class Region(CachableDataType):
         self.name = None
         self._zone_id = None
 
-        # Define properties
-        @property
-        def initial_faction(self):
-            try:
-                return self._initial_faction
-            except AttributeError:
-                self._initial_faction = Faction.get(cls=self.__class__,
-                                                    id=self._initial_faction_id)
-                return self._initial_faction
+    # Define properties
+    @property
+    def initial_faction(self):
+        try:
+            return self._initial_faction
+        except AttributeError:
+            self._initial_faction = Faction.get(id=self._initial_faction_id)
+            return self._initial_faction
 
-        @property
-        def zone(self):
-            try:
-                return self._zone
-            except AttributeError:
-                self._zone = Zone.get(cls=self.__class__, id=self._zone_id)
-                return self._zone
+    @property
+    def zone(self):
+        try:
+            return self._zone
+        except AttributeError:
+            self._zone = Zone.get(id=self._zone_id)
+            return self._zone
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)
@@ -66,32 +67,30 @@ class FacilityLink(CachableDataType):
         self._facility_b_id = None
         self._zone_id = None
 
-        # Define properties
-        @property
-        def facility_a(self):
-            try:
-                return self._facility_a
-            except AttributeError:
-                self._facility_a = Region.get(cls=self.__class__,
-                                              id=self._facility_a_id)
-                return self._facility_a
+    # Define properties
+    @property
+    def facility_a(self):
+        try:
+            return self._facility_a
+        except AttributeError:
+            self._facility_a = Region.get(id=self._facility_a_id)
+            return self._facility_a
 
-        @property
-        def facility_b(self):
-            try:
-                return self._facility_b
-            except AttributeError:
-                self._facility_b = Region.get(cls=self.__class__,
-                                              id=self._facility_b_id)
-                return self._facility_b
+    @property
+    def facility_b(self):
+        try:
+            return self._facility_b
+        except AttributeError:
+            self._facility_b = Region.get(id=self._facility_b_id)
+            return self._facility_b
 
-        @property
-        def zone(self):
-            try:
-                return self._zone
-            except AttributeError:
-                self._zone = Zone.get(cls=self.__class__, id=self._zone_id)
-                return self._zone
+    @property
+    def zone(self):
+        try:
+            return self._zone
+        except AttributeError:
+            self._zone = Zone.get(id=self._zone_id)
+            return self._zone
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)
@@ -109,6 +108,8 @@ class FacilityType(EnumeratedDataType):
     Examples are "Tech Plant", "Bio Lab" or "Small Outpost".
 
     """
+
+    _collection = 'facility_type'
 
     def __init__(self, id):
         self.id = id

@@ -39,25 +39,26 @@ class FireGroup(CachableDataType):
         self.spool_up_initial_refire = None
         self.can_chamber_ironsights = None
 
-        # Define properties
-        @property
-        def fire_modes(self):
-            try:
-                return self._fire_modes
-            except AttributeError:
-                q = Query(type='fire_group_to_fire_mode')
-                d = q.add_filter(field='fire_group_id', value=self.id).get()
-                self._fire_modes = FireMode.list(cls=self.__class__,
-                                                 ids=[i['fire_mode_id'] for i in d])
-                return self._fire_modes
+    # Define properties
+    @property
+    def fire_modes(self):
+        try:
+            return self._fire_modes
+        except AttributeError:
+            q = Query(type='fire_group_to_fire_mode')
+            d = q.add_filter(field='fire_group_id', value=self.id).get()
+            self._fire_modes = FireMode.list(ids=[i['fire_mode_id'] for i in d])
+            return self._fire_modes
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)
 
         # Set attribute values
-        self.chamber_duration = d.get('chamber_duration_ms') / 1000
+        self.chamber_duration = float(d.get(
+            'chamber_duration_ms')) / 1000.0 if d.get('chamber_duration_ms') is not None else None
         self.transition_duration = d.get('transition_duration_ms') / 100
-        self.spool_up = d.get('spool_up_ms') / 1000
+        self.spool_up = float(d.get('spool_up_ms')) / \
+            1000.0 if d.get('spool_up_ms') is not None else None
         self.spool_up_initial_refire = d.get(
             'spool_up_initial_refire_ms') / 1000
         self.can_chamber_ironsights = d.get('can_chamber_ironsights')
@@ -195,20 +196,19 @@ class FireMode(CachableDataType):
         # "shield_bypass_pct": "0",
         # "description"
 
-        # Define properties
-        @property
-        def projectile(self):
-            """Lists the attachments available for this weapon."""
-            try:
-                return self._projectile
-            except AttributeError:
-                q = Query(type='fire_mode_to_projectile')
-                q.add_filter(field='fire_mode_id', value=self.id)
-                q.join(type='projectile')
-                d = q.get_single()
-                self._projectile = Projectile.get(cls=self.__class__,
-                                                  id=d['projectile_id'])
-                return self._projectile
+    # Define properties
+    @property
+    def projectile(self):
+        """Lists the attachments available for this weapon."""
+        try:
+            return self._projectile
+        except AttributeError:
+            q = Query(type='fire_mode_to_projectile')
+            q.add_filter(field='fire_mode_id', value=self.id)
+            q.join(type='projectile')
+            d = q.get_single()
+            self._projectile = Projectile.get(id=d['projectile_id'])
+            return self._projectile
 
 
 class FireModeType(EnumeratedDataType):
@@ -242,6 +242,8 @@ class Weapon(CachableDataType):
 
     """
 
+    _collection = 'weapon'
+
     def __init__(self, id):
         self.id = id
 
@@ -260,73 +262,74 @@ class Weapon(CachableDataType):
         self.turn_speed_modifier = None
         self.unequip_time = None
 
-        # Define properties
-        @property
-        def ammo_slot(self):
-            """Lists the attachments available for this weapon."""
-            try:
-                return self._ammo_slot
-            except AttributeError:
-                q = Query(type='weapon_ammo_slot')
-                d = q.add_filter(field='weapon_id', value=self.id).get()
-                # The following line is not an error, AmmoSlot does not have a
-                # list() method as it does not generate any network traffic.
-                self._ammo_slot = [AmmoSlot(a) for a in d]
-                return self._ammo_slot
+    @property
+    def ammo_slot(self):
+        """Lists the attachments available for this weapon."""
+        try:
+            return self._ammo_slot
+        except AttributeError:
+            q = Query(type='weapon_ammo_slot')
+            d = q.add_filter(field='weapon_id', value=self.id).get()
+            # The following line is not an error, AmmoSlot does not have a
+            # list() method as it does not generate any network traffic.
+            self._ammo_slot = [AmmoSlot(a) for a in d]
+            return self._ammo_slot
 
-        @property
-        def attachments(self):
-            """Lists the attachments available for this weapon."""
-            try:
-                return self._attachments
-            except AttributeError:
-                q = Query(type='weapon_to_attachment')
-                d = q.add_filter(field='weapon_id', value=self.id).get()
-                self._attachments = Item.list(cls=self.__class__, ids=[
-                                              i['item_id'] for i in d])
-                return self._attachments
+    @property
+    def attachments(self):
+        """Lists the attachments available for this weapon."""
+        try:
+            return self._attachments
+        except AttributeError:
+            q = Query(type='weapon_to_attachment')
+            d = q.add_filter(field='weapon_id', value=self.id).get()
+            self._attachments = Item.list(ids=[i['item_id'] for i in d])
+            return self._attachments
 
-        @property
-        def item(self):
-            """Links a weapon to its item."""
-            try:
-                return self._item
-            except AttributeError:
-                q = Query(type='item_to_weapon')
-                q.add_filter(field='weapon_id', value=self.id)
-                q.join(type='item')
-                d = q.get_single()
-                self._item = Item.get(cls=self.__class__,
-                                      id=d['item_id'], data=d)
-                return self._item
+    @property
+    def item(self):
+        """Links a weapon to its item."""
+        try:
+            return self._item
+        except AttributeError:
+            q = Query(type='item_to_weapon')
+            q.add_filter(field='weapon_id', value=self.id)
+            q.join(type='item')
+            d = q.get_single()
+            self._item = Item.get(id=d['item_id'])
+            return self._item
 
-        @property
-        def fire_group(self):
-            """The fire group used by this weapon."""
-            try:
-                return self._fire_group
-            except AttributeError:
-                q = Query(type='weapon_to_fire_group')
-                d = q.add_filter(field='weapon_id', value=self.id).get()
-                self._fire_group = FireGroup.list(cls=self.__class__,
-                                                  ids=[f['fire_group_id'] for f in d])
-                return self._fire_group
+    @property
+    def fire_group(self):
+        """The fire group used by this weapon."""
+        try:
+            return self._fire_group
+        except AttributeError:
+            q = Query(type='weapon_to_fire_group')
+            d = q.add_filter(field='weapon_id', value=self.id).get()
+            self._fire_group = FireGroup.list(ids=[f['fire_group_id'] for f in d])
+            return self._fire_group
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)
 
         # Set attribute values
-        self.equip_time = d.get('equip_ms') / 1000
+        self.equip_time = float(d.get('equip_ms')) / \
+            1000.0 if d.get('equip_ms') is not None else None
         self.group_id = d.get('weapon_group_id')
         self.heat_bleed_off_rate = d.get('heat_bleed_off_rate')  # Unit?
         self.heat_capacity = d.get('heat_capacity')
-        self.heat_overheat_cooldown = d.get(
-            'heat_overheat_penalty_ms') / 1000
-        self.iron_sights_enter_ads = d.get('to_iron_sights_ms') / 1000
-        self.iron_sights_exit_ads = d.get('from_iron_sights_ms') / 1000
+        self.heat_overheat_cooldown = float(d.get(
+            'heat_overheat_penalty_ms')) / 1000.0 if d.get('heat_overheat_penalty_ms') is not None else None
+        self.iron_sights_enter_ads = float(d.get(
+            'to_iron_sights_ms')) / 1000.0 if d.get('to_iron_sights_ms') is not None else None
+        self.iron_sights_exit_ads = float(
+            d.get('from_iron_sights_ms')) / 1000.0 if d.get('from_iron_sights_ms') is not None else None
         self.melee_detect_height = d.get('melee_detect_height')
         self.melee_detect_width = d.get('melee_detect_width')
         self.move_speed_modifier = d.get('move_modifier')
-        self.sprint_recovery = d.get('sprint_recovery_ms') / 1000
+        self.sprint_recovery = float(d.get(
+            'sprint_recovery_ms')) / 1000.0 if d.get('sprint_recovery_ms') is not None else None
         self.turn_speed_modifier = d.get('turn_modifier')
-        self.unequip_time = d.get('unequip_ms') / 1000
+        self.unequip_time = float(
+            d.get('unequip_ms')) / 1000.0 if d.get('unequip_ms') is not None else None

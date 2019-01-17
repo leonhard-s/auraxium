@@ -31,8 +31,7 @@ class Reward(CachableDataType):
             try:
                 return self._reward_type
             except AttributeError:
-                self._reward_type = RewardType.get(cls=self.__class__,
-                                                   id=self._reward_type_id)
+                self._reward_type = RewardType.get(id=self._reward_type_id)
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)
