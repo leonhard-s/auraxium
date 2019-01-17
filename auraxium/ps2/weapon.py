@@ -2,6 +2,10 @@ from ..census import Query
 from ..datatypes import CachableDataType, EnumeratedDataType
 from .item import Item
 from .projectile import Projectile
+from .ability import Ability
+from .effect import Effect
+from .playerstate import PlayerStateGroup
+from ..misc import LocalizedString
 
 
 class AmmoSlot(object):
@@ -28,6 +32,8 @@ class FireGroup(CachableDataType):
     Some weapons, like the VS Equinox VE2, have multiple ones.
 
     """
+
+    _collection = 'fire_group'
 
     def __init__(self, id):
         self.id = id
@@ -57,11 +63,12 @@ class FireGroup(CachableDataType):
         # Set attribute values
         self.chamber_duration = float(d.get(
             'chamber_duration_ms')) / 1000.0 if d.get('chamber_duration_ms') is not None else None
-        self.transition_duration = d.get('transition_duration_ms') / 100
+        self.transition_duration = float(d.get(
+            'transition_duration_ms')) / 1000.0 if d.get('transition_duration_ms') is not None else None
         self.spool_up = float(d.get('spool_up_ms')) / \
             1000.0 if d.get('spool_up_ms') is not None else None
-        self.spool_up_initial_refire = d.get(
-            'spool_up_initial_refire_ms') / 1000
+        self.spool_up_initial_refire = float(d.get(
+            'spool_up_initial_refire_ms')) / 1000 if d.get('spool_up_initial_refire_ms') is not None else None
         self.can_chamber_ironsights = d.get('can_chamber_ironsights')
 
 
@@ -70,134 +77,149 @@ class FireMode(CachableDataType):
 
     A fire mode contains detailed information about the how the firing
     mechanics of the weapons using it operate.
-    This object contains the merged information from the "fire_mode" and
-    "fire_mode_2" collections.
+    This object only contains information from the "fire_mode_2" collection.
 
     """
 
-    def __init__(self, id, data=None):
+    _collection = 'fire_mode_2'
+    _id_field = 'fire_mode_id'
+
+    def __init__(self, id):
         self.id = id
 
         # Set default values
-
-        # "item_id": "2"
-        self.type = None
-        self.description = None
-        self.player_state_group_id = None  # property
+        self._ability_id = None
+        # self.ammo_slot = None
+        self.armor_penetration = None
+        self.automatic = None
+        self.cof_override = None
+        self.cof_pellet_spread = None
+        self.cof_range = None
         self.cof_recoil = None
-        self.reload_time = None  # reload_time_ms
-        self.reload_chamber_time = None  # reload_chamber_time_ms
-        self.pellets_per_shot = None
-        self.pellets_spread = None
-        self.iron_sight_zoom = None  # default_zoom
-        # "muzzle_velocity": "375",
-        # "speed": "375",
-        # "max_speed": "0",
-        # "damage_radius": "0",
-        # "projectile_description": "NC Pistol: Mid",
-        # "damage_type": "DamageFalloff",
-        # "damage": "NULL",
-        # "damage_min": "112",
-        # "damage_max": "200",
-        # "damage_min_range": "60",
-        # "damage_max_range": "10",
-        # "damage_target_type": "2",
-        # "damage_resist_type": "2",
-        # "indirect_damage_max": "NULL",
-        # "indirect_damage_max_range": "NULL",
-        # "indirect_damage_min": "NULL",
-        # "indirect_damage_min_range": "NULL",
-        # "indirect_damage_target_type": "NULL",
-        # "indirect_damage_resist_type": "NULL""fire_mode_id": "102",
-        self.fire_mode_type_id = None  # fire_mode_type_id
-        self.ability_id = None  # ability_id
-        # self.ammo_slot
-        # "automatic": "0",
-        # "grief_immune": "0",
-        # "iron_sights": "1",
+        self.cof_scalar = None
+        self.cof_scalar_moving = None
+        self._damage_direct_effect_id = None
+        self.damage_head_multiplier = None
+        self._damage_indirect_effect_id = None
+        self.damage_legs_multiplier = None
+        self.description = None
+        self.fire_ammo_per_shot = None
+        self.fire_auto_fire = None
+        self.fire_burst_count = None
+        self.fire_charge_up = None
+        self.fire_delay = None
+        self.fire_detect_range = None
+        self.fire_duration = None
+        self._fire_mode_type_id = None
+        self.fire_pellets_per_shot = None
+        self.fire_refire = None
+        self.grief_immune = None
+        self.heat_per_shot = None
+        self.heat_recovery_delay = None
+        self.heat_threshold = None
+        self.iron_sights = None
         self.laser_guided = None
-        # self.mode_speed_modifier = None # move_modifier
-        # "projectile_speed_override": "375",
-        self.can_fire_while_sprinting = None  # sprint_fire
-        # "turn_modifier": "1",
-        # "use_in_water": "0",
-        # "zoom_default": "1.3500000000000001",
-        # "cof_override": "0",
-        # "cof_pellet_spread": "0",
-        # "cof_range": "100",
-        # "cof_recoil": "0.14",
-        # "cof_scalar": "1",
-        # "cof_scalar_moving": "1",
-        # "damage_direct_effect_id": "13",
-        self.headshot_multiplier = None
-        self.damage_indirect_effect_id = None
-        self.legshot_multiplier = None  # damage_legs_multiplier
-        self.ammo_per_shot = None
-        self.auto_fire = None
-        # "fire_auto_fire_ms": "0",
-        # "fire_burst_count": "1",
-        # "fire_charge_up_ms": "0",
-        # "fire_delay_ms": "0",
-        # "fire_detect_range": "40",
-        # "fire_duration_ms": "NULL",
-        # "fire_refire_ms": "171",
-        # "fire_pellets_per_shot": "1",
-        # "heat_per_shot": "NULL",
-        # "heat_recovery_delay_ms": "NULL",
-        # "heat_threshold": "NULL",
-        # "lockon_acquire_close_ms": "NULL",
-        # "lockon_acquire_far_ms": "NULL",
-        # "lockon_acquire_ms": "NULL",
-        # "lockon_angle": "NULL",
-        # "lockon_lose_ms": "NULL",
-        # "lockon_maintain": "NULL",
-        # "lockon_radius": "NULL",
-        # "lockon_range": "NULL",
-        # "lockon_range_close": "NULL",
-        # "lockon_range_far": "NULL",
-        # "lockon_required": "NULL",
-        # "recoil_angle_max": "0",
-        # "recoil_angle_min": "0",
-        # "recoil_first_shot_modifier": "1",
-        # "recoil_horizontal_max": "0.10000000000000001",
-        # "recoil_horizontal_max_increase": "NULL",
-        # "recoil_horizontal_min": "0.10000000000000001",
-        # "recoil_horizontal_min_increase": "NULL",
-        # "recoil_horizontal_tolerance": "0.29999999999999999",
-        # "recoil_increase": "0",
-        # "recoil_increase_crouched": "0",
-        # "recoil_magnitude_max": "0.80000000000000004",
-        # "recoil_magnitude_min": "0.80000000000000004",
-        # "recoil_max_total_magnitude": "0",
-        # "recoil_recovery_acceleration": "1000",
-        # "recoil_recovery_delay_ms": "0",
-        # "recoil_recovery_rate": "18",
-        # "recoil_shots_at_min_magnitude": "0",
-        # "reload_block_auto": "NULL",
-        # "reload_continuous": "NULL",
-        # "reload_ammo_fill_ms": "1425",
-        # "reload_chamber_ms": "300",
-        # "reload_loop_start_ms": "NULL",
-        # "reload_loop_end_ms": "NULL",
-        # "reload_time_ms": "1600",
-        # "sway_amplitude_x": "NULL",
-        # "sway_amplitude_y": "NULL",
-        # "sway_can_steady": "NULL",
-        # "sway_period_x": "NULL",
-        # "sway_period_y": "NULL",
-        # "armor_penetration": "0",
-        # "max_damage": "200",
-        # "max_damage_ind": "NULL",
-        # "max_damage_ind_radius": "NULL",
-        # "max_damage_range": "10",
-        # "min_damage": "112",
-        # "min_damage_ind": "NULL",
-        # "min_damage_ind_radius": "NULL",
-        # "min_damage_range": "60",
-        # "shield_bypass_pct": "0",
-        # "description"
+        self.lockon_acquire_close = None
+        self.lockon_acquire_far = None
+        self.lockon_acquire = None
+        self.lockon_angle = None
+        self.lockon_lose = None
+        self.lockon_maintain = None
+        self.lockon_radius = None
+        self.lockon_range = None
+        self.lockon_range_close = None
+        self.lockon_range_far = None
+        self.lockon_required = None
+        self.max_damage = None
+        self.max_damage_ind = None
+        self.max_damage_ind_radius = None
+        self.max_damage_range = None
+        self.min_damage = None
+        self.min_damage_ind = None
+        self.min_damage_ind_radius = None
+        self.min_damage_range = None
+        self.move_modifier = None
+        self._player_state_group_id = None
+        self.projectile_speed_override = None
+        self.recoil_angle_max = None
+        self.recoil_angle_min = None
+        self.recoil_first_shot_modifier = None
+        self.recoil_horizontal_max = None
+        self.recoil_horizontal_max_increase = None
+        self.recoil_horizontal_min = None
+        self.recoil_horizontal_min_increase = None
+        self.recoil_horizontal_tolerance = None
+        self.recoil_increase = None
+        self.recoil_increase_crouched = None
+        self.recoil_magnitude_max = None
+        self.recoil_magnitude_min = None
+        self.recoil_max_total_magnitude = None
+        self.recoil_recovery_acceleration = None
+        self.recoil_recovery_delay = None
+        self.recoil_recovery_rate = None
+        self.recoil_shots_at_min_magnitude = None
+        self.reload_ammo_fill = None
+        self.reload_block_auto = None
+        self.reload_chamber = None
+        self.reload_continuous = None
+        self.reload_loop_end = None
+        self.reload_loop_start = None
+        self.reload_time = None
+        self.shield_bypass_pct = None
+        self.sprint_fire = None
+        self.sway_amplitude_x = None
+        self.sway_amplitude_y = None
+        self.sway_can_steady = None
+        self.sway_period_x = None
+        self.sway_period_y = None
+        self.turn_modifier = None
+        self.use_in_water = None
+        self.zoom_default = None
 
     # Define properties
+    @property
+    def ability(self):
+        try:
+            return self._ability
+        except AttributeError:
+            self._ability = Ability.get(id=self._ability_id)
+            return self._ability
+
+    @property
+    def damage_direct_effect(self):
+        try:
+            return self._damage_direct_effect
+        except AttributeError:
+            self._damage_direct_effect = Effect.get(
+                id=self._damage_direct_effect_id)
+            return self._damage_direct_effect
+
+    @property
+    def damage_indirect_effect(self):
+        try:
+            return self._damage_indirect_effect
+        except AttributeError:
+            self._damage_indirect_effect = Effect.get(
+                id=self._damage_indirect_effect_id)
+            return self._damage_indirect_effect
+
+    @property
+    def fire_mode_type(self):
+        try:
+            return self._fire_mode_type
+        except AttributeError:
+            self._fire_mode_type = FireModeType.get(id=self._fire_mode_type_id)
+            return self._fire_mode_type
+
+    @property
+    def player_state_group(self):
+        try:
+            return self._player_state_group
+        except AttributeError:
+            self._player_state_group = PlayerStateGroup.get(
+                id=self._player_state_group_id)
+            return self._player_state_group
+
     @property
     def projectile(self):
         """Lists the attachments available for this weapon."""
@@ -211,6 +233,102 @@ class FireMode(CachableDataType):
             self._projectile = Projectile.get(id=d['projectile_id'])
             return self._projectile
 
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
+
+        # Set attribute values
+        self._ability_id = d.get('ability_id')
+        # self.ammo_slot = d.get('ammo_slot')
+        self.armor_penetration = d.get('armor_penetration')
+        self.automatic = d.get('automatic')
+        self.cof_override = d.get('cof_override')
+        self.cof_pellet_spread = d.get('cof_pellet_spread')
+        self.cof_range = d.get('cof_range')
+        self.cof_recoil = d.get('cof_recoil')
+        self.cof_scalar = d.get('cof_scalar')
+        self.cof_scalar_moving = d.get('cof_scalar_moving')
+        self._damage_direct_effect_id = d.get('damage_direct_effect_id')
+        self.damage_head_multiplier = d.get('damage_head_multiplier')
+        self._damage_indirect_effect_id = d.get('damage_indirect_effect_id')
+        self.damage_legs_multiplier = d.get('damage_legs_multiplier')
+        self.description = LocalizedString(d.get('description'))
+        self.fire_ammo_per_shot = d.get('fire_ammo_per_shot')
+        self.fire_auto_fire = d.get('fire_auto_fire_ms')
+        self.fire_burst_count = d.get('fire_burst_count')
+        self.fire_charge_up = d.get('fire_charge_up_ms')
+        self.fire_delay = d.get('fire_delay_ms')
+        self.fire_detect_range = d.get('fire_detect_range')
+        self.fire_duration = d.get('fire_duration_ms')
+        self._fire_mode_type_id = d.get('fire_mode_type_id')
+        self.fire_pellets_per_shot = d.get('fire_pellets_per_shot')
+        self.fire_refire = d.get('fire_refire_ms')
+        self.grief_immune = d.get('grief_immune')
+        self.heat_per_shot = d.get('heat_per_shot')
+        self.heat_recovery_delay = d.get('heat_recovery_delay_ms')
+        self.heat_threshold = d.get('heat_threshold')
+        self.iron_sights = d.get('iron_sights')
+        self.laser_guided = d.get('laser_guided')
+        self.lockon_acquire_close = d.get('lockon_acquire_close_ms')
+        self.lockon_acquire_far = d.get('lockon_acquire_far_ms')
+        self.lockon_acquire = d.get('lockon_acquire_ms')
+        self.lockon_angle = d.get('lockon_angle')
+        self.lockon_lose = d.get('lockon_lose_ms')
+        self.lockon_maintain = d.get('lockon_maintain')
+        self.lockon_radius = d.get('lockon_radius')
+        self.lockon_range = d.get('lockon_range')
+        self.lockon_range_close = d.get('lockon_range_close')
+        self.lockon_range_far = d.get('lockon_range_far')
+        self.lockon_required = d.get('lockon_required')
+        self.max_damage = d.get('max_damage')
+        self.max_damage_ind = d.get('max_damage_ind')
+        self.max_damage_ind_radius = d.get('max_damage_ind_radius')
+        self.max_damage_range = d.get('max_damage_range')
+        self.min_damage = d.get('min_damage')
+        self.min_damage_ind = d.get('min_damage_ind')
+        self.min_damage_ind_radius = d.get('min_damage_ind_radius')
+        self.min_damage_range = d.get('min_damage_range')
+        self.move_modifier = d.get('move_modifier')
+        self._player_state_group_id = d.get('player_state_group_id')
+        self.projectile_speed_override = d.get('projectile_speed_override')
+        self.recoil_angle_max = d.get('recoil_angle_max')
+        self.recoil_angle_min = d.get('recoil_angle_min')
+        self.recoil_first_shot_modifier = d.get('recoil_first_shot_modifier')
+        self.recoil_horizontal_max = d.get('recoil_horizontal_max')
+        self.recoil_horizontal_max_increase = d.get(
+            'recoil_horizontal_max_increase')
+        self.recoil_horizontal_min = d.get('recoil_horizontal_min')
+        self.recoil_horizontal_min_increase = d.get(
+            'recoil_horizontal_min_increase')
+        self.recoil_horizontal_tolerance = d.get('recoil_horizontal_tolerance')
+        self.recoil_increase = d.get('recoil_increase')
+        self.recoil_increase_crouched = d.get('recoil_increase_crouched')
+        self.recoil_magnitude_max = d.get('recoil_magnitude_max')
+        self.recoil_magnitude_min = d.get('recoil_magnitude_min')
+        self.recoil_max_total_magnitude = d.get('recoil_max_total_magnitude')
+        self.recoil_recovery_acceleration = d.get(
+            'recoil_recovery_acceleration')
+        self.recoil_recovery_delay = d.get('recoil_recovery_delay_ms')
+        self.recoil_recovery_rate = d.get('recoil_recovery_rate')
+        self.recoil_shots_at_min_magnitude = d.get(
+            'recoil_shots_at_min_magnitude')
+        self.reload_ammo_fill = d.get('reload_ammo_fill_ms')
+        self.reload_block_auto = d.get('reload_block_auto')
+        self.reload_chamber = d.get('reload_chamber_ms')
+        self.reload_continuous = d.get('reload_continuous')
+        self.reload_loop_end = d.get('reload_loop_end_ms')
+        self.reload_loop_start = d.get('reload_loop_start_ms')
+        self.reload_time = d.get('reload_time_ms')
+        self.shield_bypass_pct = d.get('shield_bypass_pct')
+        self.sprint_fire = d.get('sprint_fire')
+        self.sway_amplitude_x = d.get('sway_amplitude_x')
+        self.sway_amplitude_y = d.get('sway_amplitude_y')
+        self.sway_can_steady = d.get('sway_can_steady')
+        self.sway_period_x = d.get('sway_period_x')
+        self.sway_period_y = d.get('sway_period_y')
+        self.turn_modifier = float(d.get('turn_modifier'))
+        self.use_in_water = d.get('zoom_default')
+        self.zoom_default = d.get('zoom_default')
+
 
 class FireModeType(EnumeratedDataType):
     """The fire mode type for a given fire mode.
@@ -220,6 +338,8 @@ class FireModeType(EnumeratedDataType):
     Examples are "Melee", "Projectile" and "Trigger Item Ability".
 
     """
+
+    _collection = 'fire_mode_type'
 
     def __init__(self, id):
         self.id = id
@@ -289,16 +409,16 @@ class Weapon(CachableDataType):
             return self._attachments
 
     @property
-    def fire_group(self):
+    def fire_groups(self):
         """The fire group used by this weapon."""
         try:
-            return self._fire_group
+            return self._fire_groups
         except AttributeError:
             q = Query(type='weapon_to_fire_group')
             d = q.add_filter(field='weapon_id', value=self.id).get()
-            self._fire_group = FireGroup.list(
+            self._fire_groups = FireGroup.list(
                 ids=[f['fire_group_id'] for f in d])
-            return self._fire_group
+            return self._fire_groups
 
     @property
     def item(self):

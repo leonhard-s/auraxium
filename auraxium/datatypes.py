@@ -29,10 +29,8 @@ class DataType(object):
         return s + ') at 0x{0:0{1}X}'.format(id(self), 16)
 
     @classmethod
-    def get(cls, id, data=None, field=None):
+    def get(cls, id, data=None):
         """Retrieves a single entry of the given datatype."""
-        # id_field = field if field != None else cls._collection + '_id'
-
         # Retrieve or create the instance
         try:
             if id in cls._cache:
@@ -50,25 +48,34 @@ class DataType(object):
         return instance
 
     @classmethod
-    def _get_data(cls, id, field=None):
+    def _get_data(cls, id):
         """Retrieves a single object used to populate the data type."""
-        id_field = field if field != None else cls._collection + '_id'
+        try:
+            id_field = cls._id_field
+        except AttributeError:
+            id_field = cls._collection + '_id'
 
-        if field == None:
-            q = Query(cls._collection, id=id)
-        else:
-            q = Query(cls._collection).add_filter(field=id_field, value=id)
+        q = Query(cls._collection).add_filter(field=id_field, value=id)
 
         return q.get_single()
 
     @classmethod
-    def list(cls, ids, field=None):
+    def list(cls, ids):
         """Retrieves a list of entries of a given datatype."""
-        id_field = field if field != None else cls._collection + '_id'
+        try:
+            id_field = cls._id_field
+        except AttributeError:
+            id_field = cls._collection + '_id'
 
         # Create a list of all object instances that are not cached
+        cached_items = []
+        ids_to_download = []
         try:
-            ids_to_download = [i for i in ids if not i in cls._cache]
+            for i in ids:
+                if i in cls._cache:
+                    cached_items.append(cls._cache.load(i))
+                else:
+                    ids_to_download.append(i)
         except AttributeError:
             cls._cache = Cache()
             ids_to_download = ids
@@ -79,17 +86,14 @@ class DataType(object):
         data = q.get()
 
         # Create an instance for all of the downloaded objects
-        instances = [cls(id=d[id_field])._populate(data_override=d)
-                     for d in data]
+        instances = [cls.get(id=d[id_field], data=d) for d in data]
 
         # Cache all the newly added instances
         [cls._cache.add(i) for i in instances]
 
-        # Create a list of all cached items
-        cached_items = [cls._cache.load(i) for i in ids if i in cls._cache]
-
         # Join the two lists and sort the list by id
-        instances.extend(cached_items).sort(key=lambda i: i.id)
+        instances.extend(cached_items)
+        instances.sort(key=lambda i: i.id)
         return instances
 
 

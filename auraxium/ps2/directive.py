@@ -2,8 +2,8 @@ from ..census import Query
 from ..datatypes import CachableDataType, EnumeratedDataType, NamedDataType
 from ..misc import LocalizedString
 from .image import Image, ImageSet
-# from .objective import ObjectiveSet
-from .reward import Reward  # , RewardSet
+from .objective import Objective
+from .reward import Reward
 
 
 class Directive(CachableDataType, NamedDataType):
@@ -24,7 +24,7 @@ class Directive(CachableDataType, NamedDataType):
         self._image_id = None
         self._image_set = None
         self.name = None
-        # self._objective_set_id = None
+        self._objective_set_id = None
         self._directive_tier_id = None
         self._directive_tree_id = None
         self.qualify_requirement_id = None
@@ -46,14 +46,19 @@ class Directive(CachableDataType, NamedDataType):
             self._image_set = ImageSet.get(id=self._image_set_id)
             return self._image_set
 
-    # @property
-    # def objective_set(self):
-    #     try:
-    #         return self._objective_set
-    #     except AttributeError:
-    #         self._objective_set = ObjectiveSet.get(
-    #             id=self._objective_set_id)
-    #         return self._objective_set
+    @property
+    def objectives(self):
+        try:
+            return self._objectives
+        except AttributeError:
+            q = Query(type='objective_set_to_objective_group', limit=100)
+            q.add_filter(field='objective_set_id',
+                         value=self._objective_set_id)
+            q.join(type='objective', is_list=True, match='objective_group_id')
+            data = q.get()
+            self._objectives = Objective.list(
+                ids=[o['objective_id'] for o in data['objective_list']])
+            return self._objectives
 
     @property
     def directive_tier(self):
@@ -81,7 +86,7 @@ class Directive(CachableDataType, NamedDataType):
         self._image_id = d['image_id']
         self._image_set_id = d['image_set_id']
         self.name = LocalizedString(d['name'])
-        # self.objective_set = d['objective_set_id']
+        self._objective_set_id = d['objective_set_id']
         self.tier = d['directive_tier_id']
         self.tree = d['directive_tree_id']
         self.qualify_requirement_id = d.get('qualify_requirement_id')
@@ -134,13 +139,18 @@ class DirectiveTier(EnumeratedDataType, NamedDataType):
             self._image_set = ImageSet.get(id=self._image_set_id)
             return self._image_set
 
-    # @property
-    # def reward_set(self):
-    #     try:
-    #         return self._reward_set
-    #     except AttributeError:
-    #         self._reward_set = RewardSet.get(id=self._reward_set_id)
-    #         return self._reward_set
+    @property
+    def rewards(self):
+        try:
+            return self._rewards
+        except AttributeError:
+            q = Query(type='reward_set_to_reward_group')
+            q.add_filter(field='reward_set_id', value=self._reward_set_id)
+            q.join(type='reward_group_to_reward', is_list=True, match='reward_group_id')
+            data = q.get_single()
+            self._rewards = Reward.list(
+                ids=[r['reward_id'] for r in data['reward_group']['reward_list']])
+            return self._rewards
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)
@@ -152,7 +162,7 @@ class DirectiveTier(EnumeratedDataType, NamedDataType):
         self._image_id = d['image_id']
         self._image_set_id = d['image_set_id']
         self.name = LocalizedString(d['name'])
-        # self.reward_set = d.get('reward_set_id')
+        self.reward_set = d.get('reward_set_id')
 
 
 class DirectiveTree(EnumeratedDataType, NamedDataType):

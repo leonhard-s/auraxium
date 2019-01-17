@@ -15,7 +15,7 @@ from .item import Item, ItemCategory, ItemType
 from .loadout import Loadout
 from .objective import Objective, ObjectiveType
 from .outfit import Outfit, OutfitMember
-from .playerstate import PlayerState  # , PlayerStateGroup
+from .playerstate import PlayerState, PlayerStateGroup
 from .profile import Profile
 from .projectile import Projectile, ProjectileFlightType
 from .resist import ResistInfo, ResistType
