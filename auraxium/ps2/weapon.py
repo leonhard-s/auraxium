@@ -47,7 +47,8 @@ class FireGroup(CachableDataType):
         except AttributeError:
             q = Query(type='fire_group_to_fire_mode')
             d = q.add_filter(field='fire_group_id', value=self.id).get()
-            self._fire_modes = FireMode.list(ids=[i['fire_mode_id'] for i in d])
+            self._fire_modes = FireMode.list(
+                ids=[i['fire_mode_id'] for i in d])
             return self._fire_modes
 
     def _populate(self, data=None):
@@ -262,6 +263,7 @@ class Weapon(CachableDataType):
         self.turn_speed_modifier = None
         self.unequip_time = None
 
+    # Define properties
     @property
     def ammo_slot(self):
         """Lists the attachments available for this weapon."""
@@ -287,6 +289,18 @@ class Weapon(CachableDataType):
             return self._attachments
 
     @property
+    def fire_group(self):
+        """The fire group used by this weapon."""
+        try:
+            return self._fire_group
+        except AttributeError:
+            q = Query(type='weapon_to_fire_group')
+            d = q.add_filter(field='weapon_id', value=self.id).get()
+            self._fire_group = FireGroup.list(
+                ids=[f['fire_group_id'] for f in d])
+            return self._fire_group
+
+    @property
     def item(self):
         """Links a weapon to its item."""
         try:
@@ -299,16 +313,27 @@ class Weapon(CachableDataType):
             self._item = Item.get(id=d['item_id'])
             return self._item
 
-    @property
-    def fire_group(self):
-        """The fire group used by this weapon."""
+    @staticmethod
+    def get_by_name(name, locale, ignore_case=True):
+        """Allows retrieval of a weapon by its item's name."""
+        # Generate request
+        if ignore_case:
+            q = Query(type='item', check_case=False)
+        else:
+            q = Query(type='item')
+
+        q.add_filter(field='name.' + locale, value=name)
+        q.join(type='item_to_weapon', match='item_id').join(type='weapon',
+                                                            match='weapon_id')
         try:
-            return self._fire_group
-        except AttributeError:
-            q = Query(type='weapon_to_fire_group')
-            d = q.add_filter(field='weapon_id', value=self.id).get()
-            self._fire_group = FireGroup.list(ids=[f['fire_group_id'] for f in d])
-            return self._fire_group
+            d = q.get_single()['item_to_weapon']['weapon']
+        except TypeError:
+            return  # TODO: Replace with exception
+
+        # Create and return a weapon object
+        instance = Weapon(id=d['weapon_id'])
+        instance._populate(data=d)
+        return instance
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)

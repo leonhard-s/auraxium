@@ -1,12 +1,12 @@
 from ..census import Query
-from ..datatypes import CachableDataType, EnumeratedDataType
+from ..datatypes import CachableDataType, EnumeratedDataType, NamedDataType
 from ..misc import LocalizedString
 from .image import Image, ImageSet
 # from .objective import ObjectiveSet
 from .reward import Reward  # , RewardSet
 
 
-class Directive(CachableDataType):
+class Directive(CachableDataType, NamedDataType):
     """A directive in PlanetSide 2.
 
     A directive is a requirement that gives progress towards the next directive
@@ -87,7 +87,7 @@ class Directive(CachableDataType):
         self.qualify_requirement_id = d.get('qualify_requirement_id')
 
 
-class DirectiveTier(EnumeratedDataType):
+class DirectiveTier(EnumeratedDataType, NamedDataType):
     """A directive tier.
 
     Examples include "Carbines: Novice" and "Combat Medic: Master".
@@ -155,7 +155,7 @@ class DirectiveTier(EnumeratedDataType):
         # self.reward_set = d.get('reward_set_id')
 
 
-class DirectiveTree(EnumeratedDataType):
+class DirectiveTree(EnumeratedDataType, NamedDataType):
     """A directive tree.
 
     Directive trees are an entry for a directive category. Examples for
@@ -224,7 +224,7 @@ class DirectiveTree(EnumeratedDataType):
         self.name = LocalizedString(d['name'])
 
 
-class DirectiveTreeCategory(EnumeratedDataType):
+class DirectiveTreeCategory(EnumeratedDataType, NamedDataType):
     """A category of directive trees.
 
     Examples for directive tree categories are "Infantry", "Vehicle" or

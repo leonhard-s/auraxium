@@ -1,5 +1,5 @@
 from ..census import Query
-from ..datatypes import CachableDataType, EnumeratedDataType
+from ..datatypes import CachableDataType, EnumeratedDataType, NamedDataType
 from ..misc import LocalizedString
 from .ability import Ability
 from .faction import Faction
@@ -8,7 +8,7 @@ from .image import Image, ImageSet
 from .profile import Profile
 
 
-class Item(CachableDataType):
+class Item(CachableDataType, NamedDataType):
     """A PS2 item.
 
     An item is a player-bound entity in the game world. This includes obvious
@@ -123,7 +123,7 @@ class Item(CachableDataType):
         self._skill_set_id = d.get('skill_set_id')
 
 
-class ItemCategory(EnumeratedDataType):
+class ItemCategory(EnumeratedDataType, NamedDataType):
     """The category of an item.
 
     Groups items into groups.

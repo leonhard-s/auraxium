@@ -1,10 +1,10 @@
 from ..census import Query
-from ..datatypes import EnumeratedDataType
+from ..datatypes import EnumeratedDataType, NamedDataType
 from ..misc import LocalizedString
 from .image import Image, ImageSet
 
 
-class Faction(EnumeratedDataType):
+class Faction(EnumeratedDataType, NamedDataType):
     """Represents a faction in PlanetSide 2.
 
     Factions are static datatypes. Each one should only need to be

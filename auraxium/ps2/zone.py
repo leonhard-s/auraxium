@@ -1,10 +1,10 @@
 from ..census import Query
-from ..datatypes import CachableDataType, EnumeratedDataType
+from ..datatypes import CachableDataType, EnumeratedDataType, NamedDataType
 from .ability import Ability
 from ..misc import LocalizedString
 
 
-class Zone(EnumeratedDataType):
+class Zone(EnumeratedDataType, NamedDataType):
     """A zone in PS2.
 
     A zone is a continent such as Indar, Amerish or Hossin.

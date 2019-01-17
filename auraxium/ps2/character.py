@@ -90,6 +90,24 @@ class Character(CachableDataType):
             self._profiles = Profile.list(ids=[i['profile_id'] for i in d])
             return self._profiles
 
+    @staticmethod
+    def get_by_name(name, ignore_case=True):
+        # Generate request
+        q = Query(type='character')
+        if ignore_case:
+            q.add_filter(field='name.first_lower', value=name.lower())
+        else:
+            q.add_filter(field='name.first', value=name)
+
+        d = q.get_single()
+        if len(d) == 0:
+            return  # TODO: Replace with exception
+
+        # Create and return a weapon object
+        instance = Character(id=d['character_id'])
+        instance._populate(data=d)
+        return instance
+
     @property
     def head(self):
         try:

@@ -30,8 +30,7 @@ class Outfit(CachableDataType):
         try:
             return self._leader
         except AttributeError:
-            self._leader = Character.get(
-                self.__class__, id=self._leader_id)
+            self._leader = Character.get(id=self._leader_id)
             return self._leader
 
     @property
@@ -43,6 +42,24 @@ class Outfit(CachableDataType):
             d = q.add_filter(field='outfit_id', value=self.id).get()
             self._members = OutfitMember.list(ids=[i['profile_id'] for i in d])
             return self._members
+
+    @staticmethod
+    def get_by_name(name, ignore_case=True):
+        # Generate request
+        q = Query(type='outfit')
+        if ignore_case:
+            q.add_filter(field='name_lower', value=name.lower())
+        else:
+            q.add_filter(field='name', value=name)
+
+        d = q.get_single()
+        if len(d) == 0:
+            return  # TODO: Replace with exception
+
+        # Create and return a weapon object
+        instance = Outfit(id=d['outfit_id'])
+        instance._populate(data=d)
+        return instance
 
     def _populate(self, data=None):
         d = data if data != None else super()._get_data(self.id)

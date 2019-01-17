@@ -1,10 +1,10 @@
 from ..census import Query
-from ..datatypes import EnumeratedDataType
+from ..datatypes import EnumeratedDataType, NamedDataType
 from ..misc import LocalizedString
 from .image import ImageSet
 
 
-class Currency(EnumeratedDataType):
+class Currency(EnumeratedDataType, NamedDataType):
     """A currency.
 
     Currently, the only currency are Nanites.

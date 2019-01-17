@@ -1,9 +1,9 @@
 from ..census import Query
-from ..datatypes import EnumeratedDataType
+from ..datatypes import EnumeratedDataType, NamedDataType
 from ..misc import LocalizedString
 
 
-class World(EnumeratedDataType):
+class World(EnumeratedDataType, NamedDataType):
     """A world in PS2.
 
     World is the internal name for game servers. Connery and Cobalt are

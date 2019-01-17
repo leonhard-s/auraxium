@@ -99,3 +99,31 @@ class CachableDataType(DataType):
 
 class EnumeratedDataType(DataType):
     pass
+
+
+class NamedDataType(object):
+    """Auxilary parent class for localized named data types.
+
+    Adds functinoality relevant to data types with a localized "name" field.
+    Note that data types with non-localized names likes outfit or character
+    will not be compatible.
+
+    """
+
+    @classmethod
+    def get_by_name(cls, name, locale, ignore_case=True):
+        # Generate request
+        if ignore_case:
+            q = Query(type=cls._collection, check_case=False)
+        else:
+            q = Query(type=cls._collection)
+        q.add_filter(field='name.' + locale, value=name)
+
+        d = q.get_single()
+        if len(d) == 0:
+            return  # TODO: Replace with exception
+
+        # Create and return a weapon object
+        instance = cls(id=d[cls._collection + '_id'])
+        instance._populate(data=d)
+        return instance

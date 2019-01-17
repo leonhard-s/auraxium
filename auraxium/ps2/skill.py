@@ -1,10 +1,10 @@
-from ..datatypes import CachableDataType
+from ..datatypes import CachableDataType, NamedDataType
 from .image import Image, ImageSet
 from .item import Item
 from ..misc import LocalizedString
 
 
-class Skill(CachableDataType):
+class Skill(CachableDataType, NamedDataType):
     """A skill in PS2.
 
     A skill is either a certification, an ASP skill or an implant's active
@@ -74,7 +74,7 @@ class Skill(CachableDataType):
         self.skill_points = d['skill_points']
 
 
-class SkillCategory(CachableDataType):
+class SkillCategory(CachableDataType, NamedDataType):
     """A skill category.
 
     Groups skill lines into categories. Examples include "Passive Systems",
@@ -134,7 +134,7 @@ class SkillCategory(CachableDataType):
         self.skill_set_index = d.get('skill_set_index')
 
 
-class SkillLine(CachableDataType):
+class SkillLine(CachableDataType, NamedDataType):
     """A skill line.
 
     A list of skills that improve on one another. Examples include the Chassis
@@ -193,7 +193,7 @@ class SkillLine(CachableDataType):
         self.skill_points = d.get('skill_points')
 
 
-class SkillSet(CachableDataType):
+class SkillSet(CachableDataType, NamedDataType):
     """A skill set.
 
     A skill set is a list of skill lines that belong to the same set. Examples

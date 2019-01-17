@@ -1,12 +1,12 @@
 from ..census import Query
-from ..datatypes import CachableDataType, EnumeratedDataType
+from ..datatypes import CachableDataType, EnumeratedDataType, NamedDataType
 from .currency import Currency
 from .faction import Faction
 from .image import Image, ImageSet
 from ..misc import LocalizedString
 
 
-class Vehicle(EnumeratedDataType):
+class Vehicle(EnumeratedDataType, NamedDataType):
     """A vehicle.
 
     A vehicle that a player can enter to traverse Auraxis in style.

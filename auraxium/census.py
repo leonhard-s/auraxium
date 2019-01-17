@@ -405,10 +405,12 @@ class Query(object):
             url += '&{}'.format(str(term))
         if not self.check_case:
             url += '&c:case=false'
-            logger.warning('Ignoring case is not advisable for performance '
-                           'reasons. Most fields provide a lowercase version '
-                           'as well, it is highly recommended you use that '
-                           ' instead if you can.')
+            if self.type in ['character', 'outfit']:
+                logger.warning('The "character" and "outfit" collections also '
+                               'provide a lowercase version of their "name" '
+                               'and/or "alias" fields. It is highly '
+                               'advisable to use those instead as they are '
+                               'far more performant than ignoring case.')
         if not self.distinct_values == None:
             url += '&c:distinct={}'.format(self.distinct_values)
         if self.exact_match_first:

@@ -1,5 +1,5 @@
 from ..census import Query
-from ..datatypes import CachableDataType
+from ..datatypes import CachableDataType, NamedDataType
 from ..misc import LocalizedString
 from .image import Image, ImageSet
 from .item import Item
@@ -7,7 +7,7 @@ from .item import Item
 from .reward import Reward
 
 
-class Achievement(CachableDataType):
+class Achievement(CachableDataType, NamedDataType):
     """An achievement in PlanetSide 2.
 
     An achievement is a blanket term covering both weapon medals and service

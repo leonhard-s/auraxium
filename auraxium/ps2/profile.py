@@ -1,5 +1,5 @@
 from ..census import Query
-from ..datatypes import EnumeratedDataType
+from ..datatypes import EnumeratedDataType, NamedDataType
 from .faction import Faction
 from .image import Image, ImageSet
 from ..misc import LocalizedString
@@ -7,7 +7,7 @@ from .armor import ArmorInfo
 from .resist import ResistInfo
 
 
-class Profile(EnumeratedDataType):
+class Profile(EnumeratedDataType, NamedDataType):
     """An entity in PlanetSide 2.
 
     Lists the targetable entities in the game world.

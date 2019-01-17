@@ -1,9 +1,9 @@
 from ..census import Query
-from ..datatypes import EnumeratedDataType
+from ..datatypes import EnumeratedDataType, NamedDataType
 from ..misc import LocalizedString
 
 
-class Alert(EnumeratedDataType):
+class Alert(EnumeratedDataType, NamedDataType):
     """An alert/event.
 
     An alert that can take place on Auraxis. Not all event types are

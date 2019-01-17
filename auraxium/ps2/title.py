@@ -1,8 +1,8 @@
-from ..datatypes import CachableDataType
+from ..datatypes import CachableDataType, NamedDataType
 from ..misc import LocalizedString
 
 
-class Title(CachableDataType):
+class Title(CachableDataType, NamedDataType):
     """A title.
 
     A player title a player can equip. The title id "0" signifies that the
