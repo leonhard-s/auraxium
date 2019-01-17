@@ -1,24 +1,25 @@
-from ..census import Query
-from ..datatypes import InterimDatatype
+from ..datatypes import CachableDataType
 
 
-class Experience(InterimDatatype):
-    _cache_size = 100
+class Experience(CachableDataType):
+    """An experience type.
+
+    Lists all the actions that provide experience.
+
+    """
+
     _collection = 'experience'
 
-    def __init__(self, id, data_override=None):
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self.amount = None
+        self.description = None
 
-        data = data_override if data_override != None else super().get_data(self)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
-        self.amount = data.get('xp')
-        self.description = data.get('description')
-
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'Experience (ID: {}, Description: "{}")'.format(
-            self.id, self.description)
+        # Set attribute values
+        self.amount = d['xp']
+        self.description = d['description']

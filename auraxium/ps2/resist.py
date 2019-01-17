@@ -1,48 +1,65 @@
 from ..census import Query
-from ..datatypes import InterimDatatype, StaticDatatype
+from ..datatypes import CachableDataType, EnumeratedDataType
 
 
-class ResistInfo(InterimDatatype):
-    _cache_size = 250
+class ResistInfo(CachableDataType):
+    """A resist info entry.
+
+    Resist info contains information about how resistant an entity is to certain
+    types of damage.
+
+    """
+
     _collection = 'resist_info'
-    _join = 'resist_type'
 
-    def __init__(self, id, data_override=None):
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self.description = None
+        self.headshot_multiplier = None
+        self.percent = None
+        self._resist_type_id = None
 
-        data = data_override if data_override != None else super().get_data(self)
+    # Define properties
+    @property
+    def resist_type(self):
+        try:
+            return self._resist_type
+        except AttributeError:
+            self._resist_type = ResistType.get(id=self._resist_type_id)
+            return self._resist_type
 
-        self.description = data.get('description')
-        self.headshot_multiplier = data.get('multiplier_when_headshot')
-        self.percent = data.get('resist_percent')
-        self.type = ResistType(data.get('resist_type_id'),
-                               data_override=data.get('resist_type'))
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
-        super()._add_to_cache(self)  # Cache this instance for future use
+        # Set attribute values
+        self.description = d.get('description')
 
-    def __str__(self):
-        return 'ResistInfo (ID: {}, Description: "{}")'.format(
-            self.id, self.description)
+        self.description = d['description']
+        self.headshot_multiplier = d.get('multiplier_when_headshot')
+        self.percent = d['resist_percent']
+        self._resist_type_id = d.get('resist_type_id')
 
 
-class ResistType(StaticDatatype):
+class ResistType(EnumeratedDataType):
+    """A resist type.
+
+    A type of damage for which resistance information might exist.
+    Examples include "Heavy Machine Gun" or "Explosive".
+
+    """
+
     _collection = 'resist_type'
 
-    def __init__(self, id, data_override=None):
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self.description = None
 
-        data = data_override if data_override != None else super().get_data(self)
+        def _populate(self, data=None):
+            d = data if data != None else super()._get_data(self.id)
 
-        self.description = data.get('description')
-
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'ResistInfo (ID: {}, Description: "{}")'.format(
-            self.id, self.description)
+            # Set attribute values
+            self.description = d['description']

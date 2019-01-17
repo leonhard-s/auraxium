@@ -17,7 +17,6 @@ _CENSUS_BASE_URL = 'http://census.daybreakgames.com'
 _NAMESPACE = 'ps2'
 # The id used to identify this service.
 service_id = 's:example'
-# service_id = 's:example'
 # Forces all Querys to provide timing information.
 timing_override = False
 
@@ -405,16 +404,18 @@ class Query(object):
             url += '&{}'.format(str(term))
         if not self.check_case:
             url += '&c:case=false'
-            logger.warning('Ignoring case is not advisable for performance '
-                           'reasons. Most fields provide a lowercase version '
-                           'as well, it is highly recommended you use that '
-                           ' instead if you can.')
+            if self.type in ['character', 'outfit']:
+                logger.warning('The "character" and "outfit" collections also '
+                               'provide a lowercase version of their "name" '
+                               'and/or "alias" fields. It is highly '
+                               'advisable to use those instead as they are '
+                               'far more performant than ignoring case.')
         if not self.distinct_values == None:
             url += '&c:distinct={}'.format(self.distinct_values)
         if self.exact_match_first:
             url += '&c:exactMatchFirst=true'
         if len(self._has_fields) > 0:
-            url += '&c:has={}'.format(','.join(self.has_fields))
+            url += '&c:has={}'.format(','.join(self._has_fields))
         if self.include_empty:
             url += '&c:includeNull=true'
         if self.locale != None:
@@ -552,8 +553,12 @@ class Query(object):
         """
 
         url = self._generate_url(verb)
-        r = json.loads(requests.get(url).text)
-        logger.debug('Sending API request (URL: {})'.format(url))
+        response = requests.get(url)
+        for item in response.history:
+            print('REDIRECT:')
+            print(item)
+        r = json.loads(response.text)
+        # logger.debug('Sending API request (URL: {})'.format(url))
 
         # Check for common errors
         if 'error' in r.keys():

@@ -1,52 +1,59 @@
 from ..census import Query
-from ..datatypes import StaticDatatype
+from ..datatypes import EnumeratedDataType, NamedDataType
+from ..misc import LocalizedString
 
 
-class AlertState(StaticDatatype):
-    _collection = 'metagame_event_state'
+class Alert(EnumeratedDataType, NamedDataType):
+    """An alert/event.
 
-    def __init__(self, id, data_override=None):
-        self.id = id
+    An alert that can take place on Auraxis. Not all event types are
+    currently enabled in-game.
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+    """
 
-        data = data_override if data_override != None else super().get_data(self)
-
-        self.name = data.get('name')
-
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'AlertState (ID: {}, Name: "{}")'.format(self.id, self.name)
-
-
-class AlertType(StaticDatatype):
     _collection = 'metagame_event'
 
-    def __init__(self, id, data_override=None):
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self.description = None
+        self.experience_bonus = None
+        self.name = None
+        self.type = None
 
-        data = data_override if data_override != None else super().get_data(self)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
-        self.description = data.get('description')
-        self.experience_bonus = data.get('experience_bonus')
-        self.name = data.get('name')
-
-        # Hard-coded descriptions of the base alert types
-        # 1 and 6 are currently unused.
-        base_alert_types = {'1': 'Territory Control', '2': 'Facility Type',
+        # Set attribute values
+        self.description = LocalizedString(d['description'])
+        self.experience_bonus = d['experience_bonus']
+        self.name = LocalizedString(d['name'])
+        # Hard-coded descriptions of the base alert types, 1 and 6 are unused.
+        alert_types = {'1': 'Territory Control', '2': 'Facility Type',
                             '5': 'Warpgates Stabilizing', '6': 'Conquest',
                             '8': 'Meltdown', '9': 'Unstable Meltdown',
                             '10': 'Aerial Anomalies'}
+        self.type = alert_types[d['type']]
 
-        self.type = base_alert_types[data.get('type')]
 
-        super()._add_to_cache(self)  # Cache this instance for future use
+class AlertState(EnumeratedDataType):
+    """The state of an alert.
 
-    def __str__(self):
-        return 'AlertType (ID: {}, Name[en]: "{}")'.format(
-            self.id, self.name['en'])
+    Lists the states an alert can be in, like "started".
+
+    """
+
+    _collection = 'metagame_event_state'
+
+    def __init__(self, id):
+        self.id = id
+
+        # Set default values
+        self.name = None
+
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
+
+        # Set attribute values
+        self.name = d['name']

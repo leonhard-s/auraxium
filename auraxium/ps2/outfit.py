@@ -1,88 +1,110 @@
 from datetime import datetime
 
 from ..census import Query
-from ..datatypes import InterimDatatype
+from ..datatypes import CachableDataType
 from .character import Character
 
 
-class Outfit(InterimDatatype):
-    _cache_size = 10  # kept low as player stats might be added
+class Outfit(CachableDataType):
+    """Represents a PS2 outfit.
+
+    An outfit is a group of players. The individual player information needs to be resolved further.
+
+    """
+
     _collection = 'outfit'
 
-    def __init__(self, id, data_override=None):
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self.alias = None
+        self._leader_id = None
+        self.member_count = None
+        self.name = None
+        self.date_created = None
 
-        data = data_override if data_override != None else super().get_data(self)
+    # Define properties
+    @property
+    def leader(self):
+        try:
+            return self._leader
+        except AttributeError:
+            self._leader = Character.get(id=self._leader_id)
+            return self._leader
 
-        self.alias = data.get('alias')
-        self.leader = Character(data.get('leader_character_id'))
-        self.member_count = data.get('member_count')
-        self.name = data.get('name')
-        self.time_created = datetime.utcfromtimestamp(int(
-            data.get('time_created')))
+    @property
+    def members(self):
+        try:
+            return self._members
+        except AttributeError:
+            q = Query(type='outfit_member')
+            d = q.add_filter(field='outfit_id', value=self.id).get()
+            self._members = OutfitMember.list(ids=[i['profile_id'] for i in d])
+            return self._members
 
-        @property
-        def members(self):
-            pass
+    @staticmethod
+    def get_by_name(name, ignore_case=True):
+        # Generate request
+        q = Query(type='outfit')
+        if ignore_case:
+            q.add_filter(field='name_lower', value=name.lower())
+        else:
+            q.add_filter(field='name', value=name)
 
-        super()._add_to_cache(self)  # Cache this instance for future use
+        d = q.get_single()
+        if len(d) == 0:
+            return  # TODO: Replace with exception
 
-    def __str__(self):
-        return 'Outfit (ID: {}, Tag: "{}", Name[en]: "{}")'.format(
-            self.id, self.alias, self.name)
+        # Retrieve and return the object
+        instance = Outfit.get(id=d['outfit_id'], data=d)
+        return instance
+
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
+
+        # Set attribute values
+        self.alias = d.get('alias')
+        self._leader_id = d['leader_character_id']
+        self.member_count = d['member_count']
+        self.name = d['name']
+        self.date_created = datetime.utcfromtimestamp(int(d['time_created']))
 
 
-class OutfitMember(InterimDatatype):
-    _cache_size = 500
-    _collection = 'outfit_member'
-    _join = 'character'
+class OutfitMember(CachableDataType):
+    """An outfit member.
 
-    def __init__(self, id, data_override=None):
+    An outfit member is the linking entity between an outfit and a player and
+    contains information about their rank in the outfit and the date and time
+    they joined.
+
+    """
+
+    _collection = 'outfit_type'
+
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self._character_id = None
+        self.date_joined = None
+        self.rank_name = None
+        self.rank_ordinal = None
 
-        data = data_override if data_override != None else super().get_data(self)
+    # Define properties
+    @property
+    def character(self):
+        try:
+            return self._character
+        except AttributeError:
+            self._character = Character.get(id=self._character_id)
+            return self._character
 
-        self.character = Character(
-            data.get('character_id'), data_override=data.get('character'))
-        self.member_since = datetime.utcfromtimestamp(int(
-            data.get('member_since')))
-        self.rank = data.get('rank')
-        self.rank_ordinal = data.get('rank_ordinal')
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'OutfitMember (ID: {}, Name: "{}")'.format(
-            self.id, self.character.name)
-
-
-class OutfitRank(InterimDatatype):
-    _cache_size = 500
-    _collection = 'outfit_rank'
-    _join = 'outfit'
-
-    def __init__(self, id, data_override=None):
-        self.id = id
-
-        if super().is_cached(self):  # If the object is cached, skip
-            return
-
-        data = data_override if data_override != None else super().get_data(self)
-
-        self.description = data.get('description')
-        self.name = data.get('name')
-        self.ordinal = data.get('ordinal')
-        self.outfit = Outfit(data.get('outfit_id'),
-                             data_override=data.get('outfit'))
-
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'OutfitRank (ID: {}, Name: "{}")'.format(
-            self.id, self.name)
+        # Set attribute values
+        self._character_id = d['character_id']
+        self.date_joined = datetime.utcfromtimestamp(int(d['member_since']))
+        self.rank_name = d['rank']
+        self.rank_ordinal = d['rank_ordinal']

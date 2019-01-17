@@ -1,69 +1,87 @@
 from ..census import Query
-from ..datatypes import InterimDatatype, StaticDatatype
+from ..datatypes import CachableDataType, EnumeratedDataType, NamedDataType
 from .currency import Currency
 from .faction import Faction
 from .image import Image, ImageSet
+from ..misc import LocalizedString
 
 
-class Vehicle(StaticDatatype):
+class Vehicle(EnumeratedDataType, NamedDataType):
+    """A vehicle.
+
+    A vehicle that a player can enter to traverse Auraxis in style.
+
+    """
+
     _collection = 'vehicle'
-    _join = 'image_set'
 
-    def __init__(self, id, data_override=None):
+    def __init__(self, id, data=None):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self.cost = None
+        self._currency_id = None
+        self.description = None
+        self._faction_id = None
+        self._image_id = None
+        self._image_set_id = None
+        self.name = None
+        self._skill_set_id = None
+        self.type_id = None
+        self.type_name = None
 
-        data = data_override if data_override != None else super().get_data(self)
+    # Define properties
+    @property
+    def currency(self):
+        try:
+            return self._currency
+        except AttributeError:
+            self._currency = Currency.get(id=self._currency_id)
+            return self._currency
 
-        self.cost = data.get('cost')
-        self.description = data.get('description')
-        self.image = Image(data.get('image_id'))
-        self.image_set = ImageSet(
-            data.get('image_set_id'), data_override=data.get('image_set'))
-        self.name = data.get('name')
-        self.resource = Currency(data.get('cost_resource_id'))
-        self.type = data.get('type')
-        self.type_name = data.get('type_name')
+    @property
+    def faction(self):
+        try:
+            return self._faction
+        except AttributeError:
+            self._faction = Faction.get(id=self._faction_id)
+            return self._faction
 
-        @property
-        def faction(self):
-            pass
+    @property
+    def image(self):
+        try:
+            return self._image
+        except AttributeError:
+            self._image = Image.get(id=self._image_id)
+            return self._image
 
-        @property
-        def skill_set(self):
-            pass
+    @property
+    def image_set(self):
+        try:
+            return self._image_set
+        except AttributeError:
+            self._image_set = ImageSet.get(id=self._image_set_id)
+            return self._image_set
 
-        super()._add_to_cache(self)  # Cache this instance for future use
+    @property
+    def skill_set(self):
+        try:
+            return self._skill_set
+        except AttributeError:
+            self._skill_set = ImageSet.get(id=self._skill_set_id)
+            return self._skill_set
 
-    def __str__(self):
-        return 'Vehicle (ID: {}, Name[en]: "{}")'.format(
-            self.id, self.name['en'])
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
-
-class VehicleAttachment(InterimDatatype):
-    _cache_size = 100
-    _collection = 'vehicle_attachment'
-    _join = ['faction', 'vehicle']
-
-    def __init__(self, id, data_override=None):
-        self.id = id
-
-        if super().is_cached(self):  # If the object is cached, skip
-            return
-
-        data = data_override if data_override != None else super().get_data(self)
-
-        self.description = data.get('description')
-        self.faction = Faction(data.get('faction_id'),
-                               data_override=data.get('faction'))
-        self.slot_id = data.get('slot_id')
-        self.vehicle = Vehicle(data.get('vehicle_id'),
-                               data_override=data.get('vehicle'))
-
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'VehicleAttachment (ID: {}, Description: "{}")'.format(
-            self.id, self.description)
+        # Set attribute values
+        self.cost = d.get('cost')
+        self._currency_id = d.get('currency_id')
+        self.description = LocalizedString(d['description'])
+        self._faction_id = d.get('faction_id')
+        self._image_id = d.get('image_id')
+        self._image_set_id = d.get('image_set_id')
+        self.name = LocalizedString(d['name'])
+        self._skill_set_id = d.get('skill_set_id')
+        self.type_id = d.get('type_id')
+        self.type_name = d.get('type_name')

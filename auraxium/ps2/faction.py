@@ -1,8 +1,10 @@
 from ..census import Query
-from ..datatypes import StaticDatatype
+from ..datatypes import EnumeratedDataType, NamedDataType
+from ..misc import LocalizedString
+from .image import Image, ImageSet
 
 
-class Faction(StaticDatatype):
+class Faction(EnumeratedDataType, NamedDataType):
     """Represents a faction in PlanetSide 2.
 
     Factions are static datatypes. Each one should only need to be
@@ -12,24 +14,42 @@ class Faction(StaticDatatype):
 
     _collection = 'faction'
 
-    def __init__(self, id, data_override=None):
+    def __init__(self, id):
         self.id = id
-        if super().is_cached(self):  # If the object is cached, skip
-            return
 
-        data = data_override if data_override != None else super().get_data(self)
+        # Set default values
+        self.name = None
+        self._image_id = None
+        self._image_set_id = None
+        self.is_playable = None
+        self.tag = None
 
-        self.name = data.get('name')
-        self.playable = True if data.get('user_selectable') == '1' else False
+    # Define properties
+    @property
+    def image(self):
+        try:
+            return self._image
+        except AttributeError:
+            self._image = Image.get(id=self._image_id)
+            return self._image
 
-        # As of the writing of this module, Nanite Systems does not have a tag.
-        # As this might change with the introduction of combat robots, I wrote
-        # this section in a way that should be able to handle that gracefully.
-        self.tag = 'NS' if data.get(
-            'code_tag') == 'None' else data.get('code_tag')
+    @property
+    def image_set(self):
+        try:
+            return self._image_set
+        except AttributeError:
+            self._image_set = ImageSet.get(id=self._image_set_id)
+            return self._image_set
 
-        super()._add_to_cache(self)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
-    def __str__(self):
-        return 'Faction (ID: {}, Name: "{}")'.format(
-            self.id, self.name['en'])
+        # Set attribute values
+        self.name = LocalizedString(d['name'])
+        self._image_id = d['image_id']
+        self._image_set_id = d['image_set_id']
+        self.is_playable = True if d['user_selectable'] == '1' else False
+        # NOTE: As of the writing of this module, Nanite Systems does not have
+        # a tag. As this might change with the introduction of combat robots, I
+        # wrote this section in a way that should be able to handle that.
+        self.tag = 'NS' if d['code_tag'] == 'None' else d['code_tag']

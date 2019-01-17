@@ -1,27 +1,30 @@
 from ..census import Query
-from ..datatypes import StaticDatatype
+from ..datatypes import EnumeratedDataType, NamedDataType
+from ..misc import LocalizedString
 
 
-class Server(StaticDatatype):
+class World(EnumeratedDataType, NamedDataType):
+    """A world in PS2.
+
+    World is the internal name for game servers. Connery and Cobalt are
+    worlds.
+
+    """
+
     _collection = 'world'
 
-    def __init__(self, id, data_override=None):
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self.name = None
 
-        data = data_override if data_override != None else super().get_data(self)
+    @property
+    def status(self):
+        print('NYI')
 
-        self.name = data.get('name')
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
-        @property
-        def status(self):
-            # perform request to get current state
-            pass
-
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'Server (ID: {}, Name[en]: "{}")'.format(
-            self.id, self.name['en'])
+        # Set attribute values
+        self.name = LocalizedString(d['name'])

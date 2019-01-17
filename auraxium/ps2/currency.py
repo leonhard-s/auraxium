@@ -1,33 +1,39 @@
 from ..census import Query
-from ..datatypes import StaticDatatype
+from ..datatypes import EnumeratedDataType, NamedDataType
+from ..misc import LocalizedString
 from .image import ImageSet
 
 
-class Currency(StaticDatatype):
-    """A currency in PlanetSide 2.
+class Currency(EnumeratedDataType, NamedDataType):
+    """A currency.
 
     Currently, the only currency are Nanites.
 
     """
 
     _collection = 'currency'
-    _join = 'image_set'
 
-    def __init__(self, id, data_override=None):
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self.name = None
+        self._image_set_id = None
+        self.inventory_cap = None
 
-        data = data_override if data_override != None else super().get_data(self)
+    # Define properties
+    @property
+    def image_set(self):
+        try:
+            return self._image_set
+        except AttributeError:
+            self._image_set = ImageSet.get(id=self._image_set_id)
+            return self._image_set
 
-        self.name = data.get('name')
-        self.icon = ImageSet(data.get('icon_id'),
-                             data_override=data.get('image_set'))
-        self.inventory_cap = data.get('inventory_cap')
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'Currency (ID: {}, Name[en]: "{}")'.format(
-            self.id, self.name['en'])
+        # Set attribute values
+        self.name = LocalizedString(d['name'])
+        self._image_set_id = d['icon_id']
+        self.inventory_cap = d['inventory_cap']

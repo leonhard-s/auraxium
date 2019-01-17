@@ -1,82 +1,137 @@
 from ..census import Query
-from ..datatypes import InterimDatatype, StaticDatatype
+from ..datatypes import CachableDataType, EnumeratedDataType, NamedDataType
 from .ability import Ability
+from ..misc import LocalizedString
 
 
-class Zone(StaticDatatype):
+class Zone(EnumeratedDataType, NamedDataType):
+    """A zone in PS2.
+
+    A zone is a continent such as Indar, Amerish or Hossin.
+
+    """
+
     _collection = 'zone'
 
-    def __init__(self, id, data_override=None):
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
+        # Set default values
+        self.code = None
+        self.description = None
+        self.hex_size = None
+        self.name = None
 
-        data = data_override if data_override != None else super().get_data(self)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
-        self.code = data.get('code')
-        self.description = data.get('description')
-        self.hex_size = data.get('hex_size')
-        self.name = data.get('name')
-
-        super()._add_to_cache(self)  # Cache this instance for future use
-
-    def __str__(self):
-        return 'Zone (ID: {}, Name[en]: "{}")'.format(
-            self.id, self.name['en'])
+        # Set attribute values
+        self.code = d['code']
+        self.description = LocalizedString(d.get('description'))
+        self.hex_size = d.get('hex_size')
+        self.name = LocalizedString(d.get('name'))
 
 
-class ZoneEffect(InterimDatatype):
-    _cache_size = 100
+class ZoneEffect(CachableDataType):
+    """A zone effect.
+
+    An zone reward effect.
+
+    """
+
     _collection = 'zone_effect'
-    _join = ['ability', 'zone_effect_type']
 
-    def __init__(self, id, data_override=None):
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
-
-        data = data_override if data_override != None else super().get_data(self)
-
-        self.ability = Ability(data.get('ability_id'),
-                               data_override=data.get('ability'))
-        self.type = ZoneEffectType(
-            data.get('zone_effect_type_id'), data_override=data.get('zone_effect_type'))
-
-        self.parameters = {}
-        self.strings = {}
+        # Set default values
+        self._ability_id = None
+        self._zone_effect_type_id = None
+        # Set default values for fields "param1" through "param14"
+        s = ''
         for i in range(14):
-            self.parameters[i] = data.get('param{}'.format(i + 1))
-            self.string[i] = data.get('string{}'.format(i + 1))
+            s += 'self.param{0} = None\n'.format(i + 1)
+        exec(s)
+        # Set default values for fields "string1" through "string4"
+        s = ''
+        for i in range(4):
+            s += 'self.string{0} = None\n'.format(i + 1)
+        exec(s)
 
-        super()._add_to_cache(self)  # Cache this instance for future use
+    # Define properties
+    @property
+    def ability(self):
+        try:
+            return self._ability
+        except AttributeError:
+            self._ability = Ability.get(id=self._ability_id)
+            return self._ability
 
-    def __str__(self):
-        return 'ZoneEffect (ID: {})'.format(self.id)
+    @property
+    def zone_effect_type(self):
+        try:
+            return self._zone_effect_type
+        except AttributeError:
+            self._zone_effect_type = ZoneEffectType.get(
+                id=self._zone_effect_type_id)
+            return self._zone_effect_type
+
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
+
+        # Set attribute values
+        self._ability_id = d.get('ability_id')
+        self._zone_effect_type_id = d['zone_effect_type_id']
+        # Set attributes "param1" through "param14"
+        s = ''
+        for i in range(14):
+            s += 'self.param{0} = d.get(\'param{0}\')\n'.format(i + 1)
+        exec(s)
+        # Set attributes "string1" through "string4
+        s = ''
+        for i in range(4):
+            s += 'self.string{0} = d.get(\'string{0}\')\n'.format(i + 1)
+        exec(s)
 
 
-class ZoneEffectType(StaticDatatype):
+class ZoneEffectType(EnumeratedDataType):
+    """A zone effect type.
+
+    A type of zone effect. The effect type's "param" and "string" fields
+    contain information about the effect's values purpose.
+
+    """
+
     _collection = 'zone_effect_type'
 
-    def __init__(self, id, data_override=None):
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
-
-        data = data_override if data_override != None else super().get_data(self)
-
-        self.description = data.get('description')
-
-        self.parameters = {}
-        self.strings = {}
+        # Set default values
+        self.description = None
+        # Set default values for fields "param1" through "param14"
+        s = ''
         for i in range(14):
-            self.parameters[i] = data.get('param{}'.format(i + 1))
-            self.string[i] = data.get('string{}'.format(i + 1))
+            s += 'self.param{0} = None\n'.format(i + 1)
+        exec(s)
+        # Set default values for fields "string1" through "string4"
+        s = ''
+        for i in range(4):
+            s += 'self.string{0} = None\n'.format(i + 1)
+        exec(s)
 
-        super()._add_to_cache(self)  # Cache this instance for future use
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
-    def __str__(self):
-        return 'ZoneEffectType (ID: {}, Description: "{}")'.format(
-            self.id, self.description)
+        # Set attribute values
+        self.description = d.get('description')
+        # Set attributes "param1" through "param14"
+        s = ''
+        for i in range(14):
+            s += 'self.param{0} = d.get(\'param{0}\')\n'.format(i + 1)
+        exec(s)
+        # Set attributes "string1" through "string4
+        s = ''
+        for i in range(4):
+            s += 'self.string{0} = d.get(\'string{0}\')\n'.format(i + 1)
+        exec(s)

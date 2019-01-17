@@ -1,55 +1,85 @@
 from ..census import Query
-from ..datatypes import InterimDatatype, StaticDatatype
+from ..datatypes import CachableDataType, EnumeratedDataType
 
 
-class Reward(InterimDatatype):
+class Reward(CachableDataType):
+    """A reward.
+
+    Rewards are granted to players for participating in alerts, gaining
+    achievements or completing directives.
+
+    """
+
     _collection = 'reward'
-    _join = 'reward_type'
 
-    def __init__(self, id, data_override=None):
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
-
-        data = data_override if data_override != None else super().get_data(self)
-
-        self.count_max = data.get('count_max')
-        self.count_min = data.get('count_min')
-        self.type = RewardType(data.get('reward_type_id'),
-                               data_override=data.get('reward_type'))
-
-        self.parameters = {}
+        # Set default values
+        self.count_max = None
+        self.count_min = None
+        self._reward_type_id = None
+        # Set default values for attributes "param1" through "param5"
+        s = ''
         for i in range(5):
-            self.parameters[i] = data.get('param{}'.format(i + 1))
+            s += 'self.param{} = None\n'.format(i + 1)
+        exec(s)
 
-        super()._add_to_cache(self)  # Cache this instance for future use
+        # Define properties
+        @property
+        def reward_type(self):
+            try:
+                return self._reward_type
+            except AttributeError:
+                self._reward_type = RewardType.get(id=self._reward_type_id)
 
-    def __str__(self):
-        return 'Reward (ID: {})'.format(self.id)
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
+
+        # Set attribute values
+        self.count_max = d.get('count_max')
+        self.count_min = d.get('count_min')
+        self._reward_type_id = d['reward_type_id']
+        # Set attributes "param1" through "param5"
+        s = ''
+        for i in range(5):
+            s += 'self.param{0} = d.get(\'param{0}\')\n'.format(i + 1)
+        exec(s)
 
 
-class RewardType(StaticDatatype):
+class RewardType(EnumeratedDataType):
+    """A type of reward.
+
+    The type of reward a player will receive (experience or items, etc.). The
+    "param" fields of the reward type document the function of the
+    corresponding reward's.
+
+    """
+
     _collection = 'reward_type'
 
-    def __init__(self, id, data_override=None):
+    def __init__(self, id):
         self.id = id
 
-        if super().is_cached(self):  # If the object is cached, skip
-            return
-
-        data = data_override if data_override != None else super().get_data(self)
-
-        self.count_max = data.get('count_max')
-        self.count_min = data.get('count_min')
-        self.description = data.get('description')
-
-        self.parameters = {}
+        # Set default values
+        self.count_max = None
+        self.count_min = None
+        self.description = None
+        # Set default values for attributes "param1" through "param5"
+        s = ''
         for i in range(5):
-            self.parameters[i] = data.get('param{}'.format(i + 1))
+            s += 'self.param{} = None\n'.format(i + 1)
+        exec(s)
 
-        super()._add_to_cache(self)  # Cache this instance for future use
+    def _populate(self, data=None):
+        d = data if data != None else super()._get_data(self.id)
 
-    def __str__(self):
-        return 'RewardType (ID: {}, Description: "{}")'.format(
-            self.id, self.description)
+        # Set attribute values
+        self.count_max = d.get('count_max')
+        self.count_min = d.get('count_min')
+        self.description = d['description']
+        # Set attributes "param1" through "param5"
+        s = ''
+        for i in range(5):
+            s += 'self.param{0} = d.get(\'param{0}\')\n'.format(i + 1)
+        exec(s)
