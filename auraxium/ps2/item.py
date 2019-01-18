@@ -4,7 +4,6 @@ from ..misc import LocalizedString
 from .ability import Ability
 from .faction import Faction
 from .image import Image, ImageSet
-from .skill import SkillSet
 from .profile import Profile
 
 
@@ -82,6 +81,9 @@ class Item(CachableDataType, NamedDataType):
 
     @property
     def skill_set(self):
+        from .skill import SkillSet
+        # NOTE: Placing the import at the top would create a circular import,
+        # hence why I placed it here instead.
         return SkillSet(id=self._skill_set_id)
 
     def _populate(self, data=None):
