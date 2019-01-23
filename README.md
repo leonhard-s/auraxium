@@ -4,7 +4,7 @@ Auraxium is a Python wrapper for the [Daybreak Game Company Census API](https://
 
 ## Overview
 
-Auraxium's original goal is to facilitate the use of the API without compromising functionality. This is achieved by first generating an object representing the query to perform, which then generates the URL required.
+Auraxium's goal is to facilitate the use of the API without compromising functionality. This is achieved by first instantiating an object representing the query to perform, which then generates the URL required.
 
 This functionality is available for all games that support the original Census API.
 
@@ -12,7 +12,7 @@ For PlanetSide 2, it additionaly provides [an object-oriented interface](#object
 
 ## How to use
 
-This section provides basic usage examples for the API wrapper. For a proper how-to and detailed examples, check out to [the Auraxium wiki](https://github.com/leonhard-s/auraxium/wiki) instead. The following is only meant to showcase the syntax.
+This section provides basic usage examples for the API wrapper. For a proper how-to and detailed examples, check out to [the Auraxium wiki](https://github.com/leonhard-s/auraxium/wiki) instead. The following snippets are only meant to showcase the syntax.
 
 **Note:** Testing for namespaces other than `ps2` (i.e. PlanetSide 2, PC version) has been either extremely basic or simply non-existant. If you would like to expand the current tests to cover other games or namespaces, [do feel free to contribute](#contributing).
 
