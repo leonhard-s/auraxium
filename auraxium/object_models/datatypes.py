@@ -1,9 +1,11 @@
-from .census import Query
+from ..base_api import Query
 from .caching import Cache
 from .misc import LocalizedString
+from .exceptions import NoMatchesFoundError
 
 
-class DataType(object):
+# pylint: disable-msg=E1101
+class DataType():
     """The base datatype object.
 
     All PS2 data types are subclasses to this class. It also provides the base
@@ -28,6 +30,19 @@ class DataType(object):
 
         return s + ') at 0x{0:0{1}X}'.format(id(self), 16)
 
+    def __eq__(self, other):
+        """Provides support for "is equal" comparisons between Datatypes."""
+        if self.__class__ == other.__class__ and self.id == other.id:
+            return True
+        return False
+
+    def __ne__(self, other):
+        """Provides support for "is not equal" comparisons."""
+        if self.__class__ != other.__class__ or self.id != other.id:
+            return True
+        return False
+
+    # pylint: disable-msg=W0212
     @classmethod
     def get(cls, id, data=None):
         """Retrieves a single entry of the given datatype."""
@@ -55,9 +70,7 @@ class DataType(object):
         except AttributeError:
             id_field = cls._collection + '_id'
 
-        q = Query(cls._collection).add_filter(field=id_field, value=id)
-
-        return q.get_single()
+        return Query(cls._collection).add_term(field=id_field, value=id).get(single=True)
 
     @classmethod
     def list(cls, ids):
@@ -89,7 +102,7 @@ class DataType(object):
         instances = [cls.get(id=d[id_field], data=d) for d in data]
 
         # Cache all the newly added instances
-        [cls._cache.add(i) for i in instances]
+        _ = [cls._cache.add(i) for i in instances]
 
         # Join the two lists and sort the list by id
         instances.extend(cached_items)
@@ -105,7 +118,7 @@ class EnumeratedDataType(DataType):
     pass
 
 
-class NamedDataType(object):
+class NamedDataType():
     """Auxilary parent class for localized named data types.
 
     Adds functinoality relevant to data types with a localized "name" field.
@@ -118,14 +131,14 @@ class NamedDataType(object):
     def get_by_name(cls, name, locale, ignore_case=True):
         # Generate request
         if ignore_case:
-            q = Query(type=cls._collection, check_case=False)
+            q = Query(collection=cls._collection).case(False)
         else:
-            q = Query(type=cls._collection)
-        q.add_filter(field='name.' + locale, value=name)
+            q = Query(collection=cls._collection)
+        q.add_term(field='name.' + locale, value=name)
 
-        d = q.get_single()
-        if len(d) == 0:
-            return  # TODO: Replace with exception
+        d = q.get(single=True)
+        if not d:
+            raise NoMatchesFoundError
 
         # Retrieve and return the object
         instance = cls.get(id=d[cls._collection + '_id'], data=d)

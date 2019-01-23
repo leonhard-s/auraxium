@@ -5,7 +5,7 @@ from datetime import datetime
 _cache_list = []  # Used for iterating over all caches
 
 
-class Cache(object):
+class Cache():
     """A cache stores instances of other objects.
 
     Caches are used to reduce the number of times an object needs to be
@@ -14,8 +14,6 @@ class Cache(object):
     before discarding them) or both.
 
     """
-
-    # TODO: Add size-limited cache?
 
     def __init__(self, max_size=None, max_age=None):
         self._contents = {}
@@ -42,7 +40,7 @@ class Cache(object):
             return
 
         # Only proceed if the item has not already been cached
-        if item in self._contents.keys():
+        if item.id in self._contents.keys():
             return
 
         try:

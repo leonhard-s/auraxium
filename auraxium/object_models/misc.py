@@ -1,4 +1,4 @@
-class LocalizedString(object):
+class LocalizedString():
     """A localized string.
 
     The Census API uses localized strings for player-visible values,
