@@ -1,84 +1,63 @@
-class AuraxiumBaseError(Exception):
-    """The base exception for all the module's exceptions."""
+"""auraxium exceptions."""
+
+__all__ = ['AuraxiumError', 'InvalidSearchTermError', 'UserError', 'MaintenanceError']
 
 
-class ServiceUnavailableError(AuraxiumBaseError):
+class AuraxiumError(Exception):
+    """Superclass for all auraxium-specific exceptions."""
+
+
+class UserError(AuraxiumError):
+    """Superclass for errors resulting from poor user decisions."""
+
+
+class InvalidSearchTermError(UserError):
+    """The user attempted to search a collection by a field it does
+    not posess.
+
+    """
+
+
+class UnknownCollectionError(UserError):
+    """The user attempted to access a collection that does not exist
+    for the current namespace.
+
+    """
+
+
+class ServerError(AuraxiumError):
+    """Superclass for errors resulting in unexpected server-side
+    occurrences.
+
+    """
+
+
+class MaintenanceError(ServerError):
+    """The API endpoint is curently undergoing maintenance."""
+
+
+class ServiceUnavailableError(ServerError):
     """Raised when attempting to access a disabled collection.
 
-    Commonly occurs with the "characters_friend" and "characters_online_status"
-    collections.
+    Commonly occurs with the "characters_friend" and
+    "characters_online_status" collections.
 
     The corresponding server response will look something like this:
     {"error":"service_unavailable"}
-    """
-
-
-class APILimitationError(AuraxiumBaseError):
-    """Raised when a known limitation is breached.
-    """
-
-
-class UnknownCollectionError(AuraxiumBaseError):
-    """Raised when attempting to access a collection that does not exist.
-
-    Usually occurs with typos or otherwise incorrect collection names, such as
-    "character_online_status" instead of "characters_online_status" (plural!).
-
-    The corresponding server response will look something like this:
-    {"error":"No data found."}
-    """
-
-
-class InvalidJoinError(AuraxiumBaseError):
-    """Raised when attempting to perform a joined query while using the count
-    verb.
-    """
-
-
-class InvalidSearchTermError(AuraxiumBaseError):
-    """Occurs when attempting to filter a collection by an invalid field.
-
-    Sometimes this means that the field does not exist at all, but some fields
-    can also not be used in searches (see exceptions/limitations in the API
-    documentation for more information).
-
-    The corresponding server response will look something like this:
-    {"errorCode":"SERVER_ERROR","errorMessage":"INVALID_SEARCH_TERM:
-    Invalid search term. Valid search terms: [description_t4id, name_t4id,
-    state, world_id]"}
-    """
-
-
-class NoMatchesFoundError(AuraxiumBaseError):
-    """Raised when a search is valid but turns up empty.
-
-    Raised whenever a `get_by_name` method call returns an empty list or NoneType.
 
     """
 
 
-class ServiceIDMissingError(AuraxiumBaseError):
-    """Raised when repeatedly sending requests without a valid service ID.
+class SerciceIDError(AuraxiumError):
+    """Superclass for errors stemming from improper service ID use."""
 
-    The API allows about six requests per minute and IP address for public
-    service IDs. For more bandwidth, a service ID has to be provided.
 
-    The corresponding server response will look something like this:
-    {"error":"Missing Service ID.  A valid Service ID is required for
-    continued api use.  The Service ID s:example is for casual use only.
-    (http://census.daybreakgames.com/#devSignup)"}
+class ServiceIDMissingError(SerciceIDError):
+    """Raised when repeatedly sending requests without a valid
+    service ID.
+
     """
 
 
-class ServiceIDUnknownError(AuraxiumBaseError):
-    """Raised when the server cannot find the given service ID.
-
-    This can either mean a typo in the service ID itself, but it can also occur
-    when a new service ID is used that has only been created a few hours ago.
-    In the latter case, the issue will resolve itself with a bit more time.
-
-    The corresponding server response will look something like this:
-    {"error":"Provided Service ID is not registered.  A valid Service ID is
-    required for continued api use.
-    (http://census.daybreakgames.com/#devSignup)"}
-    """
+class ServiceIDUnknownError(SerciceIDError):
+    """Raised when the server cannot find the given service id."""
