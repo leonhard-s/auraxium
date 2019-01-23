@@ -1,140 +1,81 @@
-# Notice
+# <img src="assets/icon_256.png" align="left" height="140"/>Auraxium
 
-This wrapper is currently undergoing a near-complete rewrite due to a number of poor decisions. I highly advise you come back in a week or two and see if this message has been removed.
-
-# Auraxium
-
-A Python wrapper meant to facilitate the use of the [Daybreak Game Company Census API](https://census.daybreakgames.com/). While the API is compatible with a number of different DBG titles, this module is currently only being developed and tested for use with [PlanetSide 2](https://www.planetside2.com/).
-
-**Disclaimer: All elements of this repository are still undergoing heavy modification. Using this code for anything more serious than having a play-around with the API is currently not advisable.**
+Auraxium is a Python wrapper for the [Daybreak Game Company Census API](https://census.daybreakgames.com/). While its core components have been designed to work with any title using the Census API syntax, it is mainly being developed and tested with [PlanetSide 2](https://www.planetside2.com/) in mind.
 
 ## Overview
 
-Auraxium provides an object-oriented way of generating and performing Census API requests that is easier to work with than the stock API syntax.
+Auraxium's original goal is to facilitate the use of the API without compromising functionality. This is achieved by first generating an object representing the query to perform, which then generates the URL required.
 
-It also contains a basic client for the PlanetSide 2 [Event Streaming Service](https://census.daybreakgames.com/#what-is-websocket) (ESS), which can be used to respond to in-game events in next to real time, without the performance problems arising from repeatedly polling the data through standard API requests.
+This functionality is available for all games that support the original Census API.
 
-## Requirements
-
-**Python Version**
-Auraxium is currently being developed in parallel with a [Discord](https://discordapp.com/) bot and is therefore tested using Python 3.6 for compatibility with bot-specific modules. Run higher versions at your own risk.
-
-**Packages**
-The following non-standard packages are required by Auraxium:
-
-- [requests](https://github.com/requests/requests) is always required.
-- [websockets](https://github.com/aaugustin/websockets) is only required if you need ESS functionality.
+For PlanetSide 2, it additionaly provides [an object-oriented interface](#object-model) as well as a client for the PlanetSide 2 [Event Streaming Service](https://census.daybreakgames.com/#what-is-websocket) (ESS).
 
 ## How to use
 
-This section provides examples for the main uses of Auraxium. More specific examples can be found in the `examples/` subfolder of the repository and are explained in the [examples wiki page](https://github.com/leonhard-s/auraxium/wiki/Examples).
+This section provides basic usage examples for the API wrapper. For a proper how-to and detailed examples, check out to [the Auraxium wiki](https://github.com/leonhard-s/auraxium/wiki) instead. The following is only meant to showcase the syntax.
+
+**Note:** Testing for namespaces other than `ps2` (i.e. PlanetSide 2, PC version) has been either extremely basic or simply non-existant. If you would like to expand the current tests to cover other games or namespaces, [do feel free to contribute](#contributing).
 
 ### Basic requests
 
-The core methods used for accessing the API are `find()`, `get()`, and `count()`, used for generating the requests, and `call()`, which performs the request and returns an object containing the server's response.
+Requests are defined by instantiating a `Query` object and passing it the collection to access, as well as the game namespace to use, like `ps2`, `dcuo` or `eq2`.
 
-* `find()` returns a list of all matching entries
-* `get()` returns the first (and possibly only) matching entry
-* `count()` only returns the number of matching entries
-
-The following example retrieves a character by name and prints basic information about them in the console.
+Any remaining keyword arguments will be interpreted as field/value pairs to pass to the query. To generate the URL and retrieve the response, use the `Query.get()` method.
 
 ```py
-import auraxium as arx
+import auraxium
 
-# This is the name of the player we want to look up
-character_name = 'Auroram'
-# Only show these fields
-fields_to_show = ['battle_rank.value', 'faction_id', 'name.first',
-                  'prestige_level', 'times.creation_date']
-
-response = arx.get('character',
-                   terms=('name.first_lower', character_name.lower()),
-                   show=fields_to_show).call()
-print(response)
+# Retrieve and print the PlanetSide 2 weapon with the ID "22"
+my_query = auraxium.Query('weapon', namespace='ps2', weapon_id='22')
+print(my_query.get())
 ```
 
-The output of the `print` statement is analogous to the following JSON code:
+**Note:** Double-underscores will be interpreted as dots, which can be used to access subkeys in your queries. See the next section for an example.
 
-```json
-{
-	"name": { "first": "Auroram" },
-	"faction_id": "1",
-	"times": { "creation_date": "2013-05-11 17:06:10.0" },
-	"battle_rank": { "value": "41" },
-	"prestige_level": "1"
-}
-```
+### Query commands
 
-### Joined queries
+Query commands like `c:sort` or `c:join` are represented through methods of the `Query` object.
 
-The Census API provides the option of joining multiple queries together, even across data types. In Auraxium, this functionality is provided through the `join()` method, which can be used on both basic requests and existing joins.
-
-To illustrate this, we will be looking up an outfit by its tag and print the names of its members. This means looking up the outfit's ID, searching the outfit member collection for matching entries and finally looking up the names of the characters.
+To illustrate, the following is a complex query that retrieves a weapon by name, which requires two nested joins to achieve in a single request:
 
 ```py
-import auraxium as arx
+import auraxium
 
-# The outfit tag to search by
-OUTFIT_TAG = 'L3GN'
-
-# Generate the base request
-request = arx.get('outfit',
-                  terms=('alias_lower', OUTFIT_TAG.lower()),
-                  show=['outfit_id', 'name'])
-# Attach the outfit member list to the outfit
-inner_join = request.join('outfit_member',
-                          list=True,
-                          show='character_id',
-                          match='outfit_id')
-# Attach the name of the outfit member to the joined request
-inner_join.join('character_name',
-                match='character_id',
-                show='name.first')
-
-# Perform the request
-response = request.call()
-
-# Print the member list
-print('Members of outfit "{}":'.format(response['name']))
-print(response['outfit_member_list'])
+# Get the weapon's item by name
+my_query = auraxium.Query('item', namespace='ps2', name__en='^Orion')
+# Attach the intermediate query to the item
+my_join = my_query.join('item_to_weapon', on='item_id', to='weapon_id')
+# Attach an inner query to the intermediate one
+my_join.join('weapon', on='weapon_id', to='weapon_id')
+# Generate the URL and return the response
+print(my_query.get())
 ```
 
-### Event streaming
+## Object model
 
-The following things are required to use the ESS system:
-1. Creating a client, thus opening a websocket connection.
-2. Subscribe to the in-game events you want to have forwarded to your client.
-3. Define code to run whenever such an event is received.
+This submodule provides an object-oriented access point where Queries are mostly happening in the background. This is especially useful for cases where a user needs to browse the game data without being familiar with the API and its collections.
 
-The following snippet creates an ESS client and subscribes to all login and logout events for the Cobalt server. It then prints messages depending on the event type detected.
+Currently, this is only implemented for PlanetSide 2.
+
+**Example:**
 
 ```py
-import asyncio
+import auraxium
+from auraxiumm.object_models import ps2
 
-import auraxium as arx
-from auraxium.events import ESSClient
+# Get a character by name (case-insensitive by default)
+my_char = ps2.Character.get_by_name('auroram')
 
-# World 13 = "Cobalt" server
-WORLD_ID = '13'
-
-# 1. Create an event streaming client and open a connection
-essc = ESSClient(sid='s:example')
-
-# 2. Inform the ESS that we would like to receive login and logoff events
-essc.subscribe(events='PlayerStatus', worlds=WORLD_ID)
-
-# 3. Whenever any event is received, run this function
-@essc.event
-async def on_event(event):
-  # Resolve the character id into the player name
-  player_name = arx.resolve_player(event.response['character_id'])
-  if event.event_name == 'login':
-    print('{} logged in.'.format(player_name))
-  else:
-    print('{} logged out.'.format(player_name))
+# Return various attributes of the character
+print('Name: ' + my_char.name)
+print('Server: ' + my_char.world.name.en)
 ```
 
-## Further reading
+In this example, `my_char.name` access the `name_first` field of the character whereas `my_char.world.name.en` returns the English localization of the server name, which has been quietly retrieved in the background.
 
-More information, along with proper documentation, can be found in the [Auraxium Wiki](wiki).
+## Contributing
+
+If you found a bug or would like to suggest a new feature, feel free to [create an issue](https://github.com/leonhard-s/auraxium/issues).
+
+That said, while I am passionate about this project, the amount of time I can dedicate to it is limited.
+So if you are the coding type, feel free to just [fork away](https://github.com/leonhard-s/auraxium/fork) and see how things go. :blush:
