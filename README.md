@@ -36,7 +36,7 @@ print(my_query.get())
 
 Query commands like `c:sort` or `c:join` are represented through methods of the `Query` object.
 
-To illustrate, the following is a complex query that retrieves a weapon by name, which requires two nested joins to achieve in a single request:
+To illustrate, the following is a compound query that retrieves a weapon by name, which requires two nested joins to achieve in a single request:
 
 ```py
 import auraxium
