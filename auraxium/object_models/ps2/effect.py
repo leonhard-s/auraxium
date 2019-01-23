@@ -45,7 +45,7 @@ class Effect(CachableDataType):
 
     @property
     def target_type(self):
-        TargetType.get(id=self._target_type_id)
+        return TargetType.get(id=self._target_type_id)
 
     def _populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)

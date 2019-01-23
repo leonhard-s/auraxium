@@ -1,4 +1,4 @@
-from ..census import Query
+from ...base_api import Query
 from ..datatypes import CachableDataType, EnumeratedDataType
 
 
@@ -48,16 +48,13 @@ class PlayerStateGroup(CachableDataType):
         try:
             return self._player_states
         except AttributeError:
-            q = Query('player_state_group_2', limit=6)
-            data = q.add_filter(
-                field='player_state_group_id', value=self.id).get()
-            self._player_states = [
-                PlayerStateGroupEntry(data=ps) for ps in data]
+            data = Query('player_state_group_2', player_state_group_id=self.id).limit(6).get()
+            self._player_states = [PlayerStateGroupEntry(data=ps) for ps in data]
             self._player_states.sort(key=lambda ps: ps.player_state_id)
             return self._player_states
 
 
-class PlayerStateGroupEntry(object):
+class PlayerStateGroupEntry():
     """An entry within a player state group."""
 
     def __init__(self, data):

@@ -1,4 +1,4 @@
-from ..census import Query
+from ...base_api import Query
 from ..datatypes import CachableDataType, EnumeratedDataType
 from .item import Item
 from .projectile import Projectile
@@ -9,7 +9,7 @@ from ..misc import LocalizedString
 from ..exceptions import NoMatchesFoundError
 
 
-class AmmoSlot(object):
+class AmmoSlot():
     """Represents an ammo slot for a weapon.
 
     A weapon's ammo slot is a type of ammunition this weapon can fire. This
@@ -53,10 +53,8 @@ class FireGroup(CachableDataType):
         try:
             return self._fire_modes
         except AttributeError:
-            q = Query(type='fire_group_to_fire_mode')
-            d = q.add_filter(field='fire_group_id', value=self.id).get()
-            self._fire_modes = FireMode.list(
-                ids=[i['fire_mode_id'] for i in d])
+            data = Query(collection='fire_group_to_fire_mode', fire_group_id=self.id).get()
+            self._fire_modes = FireMode.list(ids=[i['fire_mode_id'] for i in data])
             return self._fire_modes
 
     def _populate(self, data=None):
@@ -208,11 +206,10 @@ class FireMode(CachableDataType):
         try:
             return self._projectile
         except AttributeError:
-            q = Query(type='fire_mode_to_projectile')
-            q.add_filter(field='fire_mode_id', value=self.id)
-            q.join(type='projectile')
-            d = q.get_single()
-            self._projectile = Projectile.get(id=d['projectile_id'])
+            query = Query(collection='fire_mode_to_projectile', fire_mode_id=self.id)
+            query.join(type='projectile', inject_at='projectile')
+            data = query.get(single=True)
+            self._projectile = Projectile.get(id=data['projectile_id'], data=data['projectile'])
             return self._projectile
 
     def _populate(self, data=None):
@@ -376,11 +373,10 @@ class Weapon(CachableDataType):
         try:
             return self._ammo_slot
         except AttributeError:
-            q = Query(type='weapon_ammo_slot')
-            d = q.add_filter(field='weapon_id', value=self.id).get()
-            # The following line is not an error, AmmoSlot does not have a
-            # list() method as it does not generate any network traffic.
-            self._ammo_slot = [AmmoSlot(a) for a in d]
+            data = Query(collection='weapon_ammo_slot', weapon_id=self.id).get()
+            # NOTE: The following line is not an error, AmmoSlot does not have a list() method as
+            # it does not generate any network traffic.
+            self._ammo_slot = [AmmoSlot(a) for a in data]
             return self._ammo_slot
 
     @property
@@ -389,9 +385,8 @@ class Weapon(CachableDataType):
         try:
             return self._attachments
         except AttributeError:
-            q = Query(type='weapon_to_attachment')
-            d = q.add_filter(field='weapon_id', value=self.id).get()
-            self._attachments = Item.list(ids=[i['item_id'] for i in d])
+            data = Query(collection='weapon_to_attachment', weapon_id=self.id).get()
+            self._attachments = Item.list(ids=[i['item_id'] for i in data])
             return self._attachments
 
     @property
@@ -400,10 +395,8 @@ class Weapon(CachableDataType):
         try:
             return self._fire_groups
         except AttributeError:
-            q = Query(type='weapon_to_fire_group')
-            d = q.add_filter(field='weapon_id', value=self.id).get()
-            self._fire_groups = FireGroup.list(
-                ids=[f['fire_group_id'] for f in d])
+            data = Query(collection='weapon_to_fire_group', weapon_id=self.id).get()
+            self._fire_groups = FireGroup.list(ids=[f['fire_group_id'] for f in data])
             return self._fire_groups
 
     @property
@@ -412,10 +405,9 @@ class Weapon(CachableDataType):
         try:
             return self._item
         except AttributeError:
-            q = Query(type='item_to_weapon')
-            q.add_filter(field='weapon_id', value=self.id)
-            q.join(type='item')
-            d = q.get_single()
+            q = Query(collection='item_to_weapon', weapon_id=self.id)
+            q.join(collection='item', inject_at='item_to_weapon')
+            d = q.get(single=True)
             self._item = Item.get(id=d['item_id'])
             return self._item
 
@@ -423,19 +415,16 @@ class Weapon(CachableDataType):
     def get_by_name(name, locale, ignore_case=True):
         """Allows retrieval of a weapon by its item's name."""
         # Generate request
-        if ignore_case:
-            q = Query(type='item', check_case=False)
-        else:
-            q = Query(type='item')
-        q.add_filter(field='name.' + locale, value=name)
-        q.join(type='item_to_weapon', match='item_id').join(type='weapon',
-                                                            match='weapon_id')
+        query = Query(collection='item').case(not ignore_case)
+        query.add_term(field='name.' + locale, value=name)
+        join = query.join(collection='item_to_weapon', inject_at='item_to_weapon', on='item_id', to='item_id')
+        join.join(collection='weapon', inject_at='weapon', on='weapon_id', to='weapon_id')
         try:
-            d = q.get_single()['item_to_weapon']['weapon']
+            data = query.get(single=True)['item_to_weapon']['weapon']
         except TypeError:
             raise NoMatchesFoundError
         # Retrieve and return the object
-        instance = Weapon.get(id=d['weapon_id'], data=d)
+        instance = Weapon.get(id=data['weapon_id'], data=data)
         return instance
 
     def _populate(self, data=None):

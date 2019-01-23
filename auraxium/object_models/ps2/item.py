@@ -1,4 +1,4 @@
-from ..census import Query
+from ...base_api import Query
 from ..datatypes import CachableDataType, EnumeratedDataType, NamedDataType
 from ..misc import LocalizedString
 from .ability import Ability
@@ -47,10 +47,8 @@ class Item(CachableDataType, NamedDataType):
         try:
             return self._attachments
         except AttributeError:
-            q = Query(type='item_attachment')
-            d = q.add_filter(field='item_id', value=self.id).get()
-            self._attachments = Item.list(
-                ids=[i['attachment_item_id'] for i in d])
+            data = Query(collection='item_attachment', item_id=self.id).get()
+            self._attachments = Item.list(ids=[i['attachment_item_id'] for i in data])
             return self._attachments
 
     @property
@@ -74,9 +72,8 @@ class Item(CachableDataType, NamedDataType):
         try:
             return self._profiles
         except AttributeError:
-            q = Query(type='item_profile')
-            d = q.add_filter(field='item_id', value=self.id).get()
-            self._profiles = Profile.list(ids=[i['profile_id'] for i in d])
+            data = Query(collection='item_profile', item_id=self.id).get()
+            self._profiles = Profile.list(ids=[i['profile_id'] for i in data])
             return self._profiles
 
     @property
@@ -127,9 +124,8 @@ class ItemCategory(EnumeratedDataType, NamedDataType):
         try:
             return self._items
         except AttributeError:
-            q = Query(type='item')
-            d = q.add_filter(field='item_category', value=self.id).get()
-            self._items = Item.list(ids=[i['item_id'] for i in d])
+            data = Query(collection='item', item_category=self.id).get()
+            self._items = Item.list(ids=[i['item_id'] for i in data])
             return self._items
 
     def _populate(self, data=None):

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from ..census import Query
+from ...base_api import Query
 from ..datatypes import CachableDataType
 from .character import Character
 from ..exceptions import NoMatchesFoundError
@@ -36,27 +36,24 @@ class Outfit(CachableDataType):
         try:
             return self._members
         except AttributeError:
-            q = Query(type='outfit_member')
-            d = q.add_filter(field='outfit_id', value=self.id).get()
-            self._members = OutfitMember.list(
-                ids=[i['character_id'] for i in d])
+            data = Query(collection='outfit_member', outfit_id=self.id).get()
+            self._members = OutfitMember.list(ids=[i['character_id'] for i in data])
             return self._members
 
     @staticmethod
     def get_by_name(name, ignore_case=True):
         # Generate request
-        q = Query(type='outfit')
+        q = Query(collection='outfit')
         if ignore_case:
-            q.add_filter(field='name_lower', value=name.lower())
+            q.add_term(field='name_lower', value=name.lower())
         else:
-            q.add_filter(field='name', value=name)
-
-        d = q.get_single()
-        if not d:
+            q.add_term(field='name', value=name)
+        data = q.get(single=True)
+        if not data:
             raise NoMatchesFoundError
 
         # Retrieve and return the object
-        instance = Outfit.get(id=d['outfit_id'], data=d)
+        instance = Outfit.get(id=data['outfit_id'], data=data)
         return instance
 
     def _populate(self, data=None):

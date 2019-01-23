@@ -1,4 +1,4 @@
-from ..census import Query
+from ...base_api import Query
 from ..datatypes import EnumeratedDataType, NamedDataType
 from ..misc import LocalizedString
 
@@ -21,7 +21,7 @@ class World(EnumeratedDataType, NamedDataType):
 
     @property
     def status(self):
-        q = Query(type='world', id=self.id)
+        q = Query(collection='world', world_id=self.id)
         print(q.get())
         print('NYI')
 

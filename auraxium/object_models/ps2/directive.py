@@ -1,4 +1,4 @@
-from ..census import Query
+from ...base_api import Query
 from ..datatypes import CachableDataType, EnumeratedDataType, NamedDataType
 from ..misc import LocalizedString
 from .image import Image, ImageSet
@@ -44,11 +44,10 @@ class Directive(CachableDataType, NamedDataType):
         try:
             return self._objectives
         except AttributeError:
-            q = Query(type='objective_set_to_objective_group', limit=100)
-            q.add_filter(field='objective_set_id',
-                         value=self._objective_set_id)
-            q.join(type='objective', is_list=True, match='objective_group_id')
-            data = q.get()
+            query = Query(collection='objective_set_to_objective_group',
+                          objective_set_id=self._objective_set_id).limit(100)
+            query.join(type='objective', is_list=True, match='objective_group_id')
+            data = query.get()
             self._objectives = Objective.list(
                 ids=[o['objective_id'] for o in data['objective_list']])
             return self._objectives
@@ -115,11 +114,11 @@ class DirectiveTier(EnumeratedDataType, NamedDataType):
         try:
             return self._rewards
         except AttributeError:
-            q = Query(type='reward_set_to_reward_group')
-            q.add_filter(field='reward_set_id', value=self._reward_set_id)
-            q.join(type='reward_group_to_reward',
-                   is_list=True, match='reward_group_id')
-            data = q.get_single()
+            query = Query(collection='reward_set_to_reward_group',
+                          reward_set_id=self._reward_set_id)
+            query.join(type='reward_group_to_reward', on='reward_group_id',
+                       to='reward_group_id').is_list(True)
+            data = query.get(single=True)
             self._rewards = Reward.list(
                 ids=[r['reward_id'] for r in data['reward_group']['reward_list']])
             return self._rewards
@@ -169,11 +168,8 @@ class DirectiveTree(EnumeratedDataType, NamedDataType):
         try:
             return self._directives
         except AttributeError:
-            q = Query(type='directive')
-            q.add_filter(field='directive_tree_id', value=self.id)
-            d = q.get()
-            self._directives = Directive.list(
-                ids=[i['directive_id'] for i in d])
+            data = Query(collection='directive', directive_tree_id=self.id).get()
+            self._directives = Directive.list(ids=[i['directive_id'] for i in data])
             return self._directives
 
     @property
@@ -218,11 +214,8 @@ class DirectiveTreeCategory(EnumeratedDataType, NamedDataType):
         try:
             return self._directive_trees
         except AttributeError:
-            q = Query(type='directive_tree')
-            q.add_filter(field='directive_tree_category_id', value=self.id)
-            d = q.get()
-            self._directive_trees = DirectiveTree.list(
-                ids=[i['directive_tree_id'] for i in d])
+            data = Query(collection='directive_tree', directive_tree_category_id=self.id).get()
+            self._directive_trees = DirectiveTree.list(ids=[i['directive_tree_id'] for i in data])
             return self._directive_trees
 
     def _populate(self, data=None):

@@ -1,6 +1,6 @@
 from datetime import datetime
 
-from ..census import Query
+from ...base_api import Query
 from ..datatypes import CachableDataType
 from .currency import Currency
 from .faction import Faction
@@ -73,9 +73,8 @@ class Character(CachableDataType):
         try:
             return self._currency
         except AttributeError:
-            q = Query(type='characters_currency')
-            d = q.add_filter(field='character_id', value=self.id).get()
-            self._currency = Currency.list(ids=[c['currency_id'] for c in d])
+            data = Query(collection='characters_currency', character_id=self.id).get()
+            self._currency = Currency.list(ids=[c['currency_id'] for c in data])
             return self._currency
 
     @property
@@ -85,16 +84,16 @@ class Character(CachableDataType):
     @staticmethod
     def get_by_name(name, ignore_case=True):
         # Generate request
-        q = Query(type='character')
+        query = Query(collection='character')
         if ignore_case:
-            q.add_filter(field='name.first_lower', value=name.lower())
+            query.add_term(field='name.first_lower', value=name.lower())
         else:
-            q.add_filter(field='name.first', value=name)
-        d = q.get_single()
-        if not d:
+            query.add_term(field='name.first', value=name)
+        data = query.get(single=True)
+        if not data:
             raise NoMatchesFoundError
         # Retrieve and return the object
-        instance = Character.get(id=d['character_id'], data=d)
+        instance = Character.get(id=data['character_id'], data=data)
         return instance
 
     @property
@@ -114,10 +113,8 @@ class Character(CachableDataType):
         try:
             return self._world
         except AttributeError:
-            q = Query(type='characters_world')
-            q.add_filter(field='character_id', value=self.id)
-            d = q.get_single()
-            self._world = World.get(id=d['world_id'])
+            data = Query(collection='characters_world', character_id=self.id).get(single=True)
+            self._world = World.get(id=data['world_id'])
             return self._world
 
     def _populate(self, data=None):
@@ -150,7 +147,7 @@ class Character(CachableDataType):
         self._title_id = d.get('title_id')
 
 
-class Head(object):
+class Head():
     """A head model a character can have.
 
     Head models are not an explicit colletion in the API, so most attributes

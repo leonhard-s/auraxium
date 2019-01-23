@@ -1,4 +1,5 @@
-from ..census import _CENSUS_BASE_URL, Query
+from ...base_api import Query
+from ...constants import CENSUS_ENDPOINT
 from ..datatypes import CachableDataType
 
 
@@ -17,7 +18,7 @@ class Image(CachableDataType):
 
         # Set default values
         self.description = None
-        self.path = _CENSUS_BASE_URL + \
+        self.path = CENSUS_ENDPOINT + \
             '/files/ps2/images/static/{}.png'.format(id)
 
     def _populate(self, data=None):
@@ -52,10 +53,8 @@ class ImageSet(CachableDataType):
         try:
             return self._default_image
         except AttributeError:
-            q = Query(type='image_set_default')
-            q.add_filter(field='image_set_id', value=self.id)
-            d = q.get_single()
-            self._default_image = Image.get(id=d['default_image_id'])
+            data = Query(collection='image_set_default', image_set_id=self.id).get(single=True)
+            self._default_image = Image.get(id=data['default_image_id'])
             return self._default_image
 
     @property
@@ -63,13 +62,13 @@ class ImageSet(CachableDataType):
         try:
             return self._members
         except AttributeError:
-            d = Query(type='image_set', id=self.id).get()
-            Image.list(ids=[i['image_id'] for i in d])
+            data = Query(collection='image_set', image_id=self.id).get()
+            # Bulk-load the images for caching to speed up the list comprehension below
+            Image.list(ids=[i['image_id'] for i in data])
             # NOTE: This is not very elegant, but calling the `list()`
             # method for all images for this image type makes sure they
             # are cached using a single query.
-            self._members = {i['type_id']: Image.get(
-                id=i['image_id']) for i in d}
+            self._members = {i['type_id']: Image.get(id=i['image_id']) for i in data}
             return self._members
 
     def _populate(self, data=None):

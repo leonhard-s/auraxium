@@ -33,7 +33,6 @@ class Region(CachableDataType):
 
     def _populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
-
         # Set attribute values
         self._initial_faction_id = d.get('initial_faction_id')
         self.name = LocalizedString(d['name'])

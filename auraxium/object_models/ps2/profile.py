@@ -1,4 +1,4 @@
-from ..census import Query
+from ...base_api import Query
 from ..datatypes import EnumeratedDataType, NamedDataType
 from .faction import Faction
 from .image import Image, ImageSet
@@ -40,10 +40,8 @@ class Profile(EnumeratedDataType, NamedDataType):
         try:
             return self._armor_info
         except AttributeError:
-            q = Query(type='profile_armor_map', limit=100)
-            d = q.add_filter(field='profile_id', value=self.id).get()
-            self._armor_info = ArmorInfo.list(
-                ids=[i['armor_info_id'] for i in d])
+            data = Query(collection='profile_armor_map', profile_id=self.id).limit(100).get()
+            self._armor_info = ArmorInfo.list(ids=[i['armor_info_id'] for i in data])
             return self._armor_info
 
     @property
@@ -63,10 +61,8 @@ class Profile(EnumeratedDataType, NamedDataType):
         try:
             return self._resist_info
         except AttributeError:
-            q = Query(type='profile_resist_map', limit=100)
-            d = q.add_filter(field='profile_id', value=self.id).get()
-            self._resist_info = ResistInfo.list(
-                ids=[i['resist_info_id'] for i in d])
+            data = Query(collection='profile_resist_map', profile_id=self.id).limit(100).get()
+            self._resist_info = ResistInfo.list(ids=[i['resist_info_id'] for i in data])
             return self._resist_info
 
     def _populate(self, data=None):

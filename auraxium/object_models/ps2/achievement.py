@@ -1,4 +1,4 @@
-from ..census import Query
+from ...base_api import Query
 from ..datatypes import CachableDataType, NamedDataType
 from ..misc import LocalizedString
 from .image import Image, ImageSet
@@ -47,13 +47,12 @@ class Achievement(CachableDataType, NamedDataType):
 
     @property
     def objectives(self):
+        from ... import namespace
         try:
             return self._objectives
         except AttributeError:
-            q = Query(type='objective', limit=100)
-            q.add_filter(field='objective_group_id',
-                         value=self._objective_group_id)
-            data = q.get()
+            query = Query(collection='objective', namespace=namespace).limit(100)
+            data = query.add_term(field='objective_group_id', value=self._objective_group_id).get()
             self._objectives = Objective.list(
                 ids=[o['objective_id'] for o in data])
             return self._objectives

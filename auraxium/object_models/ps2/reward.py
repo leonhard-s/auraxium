@@ -27,7 +27,7 @@ class Reward(CachableDataType):
     # Define properties
     @property
     def reward_type(self):
-        RewardType.get(id=self._reward_type_id)
+        return RewardType.get(id=self._reward_type_id)
 
     def _populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
