@@ -2,6 +2,8 @@
 
 Auraxium is a Python wrapper for the [Daybreak Game Company Census API](https://census.daybreakgames.com/). While its core components have been designed to work with any title using the Census API syntax, it is mainly being developed and tested with [PlanetSide 2](https://www.planetside2.com/) in mind.
 
+***
+
 ## Overview
 
 Auraxium's goal is to facilitate the use of the API without compromising functionality. This is achieved by first instantiating an object representing the query to perform, which then generates the URL required.
