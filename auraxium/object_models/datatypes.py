@@ -38,11 +38,10 @@ class DataType():
 
     def __ne__(self, other):
         """Provides support for "is not equal" comparisons."""
-        if self.__class__ != other.__class__ or self.id != other.id:
+        if self.__class__ != other.__class__ and self.id != other.id:
             return True
         return False
 
-    # pylint: disable-msg=W0212
     @classmethod
     def get(cls, id, data=None):
         """Retrieves a single entry of the given datatype."""
@@ -52,12 +51,12 @@ class DataType():
                 instance = cls._cache.load(id)
             else:
                 instance = cls(id=id)
-                instance._populate(data=data)
+                instance.populate(data=data)
                 cls._cache.add(instance)
         except AttributeError:
             cls._cache = Cache()
             instance = cls(id=id)
-            instance._populate(data=data)
+            instance.populate(data=data)
             cls._cache.add(instance)
 
         return instance
@@ -94,8 +93,8 @@ class DataType():
             ids_to_download = ids
 
         # Download the missing entries
-        q = Query(cls._collection, limit=len(ids_to_download))
-        q.add_filter(field=id_field, value=','.join(ids_to_download))
+        q = Query(cls._collection).limit(len(ids_to_download))
+        q.add_term(field=id_field, value=','.join([str(id) for id in ids_to_download]))
         data = q.get()
 
         # Create an instance for all of the downloaded objects
