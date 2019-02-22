@@ -18,6 +18,14 @@ class InvalidSearchTermError(UserError):
     """
 
 
+class RegExTooShortError(UserError):
+    """The user attempted to perform a RegEx search (i.e. a string
+    match using the "contains" or "starts_with" search modifier)
+    while specifying less than three characters to match.
+
+    """
+
+
 class UnknownCollectionError(UserError):
     """The user attempted to access a collection that does not exist
     for the current namespace.
