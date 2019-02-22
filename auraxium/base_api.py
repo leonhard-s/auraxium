@@ -138,13 +138,15 @@ class Query():
         url = '/'.join(elements)
 
         # Add query search terms
-        item_list = [term.field + '=' + parse.quote_plus(term.value) for term in self._terms]
+        item_list = [str(term.field) + '=' + parse.quote_plus(str(term.value))
+                     for term in self._terms]
 
         # Process flag-type query commands
-        item_list.extend(['c:' + c + '=' + self._flags[c] for c in self._flags])
+        item_list.extend(['c:' + c + '=' + str(self._flags[c]) for c in self._flags])
         # Process key-type query commands
-        item_list.extend(['c:' + c + '=' + ','.join(self._qc_keys[c]) for c in self._qc_keys])
-        # Process the tree query command (if it exists)
+        item_list.extend(['c:' + c + '=' + ','.join([str(i) for i in self._qc_keys[c]])
+                          for c in self._qc_keys])  # Process the tree query command (if it exists)
+
         if self._qc_tree is not None:
             item_list.append(self._qc_tree)
         # Process any join query commands
