@@ -29,3 +29,12 @@ class World(EnumeratedDataType, NamedDataType):
 
         # Set attribute values
         self.name = LocalizedString(d['name'])
+
+    @staticmethod
+    def get_by_name(name: str, locale: str, ignore_case: bool = True):
+        from ... import namespace
+        data = Query(collection='world', namespace=namespace).limit(50).lang(locale).get()
+        world_list = World.list(ids=[w['world_id'] for w in data])
+        if ignore_case:
+            return [w for w in world_list if w.name.en.lower() == name.lower()]
+        return [w for w in world_list if w.name.en == name]
