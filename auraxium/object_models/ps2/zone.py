@@ -21,7 +21,7 @@ class Zone(EnumeratedDataType, NamedDataType):
         self.hex_size = None
         self.name = None
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -66,7 +66,7 @@ class ZoneEffect(CachableDataType):
     def zone_effect_type(self):
         return ZoneEffectType.get(id=self._zone_effect_type_id)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -110,7 +110,7 @@ class ZoneEffectType(EnumeratedDataType):
             s += 'self.string{0} = None\n'.format(i + 1)
         exec(s)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values

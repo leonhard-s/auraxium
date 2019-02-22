@@ -47,7 +47,7 @@ class Effect(CachableDataType):
     def target_type(self):
         return TargetType.get(id=self._target_type_id)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -85,7 +85,7 @@ class EffectType(EnumeratedDataType):
             s += 'self.param{} = None\n'.format(i + 1)
         exec(s)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values

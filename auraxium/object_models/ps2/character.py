@@ -117,7 +117,7 @@ class Character(CachableDataType):
             self._world = World.get(id=data['world_id'])
             return self._world
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values

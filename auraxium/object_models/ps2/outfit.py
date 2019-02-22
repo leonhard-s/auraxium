@@ -56,7 +56,7 @@ class Outfit(CachableDataType):
         instance = Outfit.get(id=data['outfit_id'], data=data)
         return instance
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -92,7 +92,7 @@ class OutfitMember(CachableDataType):
     def character(self):
         return Character.get(id=self._character_id)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values

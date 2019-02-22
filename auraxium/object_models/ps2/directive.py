@@ -60,7 +60,7 @@ class Directive(CachableDataType, NamedDataType):
     def directive_tree(self):
         return DirectiveTree.get(id=self._directive_tree_id)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -123,7 +123,7 @@ class DirectiveTier(EnumeratedDataType, NamedDataType):
                 ids=[r['reward_id'] for r in data['reward_group']['reward_list']])
             return self._rewards
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -180,7 +180,7 @@ class DirectiveTree(EnumeratedDataType, NamedDataType):
     def image_set(self):
         return ImageSet.get(id=self._image_set_id)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -218,7 +218,7 @@ class DirectiveTreeCategory(EnumeratedDataType, NamedDataType):
             self._directive_trees = DirectiveTree.list(ids=[i['directive_tree_id'] for i in data])
             return self._directive_trees
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values

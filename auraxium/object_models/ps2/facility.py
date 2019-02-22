@@ -31,7 +31,7 @@ class Region(CachableDataType):
     def zone(self):
         return Zone.get(id=self._zone_id)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
         # Set attribute values
         self._initial_faction_id = d.get('initial_faction_id')
@@ -71,7 +71,7 @@ class FacilityLink(CachableDataType):
     def zone(self):
         return Zone.get(id=self._zone_id)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -96,7 +96,7 @@ class FacilityType(EnumeratedDataType):
         # Set default values
         self.description = None
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values

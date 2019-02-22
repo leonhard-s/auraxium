@@ -25,7 +25,7 @@ class ResistInfo(CachableDataType):
     def resist_type(self):
         return ResistType.get(id=self._resist_type_id)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -51,7 +51,7 @@ class ResistType(EnumeratedDataType):
         # Set default values
         self.description = None
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values

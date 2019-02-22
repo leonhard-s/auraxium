@@ -28,7 +28,7 @@ class Objective(CachableDataType):
     def objective_type(self):
         return ObjectiveType.get(id=self._objective_type_id)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -62,7 +62,7 @@ class ObjectiveType(EnumeratedDataType):
             s += 'self.param{} = None\n'.format(i + 1)
         exec(s)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values

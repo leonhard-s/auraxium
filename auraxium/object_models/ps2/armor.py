@@ -18,7 +18,7 @@ class ArmorFacing(EnumeratedDataType):
         # Set default values
         self.description = None
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -49,7 +49,7 @@ class ArmorInfo(CachableDataType):
     def armor_facing(self):
         return ArmorFacing.get(id=self._armor_facing_id)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values

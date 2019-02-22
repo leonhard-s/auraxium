@@ -21,7 +21,7 @@ class Image(CachableDataType):
         self.path = CENSUS_ENDPOINT + \
             '/files/ps2/images/static/{}.png'.format(id)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -71,7 +71,7 @@ class ImageSet(CachableDataType):
             self._members = {i['type_id']: Image.get(id=i['image_id']) for i in data}
             return self._members
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values

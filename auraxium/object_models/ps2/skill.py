@@ -44,7 +44,7 @@ class Skill(CachableDataType, NamedDataType):
     def skill_line(self):
         SkillLine.get(id=self._skill_line_id)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -93,7 +93,7 @@ class SkillCategory(CachableDataType, NamedDataType):
     def skill_set(self):
         return ImageSet.get(id=self._skill_set_id)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -139,7 +139,7 @@ class SkillLine(CachableDataType, NamedDataType):
     def skill_category(self):
         return SkillCategory.get(id=self._skill_category_id)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -186,7 +186,7 @@ class SkillSet(CachableDataType, NamedDataType):
     def required_item(self):
         return Item.get(id=self._required_item_id)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values

@@ -57,7 +57,7 @@ class FireGroup(CachableDataType):
             self._fire_modes = FireMode.list(ids=[i['fire_mode_id'] for i in data])
             return self._fire_modes
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -212,7 +212,7 @@ class FireMode(CachableDataType):
             self._projectile = Projectile.get(id=data['projectile_id'], data=data['projectile'])
             return self._projectile
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -273,23 +273,19 @@ class FireMode(CachableDataType):
         self.recoil_angle_min = d.get('recoil_angle_min')
         self.recoil_first_shot_modifier = d.get('recoil_first_shot_modifier')
         self.recoil_horizontal_max = d.get('recoil_horizontal_max')
-        self.recoil_horizontal_max_increase = d.get(
-            'recoil_horizontal_max_increase')
+        self.recoil_horizontal_max_increase = d.get('recoil_horizontal_max_increase')
         self.recoil_horizontal_min = d.get('recoil_horizontal_min')
-        self.recoil_horizontal_min_increase = d.get(
-            'recoil_horizontal_min_increase')
+        self.recoil_horizontal_min_increase = d.get('recoil_horizontal_min_increase')
         self.recoil_horizontal_tolerance = d.get('recoil_horizontal_tolerance')
         self.recoil_increase = d.get('recoil_increase')
         self.recoil_increase_crouched = d.get('recoil_increase_crouched')
         self.recoil_magnitude_max = d.get('recoil_magnitude_max')
         self.recoil_magnitude_min = d.get('recoil_magnitude_min')
         self.recoil_max_total_magnitude = d.get('recoil_max_total_magnitude')
-        self.recoil_recovery_acceleration = d.get(
-            'recoil_recovery_acceleration')
+        self.recoil_recovery_acceleration = d.get('recoil_recovery_acceleration')
         self.recoil_recovery_delay = d.get('recoil_recovery_delay_ms')
         self.recoil_recovery_rate = d.get('recoil_recovery_rate')
-        self.recoil_shots_at_min_magnitude = d.get(
-            'recoil_shots_at_min_magnitude')
+        self.recoil_shots_at_min_magnitude = d.get('recoil_shots_at_min_magnitude')
         self.reload_ammo_fill = d.get('reload_ammo_fill_ms')
         self.reload_block_auto = d.get('reload_block_auto')
         self.reload_chamber = d.get('reload_chamber_ms')
@@ -326,7 +322,7 @@ class FireModeType(EnumeratedDataType):
         # Set default values
         self.description = None
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -417,7 +413,8 @@ class Weapon(CachableDataType):
         # Generate request
         query = Query(collection='item').case(not ignore_case)
         query.add_term(field='name.' + locale, value=name)
-        join = query.join(collection='item_to_weapon', inject_at='item_to_weapon', on='item_id', to='item_id')
+        join = query.join(collection='item_to_weapon', inject_at='item_to_weapon',
+                          on='item_id', to='item_id')
         join.join(collection='weapon', inject_at='weapon', on='weapon_id', to='weapon_id')
         try:
             data = query.get(single=True)['item_to_weapon']['weapon']
@@ -427,7 +424,7 @@ class Weapon(CachableDataType):
         instance = Weapon.get(id=data['weapon_id'], data=data)
         return instance
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values

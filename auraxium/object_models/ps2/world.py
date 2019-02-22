@@ -22,10 +22,9 @@ class World(EnumeratedDataType, NamedDataType):
     @property
     def status(self):
         q = Query(collection='world', world_id=self.id)
-        print(q.get())
-        print('NYI')
+        raise NotImplementedError('NYI')
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values

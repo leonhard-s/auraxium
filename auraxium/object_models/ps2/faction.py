@@ -32,7 +32,7 @@ class Faction(EnumeratedDataType, NamedDataType):
     def image_set(self):
         return ImageSet.get(id=self._image_set_id)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values

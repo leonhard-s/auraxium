@@ -65,7 +65,7 @@ class Profile(EnumeratedDataType, NamedDataType):
             self._resist_info = ResistInfo.list(ids=[i['resist_info_id'] for i in data])
             return self._resist_info
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values

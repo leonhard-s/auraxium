@@ -37,7 +37,7 @@ class Projectile(CachableDataType):
     def projectile_flight_type(self):
         return ProjectileFlightType.get(id=self._projectile_flight_type_id)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -77,7 +77,7 @@ class ProjectileFlightType(EnumeratedDataType):
         # Set default values
         self.description = None
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values

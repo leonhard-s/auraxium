@@ -18,7 +18,7 @@ class Title(CachableDataType, NamedDataType):
         # Set default values
         self.name = None
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values

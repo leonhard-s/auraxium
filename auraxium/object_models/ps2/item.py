@@ -83,7 +83,7 @@ class Item(CachableDataType, NamedDataType):
         # hence why I placed it here instead.
         return SkillSet(id=self._skill_set_id)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -128,7 +128,7 @@ class ItemCategory(EnumeratedDataType, NamedDataType):
             self._items = Item.list(ids=[i['item_id'] for i in data])
             return self._items
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -152,7 +152,7 @@ class ItemType(EnumeratedDataType):
         self.code = None
         self.name = None
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values

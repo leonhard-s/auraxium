@@ -29,7 +29,7 @@ class Reward(CachableDataType):
     def reward_type(self):
         return RewardType.get(id=self._reward_type_id)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
@@ -67,7 +67,7 @@ class RewardType(EnumeratedDataType):
             s += 'self.param{} = None\n'.format(i + 1)
         exec(s)
 
-    def _populate(self, data=None):
+    def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id)
 
         # Set attribute values
