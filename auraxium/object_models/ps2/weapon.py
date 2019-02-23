@@ -1,3 +1,5 @@
+"""Defines weapon-related data types for PlanetSide 2."""
+
 from ...base_api import Query
 from ..datatypes import DataType
 from .item import Item
@@ -9,7 +11,7 @@ from ..misc import LocalizedString
 from ..exceptions import NoMatchesFoundError
 
 
-class AmmoSlot():
+class AmmoSlot():  # pylint: disable=too-few-public-methods
     """Represents an ammo slot for a weapon.
 
     A weapon's ammo slot is a type of ammunition this weapon can fire. This
@@ -17,13 +19,13 @@ class AmmoSlot():
 
     """
 
-    def __init__(self, d):
+    def __init__(self, data_dict):
         # Set attribute values
-        self.capacity = d['capacity']
-        self.clip_size = d['clip_size']
-        self.refill_ammo_delay = d.get('refill_ammo_delay_ms')
-        self.refill_ammo_rate = d.get('refill_ammo_rate')
-        self.weapon_slot_index = d['weapon_slot_index']
+        self.capacity = data_dict['capacity']
+        self.clip_size = data_dict['clip_size']
+        self.refill_ammo_delay = data_dict.get('refill_ammo_delay_ms')
+        self.refill_ammo_rate = data_dict.get('refill_ammo_rate')
+        self.weapon_slot_index = data_dict['weapon_slot_index']
 
 
 class FireGroup(DataType):
@@ -50,6 +52,7 @@ class FireGroup(DataType):
     # Define properties
     @property
     def fire_modes(self):
+        """A list of fire modes in this fire group."""
         try:
             return self._fire_modes
         except AttributeError:
@@ -58,23 +61,24 @@ class FireGroup(DataType):
             return self._fire_modes
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.chamber_duration = float(d.get(
-            'chamber_duration_ms')) / 1000.0 if d.get('chamber_duration_ms') is not None else None
-        self.transition_duration = float(d.get(
-            'transition_duration_ms')) / 1000.0 if d.get(
+        self.chamber_duration = float(data_dict.get(
+            'chamber_duration_ms')) / 1000.0 if data_dict.get(
+                'chamber_duration_ms') is not None else None
+        self.transition_duration = float(data_dict.get(
+            'transition_duration_ms')) / 1000.0 if data_dict.get(
                 'transition_duration_ms') is not None else None
-        self.spool_up = float(d.get('spool_up_ms')) / \
-            1000.0 if d.get('spool_up_ms') is not None else None
-        self.spool_up_initial_refire = float(d.get(
-            'spool_up_initial_refire_ms')) / 1000 if d.get(
+        self.spool_up = float(data_dict.get('spool_up_ms')) / \
+            1000.0 if data_dict.get('spool_up_ms') is not None else None
+        self.spool_up_initial_refire = float(data_dict.get(
+            'spool_up_initial_refire_ms')) / 1000 if data_dict.get(
                 'spool_up_initial_refire_ms') is not None else None
-        self.can_chamber_ironsights = d.get('can_chamber_ironsights')
+        self.can_chamber_ironsights = data_dict.get('can_chamber_ironsights')
 
 
-class FireMode(DataType):
+class FireMode(DataType):  # pylint: disable=too-many-instance-attributes
     """A weapon fire mode.
 
     A fire mode contains detailed information about the how the firing
@@ -86,7 +90,7 @@ class FireMode(DataType):
     _collection = 'fire_mode_2'
     _id_field = 'fire_mode_id'
 
-    def __init__(self, id_):
+    def __init__(self, id_):  # pylint: disable=too-many-statements
         self.id_ = id_
 
         # Set default values
@@ -182,22 +186,27 @@ class FireMode(DataType):
     # Define properties
     @property
     def ability(self):
+        """The ability linked to this fire mode."""
         return Ability.get(id_=self._ability_id)
 
     @property
     def damage_direct_effect(self):
+        """The direct damage effect of the fire mode."""
         return Effect.get(id_=self._damage_direct_effect_id)
 
     @property
     def damage_indirect_effect(self):
+        """The indirect damage effect of the fire mode."""
         return Effect.get(id_=self._damage_indirect_effect_id)
 
     @property
     def fire_mode_type(self):
+        """The type of fire mode."""
         return FireModeType.get(id_=self._fire_mode_type_id)
 
     @property
     def player_state_group(self):
+        """The player state group for this fire mode."""
         return PlayerStateGroup.get(id_=self._player_state_group_id)
 
     @property
@@ -212,97 +221,97 @@ class FireMode(DataType):
             self._projectile = Projectile.get(id_=data['projectile_id'], data=data['projectile'])
             return self._projectile
 
-    def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+    def populate(self, data=None):  # pylint: disable=too-many-statements
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self._ability_id = d.get('ability_id')
-        # self.ammo_slot = d.get('ammo_slot')
-        self.armor_penetration = d.get('armor_penetration')
-        self.automatic = d.get('automatic')
-        self.cof_override = d.get('cof_override')
-        self.cof_pellet_spread = d.get('cof_pellet_spread')
-        self.cof_range = d.get('cof_range')
-        self.cof_recoil = d.get('cof_recoil')
-        self.cof_scalar = d.get('cof_scalar')
-        self.cof_scalar_moving = d.get('cof_scalar_moving')
-        self._damage_direct_effect_id = d.get('damage_direct_effect_id')
-        self.damage_head_multiplier = d.get('damage_head_multiplier')
-        self._damage_indirect_effect_id = d.get('damage_indirect_effect_id')
-        self.damage_legs_multiplier = d.get('damage_legs_multiplier')
-        self.description = LocalizedString(d.get('description'))
-        self.fire_ammo_per_shot = d.get('fire_ammo_per_shot')
-        self.fire_auto_fire = d.get('fire_auto_fire_ms')
-        self.fire_burst_count = d.get('fire_burst_count')
-        self.fire_charge_up = d.get('fire_charge_up_ms')
-        self.fire_delay = d.get('fire_delay_ms')
-        self.fire_detect_range = d.get('fire_detect_range')
-        self.fire_duration = d.get('fire_duration_ms')
-        self._fire_mode_type_id = d.get('fire_mode_type_id')
-        self.fire_pellets_per_shot = d.get('fire_pellets_per_shot')
-        self.fire_refire = d.get('fire_refire_ms')
-        self.grief_immune = d.get('grief_immune')
-        self.heat_per_shot = d.get('heat_per_shot')
-        self.heat_recovery_delay = d.get('heat_recovery_delay_ms')
-        self.heat_threshold = d.get('heat_threshold')
-        self.iron_sights = d.get('iron_sights')
-        self.laser_guided = d.get('laser_guided')
-        self.lockon_acquire_close = d.get('lockon_acquire_close_ms')
-        self.lockon_acquire_far = d.get('lockon_acquire_far_ms')
-        self.lockon_acquire = d.get('lockon_acquire_ms')
-        self.lockon_angle = d.get('lockon_angle')
-        self.lockon_lose = d.get('lockon_lose_ms')
-        self.lockon_maintain = d.get('lockon_maintain')
-        self.lockon_radius = d.get('lockon_radius')
-        self.lockon_range = d.get('lockon_range')
-        self.lockon_range_close = d.get('lockon_range_close')
-        self.lockon_range_far = d.get('lockon_range_far')
-        self.lockon_required = d.get('lockon_required')
-        self.max_damage = d.get('max_damage')
-        self.max_damage_ind = d.get('max_damage_ind')
-        self.max_damage_ind_radius = d.get('max_damage_ind_radius')
-        self.max_damage_range = d.get('max_damage_range')
-        self.min_damage = d.get('min_damage')
-        self.min_damage_ind = d.get('min_damage_ind')
-        self.min_damage_ind_radius = d.get('min_damage_ind_radius')
-        self.min_damage_range = d.get('min_damage_range')
-        self.move_modifier = d.get('move_modifier')
-        self._player_state_group_id = d.get('player_state_group_id')
-        self.projectile_speed_override = d.get('projectile_speed_override')
-        self.recoil_angle_max = d.get('recoil_angle_max')
-        self.recoil_angle_min = d.get('recoil_angle_min')
-        self.recoil_first_shot_modifier = d.get('recoil_first_shot_modifier')
-        self.recoil_horizontal_max = d.get('recoil_horizontal_max')
-        self.recoil_horizontal_max_increase = d.get('recoil_horizontal_max_increase')
-        self.recoil_horizontal_min = d.get('recoil_horizontal_min')
-        self.recoil_horizontal_min_increase = d.get('recoil_horizontal_min_increase')
-        self.recoil_horizontal_tolerance = d.get('recoil_horizontal_tolerance')
-        self.recoil_increase = d.get('recoil_increase')
-        self.recoil_increase_crouched = d.get('recoil_increase_crouched')
-        self.recoil_magnitude_max = d.get('recoil_magnitude_max')
-        self.recoil_magnitude_min = d.get('recoil_magnitude_min')
-        self.recoil_max_total_magnitude = d.get('recoil_max_total_magnitude')
-        self.recoil_recovery_acceleration = d.get('recoil_recovery_acceleration')
-        self.recoil_recovery_delay = d.get('recoil_recovery_delay_ms')
-        self.recoil_recovery_rate = d.get('recoil_recovery_rate')
-        self.recoil_shots_at_min_magnitude = d.get('recoil_shots_at_min_magnitude')
-        self.reload_ammo_fill = d.get('reload_ammo_fill_ms')
-        self.reload_block_auto = d.get('reload_block_auto')
-        self.reload_chamber = d.get('reload_chamber_ms')
-        self.reload_continuous = d.get('reload_continuous')
-        self.reload_loop_end = d.get('reload_loop_end_ms')
-        self.reload_loop_start = d.get('reload_loop_start_ms')
-        self.reload_time = d.get('reload_time_ms')
-        self.shield_bypass_pct = d.get('shield_bypass_pct')
-        self.sprint_fire = d.get('sprint_fire')
-        self.sway_amplitude_x = d.get('sway_amplitude_x')
-        self.sway_amplitude_y = d.get('sway_amplitude_y')
-        self.sway_can_steady = d.get('sway_can_steady')
-        self.sway_period_x = d.get('sway_period_x')
-        self.sway_period_y = d.get('sway_period_y')
-        self.turn_modifier = float(d.get('turn_modifier'))
-        self.use_in_water = d.get('zoom_default')
-        self.zoom_default = d.get('zoom_default')
+        self._ability_id = data_dict.get('ability_id')
+        # self.ammo_slot = data_dict.get('ammo_slot')
+        self.armor_penetration = data_dict.get('armor_penetration')
+        self.automatic = data_dict.get('automatic')
+        self.cof_override = data_dict.get('cof_override')
+        self.cof_pellet_spread = data_dict.get('cof_pellet_spread')
+        self.cof_range = data_dict.get('cof_range')
+        self.cof_recoil = data_dict.get('cof_recoil')
+        self.cof_scalar = data_dict.get('cof_scalar')
+        self.cof_scalar_moving = data_dict.get('cof_scalar_moving')
+        self._damage_direct_effect_id = data_dict.get('damage_direct_effect_id')
+        self.damage_head_multiplier = data_dict.get('damage_head_multiplier')
+        self._damage_indirect_effect_id = data_dict.get('damage_indirect_effect_id')
+        self.damage_legs_multiplier = data_dict.get('damage_legs_multiplier')
+        self.description = LocalizedString(data_dict.get('description'))
+        self.fire_ammo_per_shot = data_dict.get('fire_ammo_per_shot')
+        self.fire_auto_fire = data_dict.get('fire_auto_fire_ms')
+        self.fire_burst_count = data_dict.get('fire_burst_count')
+        self.fire_charge_up = data_dict.get('fire_charge_up_ms')
+        self.fire_delay = data_dict.get('fire_delay_ms')
+        self.fire_detect_range = data_dict.get('fire_detect_range')
+        self.fire_duration = data_dict.get('fire_duration_ms')
+        self._fire_mode_type_id = data_dict.get('fire_mode_type_id')
+        self.fire_pellets_per_shot = data_dict.get('fire_pellets_per_shot')
+        self.fire_refire = data_dict.get('fire_refire_ms')
+        self.grief_immune = data_dict.get('grief_immune')
+        self.heat_per_shot = data_dict.get('heat_per_shot')
+        self.heat_recovery_delay = data_dict.get('heat_recovery_delay_ms')
+        self.heat_threshold = data_dict.get('heat_threshold')
+        self.iron_sights = data_dict.get('iron_sights')
+        self.laser_guided = data_dict.get('laser_guided')
+        self.lockon_acquire_close = data_dict.get('lockon_acquire_close_ms')
+        self.lockon_acquire_far = data_dict.get('lockon_acquire_far_ms')
+        self.lockon_acquire = data_dict.get('lockon_acquire_ms')
+        self.lockon_angle = data_dict.get('lockon_angle')
+        self.lockon_lose = data_dict.get('lockon_lose_ms')
+        self.lockon_maintain = data_dict.get('lockon_maintain')
+        self.lockon_radius = data_dict.get('lockon_radius')
+        self.lockon_range = data_dict.get('lockon_range')
+        self.lockon_range_close = data_dict.get('lockon_range_close')
+        self.lockon_range_far = data_dict.get('lockon_range_far')
+        self.lockon_required = data_dict.get('lockon_required')
+        self.max_damage = data_dict.get('max_damage')
+        self.max_damage_ind = data_dict.get('max_damage_ind')
+        self.max_damage_ind_radius = data_dict.get('max_damage_ind_radius')
+        self.max_damage_range = data_dict.get('max_damage_range')
+        self.min_damage = data_dict.get('min_damage')
+        self.min_damage_ind = data_dict.get('min_damage_ind')
+        self.min_damage_ind_radius = data_dict.get('min_damage_ind_radius')
+        self.min_damage_range = data_dict.get('min_damage_range')
+        self.move_modifier = data_dict.get('move_modifier')
+        self._player_state_group_id = data_dict.get('player_state_group_id')
+        self.projectile_speed_override = data_dict.get('projectile_speed_override')
+        self.recoil_angle_max = data_dict.get('recoil_angle_max')
+        self.recoil_angle_min = data_dict.get('recoil_angle_min')
+        self.recoil_first_shot_modifier = data_dict.get('recoil_first_shot_modifier')
+        self.recoil_horizontal_max = data_dict.get('recoil_horizontal_max')
+        self.recoil_horizontal_max_increase = data_dict.get('recoil_horizontal_max_increase')
+        self.recoil_horizontal_min = data_dict.get('recoil_horizontal_min')
+        self.recoil_horizontal_min_increase = data_dict.get('recoil_horizontal_min_increase')
+        self.recoil_horizontal_tolerance = data_dict.get('recoil_horizontal_tolerance')
+        self.recoil_increase = data_dict.get('recoil_increase')
+        self.recoil_increase_crouched = data_dict.get('recoil_increase_crouched')
+        self.recoil_magnitude_max = data_dict.get('recoil_magnitude_max')
+        self.recoil_magnitude_min = data_dict.get('recoil_magnitude_min')
+        self.recoil_max_total_magnitude = data_dict.get('recoil_max_total_magnitude')
+        self.recoil_recovery_acceleration = data_dict.get('recoil_recovery_acceleration')
+        self.recoil_recovery_delay = data_dict.get('recoil_recovery_delay_ms')
+        self.recoil_recovery_rate = data_dict.get('recoil_recovery_rate')
+        self.recoil_shots_at_min_magnitude = data_dict.get('recoil_shots_at_min_magnitude')
+        self.reload_ammo_fill = data_dict.get('reload_ammo_fill_ms')
+        self.reload_block_auto = data_dict.get('reload_block_auto')
+        self.reload_chamber = data_dict.get('reload_chamber_ms')
+        self.reload_continuous = data_dict.get('reload_continuous')
+        self.reload_loop_end = data_dict.get('reload_loop_end_ms')
+        self.reload_loop_start = data_dict.get('reload_loop_start_ms')
+        self.reload_time = data_dict.get('reload_time_ms')
+        self.shield_bypass_pct = data_dict.get('shield_bypass_pct')
+        self.sprint_fire = data_dict.get('sprint_fire')
+        self.sway_amplitude_x = data_dict.get('sway_amplitude_x')
+        self.sway_amplitude_y = data_dict.get('sway_amplitude_y')
+        self.sway_can_steady = data_dict.get('sway_can_steady')
+        self.sway_period_x = data_dict.get('sway_period_x')
+        self.sway_period_y = data_dict.get('sway_period_y')
+        self.turn_modifier = float(data_dict.get('turn_modifier'))
+        self.use_in_water = data_dict.get('zoom_default')
+        self.zoom_default = data_dict.get('zoom_default')
 
 
 class FireModeType(DataType):
@@ -323,16 +332,16 @@ class FireModeType(DataType):
         self.description = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.description = d.get('description')
+        self.description = data_dict.get('description')
 
 
-class Weapon(DataType):
+class Weapon(DataType):  # pylint: disable=too-many-instance-attributes
     """Contains information about a weapon.
 
-    This d type can be seen as an extension to the corresponding `item`
+    This data_dict type can be seen as an extension to the corresponding `item`
     object. It contains weapon-specific information and connects the item with
     internal mechanics like fire modes or projectiles.
 
@@ -401,10 +410,10 @@ class Weapon(DataType):
         try:
             return self._item
         except AttributeError:
-            q = Query(collection='item_to_weapon', weapon_id=self.id_)
-            q.join(collection='item', inject_at='item_to_weapon')
-            d = q.get(single=True)
-            self._item = Item.get(id_=d['item_id'])
+            query = Query(collection='item_to_weapon', weapon_id=self.id_)
+            query.join(collection='item', inject_at='item_to_weapon')
+            data_dict = query.get(single=True)
+            self._item = Item.get(id_=data_dict['item_id'])
             return self._item
 
     @staticmethod
@@ -425,27 +434,30 @@ class Weapon(DataType):
         return instance
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.equip_time = float(d.get('equip_ms')) / \
-            1000.0 if d.get('equip_ms') is not None else None
-        self.group_id = d.get('weapon_group_id')
-        self.heat_bleed_off_rate = d.get('heat_bleed_off_rate')  # Unit?
-        self.heat_capacity = d.get('heat_capacity')
-        self.heat_overheat_cooldown = float(d.get(
-            'heat_overheat_penalty_ms')) / 1000.0 if d.get(
+        self.equip_time = float(data_dict.get('equip_ms')) / \
+            1000.0 if data_dict.get('equip_ms') is not None else None
+        self.group_id = data_dict.get('weapon_group_id')
+        self.heat_bleed_off_rate = data_dict.get('heat_bleed_off_rate')  # Unit?
+        self.heat_capacity = data_dict.get('heat_capacity')
+        self.heat_overheat_cooldown = float(data_dict.get(
+            'heat_overheat_penalty_ms')) / 1000.0 if data_dict.get(
                 'heat_overheat_penalty_ms') is not None else None
-        self.iron_sights_enter_ads = float(d.get(
-            'to_iron_sights_ms')) / 1000.0 if d.get('to_iron_sights_ms') is not None else None
+        self.iron_sights_enter_ads = float(data_dict.get(
+            'to_iron_sights_ms')) / 1000.0 if data_dict.get(
+                'to_iron_sights_ms') is not None else None
         self.iron_sights_exit_ads = float(
-            d.get('from_iron_sights_ms')) / 1000.0 if d.get(
+            data_dict.get('from_iron_sights_ms')) / 1000.0 if data_dict.get(
                 'from_iron_sights_ms') is not None else None
-        self.melee_detect_height = d.get('melee_detect_height')
-        self.melee_detect_width = d.get('melee_detect_width')
-        self.move_speed_modifier = d.get('move_modifier')
-        self.sprint_recovery = float(d.get(
-            'sprint_recovery_ms')) / 1000.0 if d.get('sprint_recovery_ms') is not None else None
-        self.turn_speed_modifier = d.get('turn_modifier')
+        self.melee_detect_height = data_dict.get('melee_detect_height')
+        self.melee_detect_width = data_dict.get('melee_detect_width')
+        self.move_speed_modifier = data_dict.get('move_modifier')
+        self.sprint_recovery = float(data_dict.get(
+            'sprint_recovery_ms')) / 1000.0 if data_dict.get(
+                'sprint_recovery_ms') is not None else None
+        self.turn_speed_modifier = data_dict.get('turn_modifier')
         self.unequip_time = float(
-            d.get('unequip_ms')) / 1000.0 if d.get('unequip_ms') is not None else None
+            data_dict.get('unequip_ms')) / 1000.0 if data_dict.get(
+                'unequip_ms') is not None else None

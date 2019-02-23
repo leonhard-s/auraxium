@@ -1,3 +1,5 @@
+"""Defines achievement-related data types for PlanetSide 2."""
+
 from typing import List, Optional
 
 from ...base_api import Query
@@ -36,19 +38,23 @@ class Achievement(DataType, NamedDataType):  # pylint: disable=too-many-instance
 
     # Define properties
     @property
-    def item(self) -> Item:
+    def item(self) -> Optional[Item]:
+        """The item the achievement is for."""
         return Item.get(id_=self._item_id)
 
     @property
     def image(self) -> Image:
+        """The image for the achievement."""
         return Image.get(id_=self._image_id)
 
     @property
     def image_set(self) -> ImageSet:
+        """The image set for the achievement."""
         return ImageSet.get(id_=self._image_set_id)
 
     @property
     def objectives(self) -> List[Optional[Objective]]:
+        """A list of objectives related to the achievement."""
         from ... import namespace
         try:
             return self._objectives

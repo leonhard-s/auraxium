@@ -1,3 +1,5 @@
+"""Defines faction-related data types for PlanetSide 2."""
+
 from ..datatypes import DataType, NamedDataType
 from ..misc import LocalizedString
 from .image import Image, ImageSet
@@ -26,21 +28,23 @@ class Faction(DataType, NamedDataType):
     # Define properties
     @property
     def image(self):
+        """The image of this faction."""
         return Image.get(id_=self._image_id)
 
     @property
     def image_set(self):
+        """The image set of this faction."""
         return ImageSet.get(id_=self._image_set_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.name = LocalizedString(d['name'])
-        self._image_id = d['image_id']
-        self._image_set_id = d['image_set_id']
-        self.is_playable = True if d['user_selectable'] == '1' else False
+        self.name = LocalizedString(data_dict['name'])
+        self._image_id = data_dict['image_id']
+        self._image_set_id = data_dict['image_set_id']
+        self.is_playable = bool(data_dict['user_selectable'] == '1')
         # NOTE: As of the writing of this module, Nanite Systems does not have
         # a tag. As this might change with the introduction of combat robots, I
         # wrote this section in a way that should be able to handle that.
-        self.tag = 'NS' if d['code_tag'] == 'None' else d['code_tag']
+        self.tag = 'NS' if data_dict['code_tag'] == 'None' else data_dict['code_tag']

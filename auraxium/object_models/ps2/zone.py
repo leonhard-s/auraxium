@@ -1,3 +1,5 @@
+"""Defines zone-related data types for PlanetSide 2."""
+
 from typing import List
 from ..datatypes import DataType, NamedDataType
 from ..misc import LocalizedString
@@ -25,13 +27,13 @@ class Zone(DataType, NamedDataType):
         self.name = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.code = d['code']
-        self.description = LocalizedString(d.get('description'))
-        self.hex_size = d.get('hex_size')
-        self.name = LocalizedString(d.get('name'))
+        self.code = data_dict['code']
+        self.description = LocalizedString(data_dict.get('description'))
+        self.hex_size = data_dict.get('hex_size')
+        self.name = LocalizedString(data_dict.get('name'))
 
 
 class ZoneEffect(DataType):
@@ -56,22 +58,24 @@ class ZoneEffect(DataType):
     # Define properties
     @property
     def ability(self):
+        """The ability of the zone effect."""
         return Ability.get(id_=self._ability_id)
 
     @property
     def zone_effect_type(self):
+        """The type of zone effect."""
         return ZoneEffectType.get(id_=self._zone_effect_type_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self._ability_id = d.get('ability_id')
-        self._zone_effect_type_id = d['zone_effect_type_id']
+        self._ability_id = data_dict.get('ability_id')
+        self._zone_effect_type_id = data_dict['zone_effect_type_id']
 
-        self.param = [d['param' + str(i + 1)] if d.get('param' + str(i + 1))
+        self.param = [data_dict['param' + str(i + 1)] if data_dict.get('param' + str(i + 1))
                       is not None else None for i in range(13)]
-        self.string = [d['string' + str(i + 1)] if d.get('string' + str(i + 1))
+        self.string = [data_dict['string' + str(i + 1)] if data_dict.get('string' + str(i + 1))
                        is not None else None for i in range(4)]
 
 
@@ -95,12 +99,12 @@ class ZoneEffectType(DataType):
         self.string: List[str] = [None for i in range(4)]
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.description = d.get('description')
+        self.description = data_dict.get('description')
 
-        self.param = [d['param' + str(i + 1)] if d.get('param' + str(i + 1))
+        self.param = [data_dict['param' + str(i + 1)] if data_dict.get('param' + str(i + 1))
                       is not None else None for i in range(13)]
-        self.string = [d['string' + str(i + 1)] if d.get('string' + str(i + 1))
+        self.string = [data_dict['string' + str(i + 1)] if data_dict.get('string' + str(i + 1))
                        is not None else None for i in range(4)]

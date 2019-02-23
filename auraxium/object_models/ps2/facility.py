@@ -1,3 +1,5 @@
+"""Defines facility-related data types for PlanetSide 2."""
+
 from ..datatypes import DataType
 from .faction import Faction
 from ..misc import LocalizedString
@@ -25,18 +27,20 @@ class Region(DataType):
     # Define properties
     @property
     def initial_faction(self):
+        """The initial faction this region belongs to."""
         return Faction.get(id_=self._initial_faction_id)
 
     @property
     def zone(self):
+        """The Zone (continent) of the region."""
         return Zone.get(id_=self._zone_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
         # Set attribute values
-        self._initial_faction_id = d.get('initial_faction_id')
-        self.name = LocalizedString(d['name'])
-        self._zone_id = Zone(d['zone_id'])
+        self._initial_faction_id = data_dict.get('initial_faction_id')
+        self.name = LocalizedString(data_dict['name'])
+        self._zone_id = Zone(data_dict['zone_id'])
 
 
 class FacilityLink(DataType):
@@ -61,24 +65,27 @@ class FacilityLink(DataType):
     # Define properties
     @property
     def facility_a(self):
+        """One end of the facility link."""
         return Region.get(id_=self._facility_a_id)
 
     @property
     def facility_b(self):
+        """The other end of the facility link."""
         return Region.get(id_=self._facility_b_id)
 
     @property
     def zone(self):
+        """The continent this facility link is on."""
         return Zone.get(id_=self._zone_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.description = d['description']
-        self._facility_a_id = d['facility_id_a']
-        self._facility_b_id = d['facility_id_b']
-        self._zone_id = d['zone_id']
+        self.description = data_dict['description']
+        self._facility_a_id = data_dict['facility_id_a']
+        self._facility_b_id = data_dict['facility_id_b']
+        self._zone_id = data_dict['zone_id']
 
 
 class FacilityType(DataType):
@@ -97,7 +104,7 @@ class FacilityType(DataType):
         self.description = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.description = d['description']
+        self.description = data_dict['description']

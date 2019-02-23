@@ -1,3 +1,5 @@
+"""Defines player-state-related data types for PlanetSide 2."""
+
 from ...base_api import Query
 from ..datatypes import DataType
 
@@ -19,10 +21,10 @@ class PlayerState(DataType):
         self.description = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.description = d.get('description')
+        self.description = data_dict.get('description')
 
 
 class PlayerStateGroup(DataType):
@@ -45,6 +47,7 @@ class PlayerStateGroup(DataType):
     # Define properties
     @property
     def player_states(self):
+        """A list of player states that art in this group."""
         try:
             return self._player_states
         except AttributeError:
@@ -58,7 +61,7 @@ class PlayerStateGroup(DataType):
         pass
 
 
-class PlayerStateGroupEntry():
+class PlayerStateGroupEntry():  # pylint: disable=too-many-instance-attributes, too-few-public-methods
     """An entry within a player state group."""
 
     def __init__(self, data):
@@ -77,4 +80,5 @@ class PlayerStateGroupEntry():
 
     @property
     def player_state(self):
+        """Returns the corresponding player state."""
         return PlayerState.get(id_=self.player_state_id)

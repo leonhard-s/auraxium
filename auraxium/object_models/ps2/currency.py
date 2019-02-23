@@ -1,3 +1,5 @@
+"""Defines currency-related data types for PlanetSide 2."""
+
 from ..datatypes import DataType, NamedDataType
 from ..misc import LocalizedString
 from .image import ImageSet
@@ -23,12 +25,13 @@ class Currency(DataType, NamedDataType):
     # Define properties
     @property
     def image_set(self):
+        """The image set of the currency."""
         return ImageSet.get(id_=self._image_set_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.name = LocalizedString(d['name'])
-        self._image_set_id = d['icon_id']
-        self.inventory_cap = d['inventory_cap']
+        self.name = LocalizedString(data_dict['name'])
+        self._image_set_id = data_dict['icon_id']
+        self.inventory_cap = data_dict['inventory_cap']

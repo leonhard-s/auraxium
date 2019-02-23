@@ -1,3 +1,5 @@
+"""Defines image-related data types for PlanetSide 2."""
+
 from ...base_api import Query
 from ...constants import CENSUS_ENDPOINT
 from ..datatypes import DataType
@@ -22,11 +24,11 @@ class Image(DataType):
             '/files/ps2/images/static/{}.png'.format(id_)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.description = d.get('description')
-        self.path = d['path']
+        self.description = data_dict.get('description')
+        self.path = data_dict['path']
 
 
 class ImageSet(DataType):
@@ -50,6 +52,7 @@ class ImageSet(DataType):
     # Define properties
     @property
     def default_image(self):
+        """Returns the default image for the image set."""
         try:
             return self._default_image
         except AttributeError:
@@ -59,6 +62,7 @@ class ImageSet(DataType):
 
     @property
     def members(self):
+        """A list of images that are part of this image set."""
         try:
             return self._members
         except AttributeError:
@@ -72,7 +76,7 @@ class ImageSet(DataType):
             return self._members
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.description = d.get('description')
+        self.description = data_dict.get('description')

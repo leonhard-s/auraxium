@@ -1,10 +1,12 @@
+"""Defines skill-related data types for PlanetSide 2."""
+
 from ..datatypes import DataType, NamedDataType
 from .image import Image, ImageSet
 from .item import Item
 from ..misc import LocalizedString
 
 
-class Skill(DataType, NamedDataType):
+class Skill(DataType, NamedDataType):  # pylint: disable=too-many-instance-attributes
     """A skill in PS2.
 
     A skill is either a certification, an ASP skill or an implant's active
@@ -30,35 +32,39 @@ class Skill(DataType, NamedDataType):
     # Define properties
     @property
     def grant_item(self):
+        """The item granted by the skill."""
         return Item.get(id_=self._grant_item_id)
 
     @property
     def image(self):
+        """The image for this skill."""
         return Image.get(id_=self._image_id)
 
     @property
     def image_set(self):
+        """The image set for this skill."""
         ImageSet.get(id_=self._image_set_id)
 
     @property
     def skill_line(self):
+        """The skill line this skill belongs to."""
         SkillLine.get(id_=self._skill_line_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.description = LocalizedString(d['description'])
-        self._grant_item_id = d.get('grant_item_id')
-        self._image_id = d.get('image_id')
-        self._image_set_id = d.get('image_set_id')
-        self.name = LocalizedString(d['name'])
-        self._skill_line_id = d.get('skill_line_id')
-        self.skill_line_index = d.get('skill_line_index')
-        self.skill_points = d['skill_points']
+        self.description = LocalizedString(data_dict['description'])
+        self._grant_item_id = data_dict.get('grant_item_id')
+        self._image_id = data_dict.get('image_id')
+        self._image_set_id = data_dict.get('image_set_id')
+        self.name = LocalizedString(data_dict['name'])
+        self._skill_line_id = data_dict.get('skill_line_id')
+        self.skill_line_index = data_dict.get('skill_line_index')
+        self.skill_points = data_dict['skill_points']
 
 
-class SkillCategory(DataType, NamedDataType):
+class SkillCategory(DataType, NamedDataType):  # pylint: disable=too-many-instance-attributes
     """A skill category.
 
     Groups skill lines into categories. Examples include "Passive Systems",
@@ -83,30 +89,33 @@ class SkillCategory(DataType, NamedDataType):
     # Define properties
     @property
     def image(self):
+        """The image for this skill category."""
         return Image.get(id_=self._image_id)
 
     @property
     def image_set(self):
+        """The image set for this skill category."""
         return ImageSet.get(id_=self._image_set_id)
 
     @property
     def skill_set(self):
-        return ImageSet.get(id_=self._skill_set_id)
+        """The skill sets in this skill category."""
+        return SkillSet.get(id_=self._skill_set_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.description = LocalizedString(d['description'])
-        self._image_id = d['image_id']
-        self._image_set_id = d['image_set_id']
-        self.name = LocalizedString(d['name'])
-        self.skill_points = d.get('skill_points')
-        self._skill_set_id = d.get('skill_set_id')
-        self.skill_set_index = d.get('skill_set_index')
+        self.description = LocalizedString(data_dict['description'])
+        self._image_id = data_dict['image_id']
+        self._image_set_id = data_dict['image_set_id']
+        self.name = LocalizedString(data_dict['name'])
+        self.skill_points = data_dict.get('skill_points')
+        self._skill_set_id = data_dict.get('skill_set_id')
+        self.skill_set_index = data_dict.get('skill_set_index')
 
 
-class SkillLine(DataType, NamedDataType):
+class SkillLine(DataType, NamedDataType):  # pylint: disable=too-many-instance-attributes
     """A skill line.
 
     A list of skills that improve on one another. Examples include the Chassis
@@ -129,27 +138,30 @@ class SkillLine(DataType, NamedDataType):
     # Define properties
     @property
     def image(self):
+        """The image set for this skill line."""
         return Image.get(id_=self._image_id)
 
     @property
     def image_set(self):
+        """The image set for this skill line."""
         return ImageSet.get(id_=self._image_set_id)
 
     @property
     def skill_category(self):
+        """The skill category for this skill line."""
         return SkillCategory.get(id_=self._skill_category_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.description = d['description']
-        self._image_id = d['image_id']
-        self._image_set_id = d['image_set_id']
-        self.name = LocalizedString(d['name'])
-        self._skill_category_id = d['skill_category_id']
-        self.skill_category_index = d['skill_category_id']
-        self.skill_points = d.get('skill_points')
+        self.description = data_dict['description']
+        self._image_id = data_dict['image_id']
+        self._image_set_id = data_dict['image_set_id']
+        self.name = LocalizedString(data_dict['name'])
+        self._skill_category_id = data_dict['skill_category_id']
+        self.skill_category_index = data_dict['skill_category_id']
+        self.skill_points = data_dict.get('skill_points')
 
 
 class SkillSet(DataType, NamedDataType):
@@ -176,23 +188,26 @@ class SkillSet(DataType, NamedDataType):
     # Define properties
     @property
     def image(self):
+        """The image for this skill set."""
         return Image.get(id_=self._image_id)
 
     @property
     def image_set(self):
+        """The image set for this skill set."""
         return ImageSet.get(id_=self._image_set_id)
 
     @property
     def required_item(self):
+        """The item required to unlock this skill set."""
         return Item.get(id_=self._required_item_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.description = LocalizedString(d['description'])
-        self._image_id = d['image_id']
-        self._image_set_id = d['image_set_id']
-        self.name = LocalizedString(d['name'])
-        self._required_item_id = d['required_item_id']
-        self.skill_points = d.get('skill_points')
+        self.description = LocalizedString(data_dict['description'])
+        self._image_id = data_dict['image_id']
+        self._image_set_id = data_dict['image_set_id']
+        self.name = LocalizedString(data_dict['name'])
+        self._required_item_id = data_dict['required_item_id']
+        self.skill_points = data_dict.get('skill_points')

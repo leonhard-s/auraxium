@@ -1,3 +1,5 @@
+"""Defines directive-related data types for PlanetSide 2."""
+
 from ...base_api import Query
 from ..datatypes import DataType, NamedDataType
 from ..misc import LocalizedString
@@ -6,7 +8,7 @@ from .objective import Objective
 from .reward import Reward
 
 
-class Directive(DataType, NamedDataType):
+class Directive(DataType, NamedDataType):  # pylint: disable=too-many-instance-attributes
     """A directive in PlanetSide 2.
 
     A directive is a requirement that gives progress towards the next directive
@@ -33,14 +35,17 @@ class Directive(DataType, NamedDataType):
     # Define properties
     @property
     def image(self):
+        """The image of the directive."""
         return Image.get(id_=self._image_id)
 
     @property
     def image_set(self):
+        """The image set of the directive."""
         return ImageSet.get(id_=self._image_set_id)
 
     @property
     def objectives(self):
+        """A list of objectives linked to this directive."""
         try:
             return self._objectives
         except AttributeError:
@@ -54,27 +59,29 @@ class Directive(DataType, NamedDataType):
 
     @property
     def directive_tier(self):
+        """The tier of the directive."""
         return DirectiveTier.get(id_=self._directive_tier_id)
 
     @property
     def directive_tree(self):
+        """The directive tree this directive is in."""
         return DirectiveTree.get(id_=self._directive_tree_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.description = LocalizedString(d['description'])
-        self._image_id = d['image_id']
-        self._image_set_id = d['image_set_id']
-        self.name = LocalizedString(d['name'])
-        self._objective_set_id = d['objective_set_id']
-        self._directive_tier_id = d['directive_tier_id']
-        self._directive_tree_id = d['directive_tree_id']
-        self.qualify_requirement_id = d.get('qualify_requirement_id')
+        self.description = LocalizedString(data_dict['description'])
+        self._image_id = data_dict['image_id']
+        self._image_set_id = data_dict['image_set_id']
+        self.name = LocalizedString(data_dict['name'])
+        self._objective_set_id = data_dict['objective_set_id']
+        self._directive_tier_id = data_dict['directive_tier_id']
+        self._directive_tree_id = data_dict['directive_tree_id']
+        self.qualify_requirement_id = data_dict.get('qualify_requirement_id')
 
 
-class DirectiveTier(DataType, NamedDataType):
+class DirectiveTier(DataType, NamedDataType):  # pylint: disable=too-many-instance-attributes
     """A directive tier.
 
     Examples include "Carbines: Novice" and "Combat Medic: Master".
@@ -99,18 +106,22 @@ class DirectiveTier(DataType, NamedDataType):
     # Define properties
     @property
     def directive_tree(self):
+        """The directive tree the directive tier is in."""
         return DirectiveTree.get(id_=self._directive_tree_id)
 
     @property
     def image(self):
+        """The image of the directive tier."""
         return Image.get(id_=self._image_id)
 
     @property
     def image_set(self):
+        """The image set of the directive tier."""
         return ImageSet.get(id_=self._image_set_id)
 
     @property
     def rewards(self):
+        """The list of rewards for completing this directive tier."""
         try:
             return self._rewards
         except AttributeError:
@@ -124,16 +135,16 @@ class DirectiveTier(DataType, NamedDataType):
             return self._rewards
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.directive_points = d['directive_points']
-        self._directive_tree_id = d['directive_tree_id']
-        self._image_id = d['image_id']
-        self._image_set_id = d['image_set_id']
-        self.name = LocalizedString(d['name'])
-        self.required_for_completion = d['completion_count']
-        self._reward_set_id = d.get('reward_set_id')
+        self.directive_points = data_dict['directive_points']
+        self._directive_tree_id = data_dict['directive_tree_id']
+        self._image_id = data_dict['image_id']
+        self._image_set_id = data_dict['image_set_id']
+        self.name = LocalizedString(data_dict['name'])
+        self.required_for_completion = data_dict['completion_count']
+        self._reward_set_id = data_dict.get('reward_set_id')
 
 
 class DirectiveTree(DataType, NamedDataType):
@@ -161,10 +172,12 @@ class DirectiveTree(DataType, NamedDataType):
     # Define properties
     @property
     def category(self):
+        """The category of the directive."""
         return DirectiveTreeCategory.get(id_=self._category_id)
 
     @property
     def directives(self):
+        """A list of directives that are in this directive tier."""
         try:
             return self._directives
         except AttributeError:
@@ -174,21 +187,23 @@ class DirectiveTree(DataType, NamedDataType):
 
     @property
     def image(self):
+        """The image of this directive tier."""
         return Image.get(id_=self._image_id)
 
     @property
     def image_set(self):
+        """The image set of this directive tier."""
         return ImageSet.get(id_=self._image_set_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self._category_id = d['directive_tree_category_id']
-        self.description = LocalizedString(d['description'])
-        self._image_id = d['image_id']
-        self._image_set_id = d['image_set_id']
-        self.name = LocalizedString(d['name'])
+        self._category_id = data_dict['directive_tree_category_id']
+        self.description = LocalizedString(data_dict['description'])
+        self._image_id = data_dict['image_id']
+        self._image_set_id = data_dict['image_set_id']
+        self.name = LocalizedString(data_dict['name'])
 
 
 class DirectiveTreeCategory(DataType, NamedDataType):
@@ -211,6 +226,7 @@ class DirectiveTreeCategory(DataType, NamedDataType):
     # Define properties
     @property
     def directive_trees(self):
+        """A list of directive trees that are in this category."""
         try:
             return self._directive_trees
         except AttributeError:
@@ -219,7 +235,7 @@ class DirectiveTreeCategory(DataType, NamedDataType):
             return self._directive_trees
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.name = LocalizedString(d.get('name'))
+        self.name = LocalizedString(data_dict.get('name'))

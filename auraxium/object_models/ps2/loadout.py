@@ -1,3 +1,5 @@
+"""Defines loadout-related data types for PlanetSide 2."""
+
 from ..datatypes import DataType
 from .faction import Faction
 from .profile import Profile
@@ -24,16 +26,18 @@ class Loadout(DataType):
     # Define properties
     @property
     def faction(self):
+        """The faction of this loadout."""
         return Faction.get(id_=self._faction_id)
 
     @property
     def profile(self):
+        """The profile of this loadout."""
         return Profile.get(id_=self._profile_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self._faction_id = d['faction_id']
-        self.name = d['code_name']
-        self._profile_id = d['profile_id']
+        self._faction_id = data_dict['faction_id']
+        self.name = data_dict['code_name']
+        self._profile_id = data_dict['profile_id']

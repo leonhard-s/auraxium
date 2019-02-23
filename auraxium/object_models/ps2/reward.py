@@ -1,3 +1,5 @@
+"""Defines reward-related data types for PlanetSide 2."""
+
 from typing import List
 
 from ..datatypes import DataType
@@ -27,17 +29,18 @@ class Reward(DataType):
     # Define properties
     @property
     def reward_type(self):
+        """The type of reward."""
         return RewardType.get(id_=self._reward_type_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.count_max = d.get('count_max')
-        self.count_min = d.get('count_min')
-        self._reward_type_id = d['reward_type_id']
+        self.count_max = data_dict.get('count_max')
+        self.count_min = data_dict.get('count_min')
+        self._reward_type_id = data_dict['reward_type_id']
 
-        self.param = [d['param' + str(i + 1)] if d.get('param' + str(i + 1))
+        self.param = [data_dict['param' + str(i + 1)] if data_dict.get('param' + str(i + 1))
                       is not None else None for i in range(5)]
 
 
@@ -63,12 +66,12 @@ class RewardType(DataType):
         self.param: List[Param] = [None for i in range(5)]
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.count_max = d.get('count_max')
-        self.count_min = d.get('count_min')
-        self.description = d['description']
+        self.count_max = data_dict.get('count_max')
+        self.count_min = data_dict.get('count_min')
+        self.description = data_dict['description']
 
-        self.param = [d['param' + str(i + 1)] if d.get('param' + str(i + 1))
+        self.param = [data_dict['param' + str(i + 1)] if data_dict.get('param' + str(i + 1))
                       is not None else None for i in range(5)]

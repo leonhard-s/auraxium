@@ -1,3 +1,5 @@
+"""Defines title-related data types for PlanetSide 2."""
+
 from ..datatypes import DataType, NamedDataType
 from ..misc import LocalizedString
 
@@ -19,7 +21,7 @@ class Title(DataType, NamedDataType):
         self.name = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.name = LocalizedString(d['name'])
+        self.name = LocalizedString(data_dict['name'])

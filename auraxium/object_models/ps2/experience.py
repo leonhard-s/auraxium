@@ -1,3 +1,5 @@
+"""Defines experience-related data types for PlanetSide 2."""
+
 from ..datatypes import DataType
 
 
@@ -18,8 +20,8 @@ class Experience(DataType):
         self.description = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.amount = d['xp']
-        self.description = d['description']
+        self.amount = data_dict['xp']
+        self.description = data_dict['description']

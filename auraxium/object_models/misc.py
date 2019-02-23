@@ -10,12 +10,12 @@ class LocalizedString():
 
     def __init__(self, data):
         if data is None:
-            d = {}
+            data_dict = {}
         else:
-            d = data
-        self.de = d.get('de')
-        self.en = d.get('en')
-        self.es = d.get('es')
-        self.fr = d.get('fr')
-        self.it = d.get('it')
-        self.tr = d.get('tr')
+            data_dict = data
+        self.de = data_dict.get('de')
+        self.en = data_dict.get('en')
+        self.es = data_dict.get('es')
+        self.fr = data_dict.get('fr')
+        self.it = data_dict.get('it')
+        self.tr = data_dict.get('tr')

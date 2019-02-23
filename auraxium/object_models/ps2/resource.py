@@ -1,3 +1,5 @@
+"""Defines resource-related data types for PlanetSide 2."""
+
 from ..datatypes import DataType
 
 
@@ -18,7 +20,7 @@ class ResourceType(DataType):
         self.description = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.description = d['description']
+        self.description = data_dict['description']

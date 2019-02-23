@@ -1,3 +1,5 @@
+"""Defines item-related data types for PlanetSide 2."""
+
 from ...base_api import Query
 from ..datatypes import DataType, NamedDataType
 from ..misc import LocalizedString
@@ -7,7 +9,7 @@ from .image import Image, ImageSet
 from .profile import Profile
 
 
-class Item(DataType, NamedDataType):
+class Item(DataType, NamedDataType):  # pylint: disable=too-many-instance-attributes
     """A PS2 item.
 
     An item is a player-bound entity in the game world. This includes obvious
@@ -40,10 +42,12 @@ class Item(DataType, NamedDataType):
     # Define properties
     @property
     def active_ability(self):
+        """The active ability of this item."""
         return Ability.get(id_=self._active_ability_id)
 
     @property
     def attachments(self):
+        """A list of item than can be used as attachments."""
         try:
             return self._attachments
         except AttributeError:
@@ -53,22 +57,27 @@ class Item(DataType, NamedDataType):
 
     @property
     def faction(self):
+        """The faction this item belongs to."""
         return Faction.get(id_=self._faction_id)
 
     @property
     def image(self):
+        """The image of this item."""
         return Image.get(id_=self._image_id)
 
     @property
     def image_set(self):
+        """The image set for this item."""
         return ImageSet.get(id_=self._image_set_id)
 
     @property
     def passive_ability(self):
+        """The passive ability of this item."""
         return Ability.get(id_=self._passive_ability_id)
 
     @property
     def profiles(self):
+        """The profiles this item is available to."""
         try:
             return self._profiles
         except AttributeError:
@@ -78,26 +87,27 @@ class Item(DataType, NamedDataType):
 
     @property
     def skill_set(self):
+        """The skill set that granted this item."""
         from .skill import SkillSet
         # NOTE: Placing the import at the top would create a circular import,
         # hence why I placed it here instead.
         return SkillSet(id_=self._skill_set_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self._active_ability_id = d.get('activatable_ability_id')
-        self.description = LocalizedString(d.get('description'))
-        self._faction_id = d['faction_id']
-        self._image_id = d['image_id']
-        self._image_set_id = d['image_set_id']
-        self.is_default_attachment = d['is_default_attachment']
-        self.is_vehicle_weapon = d['is_vehicle_weapon']
-        self.max_stack_size = d['max_stack_size']
-        self.name = LocalizedString(d['name'])
-        self._passive_ability_id = d.get('passive_ability_id')
-        self._skill_set_id = d.get('skill_set_id')
+        self._active_ability_id = data_dict.get('activatable_ability_id')
+        self.description = LocalizedString(data_dict.get('description'))
+        self._faction_id = data_dict['faction_id']
+        self._image_id = data_dict['image_id']
+        self._image_set_id = data_dict['image_set_id']
+        self.is_default_attachment = data_dict['is_default_attachment']
+        self.is_vehicle_weapon = data_dict['is_vehicle_weapon']
+        self.max_stack_size = data_dict['max_stack_size']
+        self.name = LocalizedString(data_dict['name'])
+        self._passive_ability_id = data_dict.get('passive_ability_id')
+        self._skill_set_id = data_dict.get('skill_set_id')
 
 
 class ItemCategory(DataType, NamedDataType):
@@ -129,10 +139,10 @@ class ItemCategory(DataType, NamedDataType):
             return self._items
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.name = LocalizedString(d['name'])
+        self.name = LocalizedString(data_dict['name'])
 
 
 class ItemType(DataType):
@@ -153,8 +163,8 @@ class ItemType(DataType):
         self.name = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.code = d['code']
-        self.name = d['name']
+        self.code = data_dict['code']
+        self.name = data_dict['name']

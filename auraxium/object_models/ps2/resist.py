@@ -1,3 +1,5 @@
+"""Defines resistance-related data types for PlanetSide 2."""
+
 from ..datatypes import DataType
 
 
@@ -23,16 +25,17 @@ class ResistInfo(DataType):
     # Define properties
     @property
     def resist_type(self):
+        """The type of resistance."""
         return ResistType.get(id_=self._resist_type_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.description = d.get('description')
-        self.headshot_multiplier = d.get('multiplier_when_headshot')
-        self.percent = d['resist_percent']
-        self._resist_type_id = d.get('resist_type_id')
+        self.description = data_dict.get('description')
+        self.headshot_multiplier = data_dict.get('multiplier_when_headshot')
+        self.percent = data_dict['resist_percent']
+        self._resist_type_id = data_dict.get('resist_type_id')
 
 
 class ResistType(DataType):
@@ -52,7 +55,7 @@ class ResistType(DataType):
         self.description = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.description = d['description']
+        self.description = data_dict['description']

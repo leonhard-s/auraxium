@@ -1,3 +1,5 @@
+"""Defines world-related data types for PlanetSide 2."""
+
 from ...base_api import Query
 from ..datatypes import DataType, NamedDataType
 from ..misc import LocalizedString
@@ -21,14 +23,15 @@ class World(DataType, NamedDataType):
 
     @property
     def status(self):
-        q = Query(collection='world', world_id=self.id_)
+        """The server status of this world."""
+        query = Query(collection='world', world_id=self.id_)
         raise NotImplementedError('NYI')
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.name = LocalizedString(d['name'])
+        self.name = LocalizedString(data_dict['name'])
 
     @staticmethod
     def get_by_name(name: str, locale: str, ignore_case: bool = True):

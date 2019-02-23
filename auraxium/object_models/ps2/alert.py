@@ -1,3 +1,5 @@
+"""Defines alert-related data types for PlanetSide 2."""
+
 from ..datatypes import DataType, NamedDataType
 from ..misc import LocalizedString
 
@@ -22,18 +24,19 @@ class Alert(DataType, NamedDataType):
         self.type = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        """Populates the data type."""
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.description = LocalizedString(d['description'])
-        self.experience_bonus = d['experience_bonus']
-        self.name = LocalizedString(d['name'])
+        self.description = LocalizedString(data_dict['description'])
+        self.experience_bonus = data_dict['experience_bonus']
+        self.name = LocalizedString(data_dict['name'])
         # Hard-coded descriptions of the base alert types, 1 and 6 are unused.
         alert_types = {'1': 'Territory Control', '2': 'Facility Type',
                        '5': 'Warpgates Stabilizing', '6': 'Conquest',
                        '8': 'Meltdown', '9': 'Unstable Meltdown',
                        '10': 'Aerial Anomalies'}
-        self.type = alert_types[d['type']]
+        self.type = alert_types[data_dict['type']]
 
 
 class AlertState(DataType):
@@ -52,7 +55,8 @@ class AlertState(DataType):
         self.name = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        """Populates the data type."""
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.name = d['name']
+        self.name = data_dict['name']

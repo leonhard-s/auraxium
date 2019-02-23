@@ -1,3 +1,5 @@
+"""Defines outfit-related data types for PlanetSide 2."""
+
 from datetime import datetime
 
 from ...base_api import Query
@@ -29,10 +31,12 @@ class Outfit(DataType):
     # Define properties
     @property
     def leader(self):
+        """The leader of the outfit."""
         return Character.get(id_=self._leader_id)
 
     @property
     def members(self):
+        """A list of characters that are part of this outfit."""
         try:
             return self._members
         except AttributeError:
@@ -42,13 +46,14 @@ class Outfit(DataType):
 
     @staticmethod
     def get_by_name(name, ignore_case=True):
+        """Retrieves an outfit by name."""
         # Generate request
-        q = Query(collection='outfit')
+        query = Query(collection='outfit')
         if ignore_case:
-            q.add_term(field='name_lower', value=name.lower())
+            query.add_term(field='name_lower', value=name.lower())
         else:
-            q.add_term(field='name', value=name)
-        data = q.get(single=True)
+            query.add_term(field='name', value=name)
+        data = query.get(single=True)
         if not data:
             raise NoMatchesFoundError
 
@@ -57,14 +62,14 @@ class Outfit(DataType):
         return instance
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.alias = d.get('alias')
-        self._leader_id = d['leader_character_id']
-        self.member_count = d['member_count']
-        self.name = d['name']
-        self.date_created = datetime.utcfromtimestamp(int(d['time_created']))
+        self.alias = data_dict.get('alias')
+        self._leader_id = data_dict['leader_character_id']
+        self.member_count = data_dict['member_count']
+        self.name = data_dict['name']
+        self.date_created = datetime.utcfromtimestamp(int(data_dict['time_created']))
 
 
 class OutfitMember(DataType):
@@ -90,13 +95,14 @@ class OutfitMember(DataType):
     # Define properties
     @property
     def character(self):
+        """The character for this outfit member."""
         return Character.get(id_=self._character_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self._character_id = d['character_id']
-        self.date_joined = datetime.utcfromtimestamp(int(d['member_since']))
-        self.rank_name = d['rank']
-        self.rank_ordinal = d['rank_ordinal']
+        self._character_id = data_dict['character_id']
+        self.date_joined = datetime.utcfromtimestamp(int(data_dict['member_since']))
+        self.rank_name = data_dict['rank']
+        self.rank_ordinal = data_dict['rank_ordinal']

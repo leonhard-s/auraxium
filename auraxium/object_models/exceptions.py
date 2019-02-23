@@ -1,3 +1,5 @@
+"""Exception definitions for the object_models submodule."""
+
 from ..exceptions import AuraxiumError, UserError
 
 

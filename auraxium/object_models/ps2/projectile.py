@@ -1,7 +1,9 @@
+"""Defines projectile-related data types for PlanetSide 2."""
+
 from ..datatypes import DataType
 
 
-class Projectile(DataType):
+class Projectile(DataType):  # pylint: disable=too-many-instance-attributes
     """A projectile.
 
     Anything that moves predictably, such as bullets or grenades.
@@ -35,30 +37,31 @@ class Projectile(DataType):
     # Define properties
     @property
     def projectile_flight_type(self):
+        """The flight type of the projectile."""
         return ProjectileFlightType.get(id_=self._projectile_flight_type_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self._projectile_flight_type_id = d['projectile_flight_type_id']
-        self.speed = d.get('speed')
-        self.speed_max = d.get('speed_max')
-        self.acceleration = d.get('acceleration')
-        self.turn_rate = d.get('turn_rate')
-        self.lifespan = d.get('lifespan')
-        self.turn_rate = d.get('turn_rate')
-        self.drag = d.get('drag')
-        self.gravity = d.get('gravity')
-        self.lockon_acceleration = d.get('lockon_acceleration')
-        self.lockon_lifespan = d.get('lockon_lifespan')
-        self.arm_distance = d.get('arm_distance')
-        self.tether_distance = d.get('tether_distance')
-        self.detonate_distance = d.get('detonate_distance')
-        self.is_sticky = d.get('sticky')
-        self.sticks_to_players = d.get('sticks_to_players')
-        self.lockon_lose_angle = d.get('lockon_lose_angle')
-        self.lockon_seek_in_flight = d.get('lockon_seek_in_flight')
+        self._projectile_flight_type_id = data_dict['projectile_flight_type_id']
+        self.speed = data_dict.get('speed')
+        self.speed_max = data_dict.get('speed_max')
+        self.acceleration = data_dict.get('acceleration')
+        self.turn_rate = data_dict.get('turn_rate')
+        self.lifespan = data_dict.get('lifespan')
+        self.turn_rate = data_dict.get('turn_rate')
+        self.drag = data_dict.get('drag')
+        self.gravity = data_dict.get('gravity')
+        self.lockon_acceleration = data_dict.get('lockon_acceleration')
+        self.lockon_lifespan = data_dict.get('lockon_lifespan')
+        self.arm_distance = data_dict.get('arm_distance')
+        self.tether_distance = data_dict.get('tether_distance')
+        self.detonate_distance = data_dict.get('detonate_distance')
+        self.is_sticky = data_dict.get('sticky')
+        self.sticks_to_players = data_dict.get('sticks_to_players')
+        self.lockon_lose_angle = data_dict.get('lockon_lose_angle')
+        self.lockon_seek_in_flight = data_dict.get('lockon_seek_in_flight')
 
 
 class ProjectileFlightType(DataType):
@@ -78,7 +81,7 @@ class ProjectileFlightType(DataType):
         self.description = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id_)
+        data_dict = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
-        self.description = d.get('description')
+        self.description = data_dict.get('description')
