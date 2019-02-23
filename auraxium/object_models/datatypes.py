@@ -4,7 +4,6 @@ from .misc import LocalizedString
 from .exceptions import NoMatchesFoundError
 
 
-# pylint: disable-msg=E1101
 class DataType():
     """The base datatype object.
 
@@ -140,5 +139,6 @@ class NamedDataType():
             raise NoMatchesFoundError
 
         # Retrieve and return the object
-        instance = cls.get(id=d[cls._collection + '_id'], data=d)
+        instance = cls.get(id=data[cls._collection + '_id'],  # pylint: disable=no-member
+                           data=data)
         return instance

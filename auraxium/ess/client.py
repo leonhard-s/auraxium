@@ -16,7 +16,7 @@ _ENDPOINT = 'wss://push.planetside2.com/streaming'
 
 
 # Create a logger
-logger = logging.getLogger('auraxium.ess')
+logger = logging.getLogger('auraxium.ess')  # pylint: disable=invalid-name
 
 
 class Client():

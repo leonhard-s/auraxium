@@ -13,14 +13,14 @@ from .constants import CENSUS_ENDPOINT
 
 
 # Create a logger
-logger = logging.getLogger('auraxium.query')
+logger = logging.getLogger('auraxium.query')  # pylint: disable=invalid-name
 
 
 # Define a named tuple used for the field/value pairs of query terms
 _Term = namedtuple('Term', 'field value')
 
 
-class Query():
+class Query():  # pylint: disable=too-many-public-methods
     """Represents a query to be made to the API server."""
 
     def __init__(self, collection, namespace='ps2', **kwargs):
