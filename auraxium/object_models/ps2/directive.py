@@ -1,12 +1,12 @@
 from ...base_api import Query
-from ..datatypes import CachableDataType, EnumeratedDataType, NamedDataType
+from ..datatypes import DataType, NamedDataType
 from ..misc import LocalizedString
 from .image import Image, ImageSet
 from .objective import Objective
 from .reward import Reward
 
 
-class Directive(CachableDataType, NamedDataType):
+class Directive(DataType, NamedDataType):
     """A directive in PlanetSide 2.
 
     A directive is a requirement that gives progress towards the next directive
@@ -16,8 +16,8 @@ class Directive(CachableDataType, NamedDataType):
 
     _collection = 'directive'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default value
         self.description = None
@@ -33,11 +33,11 @@ class Directive(CachableDataType, NamedDataType):
     # Define properties
     @property
     def image(self):
-        return Image.get(id=self._image_id)
+        return Image.get(id_=self._image_id)
 
     @property
     def image_set(self):
-        return ImageSet.get(id=self._image_set_id)
+        return ImageSet.get(id_=self._image_set_id)
 
     @property
     def objectives(self):
@@ -54,14 +54,14 @@ class Directive(CachableDataType, NamedDataType):
 
     @property
     def directive_tier(self):
-        return DirectiveTier.get(id=self._directive_tier_id)
+        return DirectiveTier.get(id_=self._directive_tier_id)
 
     @property
     def directive_tree(self):
-        return DirectiveTree.get(id=self._directive_tree_id)
+        return DirectiveTree.get(id_=self._directive_tree_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.description = LocalizedString(d['description'])
@@ -74,7 +74,7 @@ class Directive(CachableDataType, NamedDataType):
         self.qualify_requirement_id = d.get('qualify_requirement_id')
 
 
-class DirectiveTier(EnumeratedDataType, NamedDataType):
+class DirectiveTier(DataType, NamedDataType):
     """A directive tier.
 
     Examples include "Carbines: Novice" and "Combat Medic: Master".
@@ -83,8 +83,8 @@ class DirectiveTier(EnumeratedDataType, NamedDataType):
 
     _collection = 'directive_tier'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.directive_points = None
@@ -99,15 +99,15 @@ class DirectiveTier(EnumeratedDataType, NamedDataType):
     # Define properties
     @property
     def directive_tree(self):
-        return DirectiveTree.get(id=self._directive_tree_id)
+        return DirectiveTree.get(id_=self._directive_tree_id)
 
     @property
     def image(self):
-        return Image.get(id=self._image_id)
+        return Image.get(id_=self._image_id)
 
     @property
     def image_set(self):
-        return ImageSet.get(id=self._image_set_id)
+        return ImageSet.get(id_=self._image_set_id)
 
     @property
     def rewards(self):
@@ -124,7 +124,7 @@ class DirectiveTier(EnumeratedDataType, NamedDataType):
             return self._rewards
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.directive_points = d['directive_points']
@@ -136,7 +136,7 @@ class DirectiveTier(EnumeratedDataType, NamedDataType):
         self._reward_set_id = d.get('reward_set_id')
 
 
-class DirectiveTree(EnumeratedDataType, NamedDataType):
+class DirectiveTree(DataType, NamedDataType):
     """A directive tree.
 
     Directive trees are an entry for a directive category. Examples for
@@ -147,8 +147,8 @@ class DirectiveTree(EnumeratedDataType, NamedDataType):
 
     _collection = 'directive_tier'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self._category_id = None
@@ -161,27 +161,27 @@ class DirectiveTree(EnumeratedDataType, NamedDataType):
     # Define properties
     @property
     def category(self):
-        return DirectiveTreeCategory.get(id=self._category_id)
+        return DirectiveTreeCategory.get(id_=self._category_id)
 
     @property
     def directives(self):
         try:
             return self._directives
         except AttributeError:
-            data = Query(collection='directive', directive_tree_id=self.id).get()
+            data = Query(collection='directive', directive_tree_id=self.id_).get()
             self._directives = Directive.list(ids=[i['directive_id'] for i in data])
             return self._directives
 
     @property
     def image(self):
-        return Image.get(id=self._image_id)
+        return Image.get(id_=self._image_id)
 
     @property
     def image_set(self):
-        return ImageSet.get(id=self._image_set_id)
+        return ImageSet.get(id_=self._image_set_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self._category_id = d['directive_tree_category_id']
@@ -191,7 +191,7 @@ class DirectiveTree(EnumeratedDataType, NamedDataType):
         self.name = LocalizedString(d['name'])
 
 
-class DirectiveTreeCategory(EnumeratedDataType, NamedDataType):
+class DirectiveTreeCategory(DataType, NamedDataType):
     """A category of directive trees.
 
     Examples for directive tree categories are "Infantry", "Vehicle" or
@@ -201,8 +201,8 @@ class DirectiveTreeCategory(EnumeratedDataType, NamedDataType):
 
     _collection = 'directive_tier_category'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self._directive_trees = None
@@ -214,12 +214,12 @@ class DirectiveTreeCategory(EnumeratedDataType, NamedDataType):
         try:
             return self._directive_trees
         except AttributeError:
-            data = Query(collection='directive_tree', directive_tree_category_id=self.id).get()
+            data = Query(collection='directive_tree', directive_tree_category_id=self.id_).get()
             self._directive_trees = DirectiveTree.list(ids=[i['directive_tree_id'] for i in data])
             return self._directive_trees
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.name = LocalizedString(d.get('name'))

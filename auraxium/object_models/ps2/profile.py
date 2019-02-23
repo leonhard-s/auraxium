@@ -1,5 +1,5 @@
 from ...base_api import Query
-from ..datatypes import EnumeratedDataType, NamedDataType
+from ..datatypes import DataType, NamedDataType
 from .faction import Faction
 from .image import Image, ImageSet
 from ..misc import LocalizedString
@@ -7,7 +7,7 @@ from .armor import ArmorInfo
 from .resist import ResistInfo
 
 
-class Profile(EnumeratedDataType, NamedDataType):
+class Profile(DataType, NamedDataType):
     """An entity in PlanetSide 2.
 
     Lists the targetable entities in the game world.
@@ -16,8 +16,8 @@ class Profile(EnumeratedDataType, NamedDataType):
 
     _collection = 'profile'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self._armor_info = None  # Internal (See properties)
@@ -40,33 +40,33 @@ class Profile(EnumeratedDataType, NamedDataType):
         try:
             return self._armor_info
         except AttributeError:
-            data = Query(collection='profile_armor_map', profile_id=self.id).limit(100).get()
+            data = Query(collection='profile_armor_map', profile_id=self.id_).limit(100).get()
             self._armor_info = ArmorInfo.list(ids=[i['armor_info_id'] for i in data])
             return self._armor_info
 
     @property
     def faction(self):
-        return Faction.get(id=self._faction_id)
+        return Faction.get(id_=self._faction_id)
 
     @property
     def image(self):
-        return Image.get(id=self._image_id)
+        return Image.get(id_=self._image_id)
 
     @property
     def image_set(self):
-        return ImageSet.get(id=self._image_set_id)
+        return ImageSet.get(id_=self._image_set_id)
 
     @property
     def resist_info(self):
         try:
             return self._resist_info
         except AttributeError:
-            data = Query(collection='profile_resist_map', profile_id=self.id).limit(100).get()
+            data = Query(collection='profile_resist_map', profile_id=self.id_).limit(100).get()
             self._resist_info = ResistInfo.list(ids=[i['resist_info_id'] for i in data])
             return self._resist_info
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.profile_type_id = d['profile_type_id']

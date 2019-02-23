@@ -3,6 +3,10 @@
 from enum import Enum
 
 
+# The endpoint URL used to connect to the ESS.
+ESS_ENDPOINT = 'wss://push.planetside2.com/streaming'
+
+
 class EventType(Enum):
     """Enumerates all known types of events."""
 

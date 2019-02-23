@@ -1,7 +1,7 @@
-from ..datatypes import CachableDataType, EnumeratedDataType
+from ..datatypes import DataType
 
 
-class ArmorFacing(EnumeratedDataType):
+class ArmorFacing(DataType):
     """The direction a vehicle is being attacked from.
 
     Enumerates the directions a vehicle can be attacked from. This is used as
@@ -12,20 +12,20 @@ class ArmorFacing(EnumeratedDataType):
 
     _collection = 'armor_facing'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.description = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.description = d.get('description')
 
 
-class ArmorInfo(CachableDataType):
+class ArmorInfo(DataType):
     """Armor information.
 
     Contains information about how armor is calculated based on the attack
@@ -35,8 +35,8 @@ class ArmorInfo(CachableDataType):
 
     _collection = 'armor_info'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self._armor_facing_id = None
@@ -47,10 +47,10 @@ class ArmorInfo(CachableDataType):
     # Define properties
     @property
     def armor_facing(self):
-        return ArmorFacing.get(id=self._armor_facing_id)
+        return ArmorFacing.get(id_=self._armor_facing_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self._armor_facing_id = d.get('armor_facing_id')

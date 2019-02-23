@@ -1,10 +1,10 @@
-from ..datatypes import CachableDataType, NamedDataType
+from ..datatypes import DataType, NamedDataType
 from .image import Image, ImageSet
 from .item import Item
 from ..misc import LocalizedString
 
 
-class Skill(CachableDataType, NamedDataType):
+class Skill(DataType, NamedDataType):
     """A skill in PS2.
 
     A skill is either a certification, an ASP skill or an implant's active
@@ -14,8 +14,8 @@ class Skill(CachableDataType, NamedDataType):
 
     _collection = 'skill'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.description = None
@@ -30,22 +30,22 @@ class Skill(CachableDataType, NamedDataType):
     # Define properties
     @property
     def grant_item(self):
-        return Item.get(id=self._grant_item_id)
+        return Item.get(id_=self._grant_item_id)
 
     @property
     def image(self):
-        return Image.get(id=self._image_id)
+        return Image.get(id_=self._image_id)
 
     @property
     def image_set(self):
-        ImageSet.get(id=self._image_set_id)
+        ImageSet.get(id_=self._image_set_id)
 
     @property
     def skill_line(self):
-        SkillLine.get(id=self._skill_line_id)
+        SkillLine.get(id_=self._skill_line_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.description = LocalizedString(d['description'])
@@ -58,7 +58,7 @@ class Skill(CachableDataType, NamedDataType):
         self.skill_points = d['skill_points']
 
 
-class SkillCategory(CachableDataType, NamedDataType):
+class SkillCategory(DataType, NamedDataType):
     """A skill category.
 
     Groups skill lines into categories. Examples include "Passive Systems",
@@ -68,8 +68,8 @@ class SkillCategory(CachableDataType, NamedDataType):
 
     _collection = 'skill_category'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.description = None
@@ -83,18 +83,18 @@ class SkillCategory(CachableDataType, NamedDataType):
     # Define properties
     @property
     def image(self):
-        return Image.get(id=self._image_id)
+        return Image.get(id_=self._image_id)
 
     @property
     def image_set(self):
-        return ImageSet.get(id=self._image_set_id)
+        return ImageSet.get(id_=self._image_set_id)
 
     @property
     def skill_set(self):
-        return ImageSet.get(id=self._skill_set_id)
+        return ImageSet.get(id_=self._skill_set_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.description = LocalizedString(d['description'])
@@ -106,7 +106,7 @@ class SkillCategory(CachableDataType, NamedDataType):
         self.skill_set_index = d.get('skill_set_index')
 
 
-class SkillLine(CachableDataType, NamedDataType):
+class SkillLine(DataType, NamedDataType):
     """A skill line.
 
     A list of skills that improve on one another. Examples include the Chassis
@@ -114,8 +114,8 @@ class SkillLine(CachableDataType, NamedDataType):
 
     """
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.description = None
@@ -129,18 +129,18 @@ class SkillLine(CachableDataType, NamedDataType):
     # Define properties
     @property
     def image(self):
-        return Image.get(id=self._image_id)
+        return Image.get(id_=self._image_id)
 
     @property
     def image_set(self):
-        return ImageSet.get(id=self._image_set_id)
+        return ImageSet.get(id_=self._image_set_id)
 
     @property
     def skill_category(self):
-        return SkillCategory.get(id=self._skill_category_id)
+        return SkillCategory.get(id_=self._skill_category_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.description = d['description']
@@ -152,7 +152,7 @@ class SkillLine(CachableDataType, NamedDataType):
         self.skill_points = d.get('skill_points')
 
 
-class SkillSet(CachableDataType, NamedDataType):
+class SkillSet(DataType, NamedDataType):
     """A skill set.
 
     A skill set is a list of skill lines that belong to the same set. Examples
@@ -162,8 +162,8 @@ class SkillSet(CachableDataType, NamedDataType):
 
     _collection = 'skill_set'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.description = None
@@ -176,18 +176,18 @@ class SkillSet(CachableDataType, NamedDataType):
     # Define properties
     @property
     def image(self):
-        return Image.get(id=self._image_id)
+        return Image.get(id_=self._image_id)
 
     @property
     def image_set(self):
-        return ImageSet.get(id=self._image_set_id)
+        return ImageSet.get(id_=self._image_set_id)
 
     @property
     def required_item(self):
-        return Item.get(id=self._required_item_id)
+        return Item.get(id_=self._required_item_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.description = LocalizedString(d['description'])

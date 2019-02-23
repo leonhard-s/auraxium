@@ -1,12 +1,12 @@
 from datetime import datetime
 
 from ...base_api import Query
-from ..datatypes import CachableDataType
+from ..datatypes import DataType
 from .character import Character
 from ..exceptions import NoMatchesFoundError
 
 
-class Outfit(CachableDataType):
+class Outfit(DataType):
     """Represents a PS2 outfit.
 
     An outfit is a group of players. The individual player information needs to be resolved further.
@@ -15,8 +15,8 @@ class Outfit(CachableDataType):
 
     _collection = 'outfit'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.alias = None
@@ -29,14 +29,14 @@ class Outfit(CachableDataType):
     # Define properties
     @property
     def leader(self):
-        return Character.get(id=self._leader_id)
+        return Character.get(id_=self._leader_id)
 
     @property
     def members(self):
         try:
             return self._members
         except AttributeError:
-            data = Query(collection='outfit_member', outfit_id=self.id).get()
+            data = Query(collection='outfit_member', outfit_id=self.id_).get()
             self._members = OutfitMember.list(ids=[i['character_id'] for i in data])
             return self._members
 
@@ -53,11 +53,11 @@ class Outfit(CachableDataType):
             raise NoMatchesFoundError
 
         # Retrieve and return the object
-        instance = Outfit.get(id=data['outfit_id'], data=data)
+        instance = Outfit.get(id_=data['outfit_id'], data=data)
         return instance
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.alias = d.get('alias')
@@ -67,7 +67,7 @@ class Outfit(CachableDataType):
         self.date_created = datetime.utcfromtimestamp(int(d['time_created']))
 
 
-class OutfitMember(CachableDataType):
+class OutfitMember(DataType):
     """An outfit member.
 
     An outfit member is the linking entity between an outfit and a player and
@@ -78,8 +78,8 @@ class OutfitMember(CachableDataType):
 
     _collection = 'outfit_type'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self._character_id = None
@@ -90,10 +90,10 @@ class OutfitMember(CachableDataType):
     # Define properties
     @property
     def character(self):
-        return Character.get(id=self._character_id)
+        return Character.get(id_=self._character_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self._character_id = d['character_id']

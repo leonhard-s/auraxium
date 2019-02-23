@@ -1,7 +1,7 @@
-from ..datatypes import CachableDataType, EnumeratedDataType
+from ..datatypes import DataType
 
 
-class ResistInfo(CachableDataType):
+class ResistInfo(DataType):
     """A resist info entry.
 
     Resist info contains information about how resistant an entity is to certain
@@ -11,8 +11,8 @@ class ResistInfo(CachableDataType):
 
     _collection = 'resist_info'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.description = None
@@ -23,10 +23,10 @@ class ResistInfo(CachableDataType):
     # Define properties
     @property
     def resist_type(self):
-        return ResistType.get(id=self._resist_type_id)
+        return ResistType.get(id_=self._resist_type_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.description = d.get('description')
@@ -35,7 +35,7 @@ class ResistInfo(CachableDataType):
         self._resist_type_id = d.get('resist_type_id')
 
 
-class ResistType(EnumeratedDataType):
+class ResistType(DataType):
     """A resist type.
 
     A type of damage for which resistance information might exist.
@@ -45,14 +45,14 @@ class ResistType(EnumeratedDataType):
 
     _collection = 'resist_type'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.description = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.description = d['description']

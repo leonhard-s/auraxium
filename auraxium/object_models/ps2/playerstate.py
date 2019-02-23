@@ -1,8 +1,8 @@
 from ...base_api import Query
-from ..datatypes import CachableDataType, EnumeratedDataType
+from ..datatypes import DataType
 
 
-class PlayerState(EnumeratedDataType):
+class PlayerState(DataType):
     """A player state.
 
     Used to handle changing cone of fires and other fields based on what the
@@ -12,20 +12,20 @@ class PlayerState(EnumeratedDataType):
 
     _collection = 'player_state'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.description = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.description = d.get('description')
 
 
-class PlayerStateGroup(CachableDataType):
+class PlayerStateGroup(DataType):
     """Controls CoF modifiers depending on what the player is doing.
 
     I inferred `player_state_group_2` is a complete replacement for
@@ -36,8 +36,8 @@ class PlayerStateGroup(CachableDataType):
     _collection = 'player_state_group_2'
     _id_field = 'player_state_group_id'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self._player_states = None  # Internal (See properties)
@@ -48,7 +48,7 @@ class PlayerStateGroup(CachableDataType):
         try:
             return self._player_states
         except AttributeError:
-            data = Query('player_state_group_2', player_state_group_id=self.id).limit(6).get()
+            data = Query('player_state_group_2', player_state_group_id=self.id_).limit(6).get()
             self._player_states = [PlayerStateGroupEntry(data=ps) for ps in data]
             self._player_states.sort(key=lambda ps: ps.player_state_id)
             return self._player_states
@@ -73,4 +73,4 @@ class PlayerStateGroupEntry():
 
     @property
     def player_state(self):
-        return PlayerState.get(id=self.player_state_id)
+        return PlayerState.get(id_=self.player_state_id)

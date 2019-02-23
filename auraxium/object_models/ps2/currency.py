@@ -1,9 +1,9 @@
-from ..datatypes import EnumeratedDataType, NamedDataType
+from ..datatypes import DataType, NamedDataType
 from ..misc import LocalizedString
 from .image import ImageSet
 
 
-class Currency(EnumeratedDataType, NamedDataType):
+class Currency(DataType, NamedDataType):
     """A currency.
 
     Currently, the only currency are Nanites.
@@ -12,8 +12,8 @@ class Currency(EnumeratedDataType, NamedDataType):
 
     _collection = 'currency'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.name = None
@@ -23,10 +23,10 @@ class Currency(EnumeratedDataType, NamedDataType):
     # Define properties
     @property
     def image_set(self):
-        return ImageSet.get(id=self._image_set_id)
+        return ImageSet.get(id_=self._image_set_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.name = LocalizedString(d['name'])

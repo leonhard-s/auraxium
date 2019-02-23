@@ -1,7 +1,7 @@
-from ..datatypes import CachableDataType, EnumeratedDataType
+from ..datatypes import DataType
 
 
-class Objective(CachableDataType):
+class Objective(DataType):
     """An objective.
 
     An objective to be completed. Links with ObjectiveSet fields are still
@@ -11,8 +11,8 @@ class Objective(CachableDataType):
 
     _collection = 'objective'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.objective_group_id = None
@@ -26,10 +26,10 @@ class Objective(CachableDataType):
     # Define properties
     @property
     def objective_type(self):
-        return ObjectiveType.get(id=self._objective_type_id)
+        return ObjectiveType.get(id_=self._objective_type_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.objective_group_id = d.get('objective_group_id')
@@ -41,7 +41,7 @@ class Objective(CachableDataType):
         exec(s)
 
 
-class ObjectiveType(EnumeratedDataType):
+class ObjectiveType(DataType):
     """An objective type.
 
     The type of objective for a given objective. Contains information about
@@ -51,8 +51,8 @@ class ObjectiveType(EnumeratedDataType):
 
     _collection = 'objective_type'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.description = None
@@ -63,7 +63,7 @@ class ObjectiveType(EnumeratedDataType):
         exec(s)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.description = d['description']

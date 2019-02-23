@@ -1,9 +1,9 @@
-from ..datatypes import EnumeratedDataType, NamedDataType
+from ..datatypes import DataType, NamedDataType
 from ..misc import LocalizedString
 from .image import Image, ImageSet
 
 
-class Faction(EnumeratedDataType, NamedDataType):
+class Faction(DataType, NamedDataType):
     """Represents a faction in PlanetSide 2.
 
     Factions are static datatypes. Each one should only need to be
@@ -13,8 +13,8 @@ class Faction(EnumeratedDataType, NamedDataType):
 
     _collection = 'faction'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.name = None
@@ -26,14 +26,14 @@ class Faction(EnumeratedDataType, NamedDataType):
     # Define properties
     @property
     def image(self):
-        return Image.get(id=self._image_id)
+        return Image.get(id_=self._image_id)
 
     @property
     def image_set(self):
-        return ImageSet.get(id=self._image_set_id)
+        return ImageSet.get(id_=self._image_set_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.name = LocalizedString(d['name'])

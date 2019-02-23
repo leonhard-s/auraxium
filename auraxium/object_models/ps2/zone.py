@@ -1,9 +1,9 @@
-from ..datatypes import CachableDataType, EnumeratedDataType, NamedDataType
+from ..datatypes import DataType, NamedDataType
 from .ability import Ability
 from ..misc import LocalizedString
 
 
-class Zone(EnumeratedDataType, NamedDataType):
+class Zone(DataType, NamedDataType):
     """A zone in PS2.
 
     A zone is a continent such as Indar, Amerish or Hossin.
@@ -12,8 +12,8 @@ class Zone(EnumeratedDataType, NamedDataType):
 
     _collection = 'zone'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.code = None
@@ -22,7 +22,7 @@ class Zone(EnumeratedDataType, NamedDataType):
         self.name = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.code = d['code']
@@ -31,7 +31,7 @@ class Zone(EnumeratedDataType, NamedDataType):
         self.name = LocalizedString(d.get('name'))
 
 
-class ZoneEffect(CachableDataType):
+class ZoneEffect(DataType):
     """A zone effect.
 
     An zone reward effect.
@@ -40,8 +40,8 @@ class ZoneEffect(CachableDataType):
 
     _collection = 'zone_effect'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self._ability_id = None
@@ -60,14 +60,14 @@ class ZoneEffect(CachableDataType):
     # Define properties
     @property
     def ability(self):
-        return Ability.get(id=self._ability_id)
+        return Ability.get(id_=self._ability_id)
 
     @property
     def zone_effect_type(self):
-        return ZoneEffectType.get(id=self._zone_effect_type_id)
+        return ZoneEffectType.get(id_=self._zone_effect_type_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self._ability_id = d.get('ability_id')
@@ -84,7 +84,7 @@ class ZoneEffect(CachableDataType):
         exec(s)
 
 
-class ZoneEffectType(EnumeratedDataType):
+class ZoneEffectType(DataType):
     """A zone effect type.
 
     A type of zone effect. The effect type's "param" and "string" fields
@@ -94,8 +94,8 @@ class ZoneEffectType(EnumeratedDataType):
 
     _collection = 'zone_effect_type'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.description = None
@@ -111,7 +111,7 @@ class ZoneEffectType(EnumeratedDataType):
         exec(s)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.description = d.get('description')

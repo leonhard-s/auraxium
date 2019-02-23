@@ -1,10 +1,10 @@
-from ..datatypes import CachableDataType, EnumeratedDataType
+from ..datatypes import DataType
 from .ability import Ability
 from .resist import ResistType
 from .target import TargetType
 
 
-class Effect(CachableDataType):
+class Effect(DataType):
     """Represents an effect.
 
     An effect acts upon entities in the game world. Its most common application
@@ -14,8 +14,8 @@ class Effect(CachableDataType):
 
     _collection = 'effect'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self._ability_id = 0
@@ -33,22 +33,22 @@ class Effect(CachableDataType):
     # Define properties
     @property
     def ability(self):
-        return Ability.get(id=self._ability_id)
+        return Ability.get(id_=self._ability_id)
 
     @property
     def effect_type(self):
-        return EffectType.get(id=self._effect_type_id)
+        return EffectType.get(id_=self._effect_type_id)
 
     @property
     def resist_type(self):
-        return ResistType.get(id=self._resist_type_id)
+        return ResistType.get(id_=self._resist_type_id)
 
     @property
     def target_type(self):
-        return TargetType.get(id=self._target_type_id)
+        return TargetType.get(id_=self._target_type_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self._ability_id = d.get('ability_id')
@@ -64,7 +64,7 @@ class Effect(CachableDataType):
         exec(s)
 
 
-class EffectType(EnumeratedDataType):
+class EffectType(DataType):
     """A type of effect.
 
     The effect type contains informatino about what the "param" fields of the
@@ -74,8 +74,8 @@ class EffectType(EnumeratedDataType):
 
     _collection = 'effect_type'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.description = None
@@ -86,7 +86,7 @@ class EffectType(EnumeratedDataType):
         exec(s)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.description = d.get('description')

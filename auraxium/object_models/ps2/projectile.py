@@ -1,7 +1,7 @@
-from ..datatypes import CachableDataType, EnumeratedDataType
+from ..datatypes import DataType
 
 
-class Projectile(CachableDataType):
+class Projectile(DataType):
     """A projectile.
 
     Anything that moves predictably, such as bullets or grenades.
@@ -10,8 +10,8 @@ class Projectile(CachableDataType):
 
     _collection = 'projectile'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.acceleration = None
@@ -35,10 +35,10 @@ class Projectile(CachableDataType):
     # Define properties
     @property
     def projectile_flight_type(self):
-        return ProjectileFlightType.get(id=self._projectile_flight_type_id)
+        return ProjectileFlightType.get(id_=self._projectile_flight_type_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self._projectile_flight_type_id = d['projectile_flight_type_id']
@@ -61,7 +61,7 @@ class Projectile(CachableDataType):
         self.lockon_seek_in_flight = d.get('lockon_seek_in_flight')
 
 
-class ProjectileFlightType(EnumeratedDataType):
+class ProjectileFlightType(DataType):
     """A flight type for a projectile.
 
     Lists the flight types available for projectiles, such as "hurled across
@@ -71,14 +71,14 @@ class ProjectileFlightType(EnumeratedDataType):
 
     _collection = 'projectile_flight_type'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.description = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.description = d.get('description')

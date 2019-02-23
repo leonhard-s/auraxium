@@ -1,7 +1,7 @@
-from ..datatypes import CachableDataType, EnumeratedDataType
+from ..datatypes import DataType, DataType
 
 
-class Reward(CachableDataType):
+class Reward(DataType):
     """A reward.
 
     Rewards are granted to players for participating in alerts, gaining
@@ -11,8 +11,8 @@ class Reward(CachableDataType):
 
     _collection = 'reward'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.count_max = None
@@ -27,10 +27,10 @@ class Reward(CachableDataType):
     # Define properties
     @property
     def reward_type(self):
-        return RewardType.get(id=self._reward_type_id)
+        return RewardType.get(id_=self._reward_type_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.count_max = d.get('count_max')
@@ -43,7 +43,7 @@ class Reward(CachableDataType):
         exec(s)
 
 
-class RewardType(EnumeratedDataType):
+class RewardType(DataType):
     """A type of reward.
 
     The type of reward a player will receive (experience or items, etc.). The
@@ -54,8 +54,8 @@ class RewardType(EnumeratedDataType):
 
     _collection = 'reward_type'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.count_max = None
@@ -68,7 +68,7 @@ class RewardType(EnumeratedDataType):
         exec(s)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.count_max = d.get('count_max')

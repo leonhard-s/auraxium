@@ -143,7 +143,8 @@ class Query():  # pylint: disable=too-many-public-methods
                      for term in self._terms]
 
         # Process flag-type query commands
-        item_list.extend(['c:' + c + '=' + str(self._flags[c]) for c in self._flags])
+        item_list.extend(['c:' + c + '=' + str(self._flags[c])
+                          for c in self._flags])
         # Process key-type query commands
         item_list.extend(['c:' + c + '=' + ','.join([str(i) for i in self._qc_keys[c]])
                           for c in self._qc_keys])  # Process the tree query command (if it exists)
@@ -275,7 +276,8 @@ class Query():  # pylint: disable=too-many-public-methods
         if results is None or results == 1:
             self._qc_keys.pop('limit', None)
         elif results < 1:
-            raise ValueError('Can\'t limit the results to a number smaller than 1')
+            raise ValueError(
+                'Can\'t limit the results to a number smaller than 1')
         else:
             self._qc_keys['limit'] = [int(results)]
         return self
@@ -297,7 +299,8 @@ class Query():  # pylint: disable=too-many-public-methods
         if results is None:
             self._qc_keys.pop('limitPerDB', None)
         elif results < 1:
-            raise ValueError('Can\'t limit the results to a number smaller than 1')
+            raise ValueError(
+                'Can\'t limit the results to a number smaller than 1')
         else:
             self._qc_keys['limitPerDB'] = [int(results)]
         return self
@@ -539,31 +542,33 @@ class Join():
         """
 
         # The collection or type of the join
-        s = self.collection
+        string = self.collection
 
         # Process flags ('list' and 'outer')
         if self._flags:
-            s += '^' + '^'.join(f + ':' + self._flags[f] for f in self._flags)
+            string += '^' + \
+                '^'.join(f + ':' + self._flags[f] for f in self._flags)
 
         # Process keys ('inject_at', 'on' and 'to')
         for k in self._keys:
             if self._keys[k] is not None:
-                s += '^' + k + ':' + self._keys[k]
+                string += '^' + k + ':' + self._keys[k]
 
         # Process 'show' and 'hide' lists
         if self._show:
-            s += '^show:' + '\''.join(self._show)
+            string += '^show:' + '\''.join(self._show)
         elif self._hide:
-            s += '^hide:' + '\''.join(self._hide)
+            string += '^hide:' + '\''.join(self._hide)
 
         # Process terms
         if self._terms:
-            s += '^terms:' + '\''.join([t.field + '=' + t.value for t in self._terms])
+            string += '^terms:' + \
+                '\''.join([t.field + '=' + t.value for t in self._terms])
 
         # Process inner joins
-        s += ''.join(['(' + j.process() + ')' for j in self._inner_joins])
+        string += ''.join(['(' + j.process() + ')' for j in self._inner_joins])
 
-        return s
+        return string
 
     def show(self, *args):
         """Identical to the `show` query command.
@@ -592,6 +597,7 @@ def _process_joins(*args):
 
 
 def retrieve(url, count=False):
+    """Retrieves the object using the URL given."""
     # Log the request's URL in case an error occurs
     logger.debug('Performing request: %s', url)
     data = json.loads(requests.get(url).text)
@@ -600,19 +606,18 @@ def retrieve(url, count=False):
         # Log the number of results returned
         if count:
             results = data.pop('count')
-        else:
-            results = data.pop('returned')
-        logger.debug('Found %s results', results)
+            # Return the number of results
+            return int(results)
 
-    except KeyError as e:
+    except KeyError as err:
 
         # Unknown collection
         try:
             if data['error'] == 'No data found.':
                 raise UnknownCollectionError('This collection does not exist for the current '
-                                             ' namespace.') from e
+                                             ' namespace.') from err
             else:
-                raise e
+                raise err
         except KeyError:
             pass
 
@@ -624,24 +629,23 @@ def retrieve(url, count=False):
                 # Invalid search term
                 if error == 'INVALID_SEARCH_TERM':
                     raise InvalidSearchTermError('Attempted to query a collection by an invalid '
-                                                 'field name') from e
+                                                 'field name') from err
                 else:
-                    raise e
+                    raise err
         except KeyError:
             pass
 
         # Fallback
-        raise e
+        raise err
+
+    results = data.pop('returned')
+    logger.debug('Found %s results', results)
 
     # If timing data has been provided, log it
     timing = data.pop('timing', {})
     if timing:
         timing_list = [k[:-3] + ': ' + str(timing[k]) + ' ms' for k in timing]
         logger.debug('Timing: %s', ', '.join(timing_list))
-
-    if count:
-        # Return the number of results
-        return int(results)
 
     # If there is more than one key leftover, raise an alarm bell
     if len(data) > 1:

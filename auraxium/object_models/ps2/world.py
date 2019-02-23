@@ -1,9 +1,9 @@
 from ...base_api import Query
-from ..datatypes import EnumeratedDataType, NamedDataType
+from ..datatypes import DataType, NamedDataType
 from ..misc import LocalizedString
 
 
-class World(EnumeratedDataType, NamedDataType):
+class World(DataType, NamedDataType):
     """A world in PS2.
 
     World is the internal name for game servers. Connery and Cobalt are
@@ -13,19 +13,19 @@ class World(EnumeratedDataType, NamedDataType):
 
     _collection = 'world'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.name = None
 
     @property
     def status(self):
-        q = Query(collection='world', world_id=self.id)
+        q = Query(collection='world', world_id=self.id_)
         raise NotImplementedError('NYI')
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.name = LocalizedString(d['name'])

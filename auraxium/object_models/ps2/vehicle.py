@@ -1,11 +1,11 @@
-from ..datatypes import EnumeratedDataType, NamedDataType
+from ..datatypes import DataType, NamedDataType
 from .currency import Currency
 from .faction import Faction
 from .image import Image, ImageSet
 from ..misc import LocalizedString
 
 
-class Vehicle(EnumeratedDataType, NamedDataType):
+class Vehicle(DataType, NamedDataType):
     """A vehicle.
 
     A vehicle that a player can enter to traverse Auraxis in style.
@@ -14,8 +14,8 @@ class Vehicle(EnumeratedDataType, NamedDataType):
 
     _collection = 'vehicle'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.cost = None
@@ -32,26 +32,26 @@ class Vehicle(EnumeratedDataType, NamedDataType):
     # Define properties
     @property
     def currency(self):
-        return Currency.get(id=self._currency_id)
+        return Currency.get(id_=self._currency_id)
 
     @property
     def faction(self):
-        return Faction.get(id=self._faction_id)
+        return Faction.get(id_=self._faction_id)
 
     @property
     def image(self):
-        return Image.get(id=self._image_id)
+        return Image.get(id_=self._image_id)
 
     @property
     def image_set(self):
-        return ImageSet.get(id=self._image_set_id)
+        return ImageSet.get(id_=self._image_set_id)
 
     @property
     def skill_set(self):
-        return ImageSet.get(id=self._skill_set_id)
+        return ImageSet.get(id_=self._skill_set_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.cost = d.get('cost')

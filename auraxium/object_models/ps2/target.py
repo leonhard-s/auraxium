@@ -1,7 +1,7 @@
-from ..datatypes import EnumeratedDataType
+from ..datatypes import DataType
 
 
-class TargetType(EnumeratedDataType):
+class TargetType(DataType):
     """A type of target.
 
     Enumerates the types of target available, currently "Self", "Any, "Ally"
@@ -11,14 +11,14 @@ class TargetType(EnumeratedDataType):
 
     _collection = 'target_type'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.description = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.description = d['description']

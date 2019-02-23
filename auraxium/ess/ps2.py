@@ -5,7 +5,9 @@ are all created by feeding them with the "payload" dictionary received
 by the event streaming service.
 """
 
-from ..base_api import Query
+from typing import Optional
+
+from .. import Query
 from ..object_models.ps2 import (Achievement, Alert, AlertState, Character, Experience, Faction,
                                  FireMode, Item, Loadout, Outfit, Region, Skill, Vehicle, Weapon,
                                  World, Zone)
@@ -16,8 +18,13 @@ from .events import Event
 class AchievementEarned(Event):
     """A character has earned an achievement (weapon medal or service ribbon).
 
-    (This is a character-centric event.
+    This is a character-centric event.
     """
+
+    # These attributes link the class to the event types and names
+    census_name = 'AchievementEarned'
+    event_name = 'achievement_earned'
+    event_type = 0
 
     def __init__(self, payload: dict) -> None:
         # Run the Event object's init method
@@ -31,23 +38,23 @@ class AchievementEarned(Event):
 
     @property
     def achievement(self) -> Achievement:
-        return Achievement.get(id=self.achievement_id)
         """The Achievement the character has earned."""
+        return Achievement.get(id_=self.achievement_id)
 
     @property
     def character(self) -> Character:
-        return Character.get(id=self.character_id)
         """The Character that earned the achievement."""
+        return Character.get(id_=self.character_id)
 
     @property
-    def world_id(self) -> World:
-        return World.get(id=self.world_id)
+    def world(self) -> World:
         """The World (server) the achievement was earned on."""
+        return World.get(id_=self.world_id)
 
     @property
-    def zone_id(self) -> Zone:
-        return Zone.get(id=self.zone_id)
+    def zone(self) -> Zone:
         """The Zone (continent) the achievement was earned on."""
+        return Zone.get(id_=self.zone_id)
 
 
 class BattleRankUp(Event):
@@ -55,6 +62,11 @@ class BattleRankUp(Event):
 
     This is a character-centric event.
     """
+
+    # These attributes link the class to the event types and names
+    census_name = 'BattleRankUp'
+    event_name = 'battle_rank_up'
+    event_type = 1
 
     def __init__(self, payload: dict) -> None:
         # Run the Event object's init method
@@ -69,18 +81,18 @@ class BattleRankUp(Event):
 
     @property
     def character(self) -> Character:
-        return Character.get(id=self.character_id)
         """The Character that earned a battle rank."""
+        return Character.get(id_=self.character_id)
 
     @property
     def world(self) -> World:
-        return World.get(id=self.world_id)
         """The World (server) the battle rank was earned on."""
+        return World.get(id_=self.world_id)
 
     @property
     def zone(self) -> Zone:
-        return Zone.get(id=self.zone_id)
         """The Zone (continent) the battle rank was earned on."""
+        return Zone.get(id_=self.zone_id)
 
 
 class ContinentLock(Event):  # pylint: disable=too-many-instance-attributes
@@ -88,6 +100,11 @@ class ContinentLock(Event):  # pylint: disable=too-many-instance-attributes
 
     This is a world-centric event.
     """
+
+    # These attributes link the class to the event types and names
+    census_name = 'ContinentLock'
+    event_name = 'continent_lock'
+    event_type = 2
 
     def __init__(self, payload: dict) -> None:
         # Run the Event object's init method
@@ -106,28 +123,28 @@ class ContinentLock(Event):  # pylint: disable=too-many-instance-attributes
 
     @property
     def metagame_event(self) -> Alert:
-        return Alert.get(id=self.metagame_event_id)
         """The Alert that locked the continent."""
+        return Alert.get(id_=self.metagame_event_id)
 
     @property
     def previous_faction(self) -> Faction:
-        return Faction.get(id=self.previous_faction_id)
         """The Faction that owned the continent until now."""
+        return Faction.get(id_=self.previous_faction_id)
 
     @property
     def triggering_faction(self) -> Faction:
-        return Faction.get(id=self.triggering_faction_id)
         """The Faction that captured the continent."""
+        return Faction.get(id_=self.triggering_faction_id)
 
     @property
     def world(self) -> World:
-        return World.get(id=self.world_id)
         """The World (server) the continent was locked on."""
+        return World.get(id_=self.world_id)
 
     @property
     def zone(self) -> Zone:
-        return Zone.get(id=self.zone_id)
         """The Zone (continent) that was locked."""
+        return Zone.get(id_=self.zone_id)
 
 
 class ContinentUnlock(Event):  # pylint: disable=too-many-instance-attributes
@@ -135,6 +152,11 @@ class ContinentUnlock(Event):  # pylint: disable=too-many-instance-attributes
 
     This is a world-centric event.
     """
+
+    # These attributes link the class to the event types and names
+    census_name = 'ContinentUnlock'
+    event_name = 'continent_unlock'
+    event_type = 3
 
     def __init__(self, payload: dict) -> None:
         # Run the Event object's init method
@@ -153,28 +175,28 @@ class ContinentUnlock(Event):  # pylint: disable=too-many-instance-attributes
 
     @property
     def metagame_event(self) -> Alert:
-        return Alert.get(id=self.metagame_event_id)
         """The Alert that unlocked the continent."""
+        return Alert.get(id_=self.metagame_event_id)
 
     @property
     def previous_faction(self) -> Faction:
-        return Faction.get(id=self.previous_faction_id)
         """No information known."""
+        return Faction.get(id_=self.previous_faction_id)
 
     @property
     def triggering_faction(self) -> Faction:
-        return Faction.get(id=self.triggering_faction_id)
         """No information known."""
+        return Faction.get(id_=self.triggering_faction_id)
 
     @property
     def world(self) -> World:
-        return World.get(id=self.world_id)
         """The World (server) the continent was unlocked on."""
+        return World.get(id_=self.world_id)
 
     @property
     def zone(self) -> Zone:
-        return Zone.get(id=self.zone_id)
         """The Zone (continent) that was unlocked."""
+        return Zone.get(id_=self.zone_id)
 
 
 class Death(Event):  # pylint: disable=too-many-instance-attributes
@@ -185,6 +207,11 @@ class Death(Event):  # pylint: disable=too-many-instance-attributes
 
     This is a character-centric event.
     """
+
+    # These attributes link the class to the event types and names
+    census_name = 'Death'
+    event_name = 'death'
+    event_type = 4
 
     def __init__(self, payload: dict) -> None:
         # Run the Event object's init method
@@ -206,50 +233,62 @@ class Death(Event):  # pylint: disable=too-many-instance-attributes
 
     @property
     def attacker(self) -> Character:
-        return Character.get(id=self.attacker_id)
         """The Character that killed the victim."""
+        return Character.get(id_=self.attacker_id)
 
     @property
     def attacker_fire_mode(self) -> FireMode:
-        return FireMode.get(id=self.attacker_fire_mode_id)
         """The FireMode used to kill the victim."""
+        return FireMode.get(id_=self.attacker_fire_mode_id)
 
     @property
     def attacker_loadout(self) -> Loadout:
-        return Loadout.get(id=self.attacker_loadout_id)
         """The Loadout the killing player was using."""
+        return Loadout.get(id_=self.attacker_loadout_id)
 
     @property
-    def attacker_vehicle(self) -> Vehicle:
-        return Vehicle.get(id=self.attacker_vehicle_id)
+    def attacker_vehicle(self) -> Optional[Vehicle]:
+        """The Vehicle the killing player was in.
+
+        Might be None.
+        """
+        return Vehicle.get(id_=self.attacker_vehicle_id)
 
     @property
-    def attacker_weapon(self) -> Weapon:
-        return Weapon.get(id=self.attacker_weapon_id)
+    def attacker_weapon(self) -> Optional[Weapon]:
+        """The Weapon used to kill the player.
+
+        Might be None.
+        """
+        return Weapon.get(id_=self.attacker_weapon_id)
 
     @property
     def victim(self) -> Character:
-        return Character.get(id=self.victim_id)
         """The Character that has died."""
+        return Character.get(id_=self.victim_id)
 
     @property
     def victim_loadout(self) -> Loadout:
-        return Loadout.get(id=self.victim_loadout_id)
         """The Loadout the victim was using."""
+        return Loadout.get(id_=self.victim_loadout_id)
 
     @property
-    def victim_vehicle(self) -> Vehicle:
-        return Vehicle.get(id=self.victim_vehicle_id)
+    def victim_vehicle(self) -> Optional[Vehicle]:
+        """The Vehicle the victim was in.
+
+        Might be None.
+        """
+        return Vehicle.get(id_=self.victim_vehicle_id)
 
     @property
     def world(self) -> World:
-        return World.get(id=self.world_id)
         """The World (continent) the player died on."""
+        return World.get(id_=self.world_id)
 
     @property
     def zone(self) -> Zone:
-        return Zone.get(id=self.zone_id)
         """The Zone (continent) the player died on."""
+        return Zone.get(id_=self.zone_id)
 
 
 class FacilityControl(Event):  # pylint: disable=too-many-instance-attributes
@@ -257,6 +296,11 @@ class FacilityControl(Event):  # pylint: disable=too-many-instance-attributes
 
     This is a world-centric event.
     """
+
+    # These attributes link the class to the event types and names
+    census_name = 'FacilityControl'
+    event_name = 'facility_control'
+    event_type = 5
 
     def __init__(self, payload: dict) -> None:
         # Run the Event object's init method
@@ -275,35 +319,37 @@ class FacilityControl(Event):  # pylint: disable=too-many-instance-attributes
     def region(self) -> Region:
         """The Region (facility) that was captured."""
         from .. import namespace
-        q = Query('map_region', namespace=namespace, facility_id=self.facility_id)
-        q.join('region', inject_at='region', on='map_region_id', to='region_id')
-        data = q.get(single=True)['region']
-        return Region.get(id=self.facility_id, data=data)
+        query = Query('map_region', namespace=namespace,
+                      facility_id=self.facility_id)
+        query.join('region', inject_at='region',
+                   on='map_region_id', to='region_id')
+        data = query.get(single=True)['region']
+        return Region.get(id_=self.facility_id, data=data)
 
     @property
     def new_faction(self) -> Faction:
-        return Faction.get(id=self.new_faction_id)
         """The Faction that captured the facility."""
+        return Faction.get(id_=self.new_faction_id)
 
     @property
     def old_faction(self) -> Faction:
-        return Faction.get(id=self.old_faction_id)
         """The Faction that lost the facility."""
+        return Faction.get(id_=self.old_faction_id)
 
     @property
     def outfit(self) -> Outfit:
-        return Outfit.get(id=self.outfit_id)
         """The Outfit that captured the facility."""
+        return Outfit.get(id_=self.outfit_id)
 
     @property
     def world(self) -> World:
-        return World.get(id=self.world_id)
         """The World (server) the facility was captured on."""
+        return World.get(id_=self.world_id)
 
     @property
     def zone(self) -> Zone:
-        return Zone.get(id=self.zone_id)
         """The Zone (continent) of the facility that was captured."""
+        return Zone.get(id_=self.zone_id)
 
 
 class GainExperience(Event):
@@ -314,6 +360,11 @@ class GainExperience(Event):
 
     This is a character-centric event.
     """
+
+    # These attributes link the class to the event types and names
+    census_name = 'GainExperience'
+    event_name = 'gain_experience'
+    event_type = 6
 
     def __init__(self, payload: dict) -> None:
         # Run the Event object's init method
@@ -330,28 +381,28 @@ class GainExperience(Event):
 
     @property
     def character(self) -> Character:
-        return Character.get(id=self.character_id)
         """The Character that gained experience."""
+        return Character.get(id_=self.character_id)
 
     @property
     def experience(self) -> Experience:
-        return Experience.get(id=self.experience_id)
         """The type of Experience the player got."""
+        return Experience.get(id_=self.experience_id)
 
     @property
     def loadout(self) -> Loadout:
-        return Loadout.get(id=self.loadout_id)
         """The Loadout of the player that gained experience."""
+        return Loadout.get(id_=self.loadout_id)
 
     @property
     def world(self) -> World:
-        return World.get(id=self.world_id)
         """The World (continent) the player gained experience on."""
+        return World.get(id_=self.world_id)
 
     @property
     def zone(self) -> Zone:
-        return Zone.get(id=self.zone_id)
         """The Zone (continent) the player gained experience on."""
+        return Zone.get(id_=self.zone_id)
 
 
 class ItemAdded(Event):
@@ -362,6 +413,11 @@ class ItemAdded(Event):
 
     This is a character-centric event.
     """
+
+    # These attributes link the class to the event types and names
+    census_name = 'ItemAdded'
+    event_name = 'item_added'
+    event_type = 7
 
     def __init__(self, payload: dict) -> None:
         # Run the Event object's init method
@@ -377,23 +433,23 @@ class ItemAdded(Event):
 
     @property
     def character(self) -> Character:
-        return Character.get(id=self.character_id)
         """The Character that gained the item."""
+        return Character.get(id_=self.character_id)
 
     @property
     def item(self) -> Item:
-        return Item.get(id=self.item_id)
         """The Item the character gained."""
+        return Item.get(id_=self.item_id)
 
     @property
     def world(self) -> World:
-        return World.get(id=self.world_id)
         """The World (server) the character gained experience on."""
+        return World.get(id_=self.world_id)
 
     @property
     def zone(self) -> Zone:
-        return Zone.get(id=self.zone_id)
         """The Zone (continent) the character gained experience on."""
+        return Zone.get(id_=self.zone_id)
 
 
 class MetagameEvent(Event):  # pylint: disable=too-many-instance-attributes
@@ -401,6 +457,11 @@ class MetagameEvent(Event):  # pylint: disable=too-many-instance-attributes
 
     This is a world-centric event.
     """
+
+    # These attributes link the class to the event types and names
+    census_name = 'MetagameEvent'
+    event_name = 'metagame_event'
+    event_type = 8
 
     def __init__(self, payload: dict) -> None:
         # Run the Event object's init method
@@ -418,23 +479,23 @@ class MetagameEvent(Event):  # pylint: disable=too-many-instance-attributes
 
     @property
     def metagame_event(self) -> Alert:
-        return Alert.get(id=self.metagame_event_id)
         """The type of Alert that started/ended."""
+        return Alert.get(id_=self.metagame_event_id)
 
     @property
     def metagame_event_state(self) -> AlertState:
-        return AlertState.get(id=self.metagame_event_state)
         """The AlertState of the alert."""
+        return AlertState.get(id_=self.metagame_event_state)
 
     @property
     def world(self) -> World:
-        return World.get(id=self.world_id)
         """The World (server) the event started/ended on."""
+        return World.get(id_=self.world_id)
 
     @property
     def zone(self) -> Zone:
-        return Zone.get(id=self.zone_id)
         """The Zone (continent) the event started/ended on."""
+        return Zone.get(id_=self.zone_id)
 
 
 class PlayerFacilityCapture(Event):
@@ -443,6 +504,11 @@ class PlayerFacilityCapture(Event):
     This is a character-centric event.
     """
 
+    # These attributes link the class to the event types and names
+    census_name = 'PlayerFacilityCapture'
+    event_name = 'player_facility_capture'
+    event_type = 9
+
     def __init__(self, payload: dict) -> None:
         # Run the Event object's init method
         super().__init__(payload=payload)
@@ -456,28 +522,28 @@ class PlayerFacilityCapture(Event):
 
     @property
     def character(self) -> Character:
-        return Character.get(id=self.character_id)
         """The Character that captured the facility."""
+        return Character.get(id_=self.character_id)
 
     @property
     def facility(self) -> Faction:
-        return Region.get(id=self.facility_id)
         """The Region the character captured."""
+        return Region.get(id_=self.facility_id)
 
     @property
     def outfit(self) -> Outfit:
-        return Outfit.get(id=self.outfit_id)
         """The Outfit that captured the facility."""
+        return Outfit.get(id_=self.outfit_id)
 
     @property
     def world(self) -> World:
-        return World.get(id=self.world_id)
         """The World (server) the facility was captured on."""
+        return World.get(id_=self.world_id)
 
     @property
     def zone(self) -> Zone:
-        return Zone.get(id=self.zone_id)
         """The Zone (continent) of the facility."""
+        return Zone.get(id_=self.zone_id)
 
 
 class PlayerFacilityDefend(Event):
@@ -486,6 +552,11 @@ class PlayerFacilityDefend(Event):
     This is a character-centric event.
     """
 
+    # These attributes link the class to the event types and names
+    census_name = 'PlayerFacilityDefend'
+    event_name = 'player_facility_defend'
+    event_type = 10
+
     def __init__(self, payload: dict) -> None:
         # Run the Event object's init method
         super().__init__(payload=payload)
@@ -499,28 +570,28 @@ class PlayerFacilityDefend(Event):
 
     @property
     def character(self) -> Character:
-        return Character.get(id=self.character_id)
         """The Character that captured the facility."""
+        return Character.get(id_=self.character_id)
 
     @property
     def facility(self) -> Region:
-        return Region.get(id=self.facility_id)
         """The Region the character captured."""
+        return Region.get(id_=self.facility_id)
 
     @property
     def outfit(self) -> Outfit:
-        return Outfit.get(id=self.outfit_id)
         """The Outfit that captured the facility."""
+        return Outfit.get(id_=self.outfit_id)
 
     @property
     def world(self) -> World:
-        return World.get(id=self.world_id)
         """The World (server) the facility was captured on."""
+        return World.get(id_=self.world_id)
 
     @property
     def zone(self) -> Zone:
-        return Zone.get(id=self.zone_id)
         """The Zone (continent) of the facility."""
+        return Zone.get(id_=self.zone_id)
 
 
 class PlayerLogin(Event):
@@ -529,6 +600,11 @@ class PlayerLogin(Event):
     This event is both character-centric and world-centric.
     """
 
+    # These attributes link the class to the event types and names
+    census_name = 'PlayerLogin'
+    event_name = 'player_login'
+    event_type = 11
+
     def __init__(self, payload: dict) -> None:
         # Run the Event object's init method
         super().__init__(payload=payload)
@@ -539,13 +615,13 @@ class PlayerLogin(Event):
 
     @property
     def character(self) -> Character:
-        return Character.get(id=self.character_id)
         """The Character that logged in."""
+        return Character.get(id_=self.character_id)
 
     @property
     def world(self) -> World:
-        return World.get(id=self.world_id)
         """The World (server) the character logged into."""
+        return World.get(id_=self.world_id)
 
 
 class PlayerLogout(Event):
@@ -554,6 +630,11 @@ class PlayerLogout(Event):
     This event is both character-centric and world-centric.
     """
 
+    # These attributes link the class to the event types and names
+    census_name = 'PlayerLogout'
+    event_name = 'player_logout'
+    event_type = 12
+
     def __init__(self, payload: dict) -> None:
         # Run the Event object's init method
         super().__init__(payload=payload)
@@ -564,13 +645,13 @@ class PlayerLogout(Event):
 
     @property
     def character(self) -> Character:
-        return Character.get(id=self.character_id)
         """The Character that logged out."""
+        return Character.get(id_=self.character_id)
 
     @property
     def world(self) -> World:
-        return World.get(id=self.world_id)
         """The World (server) the character logged out of."""
+        return World.get(id_=self.world_id)
 
 
 class SkillAdded(Event):
@@ -578,6 +659,11 @@ class SkillAdded(Event):
 
     This is a character-centric event.
     """
+
+    # These attributes link the class to the event types and names
+    census_name = 'SkillAdded'
+    event_name = 'skill_added'
+    event_type = 13
 
     def __init__(self, payload: dict) -> None:
         # Run the Event object's init method
@@ -591,23 +677,23 @@ class SkillAdded(Event):
 
     @property
     def character(self) -> Character:
-        return Character.get(id=self.character_id)
         """The Character that gained a skill."""
+        return Character.get(id_=self.character_id)
 
     @property
     def skill(self) -> Skill:
-        return Skill.get(id=self.skill_id)
         """The Skill gained by the character."""
+        return Skill.get(id_=self.skill_id)
 
     @property
     def world(self) -> World:
-        return World.get(id=self.world_id)
         """The World (server) the character gained the skill on."""
+        return World.get(id_=self.world_id)
 
     @property
     def zone(self) -> Zone:
-        return Zone.get(id=self.zone_id)
         """The Zone (continent) the character gained the skill on."""
+        return Zone.get(id_=self.zone_id)
 
 
 class VehicleDestroy(Event):  # pylint: disable=too-many-instance-attributes
@@ -618,6 +704,11 @@ class VehicleDestroy(Event):  # pylint: disable=too-many-instance-attributes
 
     This is a character-centric event.
     """
+
+    # These attributes link the class to the event types and names
+    census_name = 'VehicleDestroy'
+    event_name = 'vehicle_destroyed'
+    event_type = 14
 
     def __init__(self, payload: dict) -> None:
         # Run the Event object's init method
@@ -636,49 +727,56 @@ class VehicleDestroy(Event):  # pylint: disable=too-many-instance-attributes
         self.zone_id = int(payload['zone_id'])
 
     @property
-    def attacker(self) -> Character:
-        return Character.get(id=self.attacker_id)
+    def attacker(self) -> Optional[Character]:
+        """The Character that destroyed the vehicle.
+
+        Might be None.
+        """
+        return Character.get(id_=self.attacker_id)
 
     @property
     def attacker_loadout(self) -> Loadout:
-        return Loadout.get(id=self.attacker_loadout_id)
         """The Loadout of the killing player."""
+        return Loadout.get(id_=self.attacker_loadout_id)
 
     @property
-    def attacker_vehicle(self) -> Vehicle:
-        return Vehicle.get(id=self.attacker_vehicle_id)
+    def attacker_vehicle(self) -> Optional[Vehicle]:
+        """The Vehicle of the killing player.
+
+        Might be None."""
+        return Vehicle.get(id_=self.attacker_vehicle_id)
 
     @property
     def attacker_weapon(self) -> Weapon:
-        return Weapon.get(id=self.attacker_weapon_id)
         """The Weapon of the killing player."""
+        return Weapon.get(id_=self.attacker_weapon_id)
 
     @property
     def facility(self) -> Region:
-        return Region.get(id=self.facility_id)
         """The Region the vehicle was destroyed on."""
+        return Region.get(id_=self.facility_id)
 
     @property
     def faction(self) -> Faction:
-        return Faction.get(id=self.faction_id)
         """No information known."""
+        return Faction.get(id_=self.faction_id)
 
     @property
     def victim(self) -> Character:
-        return Character.get(id=self.victim_id)
         """The Character that owned the destroyed vehicle."""
+        return Character.get(id_=self.victim_id)
 
     @property
     def victim_vehicle(self) -> Vehicle:
-        return Vehicle.get(id=self.victim_vehicle_id)
         """The Vehicle type that was destroyed."""
+        return Vehicle.get(id_=self.victim_vehicle_id)
 
     @property
     def world(self) -> World:
-        return World.get(id=self.world_id)
         """The World (server) the vehicle was destroyed on."""
+        return World.get(id_=self.world_id)
 
     @property
     def zone(self) -> Zone:
-        return Zone.get(id=self.zone_id)
         """The Zone (continent) the vehicle was destroyed on."""
+        return Zone.get(id_=self.zone_id)

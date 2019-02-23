@@ -5,10 +5,9 @@ as unsubscribing from unused events after being disabled or removed.
 """
 
 import json
-from typing import Callable, List, Optional
+from typing import Callable, List, Union
 
-from .events import EventType, event_type_to_census
-from .typing import CharacterOrID, WorldOrID
+from .events import EventType, type_to_census_name
 from ..object_models.ps2 import Character, World
 
 
@@ -44,8 +43,8 @@ class EventListener():
     """
 
     def __init__(self, *args: EventType, function: Callable,
-                 characters: Optional[List[CharacterOrID]] = [],
-                 worlds: Optional[List[WorldOrID]] = []) -> None:
+                 characters: List[Union[int, Character]] = [],
+                 worlds: List[Union[int, World]] = []) -> None:
 
         # Raise an error if no arguments were provided
         if not args:
@@ -62,18 +61,20 @@ class EventListener():
         # Create lists of IDs
         if self.characters:
             characters = [c for c in self.characters if isinstance(c, int)]
-            characters.extend([int(c.id) for c in self.characters if isinstance(c, Character)])
+            characters.extend(
+                [int(c.id_) for c in self.characters if isinstance(c, Character)])
         else:
             characters = []
 
         if self.worlds:
             worlds = [w for w in self.worlds if isinstance(w, int)]
-            worlds.extend([int(w.id) for w in self.worlds if isinstance(w, World)])
+            worlds.extend([int(w.id_)
+                           for w in self.worlds if isinstance(w, World)])
         else:
             worlds = []
 
         # Serialize the event types
-        events = [event_type_to_census(e) for e in self.events]
+        events = [type_to_census_name(e) for e in self.events]
 
         # Generate the dictionary
         data: dict = {'action': 'subscribe',

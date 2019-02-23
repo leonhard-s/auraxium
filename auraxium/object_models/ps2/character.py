@@ -1,7 +1,7 @@
 from datetime import datetime
 
 from ...base_api import Query
-from ..datatypes import CachableDataType
+from ..datatypes import DataType
 from .currency import Currency
 from .faction import Faction
 from .image import Image
@@ -11,7 +11,7 @@ from .world import World
 from ..exceptions import NoMatchesFoundError
 
 
-class Character(CachableDataType):
+class Character(DataType):
     """A PlanetSide 2 character.
 
     Characters are players, as well as the owners of items.
@@ -39,8 +39,8 @@ class Character(CachableDataType):
     #     weapon_stat
     #     weapon_stat_by_faction
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.asp_rank = None
@@ -73,13 +73,13 @@ class Character(CachableDataType):
         try:
             return self._currency
         except AttributeError:
-            data = Query(collection='characters_currency', character_id=self.id).get()
+            data = Query(collection='characters_currency', character_id=self.id_).get()
             self._currency = Currency.list(ids=[c['currency_id'] for c in data])
             return self._currency
 
     @property
     def faction(self):
-        return Faction.get(id=self._faction_id)
+        return Faction.get(id_=self._faction_id)
 
     @staticmethod
     def get_by_name(name, ignore_case=True):
@@ -93,32 +93,32 @@ class Character(CachableDataType):
         if not data:
             raise NoMatchesFoundError
         # Retrieve and return the object
-        instance = Character.get(id=data['character_id'], data=data)
+        instance = Character.get(id_=data['character_id'], data=data)
         return instance
 
     @property
     def head(self):
-        return Head(id=self._head_id)
+        return Head(id_=self._head_id)
 
     @property
     def profile(self):
-        return Profile.get(id=self._profile_id)
+        return Profile.get(id_=self._profile_id)
 
     @property
     def title(self):
-        return Title.get(id=self._title_id)
+        return Title.get(id_=self._title_id)
 
     @property
     def world(self):
         try:
             return self._world
         except AttributeError:
-            data = Query(collection='characters_world', character_id=self.id).get(single=True)
-            self._world = World.get(id=data['world_id'])
+            data = Query(collection='characters_world', character_id=self.id_).get(single=True)
+            self._world = World.get(id_=data['world_id'])
             return self._world
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.asp_rank = d['prestige_level']
@@ -155,8 +155,8 @@ class Head():
 
     """
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Hard-coded head names and icons
         head_image_ids = [1177, 1173, 1179, 1175, 1176, 1172, 1178, 1174]
@@ -165,10 +165,10 @@ class Head():
                       'Hispanic Female', 'Asian Female']
 
         # Set attribute values
-        self._image_id = head_image_ids[int(id) - 1]
-        self.name = head_names[int(id) - 1]
+        self._image_id = head_image_ids[int(id_) - 1]
+        self.name = head_names[int(id_) - 1]
 
     # Define properties
     @property
     def image(self):
-        return Image.get(id=self._image_id)
+        return Image.get(id_=self._image_id)

@@ -1,5 +1,5 @@
 from ...base_api import Query
-from ..datatypes import CachableDataType, EnumeratedDataType
+from ..datatypes import DataType
 from .item import Item
 from .projectile import Projectile
 from .ability import Ability
@@ -26,7 +26,7 @@ class AmmoSlot():
         self.weapon_slot_index = d['weapon_slot_index']
 
 
-class FireGroup(CachableDataType):
+class FireGroup(DataType):
     """The fire group for a weapon.
 
     A fire group groups represents a fire mode available to a given weapon.
@@ -36,8 +36,8 @@ class FireGroup(CachableDataType):
 
     _collection = 'fire_group'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.chamber_duration = None
@@ -53,12 +53,12 @@ class FireGroup(CachableDataType):
         try:
             return self._fire_modes
         except AttributeError:
-            data = Query(collection='fire_group_to_fire_mode', fire_group_id=self.id).get()
+            data = Query(collection='fire_group_to_fire_mode', fire_group_id=self.id_).get()
             self._fire_modes = FireMode.list(ids=[i['fire_mode_id'] for i in data])
             return self._fire_modes
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.chamber_duration = float(d.get(
@@ -74,7 +74,7 @@ class FireGroup(CachableDataType):
         self.can_chamber_ironsights = d.get('can_chamber_ironsights')
 
 
-class FireMode(CachableDataType):
+class FireMode(DataType):
     """A weapon fire mode.
 
     A fire mode contains detailed information about the how the firing
@@ -86,8 +86,8 @@ class FireMode(CachableDataType):
     _collection = 'fire_mode_2'
     _id_field = 'fire_mode_id'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self._ability_id = None
@@ -182,23 +182,23 @@ class FireMode(CachableDataType):
     # Define properties
     @property
     def ability(self):
-        return Ability.get(id=self._ability_id)
+        return Ability.get(id_=self._ability_id)
 
     @property
     def damage_direct_effect(self):
-        return Effect.get(id=self._damage_direct_effect_id)
+        return Effect.get(id_=self._damage_direct_effect_id)
 
     @property
     def damage_indirect_effect(self):
-        return Effect.get(id=self._damage_indirect_effect_id)
+        return Effect.get(id_=self._damage_indirect_effect_id)
 
     @property
     def fire_mode_type(self):
-        return FireModeType.get(id=self._fire_mode_type_id)
+        return FireModeType.get(id_=self._fire_mode_type_id)
 
     @property
     def player_state_group(self):
-        return PlayerStateGroup.get(id=self._player_state_group_id)
+        return PlayerStateGroup.get(id_=self._player_state_group_id)
 
     @property
     def projectile(self):
@@ -206,14 +206,14 @@ class FireMode(CachableDataType):
         try:
             return self._projectile
         except AttributeError:
-            query = Query(collection='fire_mode_to_projectile', fire_mode_id=self.id)
+            query = Query(collection='fire_mode_to_projectile', fire_mode_id=self.id_)
             query.join(type='projectile', inject_at='projectile')
             data = query.get(single=True)
-            self._projectile = Projectile.get(id=data['projectile_id'], data=data['projectile'])
+            self._projectile = Projectile.get(id_=data['projectile_id'], data=data['projectile'])
             return self._projectile
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self._ability_id = d.get('ability_id')
@@ -305,7 +305,7 @@ class FireMode(CachableDataType):
         self.zoom_default = d.get('zoom_default')
 
 
-class FireModeType(EnumeratedDataType):
+class FireModeType(DataType):
     """The fire mode type for a given fire mode.
 
     Fire mode types provide a basic classification of how a given weapon
@@ -316,20 +316,20 @@ class FireModeType(EnumeratedDataType):
 
     _collection = 'fire_mode_type'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.description = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.description = d.get('description')
 
 
-class Weapon(CachableDataType):
+class Weapon(DataType):
     """Contains information about a weapon.
 
     This d type can be seen as an extension to the corresponding `item`
@@ -340,8 +340,8 @@ class Weapon(CachableDataType):
 
     _collection = 'weapon'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self._ammo_slot = None  # Internal (See properties)
@@ -369,7 +369,7 @@ class Weapon(CachableDataType):
         try:
             return self._ammo_slot
         except AttributeError:
-            data = Query(collection='weapon_ammo_slot', weapon_id=self.id).get()
+            data = Query(collection='weapon_ammo_slot', weapon_id=self.id_).get()
             # NOTE: The following line is not an error, AmmoSlot does not have a list() method as
             # it does not generate any network traffic.
             self._ammo_slot = [AmmoSlot(a) for a in data]
@@ -381,7 +381,7 @@ class Weapon(CachableDataType):
         try:
             return self._attachments
         except AttributeError:
-            data = Query(collection='weapon_to_attachment', weapon_id=self.id).get()
+            data = Query(collection='weapon_to_attachment', weapon_id=self.id_).get()
             self._attachments = Item.list(ids=[i['item_id'] for i in data])
             return self._attachments
 
@@ -391,7 +391,7 @@ class Weapon(CachableDataType):
         try:
             return self._fire_groups
         except AttributeError:
-            data = Query(collection='weapon_to_fire_group', weapon_id=self.id).get()
+            data = Query(collection='weapon_to_fire_group', weapon_id=self.id_).get()
             self._fire_groups = FireGroup.list(ids=[f['fire_group_id'] for f in data])
             return self._fire_groups
 
@@ -401,10 +401,10 @@ class Weapon(CachableDataType):
         try:
             return self._item
         except AttributeError:
-            q = Query(collection='item_to_weapon', weapon_id=self.id)
+            q = Query(collection='item_to_weapon', weapon_id=self.id_)
             q.join(collection='item', inject_at='item_to_weapon')
             d = q.get(single=True)
-            self._item = Item.get(id=d['item_id'])
+            self._item = Item.get(id_=d['item_id'])
             return self._item
 
     @staticmethod
@@ -421,11 +421,11 @@ class Weapon(CachableDataType):
         except TypeError:
             raise NoMatchesFoundError
         # Retrieve and return the object
-        instance = Weapon.get(id=data['weapon_id'], data=data)
+        instance = Weapon.get(id_=data['weapon_id'], data=data)
         return instance
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.equip_time = float(d.get('equip_ms')) / \

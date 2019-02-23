@@ -1,25 +1,25 @@
-from ..datatypes import CachableDataType, NamedDataType
+from ..datatypes import DataType, NamedDataType
 from ..misc import LocalizedString
 
 
-class Title(CachableDataType, NamedDataType):
+class Title(DataType, NamedDataType):
     """A title.
 
-    A player title a player can equip. The title id "0" signifies that the
+    A player title a player can equip. The title id_ "0" signifies that the
     player has not selected any title.
 
     """
 
     _collection = 'title'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.name = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.name = LocalizedString(d['name'])

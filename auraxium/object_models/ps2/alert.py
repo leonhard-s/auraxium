@@ -1,8 +1,8 @@
-from ..datatypes import EnumeratedDataType, NamedDataType
+from ..datatypes import DataType, NamedDataType
 from ..misc import LocalizedString
 
 
-class Alert(EnumeratedDataType, NamedDataType):
+class Alert(DataType, NamedDataType):
     """An alert/event.
 
     An alert that can take place on Auraxis. Not all event types are
@@ -12,8 +12,8 @@ class Alert(EnumeratedDataType, NamedDataType):
 
     _collection = 'metagame_event'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.description = None
@@ -22,7 +22,7 @@ class Alert(EnumeratedDataType, NamedDataType):
         self.type = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.description = LocalizedString(d['description'])
@@ -36,7 +36,7 @@ class Alert(EnumeratedDataType, NamedDataType):
         self.type = alert_types[d['type']]
 
 
-class AlertState(EnumeratedDataType):
+class AlertState(DataType):
     """The state of an alert.
 
     Lists the states an alert can be in, like "started".
@@ -45,14 +45,14 @@ class AlertState(EnumeratedDataType):
 
     _collection = 'metagame_event_state'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.name = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.name = d['name']

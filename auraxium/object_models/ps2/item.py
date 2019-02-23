@@ -1,5 +1,5 @@
 from ...base_api import Query
-from ..datatypes import CachableDataType, EnumeratedDataType, NamedDataType
+from ..datatypes import DataType, NamedDataType
 from ..misc import LocalizedString
 from .ability import Ability
 from .faction import Faction
@@ -7,7 +7,7 @@ from .image import Image, ImageSet
 from .profile import Profile
 
 
-class Item(CachableDataType, NamedDataType):
+class Item(DataType, NamedDataType):
     """A PS2 item.
 
     An item is a player-bound entity in the game world. This includes obvious
@@ -18,8 +18,8 @@ class Item(CachableDataType, NamedDataType):
 
     _collection = 'item'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self._active_ability_id = None
@@ -40,39 +40,39 @@ class Item(CachableDataType, NamedDataType):
     # Define properties
     @property
     def active_ability(self):
-        return Ability.get(id=self._active_ability_id)
+        return Ability.get(id_=self._active_ability_id)
 
     @property
     def attachments(self):
         try:
             return self._attachments
         except AttributeError:
-            data = Query(collection='item_attachment', item_id=self.id).get()
+            data = Query(collection='item_attachment', item_id=self.id_).get()
             self._attachments = Item.list(ids=[i['attachment_item_id'] for i in data])
             return self._attachments
 
     @property
     def faction(self):
-        return Faction.get(id=self._faction_id)
+        return Faction.get(id_=self._faction_id)
 
     @property
     def image(self):
-        return Image.get(id=self._image_id)
+        return Image.get(id_=self._image_id)
 
     @property
     def image_set(self):
-        return ImageSet.get(id=self._image_set_id)
+        return ImageSet.get(id_=self._image_set_id)
 
     @property
     def passive_ability(self):
-        return Ability.get(id=self._passive_ability_id)
+        return Ability.get(id_=self._passive_ability_id)
 
     @property
     def profiles(self):
         try:
             return self._profiles
         except AttributeError:
-            data = Query(collection='item_profile', item_id=self.id).get()
+            data = Query(collection='item_profile', item_id=self.id_).get()
             self._profiles = Profile.list(ids=[i['profile_id'] for i in data])
             return self._profiles
 
@@ -81,10 +81,10 @@ class Item(CachableDataType, NamedDataType):
         from .skill import SkillSet
         # NOTE: Placing the import at the top would create a circular import,
         # hence why I placed it here instead.
-        return SkillSet(id=self._skill_set_id)
+        return SkillSet(id_=self._skill_set_id)
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self._active_ability_id = d.get('activatable_ability_id')
@@ -100,7 +100,7 @@ class Item(CachableDataType, NamedDataType):
         self._skill_set_id = d.get('skill_set_id')
 
 
-class ItemCategory(EnumeratedDataType, NamedDataType):
+class ItemCategory(DataType, NamedDataType):
     """The category of an item.
 
     Groups items into groups.
@@ -110,8 +110,8 @@ class ItemCategory(EnumeratedDataType, NamedDataType):
 
     _collection = 'item_category'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self._items = None  # Internal (See properties)
@@ -124,18 +124,18 @@ class ItemCategory(EnumeratedDataType, NamedDataType):
         try:
             return self._items
         except AttributeError:
-            data = Query(collection='item', item_category=self.id).get()
+            data = Query(collection='item', item_category=self.id_).get()
             self._items = Item.list(ids=[i['item_id'] for i in data])
             return self._items
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.name = LocalizedString(d['name'])
 
 
-class ItemType(EnumeratedDataType):
+class ItemType(DataType):
     """The type of item.
 
     This includes entries like "Attachment" or "Weapon", but also abstract
@@ -145,15 +145,15 @@ class ItemType(EnumeratedDataType):
 
     _collection = 'item_type'
 
-    def __init__(self, id):
-        self.id = id
+    def __init__(self, id_):
+        self.id_ = id_
 
         # Set default values
         self.code = None
         self.name = None
 
     def populate(self, data=None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.code = d['code']
