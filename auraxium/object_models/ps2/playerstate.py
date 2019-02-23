@@ -53,6 +53,10 @@ class PlayerStateGroup(DataType):
             self._player_states.sort(key=lambda ps: ps.player_state_id)
             return self._player_states
 
+    def populate(self, data=None):
+        # Do nothing; just here for technicalities' sake
+        pass
+
 
 class PlayerStateGroupEntry():
     """An entry within a player state group."""

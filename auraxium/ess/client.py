@@ -109,8 +109,8 @@ class Client():
                     await self.close()
                     await self.connect(service_id=service_id, namespace=namespace)
 
-    def event(self, *args: str, characters: Optional[List[Union[int, Character]]] = None,
-              worlds: Optional[List[Union[int, World]]] = None) -> Callable:
+    def event(self, *args: str, characters: List[Union[int, Character]] = [],
+              worlds: List[Union[int, World]] = []) -> Callable:
         """Decorator used to create ESS event listeners.
 
         The decorated function can either be a standard function or an
@@ -170,13 +170,10 @@ class Client():
             # Make sure the event names do not violate centricity
             for event_type in types_to_register:
 
-                if (characters is not None and not check_centricity(
-                        event_type, Centricity.CHARACTER)):
-                    raise ValueError(
-                        'Event type is not character-centric: {}'.format(event_type))
-                if worlds is not None and not check_centricity(event_type, Centricity.WORLD):
-                    raise ValueError(
-                        'Event type is not world-centric: {}'.format(event_type))
+                if characters and not check_centricity(event_type, Centricity.CHARACTER):
+                    raise ValueError('Event type is not character-centric: {}'.format(event_type))
+                if worlds and not check_centricity(event_type, Centricity.WORLD):
+                    raise ValueError('Event type is not world-centric: {}'.format(event_type))
 
             # Create and add a new event listener
             listener = EventListener(

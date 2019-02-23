@@ -1,4 +1,4 @@
-from ..datatypes import DataType, DataType
+from ..datatypes import DataType
 
 
 class Reward(DataType):

@@ -46,7 +46,7 @@ class Ability(DataType):  # pylint: disable=too-many-instance-attributes
         return ResourceType.get(id_=self._resource_type_id)
 
     def populate(self, data: Optional[dict] = None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self._ability_type_id = d.get('ability_type_id')
@@ -94,7 +94,7 @@ class AbilityType(DataType):
         self.string: List[Optional[str]] = [None for i in range(4)]
 
     def populate(self, data: Optional[Dict] = None):
-        d = data if data is not None else super()._get_data(self.id)
+        d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.description = d.get('description', '')
