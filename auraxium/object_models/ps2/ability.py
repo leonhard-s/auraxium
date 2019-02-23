@@ -1,8 +1,9 @@
 from typing import Dict, List, Optional
 
 from ..datatypes import DataType
-from .resource import ResourceType
 from ..typing import Param
+
+from .resource import ResourceType
 
 
 class Ability(DataType):  # pylint: disable=too-many-instance-attributes
@@ -67,10 +68,10 @@ class Ability(DataType):  # pylint: disable=too-many-instance-attributes
         self.reuse_delay = (int(float(d.get('reuse_delay_msec')) / 1000.0)
                             if d.get('reuse_delay_msec') is not None else None)
 
-        self.param = [d['param'+str(i)] if d.get('param'+str(i)) is not None
+        self.param = [d['param'+str(i+1)] if d.get('param'+str(i+1)) is not None
                       else None for i in range(14)]
-        self.string = [d['param'+str(i)] if d.get('param'+str(i)) is not None
-                       else None for i in range(14)]
+        self.string = [d['param'+str(i+1)] if d.get('param'+str(i+1)) is not None
+                       else None for i in range(4)]
 
         return self
 

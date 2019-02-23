@@ -1,4 +1,9 @@
+from typing import List
+
 from ..datatypes import DataType
+from ..typing import Param
+
+
 from .ability import Ability
 from .resist import ResistType
 from .target import TargetType
@@ -24,11 +29,8 @@ class Effect(DataType):
         self.is_drain = 0
         self._resist_type_id = 0
         self._target_type_id = 0
-        # Set default values for attributes "param1" through "param13"
-        s = ''
-        for i in range(13):
-            s += 'self.param{} = None\n'.format(i + 1)
-        exec(s)
+
+        self.param: List[Param] = [None for i in range(13)]
 
     # Define properties
     @property
@@ -57,11 +59,8 @@ class Effect(DataType):
         self.is_drain = d.get('is_drain')
         self._resist_type_id = d.get('resist_type_id')
         self._target_type_id = d.get('target_type_id')
-        # Set attributes "param1" through "param13"
-        s = ''
-        for i in range(13):
-            s += 'self.param{0} = d.get(\'param{0}\')\n'.format(i + 1)
-        exec(s)
+
+        self.param: List[Param] = [None for i in range(13)]
 
 
 class EffectType(DataType):
@@ -79,19 +78,14 @@ class EffectType(DataType):
 
         # Set default values
         self.description = None
-        # Set default values for attributes "param1" through "param13"
-        s = ''
-        for i in range(14):
-            s += 'self.param{} = None\n'.format(i + 1)
-        exec(s)
+
+        self.param: List[Param] = [None for i in range(13)]
 
     def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.description = d.get('description')
-        # Set attributes "param1" through "param13"
-        s = ''
-        for i in range(14):
-            s += 'self.param{0} = d.get(\'param{0}\')\n'.format(i + 1)
-        exec(s)
+
+        self.param = [d['param' + str(i + 1)] if d.get('param' + str(i + 1))
+                      is not None else None for i in range(13)]

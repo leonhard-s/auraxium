@@ -1,4 +1,7 @@
+from typing import List
+
 from ..datatypes import DataType
+from ..typing import Param
 
 
 class Objective(DataType):
@@ -17,11 +20,8 @@ class Objective(DataType):
         # Set default values
         self.objective_group_id = None
         self._objective_type_id = None
-        # Set default values for attributes "param1" through "param13"
-        s = ''
-        for i in range(13):
-            s += 'self.param{} = None\n'.format(i + 1)
-        exec(s)
+
+        self.param: List[Param] = [None for i in range(13)]
 
     # Define properties
     @property
@@ -34,11 +34,9 @@ class Objective(DataType):
         # Set attribute values
         self.objective_group_id = d.get('objective_group_id')
         self._objective_type_id = d['objective_type_id']
-        # Set attributes "param1" through "param13"
-        s = ''
-        for i in range(13):
-            s += 'self.param{0} = d.get(\'param{0}\')\n'.format(i + 1)
-        exec(s)
+
+        self.param = [d['param' + str(i + 1)] if d.get('param' + str(i + 1))
+                      is not None else None for i in range(13)]
 
 
 class ObjectiveType(DataType):
@@ -56,19 +54,14 @@ class ObjectiveType(DataType):
 
         # Set default values
         self.description = None
-        # Set default values for attributes "param1" through "param13"
-        s = ''
-        for i in range(13):
-            s += 'self.param{} = None\n'.format(i + 1)
-        exec(s)
+
+        self.param: List[Param] = [None for i in range(13)]
 
     def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.description = d['description']
-        # Set attributes "param1" through "param13"
-        s = ''
-        for i in range(13):
-            s += 'self.param{0} = d.get(\'param{0}\')\n'.format(i + 1)
-        exec(s)
+
+        self.param = [d['param' + str(i + 1)] if d.get('param' + str(i + 1))
+                      is not None else None for i in range(13)]

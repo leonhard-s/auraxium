@@ -1,6 +1,9 @@
+from typing import List
 from ..datatypes import DataType, NamedDataType
-from .ability import Ability
 from ..misc import LocalizedString
+from ..typing import Param
+
+from .ability import Ability
 
 
 class Zone(DataType, NamedDataType):
@@ -46,16 +49,9 @@ class ZoneEffect(DataType):
         # Set default values
         self._ability_id = None
         self._zone_effect_type_id = None
-        # Set default values for fields "param1" through "param14"
-        s = ''
-        for i in range(14):
-            s += 'self.param{0} = None\n'.format(i + 1)
-        exec(s)
-        # Set default values for fields "string1" through "string4"
-        s = ''
-        for i in range(4):
-            s += 'self.string{0} = None\n'.format(i + 1)
-        exec(s)
+
+        self.param: List[Param] = [None for i in range(14)]
+        self.string: List[str] = [None for i in range(4)]
 
     # Define properties
     @property
@@ -72,16 +68,11 @@ class ZoneEffect(DataType):
         # Set attribute values
         self._ability_id = d.get('ability_id')
         self._zone_effect_type_id = d['zone_effect_type_id']
-        # Set attributes "param1" through "param14"
-        s = ''
-        for i in range(14):
-            s += 'self.param{0} = d.get(\'param{0}\')\n'.format(i + 1)
-        exec(s)
-        # Set attributes "string1" through "string4
-        s = ''
-        for i in range(4):
-            s += 'self.string{0} = d.get(\'string{0}\')\n'.format(i + 1)
-        exec(s)
+
+        self.param = [d['param' + str(i + 1)] if d.get('param' + str(i + 1))
+                      is not None else None for i in range(13)]
+        self.string = [d['string' + str(i + 1)] if d.get('string' + str(i + 1))
+                       is not None else None for i in range(4)]
 
 
 class ZoneEffectType(DataType):
@@ -99,29 +90,17 @@ class ZoneEffectType(DataType):
 
         # Set default values
         self.description = None
-        # Set default values for fields "param1" through "param14"
-        s = ''
-        for i in range(14):
-            s += 'self.param{0} = None\n'.format(i + 1)
-        exec(s)
-        # Set default values for fields "string1" through "string4"
-        s = ''
-        for i in range(4):
-            s += 'self.string{0} = None\n'.format(i + 1)
-        exec(s)
+
+        self.param: List[Param] = [None for i in range(14)]
+        self.string: List[str] = [None for i in range(4)]
 
     def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id_)
 
         # Set attribute values
         self.description = d.get('description')
-        # Set attributes "param1" through "param14"
-        s = ''
-        for i in range(14):
-            s += 'self.param{0} = d.get(\'param{0}\')\n'.format(i + 1)
-        exec(s)
-        # Set attributes "string1" through "string4
-        s = ''
-        for i in range(4):
-            s += 'self.string{0} = d.get(\'string{0}\')\n'.format(i + 1)
-        exec(s)
+
+        self.param = [d['param' + str(i + 1)] if d.get('param' + str(i + 1))
+                      is not None else None for i in range(13)]
+        self.string = [d['string' + str(i + 1)] if d.get('string' + str(i + 1))
+                       is not None else None for i in range(4)]

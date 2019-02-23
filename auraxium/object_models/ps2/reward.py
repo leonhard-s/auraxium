@@ -1,4 +1,7 @@
+from typing import List
+
 from ..datatypes import DataType
+from ..typing import Param
 
 
 class Reward(DataType):
@@ -18,11 +21,8 @@ class Reward(DataType):
         self.count_max = None
         self.count_min = None
         self._reward_type_id = None
-        # Set default values for attributes "param1" through "param5"
-        s = ''
-        for i in range(5):
-            s += 'self.param{} = None\n'.format(i + 1)
-        exec(s)
+
+        self.param: List[Param] = [None for i in range(5)]
 
     # Define properties
     @property
@@ -36,11 +36,9 @@ class Reward(DataType):
         self.count_max = d.get('count_max')
         self.count_min = d.get('count_min')
         self._reward_type_id = d['reward_type_id']
-        # Set attributes "param1" through "param5"
-        s = ''
-        for i in range(5):
-            s += 'self.param{0} = d.get(\'param{0}\')\n'.format(i + 1)
-        exec(s)
+
+        self.param = [d['param' + str(i + 1)] if d.get('param' + str(i + 1))
+                      is not None else None for i in range(5)]
 
 
 class RewardType(DataType):
@@ -61,11 +59,8 @@ class RewardType(DataType):
         self.count_max = None
         self.count_min = None
         self.description = None
-        # Set default values for attributes "param1" through "param5"
-        s = ''
-        for i in range(5):
-            s += 'self.param{} = None\n'.format(i + 1)
-        exec(s)
+
+        self.param: List[Param] = [None for i in range(5)]
 
     def populate(self, data=None):
         d = data if data is not None else super()._get_data(self.id_)
@@ -74,8 +69,6 @@ class RewardType(DataType):
         self.count_max = d.get('count_max')
         self.count_min = d.get('count_min')
         self.description = d['description']
-        # Set attributes "param1" through "param5"
-        s = ''
-        for i in range(5):
-            s += 'self.param{0} = d.get(\'param{0}\')\n'.format(i + 1)
-        exec(s)
+
+        self.param = [d['param' + str(i + 1)] if d.get('param' + str(i + 1))
+                      is not None else None for i in range(5)]
