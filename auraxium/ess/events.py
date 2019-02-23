@@ -1,3 +1,7 @@
+"""Defines the base Event class and provides a number of helper
+functions to convert event names to their type or generate the
+appropriate event object.
+"""
 
 from datetime import datetime
 
@@ -12,9 +16,20 @@ _STRINGS = ['achievement_earned', 'battle_rank_up', 'continent_lock', 'continent
 
 
 class Event():  # pylint: disable=too-few-public-methods
-    """An event received by the ESS client.
+    """Base class for all event objects used by the ESS.
 
-    Base class for all game-specific event classes."""
+    Event Objects contain common information like the time the event
+    was received or the type of event, as well as a number of event
+    type specific fields.
+
+    Do not instantiate this class manually; use `get` factory method
+    instead.
+
+    Parameters
+    ----------
+    `payload`: The payload dictionary to populate the Event with.
+    """
+
 
     def __init__(self, payload: dict) -> None:
         self.name = event_type_to_string(census_to_event_type(payload['event_name']))

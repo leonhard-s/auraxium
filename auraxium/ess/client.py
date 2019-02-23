@@ -1,3 +1,9 @@
+"""This module contains the definition for the ESS Client object.
+
+It handles basic operations like connecting or disconnecting and
+processes responses received through the websocket connection.
+"""
+
 import asyncio
 import collections
 import json
@@ -20,6 +26,16 @@ logger = logging.getLogger('auraxium.ess')  # pylint: disable=invalid-name
 
 
 class Client():
+    """The ESS client object.
+
+    This object handles the websocket connection itself and parses any
+    responses received, running the applicable `EventListeners`.
+
+    Parameters
+    ----------
+    `loop` (Optional): The event loop to use.
+    """
+
     def __init__(self, loop: Optional[asyncio.AbstractEventLoop] = None) -> None:
         self._event_listeners: List[EventListener] = []
         self._is_open = False
@@ -32,8 +48,12 @@ class Client():
                                              'latency_last_saved latency_list')
         self._stats = ClientStats(0, [], 0, [])
 
-    async def close(self):
-        """Closes the websocket connection and stops the client."""
+    async def close(self) -> None:
+        """Closes the websocket connection of the client.
+
+        The client can be restarted by running the `Client.connect()`
+        method.
+        """
 
         if not self._is_open:
             return
@@ -41,9 +61,19 @@ class Client():
             await self._websocket.close()
 
     async def connect(self, service_id: str = 's:example', namespace: str = 'ps2') -> None:
-        """Connects to the ESS using the namespaces given.
+        """Connect to the event streaming service.
 
-        The namespace defaults to 'ps2' if omitted.
+        Establishes a connection with the ESS. This method will loop
+        until the `Client.close()` method is called.
+
+        Parameters
+        ----------
+        `service_id` (Optional): The service ID to use with the event
+        client.
+
+        `namespace` (Optional): The namespace (or game) to connect to.
+        Currently, only PS2 namespaces are supported. Defaults to
+        "ps2".
         """
 
         # If the client is already running, restart it
@@ -131,10 +161,15 @@ class Client():
         return inner_decorator
 
     def _process_response(self, response: str) -> None:
-        """Processes the response received through the ESS.
+        """Processes a response received through the ESS.
 
-        Depending on the type of message received, this will cause any
-        number of event listeners to fire.
+        Depending on the type of message received, this will either
+        update the internal statistics of the client or trigger any
+        number of matching event listeners to fire.
+
+        Parameters
+        ----------
+        `response`: The JSON string received by the client.
         """
 
         data = json.loads(response)

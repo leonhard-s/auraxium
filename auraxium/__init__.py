@@ -1,3 +1,8 @@
+"""The auraxium wrapper module for the DBG census API.
+
+For usage instructions and additional information, visit
+https://github.com/leonhard-s/auraxium/."""
+
 from .base_api import Query
 from .object_models import ps2
 

@@ -1,3 +1,5 @@
+"""Provides the classes and methods used for the object model."""
+
 from ..base_api import Query
 from .caching import Cache
 from .misc import LocalizedString
@@ -127,6 +129,21 @@ class NamedDataType():
 
     @classmethod
     def get_by_name(cls, name, locale, ignore_case=True):
+        """Returns the object matching the name given.
+
+        This will only work on exact matches, use the `Query` object
+        for fuzzy searches.
+
+        Parameters
+        ----------
+        `name`: The name to search for
+
+        `locale`: The locale the name given is using
+
+        `ignore_case` (Optional): Whether to ignore case when looking
+        up the object. Defaults to True.
+        """
+
         # Generate request
         if ignore_case:
             q = Query(collection=cls._collection).case(False)

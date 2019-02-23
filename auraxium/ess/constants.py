@@ -1,8 +1,10 @@
+"""Contains constants and Enums used by the ESS submodule."""
+
 from enum import Enum
 
 
 class EventType(Enum):
-    """Enumerates all event types the ESS might return."""
+    """Enumerates all known types of events."""
 
     ACHIEVEMENT_EARNED = 0
     BATTLE_RANK_UP = 1
@@ -22,7 +24,12 @@ class EventType(Enum):
 
 
 class Centricity(Enum):
-    """Enumerates the available centricities event types can have."""
+    """Enumerates the centricities event types can have.
+
+    The centricity of an event type decides whether it can be filtered
+    or subscribed to by that object type (you cannot subscribe
+    to "MetagameEvent" using a list of characters, etc.).
+    """
 
     CHARACTER = 0
     WORLD = 1

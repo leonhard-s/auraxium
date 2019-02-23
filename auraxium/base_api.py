@@ -71,6 +71,7 @@ class Query():  # pylint: disable=too-many-public-methods
         return self
 
     def count(self):
+        """Returns the number of matching items."""
         url = self.generate_url(verb='count')
         return retrieve(url, count=True)
 

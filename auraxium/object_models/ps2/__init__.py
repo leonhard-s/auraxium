@@ -1,3 +1,5 @@
+"""Object representations of the data types used by PlanetSide 2."""
+
 from .ability import Ability, AbilityType
 from .achievement import Achievement
 from .alert import AlertState, Alert

@@ -1,8 +1,8 @@
-"""Contains object representations of the PlanetSide 2 (PC) event types.
+"""Contains object representations of the PlanetSide 2 event types.
 
-All classed defined herein are subclassed to the "Event" class. They are all
-created by feeding them with the "payload" dictionary received by the event
-streaming service.
+All classed defined herein are subclassed to the "Event" class. They
+are all created by feeding them with the "payload" dictionary received
+by the event streaming service.
 """
 
 from ..base_api import Query
@@ -32,18 +32,22 @@ class AchievementEarned(Event):
     @property
     def achievement(self) -> Achievement:
         return Achievement.get(id=self.achievement_id)
+        """The Achievement the character has earned."""
 
     @property
     def character(self) -> Character:
         return Character.get(id=self.character_id)
+        """The Character that earned the achievement."""
 
     @property
     def world_id(self) -> World:
         return World.get(id=self.world_id)
+        """The World (server) the achievement was earned on."""
 
     @property
     def zone_id(self) -> Zone:
         return Zone.get(id=self.zone_id)
+        """The Zone (continent) the achievement was earned on."""
 
 
 class BattleRankUp(Event):
@@ -66,14 +70,17 @@ class BattleRankUp(Event):
     @property
     def character(self) -> Character:
         return Character.get(id=self.character_id)
+        """The Character that earned a battle rank."""
 
     @property
     def world(self) -> World:
         return World.get(id=self.world_id)
+        """The World (server) the battle rank was earned on."""
 
     @property
     def zone(self) -> Zone:
         return Zone.get(id=self.zone_id)
+        """The Zone (continent) the battle rank was earned on."""
 
 
 class ContinentLock(Event):  # pylint: disable=too-many-instance-attributes
@@ -100,22 +107,27 @@ class ContinentLock(Event):  # pylint: disable=too-many-instance-attributes
     @property
     def metagame_event(self) -> Alert:
         return Alert.get(id=self.metagame_event_id)
+        """The Alert that locked the continent."""
 
     @property
     def previous_faction(self) -> Faction:
         return Faction.get(id=self.previous_faction_id)
+        """The Faction that owned the continent until now."""
 
     @property
     def triggering_faction(self) -> Faction:
         return Faction.get(id=self.triggering_faction_id)
+        """The Faction that captured the continent."""
 
     @property
     def world(self) -> World:
         return World.get(id=self.world_id)
+        """The World (server) the continent was locked on."""
 
     @property
     def zone(self) -> Zone:
         return Zone.get(id=self.zone_id)
+        """The Zone (continent) that was locked."""
 
 
 class ContinentUnlock(Event):  # pylint: disable=too-many-instance-attributes
@@ -142,22 +154,27 @@ class ContinentUnlock(Event):  # pylint: disable=too-many-instance-attributes
     @property
     def metagame_event(self) -> Alert:
         return Alert.get(id=self.metagame_event_id)
+        """The Alert that unlocked the continent."""
 
     @property
     def previous_faction(self) -> Faction:
         return Faction.get(id=self.previous_faction_id)
+        """No information known."""
 
     @property
     def triggering_faction(self) -> Faction:
         return Faction.get(id=self.triggering_faction_id)
+        """No information known."""
 
     @property
     def world(self) -> World:
         return World.get(id=self.world_id)
+        """The World (server) the continent was unlocked on."""
 
     @property
     def zone(self) -> Zone:
         return Zone.get(id=self.zone_id)
+        """The Zone (continent) that was unlocked."""
 
 
 class Death(Event):  # pylint: disable=too-many-instance-attributes
@@ -190,14 +207,17 @@ class Death(Event):  # pylint: disable=too-many-instance-attributes
     @property
     def attacker(self) -> Character:
         return Character.get(id=self.attacker_id)
+        """The Character that killed the victim."""
 
     @property
     def attacker_fire_mode(self) -> FireMode:
         return FireMode.get(id=self.attacker_fire_mode_id)
+        """The FireMode used to kill the victim."""
 
     @property
     def attacker_loadout(self) -> Loadout:
         return Loadout.get(id=self.attacker_loadout_id)
+        """The Loadout the killing player was using."""
 
     @property
     def attacker_vehicle(self) -> Vehicle:
@@ -210,10 +230,12 @@ class Death(Event):  # pylint: disable=too-many-instance-attributes
     @property
     def victim(self) -> Character:
         return Character.get(id=self.victim_id)
+        """The Character that has died."""
 
     @property
     def victim_loadout(self) -> Loadout:
         return Loadout.get(id=self.victim_loadout_id)
+        """The Loadout the victim was using."""
 
     @property
     def victim_vehicle(self) -> Vehicle:
@@ -222,10 +244,12 @@ class Death(Event):  # pylint: disable=too-many-instance-attributes
     @property
     def world(self) -> World:
         return World.get(id=self.world_id)
+        """The World (continent) the player died on."""
 
     @property
     def zone(self) -> Zone:
         return Zone.get(id=self.zone_id)
+        """The Zone (continent) the player died on."""
 
 
 class FacilityControl(Event):  # pylint: disable=too-many-instance-attributes
@@ -249,6 +273,7 @@ class FacilityControl(Event):  # pylint: disable=too-many-instance-attributes
 
     @property
     def region(self) -> Region:
+        """The Region (facility) that was captured."""
         from .. import namespace
         q = Query('map_region', namespace=namespace, facility_id=self.facility_id)
         q.join('region', inject_at='region', on='map_region_id', to='region_id')
@@ -258,22 +283,27 @@ class FacilityControl(Event):  # pylint: disable=too-many-instance-attributes
     @property
     def new_faction(self) -> Faction:
         return Faction.get(id=self.new_faction_id)
+        """The Faction that captured the facility."""
 
     @property
     def old_faction(self) -> Faction:
         return Faction.get(id=self.old_faction_id)
+        """The Faction that lost the facility."""
 
     @property
     def outfit(self) -> Outfit:
         return Outfit.get(id=self.outfit_id)
+        """The Outfit that captured the facility."""
 
     @property
     def world(self) -> World:
         return World.get(id=self.world_id)
+        """The World (server) the facility was captured on."""
 
     @property
     def zone(self) -> Zone:
         return Zone.get(id=self.zone_id)
+        """The Zone (continent) of the facility that was captured."""
 
 
 class GainExperience(Event):
@@ -301,22 +331,27 @@ class GainExperience(Event):
     @property
     def character(self) -> Character:
         return Character.get(id=self.character_id)
+        """The Character that gained experience."""
 
     @property
     def experience(self) -> Experience:
         return Experience.get(id=self.experience_id)
+        """The type of Experience the player got."""
 
     @property
     def loadout(self) -> Loadout:
         return Loadout.get(id=self.loadout_id)
+        """The Loadout of the player that gained experience."""
 
     @property
     def world(self) -> World:
         return World.get(id=self.world_id)
+        """The World (continent) the player gained experience on."""
 
     @property
     def zone(self) -> Zone:
         return Zone.get(id=self.zone_id)
+        """The Zone (continent) the player gained experience on."""
 
 
 class ItemAdded(Event):
@@ -343,18 +378,22 @@ class ItemAdded(Event):
     @property
     def character(self) -> Character:
         return Character.get(id=self.character_id)
+        """The Character that gained the item."""
 
     @property
     def item(self) -> Item:
         return Item.get(id=self.item_id)
+        """The Item the character gained."""
 
     @property
     def world(self) -> World:
         return World.get(id=self.world_id)
+        """The World (server) the character gained experience on."""
 
     @property
     def zone(self) -> Zone:
         return Zone.get(id=self.zone_id)
+        """The Zone (continent) the character gained experience on."""
 
 
 class MetagameEvent(Event):  # pylint: disable=too-many-instance-attributes
@@ -380,18 +419,22 @@ class MetagameEvent(Event):  # pylint: disable=too-many-instance-attributes
     @property
     def metagame_event(self) -> Alert:
         return Alert.get(id=self.metagame_event_id)
+        """The type of Alert that started/ended."""
 
     @property
     def metagame_event_state(self) -> AlertState:
         return AlertState.get(id=self.metagame_event_state)
+        """The AlertState of the alert."""
 
     @property
     def world(self) -> World:
         return World.get(id=self.world_id)
+        """The World (server) the event started/ended on."""
 
     @property
     def zone(self) -> Zone:
         return Zone.get(id=self.zone_id)
+        """The Zone (continent) the event started/ended on."""
 
 
 class PlayerFacilityCapture(Event):
@@ -414,22 +457,27 @@ class PlayerFacilityCapture(Event):
     @property
     def character(self) -> Character:
         return Character.get(id=self.character_id)
+        """The Character that captured the facility."""
 
     @property
     def facility(self) -> Faction:
         return Region.get(id=self.facility_id)
+        """The Region the character captured."""
 
     @property
     def outfit(self) -> Outfit:
         return Outfit.get(id=self.outfit_id)
+        """The Outfit that captured the facility."""
 
     @property
     def world(self) -> World:
         return World.get(id=self.world_id)
+        """The World (server) the facility was captured on."""
 
     @property
     def zone(self) -> Zone:
         return Zone.get(id=self.zone_id)
+        """The Zone (continent) of the facility."""
 
 
 class PlayerFacilityDefend(Event):
@@ -452,22 +500,27 @@ class PlayerFacilityDefend(Event):
     @property
     def character(self) -> Character:
         return Character.get(id=self.character_id)
+        """The Character that captured the facility."""
 
     @property
     def facility(self) -> Region:
         return Region.get(id=self.facility_id)
+        """The Region the character captured."""
 
     @property
     def outfit(self) -> Outfit:
         return Outfit.get(id=self.outfit_id)
+        """The Outfit that captured the facility."""
 
     @property
     def world(self) -> World:
         return World.get(id=self.world_id)
+        """The World (server) the facility was captured on."""
 
     @property
     def zone(self) -> Zone:
         return Zone.get(id=self.zone_id)
+        """The Zone (continent) of the facility."""
 
 
 class PlayerLogin(Event):
@@ -487,10 +540,12 @@ class PlayerLogin(Event):
     @property
     def character(self) -> Character:
         return Character.get(id=self.character_id)
+        """The Character that logged in."""
 
     @property
     def world(self) -> World:
         return World.get(id=self.world_id)
+        """The World (server) the character logged into."""
 
 
 class PlayerLogout(Event):
@@ -510,10 +565,12 @@ class PlayerLogout(Event):
     @property
     def character(self) -> Character:
         return Character.get(id=self.character_id)
+        """The Character that logged out."""
 
     @property
     def world(self) -> World:
         return World.get(id=self.world_id)
+        """The World (server) the character logged out of."""
 
 
 class SkillAdded(Event):
@@ -535,18 +592,22 @@ class SkillAdded(Event):
     @property
     def character(self) -> Character:
         return Character.get(id=self.character_id)
+        """The Character that gained a skill."""
 
     @property
     def skill(self) -> Skill:
         return Skill.get(id=self.skill_id)
+        """The Skill gained by the character."""
 
     @property
     def world(self) -> World:
         return World.get(id=self.world_id)
+        """The World (server) the character gained the skill on."""
 
     @property
     def zone(self) -> Zone:
         return Zone.get(id=self.zone_id)
+        """The Zone (continent) the character gained the skill on."""
 
 
 class VehicleDestroy(Event):  # pylint: disable=too-many-instance-attributes
@@ -581,6 +642,7 @@ class VehicleDestroy(Event):  # pylint: disable=too-many-instance-attributes
     @property
     def attacker_loadout(self) -> Loadout:
         return Loadout.get(id=self.attacker_loadout_id)
+        """The Loadout of the killing player."""
 
     @property
     def attacker_vehicle(self) -> Vehicle:
@@ -589,27 +651,34 @@ class VehicleDestroy(Event):  # pylint: disable=too-many-instance-attributes
     @property
     def attacker_weapon(self) -> Weapon:
         return Weapon.get(id=self.attacker_weapon_id)
+        """The Weapon of the killing player."""
 
     @property
     def facility(self) -> Region:
         return Region.get(id=self.facility_id)
+        """The Region the vehicle was destroyed on."""
 
     @property
     def faction(self) -> Faction:
         return Faction.get(id=self.faction_id)
+        """No information known."""
 
     @property
     def victim(self) -> Character:
         return Character.get(id=self.victim_id)
+        """The Character that owned the destroyed vehicle."""
 
     @property
     def victim_vehicle(self) -> Vehicle:
         return Vehicle.get(id=self.victim_vehicle_id)
+        """The Vehicle type that was destroyed."""
 
     @property
     def world(self) -> World:
         return World.get(id=self.world_id)
+        """The World (server) the vehicle was destroyed on."""
 
     @property
     def zone(self) -> Zone:
         return Zone.get(id=self.zone_id)
+        """The Zone (continent) the vehicle was destroyed on."""
