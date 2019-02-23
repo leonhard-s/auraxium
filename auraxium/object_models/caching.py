@@ -19,7 +19,7 @@ class Cache():
         self._contents = {}
         self.max_age = max_age  # Rename to something like "idle time"?
         self.max_size = max_size
-        self._meta_list = []  # Contains tuples like (<id>, <last_used>)
+        self._meta_list = []  # Contains tuples like (<id_>, <last_used>)
 
         # Add the cache to the cache list
         _cache_list.append(self)
@@ -40,7 +40,7 @@ class Cache():
             return
 
         # Only proceed if the item has not already been cached
-        if item.id in self._contents.keys():
+        if item.id_ in self._contents.keys():
             return
 
         try:
@@ -51,8 +51,8 @@ class Cache():
             # The TypeError is raised in case max_size has not been set
             pass
 
-        self._contents[str(item.id)] = item
-        self._meta_list.append((str(item.id), datetime.utcnow()))
+        self._contents[str(item.id_)] = item
+        self._meta_list.append((str(item.id_), datetime.utcnow()))
 
     def clear(self):
         """Removes all stored items from the cache."""
