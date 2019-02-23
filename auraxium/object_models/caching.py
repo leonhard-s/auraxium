@@ -63,9 +63,9 @@ class Cache():
         """Returns the size of the cache."""
         return sys.getsizeof(self._contents)
 
-    def load(self, id):
+    def load(self, id_):
         """Returns an item."""
-        return self._contents[id]
+        return self._contents[id_]
 
     def trim(self):
         """Checks if any items are scheduled for deletion."""

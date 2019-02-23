@@ -28,19 +28,19 @@ class DataType():
         except AttributeError:
             pass
 
-        string += 'ID: {}'.format(self.id)
+        string += 'ID: {}'.format(self.id_)
 
         return string + ') at 0x{0:0{1}X}'.format(id(self), 16)
 
     def __eq__(self, other):
         """Provides support for "is equal" comparisons between Datatypes."""
-        if self.__class__ == other.__class__ and self.id == other.id:
+        if self.__class__ == other.__class__ and self.id_ == other.id_:
             return True
         return False
 
     def __ne__(self, other):
         """Provides support for "is not equal" comparisons."""
-        if self.__class__ != other.__class__ and self.id != other.id:
+        if self.__class__ != other.__class__ and self.id_ != other.id_:
             return True
         return False
 
@@ -107,7 +107,7 @@ class DataType():
 
         # Join the two lists and sort the list by id
         instances.extend(cached_items)
-        instances.sort(key=lambda i: i.id)
+        instances.sort(key=lambda i: i.id_)
         return instances
 
     def populate(self, data=None) -> None:
@@ -155,6 +155,6 @@ class NamedDataType():  # pylint: disable=too-few-public-methods
             raise NoMatchesFoundError
 
         # Retrieve and return the object
-        instance = cls.get(id=data[cls._collection + '_id'],  # pylint: disable=no-member
+        instance = cls.get(id_=data[cls._collection + '_id'],  # pylint: disable=no-member
                            data=data)
         return instance
