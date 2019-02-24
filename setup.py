@@ -16,6 +16,10 @@ setuptools.setup(name='auraxium',
                               'Programming Language :: Python :: 3',
                               'License :: OSI Approved :: MIT License',
                               'Operating System :: OS Independent'],
+                 install_requires=[
+                     'requests >= 2.21.0',
+                     'websockets >= 3.1'
+                 ],
                  license='MIT',
                  include_package_data=True,
                  zip_safe=False)
