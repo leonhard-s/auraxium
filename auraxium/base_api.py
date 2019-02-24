@@ -8,7 +8,7 @@ from urllib import parse
 
 import requests
 
-from .exceptions import InvalidSearchTermError, UnknownCollectionError
+from .exceptions import InvalidSearchTermError, RegExTooShortError, UnknownCollectionError
 from .constants import CENSUS_ENDPOINT
 
 
@@ -614,8 +614,8 @@ def retrieve(url, count=False):
         # Unknown collection
         try:
             if data['error'] == 'No data found.':
-                raise UnknownCollectionError('This collection does not exist for the current '
-                                             ' namespace.') from err
+                raise UnknownCollectionError('Attempted to access a collection that does not '
+                                             'exist.') from err
             else:
                 raise err
         except KeyError:
@@ -624,14 +624,20 @@ def retrieve(url, count=False):
         # Invalid search term
         try:
             if data['errorCode'] == 'SERVER_ERROR':
-                error = data['errorMessage'].split(': ', 1)[0]
+                message_words = data['errorMessage'].split(': ', 2)
 
                 # Invalid search term
-                if error == 'INVALID_SEARCH_TERM':
-                    raise InvalidSearchTermError('Attempted to query a collection by an invalid '
-                                                 'field name') from err
-                else:
-                    raise err
+                if message_words[0] == 'INVALID_SEARCH_TERM':
+
+                    # Invalid field name
+                    if message_words[1][1:].startswith('Invalid search term.'):
+                        raise InvalidSearchTermError('Attempted to query a collection by an '
+                                                     'invalid field name.') from err
+
+                    if message_words[1][1:].startswith('Invalid search value'):
+                        raise RegExTooShortError('Unable to perform RegEx query: RegEx queries '
+                                                 'must have at least 3 characters.') from err
+
         except KeyError:
             pass
 
