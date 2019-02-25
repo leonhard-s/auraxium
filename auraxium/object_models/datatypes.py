@@ -71,7 +71,7 @@ class DataType():
         except AttributeError:
             id_field = cls._collection + '_id'
 
-        return Query(cls._collection).add_term(field=id_field, value=id_).get(single=True)
+        return Query(cls._collection, **{id_field: id_}).get(single=True)
 
     @classmethod
     def list(cls, ids):
@@ -95,8 +95,8 @@ class DataType():
             ids_to_download = ids
 
         # Download the missing entries
-        query = Query(cls._collection).limit(len(ids_to_download))
-        query.add_term(field=id_field, value=','.join([str(i) for i in ids_to_download]))
+        query = Query(collection=cls._collection, **{id_field: ','.join(
+            [str(i) for i in ids_to_download])}).limit(len(ids_to_download))
         data = query.get()
 
         # Create an instance for all of the downloaded objects
@@ -147,8 +147,7 @@ class NamedDataType():  # pylint: disable=too-few-public-methods
         if ignore_case:
             query = Query(collection=cls._collection).case(False)
         else:
-            query = Query(collection=cls._collection)
-        query.add_term(field='name.' + locale, value=name)
+            query = Query(collection=cls._collection, **{'name.' + str(locale): str(name)})
 
         data = query.get(single=True)
         if not data:

@@ -1,54 +1,35 @@
 """Core components of the API wrapper."""
 
-
 import json
 import logging
-from collections import namedtuple
+from typing import Dict, List, Optional, Tuple, Union
 from urllib import parse
 
 import requests
 
 from .exceptions import InvalidSearchTermError, RegExTooShortError, UnknownCollectionError
 from .constants import CENSUS_ENDPOINT
-
+from .types import Term
 
 # Create a logger
 logger = logging.getLogger('auraxium.query')  # pylint: disable=invalid-name
 
 
-# Define a named tuple used for the field/value pairs of query terms
-_Term = namedtuple('Term', 'field value')
-
-
 class Query():  # pylint: disable=too-many-public-methods
     """Represents a query to be made to the API server."""
 
-    def __init__(self, collection, namespace='ps2', **kwargs):
-        self.collection = collection
-        self._flags = {}
-        self._qc_joins = []
-        self._qc_keys = {}
-        self._qc_tree = None
-        self.namespace = namespace
+    def __init__(self, collection: str, namespace: str = 'ps2', **kwargs: Tuple[str, str]) -> None:
+        self.collection: str = collection
+        self._flags: Dict[str, Union[str, int, float]] = {}
+        self._qc_joins: List[Join] = []
+        self._qc_keys: Dict[str, list] = {}
+        self._qc_tree: Optional[str] = None
+        self.namespace: str = namespace
 
         # Turn kwargs into named field/value pairs and store them in self.terms
-        self._terms = [_Term(k.replace('__', '.'), kwargs[k]) for k in kwargs]
+        self._terms: List[Term] = [Term(k.replace('__', '.'), kwargs[k]) for k in kwargs]
 
-    def add_term(self, field, value):
-        """Manually adds a field/value pair to the query.
-
-        This is useful in cases where the field name is generated from
-        other variables, which would require an exec() call to realize
-        with the kwarg system.
-
-        The query object is returned to allow for chaining.
-
-        """
-
-        self._terms.append(_Term(field, value))
-        return self
-
-    def case(self, check_case):
+    def case(self, check_case: bool):
         """Toggles case-sensitive string matches for this query.
 
         Query command.
@@ -65,17 +46,23 @@ class Query():  # pylint: disable=too-many-public-methods
         """
 
         if check_case:
+            # Case-sensitive searches are the default option, hence why the entry is just removed
             self._flags.pop('case', None)
         else:
             self._flags['case'] = 'false'
         return self
 
-    def count(self):
+    def count(self, url_only=False) -> Union[int, str]:
         """Returns the number of matching items."""
-        url = self.generate_url(verb='count')
-        return retrieve(url, count=True)
+        url: str = self.generate_url(verb='count')
 
-    def distinct(self, field):
+        # In URL mode, only return the URL generated
+        if url_only:
+            return str(url)
+
+        return int(retrieve(url, count=True))
+
+    def distinct(self, field: str) -> 'Query':
         """Returns the distinct values for a given field.
 
         Query command.
@@ -91,7 +78,7 @@ class Query():  # pylint: disable=too-many-public-methods
             self._qc_keys['distinct'] = [str(field)]
         return self
 
-    def exact_match_first(self, enable):
+    def exact_match_first(self, enable: bool) -> 'Query':
         """Return exact matches first when using RegEx search modes.
 
         Query command.
@@ -108,10 +95,11 @@ class Query():  # pylint: disable=too-many-public-methods
         if enable:
             self._flags['exactMatchFirst'] = 'true'
         else:
+            # False is the default option, hence why the key is removed instead
             self._flags.pop('exactMatchFirst', None)
         return self
 
-    def generate_url(self, verb):
+    def generate_url(self, verb: str) -> str:
         """Generates the URL representing this query."""
         from . import service_id
 
@@ -159,17 +147,22 @@ class Query():  # pylint: disable=too-many-public-methods
         if item_list:
             url += '?'
         url += '&'.join(item_list)
+
         return url
 
-    def get(self, single=False):
+    def get(self, single=False, url_only: bool = False) -> Union[str, dict]:
         """Perform the API query defined by the Query object."""
 
-        url = self.generate_url(verb='get')
+        url: str = self.generate_url(verb='get')
+
+        if url_only:
+            return url
+
         if single:
             return retrieve(url)[0]
         return retrieve(url)
 
-    def has(self, field, *args):
+    def has(self, field: str, *args: str) -> 'Query':
         """Only return results with a non-Null values for these fields.
 
         Query command.
@@ -190,7 +183,7 @@ class Query():  # pylint: disable=too-many-public-methods
             self._qc_keys['has'].extend(args)
         return self
 
-    def hide(self, field, *args):
+    def hide(self, field: str, *args: str) -> 'Query':
         """Hides the specified fields from the response.
 
         Query command.
@@ -208,7 +201,7 @@ class Query():  # pylint: disable=too-many-public-methods
             self._qc_keys['hide'].extend(args)
         return self
 
-    def include_null(self, enable):
+    def include_null(self, enable: bool) -> 'Query':
         """Includes NULL value fields in the response.
 
         Query command.
@@ -222,10 +215,11 @@ class Query():  # pylint: disable=too-many-public-methods
         if enable:
             self._flags['includeNull'] = 'true'
         else:
+            # False is the default option
             self._flags.pop('includeNull', None)
         return self
 
-    def join(self, *args, **kwargs):
+    def join(self, *args, **kwargs) -> 'Join':
         """Creates an inner (or joined) query.
 
         All arguments passed to this function are forwarded to the new
@@ -237,7 +231,7 @@ class Query():  # pylint: disable=too-many-public-methods
         self._qc_joins.append(new_join)
         return new_join
 
-    def lang(self, locale):
+    def lang(self, locale: str) -> 'Query':
         """If set, only fields for the given locale will be returned.
 
         Query command.
@@ -259,7 +253,7 @@ class Query():  # pylint: disable=too-many-public-methods
             self._qc_keys['lang'] = [str(locale)]
         return self
 
-    def limit(self, results):
+    def limit(self, results: int) -> 'Query':
         """Limits the number of results returned. Defaults to 1.
 
         Query command.
@@ -282,7 +276,7 @@ class Query():  # pylint: disable=too-many-public-methods
             self._qc_keys['limit'] = [int(results)]
         return self
 
-    def limit_per_db(self, results):
+    def limit_per_db(self, results: int) -> 'Query':
         """Limits the number of results returned. Defaults to 1.
 
         Query command.
@@ -305,7 +299,7 @@ class Query():  # pylint: disable=too-many-public-methods
             self._qc_keys['limitPerDB'] = [int(results)]
         return self
 
-    def resolve(self, field, *args):
+    def resolve(self, field: str, *args: str) -> 'Query':
         """Resolves one or more resolvable fields.
 
         Query command.
@@ -327,7 +321,7 @@ class Query():  # pylint: disable=too-many-public-methods
             self._qc_keys['resolve'].extend(args)
         return self
 
-    def retry(self, enable):
+    def retry(self, enable: bool) -> 'Query':
         """If set to false, results will not be retried before failing.
 
         Query command.
@@ -342,12 +336,13 @@ class Query():  # pylint: disable=too-many-public-methods
         """
 
         if enable:
+            # "True" is the default option
             self._flags.pop('retry', None)
         else:
             self._flags['retry'] = 'false'
         return self
 
-    def show(self, field, *args):
+    def show(self, field: str, *args: str) -> 'Query':
         """Only include the field names specified in the response.
 
         Query command.
@@ -367,7 +362,7 @@ class Query():  # pylint: disable=too-many-public-methods
             self._qc_keys['show'].extend(args)
         return self
 
-    def sort(self, field, *args):
+    def sort(self, field: str, *args: str) -> 'Query':
         """Allows sorting the results returned by one or more fields.
 
         Query command.
@@ -384,7 +379,7 @@ class Query():  # pylint: disable=too-many-public-methods
             self._qc_keys['sort'].extend(args)
         return self
 
-    def start(self, offset):
+    def start(self, offset: int) -> 'Query':
         """Skips the first <offset> results in the response.
 
         Query command.
@@ -405,7 +400,7 @@ class Query():  # pylint: disable=too-many-public-methods
             self._qc_keys['start'] = [int(offset)]
         return self
 
-    def timing(self, enable):
+    def timing(self, enable: bool) -> 'Query':
         """Enables timing output in the response.
 
         Query command.
@@ -419,10 +414,12 @@ class Query():  # pylint: disable=too-many-public-methods
         if enable:
             self._flags['timing'] = 'true'
         else:
+            # False is the default option
             self._flags.pop('timing', None)
         return self
 
-    def tree(self, field, is_list=False, prefix='', start=None):
+    def tree(self, field: str, is_list: bool = False,
+             prefix: str = '', start: Optional[int] = None) -> 'Query':
         """Restructures the results returned into a tree view.
 
         Query command.
@@ -444,10 +441,10 @@ class Query():  # pylint: disable=too-many-public-methods
             self._qc_tree += '^list:1'
         if prefix != '':
             self._qc_tree += '^prefix:' + prefix
-        if start < 0:
+        if start is not None and start < 0:
             raise ValueError('The starting offset must be greater than 0.')
-        elif start > 0:
-            self._qc_tree += '^start:' + start
+        elif start is not None and start > 0:
+            self._qc_tree += '^start:' + str(start)
         return self
 
 
@@ -462,18 +459,19 @@ class Join():
 
     """
 
-    def __init__(self, collection, inject_at=None, on=None, to=None, **kwargs):
-        self.collection = collection
-        self._hide = []
-        self._inner_joins = []
-        self._show = []
-        self._flags = {}
-        self._keys = {'inject_at': inject_at, 'on': on, 'to': to}
+    def __init__(self, collection: str, inject_at: Optional[str] = None,
+                 on: Optional[str] = None, to: Optional[str] = None, **kwargs) -> None:
+        self.collection: str = collection
+        self._hide: List[str] = []
+        self._inner_joins: List['Join'] = []
+        self._show: List[str] = []
+        self._flags: Dict[str, str] = {}
+        self._keys: Dict[str, Optional[str]] = {'inject_at': inject_at, 'on': on, 'to': to}
 
         # Turn kwargs into named field/value pairs and store them in self.terms
-        self._terms = [_Term(k.replace('__', '.'), kwargs[k]) for k in kwargs]
+        self._terms: List[Term] = [Term(k.replace('__', '.'), kwargs[k]) for k in kwargs]
 
-    def hide(self, *args):
+    def hide(self, *args: str) -> 'Join':
         """Identical to the `hide` query command.
 
         Note that the field used to link joins may be hidden for the
@@ -485,7 +483,7 @@ class Join():
         self._hide = [*args]
         return self
 
-    def is_list(self, is_list):
+    def is_list(self, is_list: bool) -> 'Join':
         """Set this flag if this join is expected to return a list.
 
         Defaults to False, not a list.
@@ -497,10 +495,11 @@ class Join():
         if is_list:
             self._flags['list'] = '1'
         else:
+            # Default option
             self._flags.pop('list', None)
         return self
 
-    def is_outer_join(self, is_outer_join):
+    def is_outer_join(self, is_outer_join: bool) -> 'Join':
         """Flags the current join as an outer join.
 
         An outer join will also include non-matching items, an inner
@@ -512,12 +511,13 @@ class Join():
         """
 
         if is_outer_join:
+            # Default option
             self._flags.pop('outer', None)
         else:
             self._flags['outer'] = '0'
         return self
 
-    def join(self, *args, **kwargs):
+    def join(self, *args, **kwargs) -> 'Join':
         """Creates an inner join for this join.
 
         All arguments passed to this function are forwarded to the new
@@ -531,7 +531,7 @@ class Join():
         self._inner_joins.append(inner_join)
         return inner_join
 
-    def process(self):
+    def process(self) -> str:
         """Process the join and return its string representation.
 
         Processes the Join object's contents and generates the string
@@ -552,7 +552,7 @@ class Join():
         # Process keys ('inject_at', 'on' and 'to')
         for k in self._keys:
             if self._keys[k] is not None:
-                string += '^' + k + ':' + self._keys[k]
+                string += '^' + k + ':' + str(self._keys[k])
 
         # Process 'show' and 'hide' lists
         if self._show:
@@ -570,7 +570,7 @@ class Join():
 
         return string
 
-    def show(self, *args):
+    def show(self, *args: str) -> 'Join':
         """Identical to the `show` query command.
 
         Note that the field used to link joins may be hidden for the
@@ -580,9 +580,10 @@ class Join():
 
         """
         self._show = [*args]
+        return self
 
 
-def _process_joins(*args):
+def _process_joins(*args: 'Join') -> str:
     """Processes all joins in the list.
 
     A warning will be raised if more than one argument is passed as
@@ -596,7 +597,7 @@ def _process_joins(*args):
     return 'c:join=' + ','.join([join.process() for join in args])
 
 
-def retrieve(url, count=False):
+def retrieve(url, count: bool = False) -> Union[dict, int]:
     """Retrieves the object using the URL given."""
     # Log the request's URL in case an error occurs
     logger.debug('Performing request: %s', url)
