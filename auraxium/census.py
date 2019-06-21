@@ -105,7 +105,6 @@ def _convert_dict(data: Dict[str, Any], human_date: bool = False) -> Dict[str, A
             # NOTE: The value is already a string, no conversion needed
             new_dict[k] = v
         except TypeError:
-            print(v)
             # Raised for lists and sub-dictionaries
             if isinstance(v, list):
                 new_dict[k] = [_convert_dict(x, human_date) for x in v]

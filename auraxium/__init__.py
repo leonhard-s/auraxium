@@ -9,4 +9,4 @@ from .query import Query
 from .ess import Client
 
 namespace = 'ps2:v2'
-service_id = 's:example'
+service_id = 'example'
