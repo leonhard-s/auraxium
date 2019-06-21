@@ -9,4 +9,3 @@ https://github.com/leonhard-s/auraxium/wiki
 """
 
 from .client import Client
-from .ps2 import *
