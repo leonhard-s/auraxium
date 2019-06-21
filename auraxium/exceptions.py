@@ -1,6 +1,7 @@
 """auraxium exceptions."""
 
-__all__ = ['AuraxiumError', 'InvalidSearchTermError', 'UserError', 'MaintenanceError']
+__all__ = ['AuraxiumError', 'InvalidSearchTermError',
+           'UserError', 'MaintenanceError']
 
 
 class AuraxiumError(Exception):
@@ -12,32 +13,24 @@ class UserError(AuraxiumError):
 
 
 class InvalidSearchTermError(UserError):
-    """The user attempted to search a collection by a field it does
-    not posess.
-
-    """
+    """The user attempted to search a collection by an invalid field."""
 
 
 class RegExTooShortError(UserError):
-    """The user attempted to perform a RegEx search (i.e. a string
+    """The RegEx string passed by the user is less than 3 chars long.
+
+    The user attempted to perform a RegEx search (i.e. a string
     match using the "contains" or "starts_with" search modifier)
     while specifying less than three characters to match.
-
     """
 
 
 class UnknownCollectionError(UserError):
-    """The user attempted to access a collection that does not exist
-    for the current namespace.
-
-    """
+    """The user attempted to access a collection that does not exist."""
 
 
 class ServerError(AuraxiumError):
-    """Superclass for errors resulting in unexpected server-side
-    occurrences.
-
-    """
+    """Superclass for errors resulting in server-side errors."""
 
 
 class MaintenanceError(ServerError):
@@ -52,7 +45,6 @@ class ServiceUnavailableError(ServerError):
 
     The corresponding server response will look something like this:
     {"error":"service_unavailable"}
-
     """
 
 
@@ -61,10 +53,7 @@ class SerciceIDError(AuraxiumError):
 
 
 class ServiceIDMissingError(SerciceIDError):
-    """Raised when repeatedly sending requests without a valid
-    service ID.
-
-    """
+    """Raised when repeatedly sending requests without a service ID."""
 
 
 class ServiceIDUnknownError(SerciceIDError):

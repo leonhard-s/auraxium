@@ -1,7 +1,7 @@
 """Constants for the auraxium module."""
 
 # The URL to use for accessing the REST interface
-CENSUS_ENDPOINT = 'http://census.daybreakgames.com'
+CENSUS_ENDPOINT = 'https://census.daybreakgames.com'
 
 # The default service id
 DEFAULT_SERVICE_ID = 's:example'
