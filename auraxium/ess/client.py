@@ -1,259 +1,153 @@
-"""This module contains the definition for the ESS Client object.
-
-It handles basic operations like connecting or disconnecting and
-processes responses received through the websocket connection.
-"""
-
 import asyncio
-import collections
 import json
-import logging
-import time
-from typing import Callable, List, Optional, Union
+from typing import Iterable, List, Optional
 import websockets
-
-from ..object_models.ps2 import Character, World
-
 from .constants import ESS_ENDPOINT
-from .events import Event, arx_name_to_type, Centricity, check_centricity
-from .exceptions import UnknownEventTypeError
-from .listener import EventListener
-
-
-# Create a logger
-logger = logging.getLogger('auraxium.ess')  # pylint: disable=invalid-name
+from .event import Event
+from .trigger import Trigger
 
 
 class Client():
-    """The ESS client object.
+    """The main client used for interacting with the ESS API.
 
-    This object handles the websocket connection itself and parses any
-    responses received, running the applicable `EventListeners`.
-
-    Parameters
-    ----------
-    `loop` (Optional): The event loop to use.
+    This class wraps the underlying websocket connection established
+    using the `connect` method, and is responsible for dispensing the
+    corresponding events as they are encountered.
     """
 
     def __init__(self, loop: Optional[asyncio.AbstractEventLoop] = None) -> None:
-        self._event_listeners: List[EventListener] = []
-        self._is_open: bool = False
-        self.loop: asyncio.AbstractEventLoop = (
-            loop if loop is not None else asyncio.get_event_loop())
+        self.loop = loop if loop is not None else asyncio.get_event_loop()
+        self._is_connected = False
         self._send_queue: List[str] = []
+        self._triggers: List[Trigger] = []
         self._websocket: Optional[websockets.WebSocketClientProtocol] = None
 
-        # The following dictionary keeps basic statistics about the client
-        stats = collections.namedtuple('ClientStats', 'endpoint_last_saved endpoint_status '
-                                       'latency_last_saved latency_list')
-        self._stats = stats(0, [], 0, [])
+    async def connect(self, service_id='s:example', namespace='ps2') -> None:
+        """Start the event streaming client.
 
-    async def close(self) -> None:
-        """Closes the websocket connection of the client.
-
-        The client can be restarted by running the `Client.connect()`
-        method.
+        Opens the underlying websocket connection to the ESS. This
+        method will not return until the `close` method is called.
         """
-
-        # Only proceed if the client is actually open.
-        if not self._is_open:
-            return
-        if self._websocket is not None and self._websocket.open:
-            await self._websocket.close()
-
-    async def connect(self, service_id: str = 's:example', namespace: str = 'ps2') -> None:
-        """Connect to the event streaming service.
-
-        Establishes a connection with the ESS. This method will loop
-        until the `Client.close()` method is called.
-
-        Parameters
-        ----------
-        `service_id` (Optional): The service ID to use with the event
-        client.
-
-        `namespace` (Optional): The namespace (or game) to connect to.
-        Currently, only PS2 namespaces are supported. Defaults to
-        "ps2".
-        """
-
-        # If the client is already running, close it before restarting
-        if self._is_open:
+        # If the client is already running, close it before restarting it
+        if self._is_connected:
             await self.close()
-
-        # Generate the URL required for connecting
-        url = ESS_ENDPOINT + '?environment=' + namespace + '&service-id=' + service_id
-
-        # Mark the conenction as open
-        self._is_open = True
-
-        # Open the websocket connection itself
+        # Generate the URL required for connection
+        url = f'{ESS_ENDPOINT}?environment={namespace}&service-id={service_id}'
+        # Open the websocket connection
+        self._is_connected = True
         async with websockets.connect(url) as websocket:
             self._websocket = websocket
-
-            # This loop runs until the flag is being unset by a Client.close() call
-            while self._is_open:
+            # This loop repeats until the "close" method is called
+            while self._is_connected:
+                # The outer try block gives some redundancy against connection
+                # drop-outs by automatically reconnecting.
                 try:
-                    # Wait for a new message from the endpoint and process it
-                    self._process_response(await self._websocket.recv())
-
-                    # If there are any items in the send queue, pick one and send it off
+                    # The inner try block employs a timeout to prevent the
+                    # global asyncio event loop from being blocked by a stale
+                    # or low-activity ESS connection.
                     try:
-                        await self._websocket.send(self._send_queue.pop(0))
-                    except IndexError:
-                        pass
-
-                # If the connection is lost, log the incident and try to reconnect immediately
+                        response: str = await asyncio.wait_for(
+                            self._websocket.recv(), timeout=0.5)
+                        self._process_response(response)
+                    except asyncio.TimeoutError:
+                        # If there are any items in the send queue, pick one
+                        try:
+                            await self._websocket.send(self._send_queue.pop(0))
+                        except IndexError:
+                            pass
                 except websockets.exceptions.ConnectionClosed as err:
-                    logger.info('Connection closed. Error:\n%s', err)
+                    # Print the error and attempt to reconnect
+                    print(err)
                     await self.close()
                     await self.connect(service_id=service_id, namespace=namespace)
 
-    def event(self, *args: str, characters: List[Union[int, Character]] = [],
-              worlds: List[Union[int, World]] = []) -> Callable:
-        """Decorator used to create ESS event listeners.
-
-        The decorated function can either be a standard function or an
-        asyncio generator.
-
-        Any non-keyword arguments passed will be interpreted as event
-        names to listen for. Keep the centricity of an event in mind
-        when registering events (e.g. a "ContinentLock" event cannot
-        be registered for a character).
-
-        Additionally, if the function name starts with "on_", the rest
-        of the function name will be interpreted as an event name to
-        register.
-
-        Parameters
-        ----------
-        `args`: Any non-keyword arguments passed will be treated as
-        event names to register.
-
-        `characters` (Optional): A list of Character objects or IDs to
-        register events for.
-
-        `worlds` (Optional): A list of World objects or IDs to register
-        events for.
-
-        Raises
-        ------
-        `ValueError`: Raised when no event names have been specified in
-        the arguments and none could be inferred from the decorated
-        function's name.
-        """
-
-        def inner_decorator(func: Callable) -> None:
-            """Actual decorator for event creation.
-
-            This function primarily adds the decorated function to the
-            event listener for it.
-            """
-
-            # Create a list of all event names to register this event listener for
-            types_to_register = [arx_name_to_type(e) for e in args]
-
-            # If the function name starts with "on_" and the remainder is a sensible event name,
-            # add it to the event names to register.
-            if func.__name__.startswith('on_'):
-                try:
-                    # If this fails, the remaining function name is not a valid event.
-                    event_type = arx_name_to_type(arx_name=func.__name__[3:])
-                    types_to_register.append(event_type)
-
-                except UnknownEventTypeError as err:
-                    # If no arguments have been passed, raise an error
-                    if not types_to_register:
-                        raise ValueError('No event names specified, unable to infer function '
-                                         'name') from err
-
-            # Make sure the event names do not violate centricity
-            for event_type in types_to_register:
-
-                if characters and not check_centricity(event_type, Centricity.CHARACTER):
-                    raise ValueError('Event type is not character-centric: {}'.format(event_type))
-                if worlds and not check_centricity(event_type, Centricity.WORLD):
-                    raise ValueError('Event type is not world-centric: {}'.format(event_type))
-
-            # Create and add a new event listener
-            listener = EventListener(
-                *types_to_register, function=func, worlds=worlds, characters=characters)
-
-            # Register the event listener
-            self._event_listeners.append(listener)
-
-            # Add the event_listeners subscription information to the send queue
-            self._send_queue.append(listener.subscribe())
-
-        return inner_decorator
-
     def _process_response(self, response: str) -> None:
-        """Processes a response received through the ESS.
-
-        Depending on the type of message received, this will either
-        update the internal statistics of the client or trigger any
-        number of matching event listeners to fire.
-
-        Parameters
-        ----------
-        `response`: The JSON string received by the client.
-        """
-
+        """Process a response received through the ESS."""
         data = json.loads(response)
-
         # Ignored messages
-        # ----------------
         # These messages are not relevant to the ESS and will be ignore completely.
         if ('send this for help' in data or data.get('service') == 'push'
                 or data.get('type') == 'serviceStateChange'):
             return
-
         # Subscription echo
-        # -----------------
         # When the ESS sees a subscription message, it echos it back to confirm the subscription
         # has been registered.
         if 'subscription' in data:
             # print('Subscription echo: {}'.format(data))
             return
-
         # Heartbeat
-        # ---------
         # For as long as the connection is alive, the server will broadcast the status for all of
         # the API endpoints. While technically a service message, it is filtered out here to keep
         # things tidy.
         if data['service'] == 'event' and data['type'] == 'heartbeat':
-            # print('Heartbeat: {}'.format(data))
+            # print('(Heartbeat received)')
             return
-
-        # Event service
-        # -------------
-        # Service messages, i.e. events the client has subscribed to.
+        # Event messages
         if data['service'] == 'event' and data['type'] == 'serviceMessage':
+            event = Event(data['payload'])
+            # Run the appropriate callbacks
+            for t in self._triggers:
+                # Only proceed if the trigger matches
+                if not t.evaluate(data['payload']):
+                    continue
+                self.loop.create_task(t.run(event))
+                if t.single_shot:
+                    self._remove_trigger(t)
 
-            # Put the payload into its own dict to increase legibility
-            payload: dict = data['payload']
+    async def close(self) -> None:
+        """Closes the client's underlying websocket connection."""
+        # Only proceed if the connection is open
+        if not self._is_connected:
+            return
+        self._is_connected = False
+        if self._websocket is not None and self._websocket.open:
+            await self._websocket.close()
 
-            # Calculate the current latency
-            now: int = round(time.time())
-            # Only log every five seconds
-            if now - self._stats.latency_last_saved > 5:
-                latency = now - int(payload['timestamp'])
-                # Append the value
-                self._stats.latency_list.append(latency)
-                # Only store the last 100 datapoints; cut off the excess
-                if len(self._stats.latency_list) > 100:
-                    self._stats.latency_list.pop(0)
+    def _add_trigger(self, trigger: Trigger) -> None:
+        """Add a new trigger to a the client."""
+        self._triggers.append(trigger)
+        self._send_queue.append(trigger.generate_subscription())
 
-            # Event processing
-            event: Event = Event.get(payload)
+    def _remove_trigger(self, trigger: Trigger) -> None:
+        """Removes a trigger from the client.
 
-            # Create a list of all functions that need to be run
-            functions_to_run = [
-                el.function for el in self._event_listeners if event.type in el.events]
+        Raises:
+          * ValueError -- Raised if the given trigger has not been
+            added yet
+        """
+        try:
+            self._triggers.remove(trigger)
+        except ValueError as err:
+            msg = 'The given trigger could not be found'
+            raise ValueError(msg) from err
+        # TODO: Clean-up code for tidying up orphan subscriptions
 
-            # Run the functions
-            for function in functions_to_run:
-                if asyncio.iscoroutinefunction(function):
-                    self.loop.create_task(function(event=event))
-                else:
-                    function(event=event)
+    async def wait_for_event(self, event_name: str, *args: str,
+                             character_ids: Iterable[int] = [],
+                             world_ids: Iterable[int] = [],
+                             timeout=0.0) -> Event:
+        """Wait for one or more events.
+
+        This method creates a single-shot trigger matching the given
+        event name.
+        """
+        # The following asyncio Event will pause this method until the trigger
+        # fires or expires. Think of it as an asynchronous flag.
+        async_flag = asyncio.Event()
+        # Create a new, single-shot trigger to detect the given event
+        trigger = Trigger(event_name, *args, character_ids=character_ids,
+                          world_ids=world_ids, single_shot=True)
+        self._received_event: Optional[Event] = None
+        @trigger.set_callback
+        def callback(event: Event) -> None:
+            # Store the received event
+            self._received_event = event
+            # Set the flag to resume execution of the wait_for_event method
+            async_flag.set()
+        self._add_trigger(trigger)
+        # Wait for the trigger to fire, or for the timeout to expire
+        try:
+            await asyncio.wait_for(async_flag.wait(), timeout=timeout)
+        except TimeoutError as err:
+            raise TimeoutError from err
+        return self._received_event
