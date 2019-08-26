@@ -24,5 +24,8 @@ def name_from_id(collection: str, id_: int,
     # If a language subkey has been specified, return it instead
     if lang is not None:
         return str(data[lang])
+    # If the collection is "character", imply the "first" key.
+    if collection == 'character':
+        return str(data['first'])
     # Otherwise, return the "name" key directly (for non-localized strings)
     return str(data)
