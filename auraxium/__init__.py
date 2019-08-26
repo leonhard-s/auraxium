@@ -6,7 +6,7 @@ https://github.com/leonhard-s/auraxium/.
 
 from .census import SearchModifier
 from .query import Query
-from .ess import Client
+from . import ess, utils
 
 namespace = 'ps2:v2'
 service_id = 'example'
