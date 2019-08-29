@@ -91,7 +91,7 @@ def _convert_dict(data: Dict[str, Any], human_date: bool = False) -> Dict[str, A
             value = float(v)
             # Check if the value is an integer
             if value.is_integer():
-                value = int(value)
+                value = int(v)
                 # If the "*_date" key exists, it must be a timestamp
                 if f'{k}_date' in data.keys():
                     value = datetime.datetime.utcfromtimestamp(value)
