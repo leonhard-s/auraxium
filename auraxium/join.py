@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Union
 from .census import List, Term
 from .log import logger
 from .type import CensusValue
@@ -28,7 +28,7 @@ class Join():
         self._terms: List[Term] = []
         _ = [Term(k.replace('__', '.'), kwargs[k]) for k in kwargs.keys()]
 
-    def hide(self, *args: str) -> 'Join':
+    def set_hide(self, *args: Union[str, List[str]]) -> 'Join':
         """Hide the given field names from the response."""
         self.hide = list(args)
         if self.hide and self.show:
@@ -48,7 +48,7 @@ class Join():
         self._inner_joins.append(inner_join)
         return inner_join
 
-    def show(self, *args: str) -> 'Join':
+    def set_show(self, *args: Union[str, List[str]]) -> 'Join':
         """Only include the given field names in the response."""
         self.show = list(args)
         if self.hide and self.show:

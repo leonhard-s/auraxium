@@ -90,7 +90,7 @@ class Query():
         self.has.extend(args)
         return self
 
-    def hide_fields(self, field_name: str, *args: str) -> 'Query':
+    def set_hide_fields(self, field_name: str, *args: str) -> 'Query':
         """Hide the given fields from the response.
 
         This only takes effect if `show_fields` is not specified.
@@ -156,7 +156,7 @@ class Query():
             self.resolves.extend(args)
         return self
 
-    def show_fields(self, field_name: str, *args: str) -> 'Query':
+    def set_show_fields(self, field_name: str, *args: str) -> 'Query':
         """Only include the given fields in the response.
 
         This overrides the `hide_fields` method.
