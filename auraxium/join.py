@@ -80,11 +80,11 @@ class Join():
             string += '^to:' + self.child_field
         # Show & hide
         if self.show:
-            string += '^show:' + ','.join(self.show)
+            string += '^show:' + "'".join(self.show)
             if self.hide:
                 logger.warning('"c:show" overwrites "c:hide"')
         elif self.hide:
-            string += '^hide:' + ','.join(self.hide)
+            string += '^hide:' + "'".join(self.hide)
         # Terms
         if self._terms:
             string += '^terms:' + '\''.join([t.to_url() for t in self._terms])
