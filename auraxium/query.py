@@ -14,7 +14,7 @@ class Query():
     def __init__(self, collection: str = '', namespace: str = '',
                  service_id: str = '', case: bool = True,
                  exact_match_first: bool = False, include_null: bool = False,
-                 lang: str = '', limit: int = 1,
+                 lang: str = '', limit: int = 1, show_fields: List[str] = None, hide_fields: List[str] = None,
                  limit_per_db: Optional[int] = None, retry: bool = True,
                  start: int = 0, timing: bool = False,
                  **kwargs: CensusValue) -> None:
@@ -27,7 +27,8 @@ class Query():
         self._distinct = ''
         self.exact_match_first = exact_match_first
         self.has: List[str] = []
-        self.hide_fields: List[str] = []
+        self.show_fields = show_fields
+        self.hide_fields = hide_fields
         self.include_null = include_null
         self.lang = lang
         if limit < 1:
@@ -39,7 +40,6 @@ class Query():
         self.joins: List[Join] = []
         self.resolves: List[str] = []
         self.retry = retry
-        self.show_fields: List[str] = []
         self.start = start
         self.sort_by: List[str] = []
         self.timing = timing
@@ -101,14 +101,14 @@ class Query():
         return self
 
     def join(self, collection: str, inject_at: str = '', is_list: bool = False,
-             on: str = '', is_outer: bool = True, to: str = '',
+             on: str = '', is_outer: bool = True, to: str = '', show: List[str] = None,
              **kwargs: Tuple[str, CensusValue]) -> Join:
         """Create an inner query (or join) for this query.
 
         All arguments passed to this function are forwarded to the new
         Join's initializer. The created join is returned.
         """
-        join = Join(collection, inject_at, is_list, on, is_outer, to, **kwargs)
+        join = Join(collection, inject_at, is_list, on, is_outer, to, show, **kwargs)
         self.joins.append(join)
         return join
 

@@ -12,18 +12,19 @@ class Join():
     """
 
     def __init__(self, collection: str, inject_at: str = '',
-                 is_list: bool = False,  on: str = '', is_outer: bool = True,
-                 to: str = '', **kwargs: CensusValue) -> None:
+                 is_list: bool = False, on: str = '', is_outer: bool = True,
+                 to: str = '', show: List[str] = None, hide: List[str] = None, **kwargs: CensusValue) -> None:
         """Initializer."""
+
         self.collection = collection
-        self.hide: List[str] = []
         self._inner_joins: List['Join'] = []
         self.is_list = is_list
         self.is_outer = is_outer
         self.inject_at = inject_at
         self.parent_field = on
         self.child_field = to
-        self.show: List[str] = []
+        self.show = show
+        self.hide = hide
         # Additional kwargs are passed on to the `add_term` method
         self._terms: List[Term] = []
         _ = [Term(k.replace('__', '.'), kwargs[k]) for k in kwargs.keys()]
