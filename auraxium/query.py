@@ -26,7 +26,7 @@ class Query():
         self.case = case
         self._distinct = ''
         self.exact_match_first = exact_match_first
-        self.has: List[str] = []
+        self.has_field: List[str] = []
         self.show_fields = show_fields
         self.hide_fields = hide_fields
         self.include_null = include_null
@@ -86,8 +86,8 @@ class Query():
         that are populated. Example: Only weapons using a heat
         mechanic will/should have non-NULL values for related fields.
         """
-        self.has.append(field_name)
-        self.has.extend(args)
+        self.has_field.append(field_name)
+        self.has_field.extend(args)
         return self
 
     def set_hide_fields(self, field_name: str, *args: str) -> 'Query':
@@ -206,8 +206,8 @@ def _process_query_commands(query: Query) -> List[str]:
     if query.sort_by:
         items.append('c:sort=' + ','.join(query.sort_by))
     # c:has
-    if query.has:
-        items.append('c:has=' + ','.join(query.has))
+    if query.has_field:
+        items.append('c:has=' + ','.join(query.has_field))
     # c:resolve
     if query.resolves:
         items.append('c:resolve=' + ','.join(query.resolves))
