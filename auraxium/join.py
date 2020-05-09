@@ -91,6 +91,8 @@ class Join():
         if self._terms:
             string += '^terms:' + '\''.join([t.to_url() for t in self._terms])
         # Process inner joins
-        string += ''.join(['(' + j.process_join() +
-                           ')' for j in self._inner_joins])
+        if self._inner_joins:
+            string += '('
+            string += ','.join(j.process_join() for j in self._inner_joins)
+            string += ')'
         return string
