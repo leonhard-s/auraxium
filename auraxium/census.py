@@ -47,7 +47,7 @@ class Term():
 
 def retrieve(url: str, convert: bool) -> Dict[str, Any]:
     """Retrieve the server's response for a given URL."""
-    logger.debug(f'Performing request: {url}')
+    logger.debug('Performing request: %s', url)
     # Get response
     response = requests.get(url)
     # Raise HTTP-related errors
@@ -57,15 +57,15 @@ def retrieve(url: str, convert: bool) -> Dict[str, Any]:
     _raise_for_data(data)
     # Return count info
     return_count: int = data.pop('returned', -1)
-    logger.debug(f'Returned {return_count} entries.')
+    logger.debug('Returned %d entries.', return_count)
     # Timing info
     timing: Dict[str, Any] = data.pop('timing', {})
     if timing:
         timing_list = [k[:-3] + ': ' + str(timing[k]) + ' ms' for k in timing]
-        logger.debug(f'Timing: {", ".join(timing_list)}')
+        logger.debug('Timing: %s', ', '.join(timing_list))
     # If there are any addional keys, log a warning
     if len(data) > 1:
-        logger.warning(f'Unexpected number of keys: {data}')
+        logger.warning('Unexpected number of keys: %s', data)
     # If data type conversion is enabled, process it
     if convert:
         data = _convert_dict(data)
@@ -81,10 +81,10 @@ def _convert_dict(data: Dict[str, Any], human_date: bool = False) -> Dict[str, A
         v: Any
         # Skip the human-readable "*_date" key if the normal timecode exists
         if k[-5:] == '_date' and k[:-5] in data.keys() and not human_date:
-            logger.debug(f'Skipped key "{k}" while processing')
+            logger.debug('Skipped key "%s" while processing', k)
             continue
         elif k == 'date' and 'time' in data.keys() and not human_date:
-            logger.debug(f'Skipped key "{k}" while processing')
+            logger.debug('Skipped key "%s" while processing', k)
             continue
         # Check if the value is a number
         try:
@@ -135,6 +135,6 @@ def _raise_for_data(data: Dict[str, Any]) -> None:
 def _value_to_str(value: CensusValue) -> str:
     """Convert any CensusValues into the proper string format."""
     # Datetimes must be converted to integer POSIX timestamps
-    if (isinstance(value, datetime.datetime)):
+    if isinstance(value, datetime.datetime):
         return str(int(value.timestamp()))
     return str(value)

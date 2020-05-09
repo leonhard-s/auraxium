@@ -12,7 +12,7 @@ class Join():
     """
 
     def __init__(self, collection: str, inject_at: str = '',
-                 is_list: bool = False,  on: str = '', is_outer: bool = True,
+                 is_list: bool = False, on: str = '', is_outer: bool = True,
                  to: str = '', **kwargs: CensusValue) -> None:
         """Initializer."""
         self.collection = collection
@@ -26,7 +26,7 @@ class Join():
         self.show: List[str] = []
         # Additional kwargs are passed on to the `add_term` method
         self._terms: List[Term] = []
-        _ = [Term(k.replace('__', '.'), kwargs[k]) for k in kwargs.keys()]
+        _ = [Term(k.replace('__', '.'), kwargs[k]) for k in kwargs]
 
     def hide(self, *args: str) -> 'Join':
         """Hide the given field names from the response."""
