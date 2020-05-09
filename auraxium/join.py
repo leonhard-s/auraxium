@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, Union
 from .census import List, Term
 from .log import logger
 from .type import CensusValue
@@ -13,22 +13,24 @@ class Join():
 
     def __init__(self, collection: str, inject_at: str = '',
                  is_list: bool = False, on: str = '', is_outer: bool = True,
-                 to: str = '', **kwargs: CensusValue) -> None:
+                 to: str = '', show: List[str] = None, hide: List[str] = None,
+                 **kwargs: CensusValue) -> None:
         """Initializer."""
+
         self.collection = collection
-        self.hide: List[str] = []
         self._inner_joins: List['Join'] = []
         self.is_list = is_list
         self.is_outer = is_outer
         self.inject_at = inject_at
         self.parent_field = on
         self.child_field = to
-        self.show: List[str] = []
+        self.show = [] if show is None else show
+        self.hide = [] if hide is None else hide
         # Additional kwargs are passed on to the `add_term` method
         self._terms: List[Term] = []
         _ = [Term(k.replace('__', '.'), kwargs[k]) for k in kwargs]
 
-    def hide(self, *args: str) -> 'Join':
+    def set_hide(self, *args: Union[str, List[str]]) -> 'Join':
         """Hide the given field names from the response."""
         self.hide = list(args)
         if self.hide and self.show:
@@ -48,7 +50,7 @@ class Join():
         self._inner_joins.append(inner_join)
         return inner_join
 
-    def show(self, *args: str) -> 'Join':
+    def set_show(self, *args: Union[str, List[str]]) -> 'Join':
         """Only include the given field names in the response."""
         self.show = list(args)
         if self.hide and self.show:
@@ -80,11 +82,11 @@ class Join():
             string += '^to:' + self.child_field
         # Show & hide
         if self.show:
-            string += '^show:' + ','.join(self.show)
+            string += '^show:' + "'".join(self.show)
             if self.hide:
                 logger.warning('"c:show" overwrites "c:hide"')
         elif self.hide:
-            string += '^hide:' + ','.join(self.hide)
+            string += '^hide:' + "'".join(self.hide)
         # Terms
         if self._terms:
             string += '^terms:' + '\''.join([t.to_url() for t in self._terms])

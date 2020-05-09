@@ -15,6 +15,7 @@ class Query():
                  service_id: str = '', case: bool = True,
                  exact_match_first: bool = False, include_null: bool = False,
                  lang: str = '', limit: int = 1,
+                 show_fields: List[str] = None, hide_fields: List[str] = None,
                  limit_per_db: Optional[int] = None, retry: bool = True,
                  start: int = 0, timing: bool = False,
                  **kwargs: CensusValue) -> None:
@@ -26,8 +27,9 @@ class Query():
         self.case = case
         self._distinct = ''
         self.exact_match_first = exact_match_first
-        self.has: List[str] = []
-        self.hide_fields: List[str] = []
+        self.has_field: List[str] = []
+        self.show_fields = [] if show_fields is None else show_fields
+        self.hide_fields = [] if hide_fields is None else hide_fields
         self.include_null = include_null
         self.lang = lang
         if limit < 1:
@@ -39,7 +41,6 @@ class Query():
         self.joins: List[Join] = []
         self.resolves: List[str] = []
         self.retry = retry
-        self.show_fields: List[str] = []
         self.start = start
         self.sort_by: List[str] = []
         self.timing = timing
@@ -86,29 +87,30 @@ class Query():
         that are populated. Example: Only weapons using a heat
         mechanic will/should have non-NULL values for related fields.
         """
-        self.has.append(field_name)
-        self.has.extend(args)
+        self.has_field = [field_name]
+        self.has_field.extend(args)
         return self
 
-    def hide_fields(self, field_name: str, *args: str) -> 'Query':
+    def set_hide_fields(self, field_name: str, *args: str) -> 'Query':
         """Hide the given fields from the response.
 
         This only takes effect if `show_fields` is not specified.
         """
         self.hide_fields = [field_name]
-        if args:
-            self.hide_fields.extend(args)
+        self.hide_fields.extend(args)
         return self
 
     def join(self, collection: str, inject_at: str = '', is_list: bool = False,
              on: str = '', is_outer: bool = True, to: str = '',
+             hide: List[str] = None, show: List[str] = None,
              **kwargs: Tuple[str, CensusValue]) -> Join:
         """Create an inner query (or join) for this query.
 
         All arguments passed to this function are forwarded to the new
         Join's initializer. The created join is returned.
         """
-        join = Join(collection, inject_at, is_list, on, is_outer, to, **kwargs)
+        join = Join(collection, inject_at, is_list,
+                    on, is_outer, to, show, hide, **kwargs)
         self.joins.append(join)
         return join
 
@@ -156,14 +158,13 @@ class Query():
             self.resolves.extend(args)
         return self
 
-    def show_fields(self, field_name: str, *args: str) -> 'Query':
+    def set_show_fields(self, field_name: str, *args: str) -> 'Query':
         """Only include the given fields in the response.
 
         This overrides the `hide_fields` method.
         """
         self.show_fields = [field_name]
-        if args:
-            self.show_fields.extend(args)
+        self.show_fields.extend(args)
         return self
 
     def sort(self, field_name: str, descending: bool = False) -> 'Query':
@@ -206,8 +207,8 @@ def _process_query_commands(query: Query) -> List[str]:
     if query.sort_by:
         items.append('c:sort=' + ','.join(query.sort_by))
     # c:has
-    if query.has:
-        items.append('c:has=' + ','.join(query.has))
+    if query.has_field:
+        items.append('c:has=' + ','.join(query.has_field))
     # c:resolve
     if query.resolves:
         items.append('c:resolve=' + ','.join(query.resolves))
