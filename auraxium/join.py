@@ -13,7 +13,8 @@ class Join():
 
     def __init__(self, collection: str, inject_at: str = '',
                  is_list: bool = False, on: str = '', is_outer: bool = True,
-                 to: str = '', show: List[str] = None, hide: List[str] = None, **kwargs: CensusValue) -> None:
+                 to: str = '', show: List[str] = None, hide: List[str] = None,
+                 **kwargs: CensusValue) -> None:
         """Initializer."""
 
         self.collection = collection
@@ -23,11 +24,11 @@ class Join():
         self.inject_at = inject_at
         self.parent_field = on
         self.child_field = to
-        self.show = show
-        self.hide = hide
+        self.show = [] if show is None else show
+        self.hide = [] if hide is None else hide
         # Additional kwargs are passed on to the `add_term` method
         self._terms: List[Term] = []
-        _ = [Term(k.replace('__', '.'), kwargs[k]) for k in kwargs.keys()]
+        _ = [Term(k.replace('__', '.'), kwargs[k]) for k in kwargs]
 
     def set_hide(self, *args: Union[str, List[str]]) -> 'Join':
         """Hide the given field names from the response."""
@@ -90,6 +91,8 @@ class Join():
         if self._terms:
             string += '^terms:' + '\''.join([t.to_url() for t in self._terms])
         # Process inner joins
-        string += ''.join(['(' + j.process_join() +
-                           ')' for j in self._inner_joins])
+        if self._inner_joins:
+            string += '('
+            string += ','.join(j.process_join() for j in self._inner_joins)
+            string += ')'
         return string

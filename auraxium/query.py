@@ -14,7 +14,8 @@ class Query():
     def __init__(self, collection: str = '', namespace: str = '',
                  service_id: str = '', case: bool = True,
                  exact_match_first: bool = False, include_null: bool = False,
-                 lang: str = '', limit: int = 1, show_fields: List[str] = None, hide_fields: List[str] = None,
+                 lang: str = '', limit: int = 1,
+                 show_fields: List[str] = None, hide_fields: List[str] = None,
                  limit_per_db: Optional[int] = None, retry: bool = True,
                  start: int = 0, timing: bool = False,
                  **kwargs: CensusValue) -> None:
@@ -27,8 +28,8 @@ class Query():
         self._distinct = ''
         self.exact_match_first = exact_match_first
         self.has_field: List[str] = []
-        self.show_fields = show_fields
-        self.hide_fields = hide_fields
+        self.show_fields = [] if show_fields is None else show_fields
+        self.hide_fields = [] if hide_fields is None else hide_fields
         self.include_null = include_null
         self.lang = lang
         if limit < 1:
@@ -86,7 +87,7 @@ class Query():
         that are populated. Example: Only weapons using a heat
         mechanic will/should have non-NULL values for related fields.
         """
-        self.has_field.append(field_name)
+        self.has_field = [field_name]
         self.has_field.extend(args)
         return self
 
@@ -96,19 +97,20 @@ class Query():
         This only takes effect if `show_fields` is not specified.
         """
         self.hide_fields = [field_name]
-        if args:
-            self.hide_fields.extend(args)
+        self.hide_fields.extend(args)
         return self
 
     def join(self, collection: str, inject_at: str = '', is_list: bool = False,
-             on: str = '', is_outer: bool = True, to: str = '', show: List[str] = None,
+             on: str = '', is_outer: bool = True, to: str = '',
+             hide: List[str] = None, show: List[str] = None,
              **kwargs: Tuple[str, CensusValue]) -> Join:
         """Create an inner query (or join) for this query.
 
         All arguments passed to this function are forwarded to the new
         Join's initializer. The created join is returned.
         """
-        join = Join(collection, inject_at, is_list, on, is_outer, to, show, **kwargs)
+        join = Join(collection, inject_at, is_list,
+                    on, is_outer, to, show, hide, **kwargs)
         self.joins.append(join)
         return join
 
@@ -162,8 +164,7 @@ class Query():
         This overrides the `hide_fields` method.
         """
         self.show_fields = [field_name]
-        if args:
-            self.show_fields.extend(args)
+        self.show_fields.extend(args)
         return self
 
     def sort(self, field_name: str, descending: bool = False) -> 'Query':

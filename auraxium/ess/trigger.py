@@ -1,6 +1,6 @@
 import asyncio
 import json
-from typing import Callable, Dict, Iterable, Optional, Set
+from typing import Any, Callable, Dict, Iterable, Optional, Set
 from .event import Event
 
 

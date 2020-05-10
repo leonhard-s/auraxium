@@ -137,17 +137,19 @@ class Client():
         # Create a new, single-shot trigger to detect the given event
         trigger = Trigger(event_name, *args, character_ids=character_ids,
                           world_ids=world_ids, single_shot=True)
-        self._received_event: Optional[Event] = None
+        _received_event: Optional[Event] = None
+
         @trigger.set_callback
         def callback(event: Event) -> None:
             # Store the received event
-            self._received_event = event
+            _received_event = event
             # Set the flag to resume execution of the wait_for_event method
             async_flag.set()
+
         self._add_trigger(trigger)
         # Wait for the trigger to fire, or for the timeout to expire
         try:
             await asyncio.wait_for(async_flag.wait(), timeout=timeout)
         except TimeoutError as err:
             raise TimeoutError from err
-        return self._received_event
+        return _received_event

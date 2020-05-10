@@ -10,7 +10,7 @@ Auraxium's goal is to facilitate the use of the API without compromising functio
 
 This functionality is available for all games that support the original Census API.
 
-For PlanetSide 2, it additionaly provides [an object-oriented interface](#object-model) as well as a client for the PlanetSide 2 [Event Streaming Service](https://census.daybreakgames.com/#what-is-websocket) (ESS).
+For PlanetSide 2, it additionaly provides <!--[an object-oriented interface](#object-model) as well as -->a client for the PlanetSide 2 [Event Streaming Service](https://census.daybreakgames.com/#what-is-websocket) (ESS).
 
 ## How to use
 
@@ -53,6 +53,7 @@ my_join.join('weapon', on='weapon_id', to='weapon_id')
 print(my_query.get())
 ```
 
+<!--
 ## Object model
 
 This submodule provides an object-oriented access point where Queries are mostly happening in the background. This is especially useful for cases where a user needs to browse the game data without being familiar with the API and its collections.
@@ -74,7 +75,7 @@ print('Server: ' + my_char.world.name.en)
 ```
 
 In this example, `my_char.name` access the `name_first` field of the character whereas `my_char.world.name.en` returns the English localization of the server name, which has been quietly retrieved in the background.
-
+-->
 ## Contributing
 
 If you found a bug or would like to suggest a new feature, feel free to [create an issue](https://github.com/leonhard-s/auraxium/issues).
