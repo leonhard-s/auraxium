@@ -33,6 +33,18 @@ class Join():
         for field, value in kwargs.items():
             self.terms.append(generate_term(field.replace('__', '.'), value))
 
+    def add_term(self, field: str, value: CensusValue,
+                 modifier: SearchModifier = SearchModifier.EQUAL_TO) -> 'Join':
+        """Add a search term to this join.
+
+        Any results returned by a join must meet every term defined
+        for it.
+        """
+
+        new_term = Term(field, value, modifier)
+        self.terms.append(new_term)
+        return self
+
     def set_hide(self, *args: Union[str, List[str]]) -> 'Join':
         """Hide the given field names from the response."""
         self.hide = list(args)
