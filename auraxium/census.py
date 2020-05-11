@@ -45,6 +45,21 @@ class Term():
         return self.field + modifier + _value_to_str(self.value)
 
 
+def generate_term(field, value: str):
+    MODIFIER_LIST: List[str] = ['', '!', '<', '[', '>', ']', '^', '*']
+
+    modifier = 0
+
+    for (modifier_index, operator) in enumerate(MODIFIER_LIST[1:], start=1):  # Skip the first item, since we don't care
+        # if the modifier is '='
+        if operator in value:
+            modifier = SearchModifier(modifier_index)
+            value = value.replace(operator, '')  # remove the operator from the term
+
+            break
+
+    return Term(field, value, modifier)
+
 def retrieve(url: str, convert: bool) -> Dict[str, Any]:
     """Retrieve the server's response for a given URL."""
     logger.debug('Performing request: %s', url)

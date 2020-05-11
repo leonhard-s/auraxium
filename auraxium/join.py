@@ -1,5 +1,6 @@
 from typing import Tuple, Union
-from .census import List, Term
+
+from .census import List, Term, SearchModifier, generate_term
 from .log import logger
 from .type import CensusValue
 
@@ -27,8 +28,22 @@ class Join():
         self.show = [] if show is None else show
         self.hide = [] if hide is None else hide
         # Additional kwargs are passed on to the `add_term` method
-        self._terms: List[Term] = []
-        _ = [Term(k.replace('__', '.'), kwargs[k]) for k in kwargs]
+        self.terms: List[Term] = []
+
+        for field, value in kwargs.items():
+            self.terms.append(generate_term(field.replace('__', '.'), value))
+
+    def add_term(self, field: str, value: CensusValue,
+                 modifier: SearchModifier = SearchModifier.EQUAL_TO) -> 'Join':
+        """Add a search term to this join.
+
+        Any results returned by a join must meet every term defined
+        for it.
+        """
+
+        new_term = Term(field, value, modifier)
+        self.terms.append(new_term)
+        return self
 
     def set_hide(self, *args: Union[str, List[str]]) -> 'Join':
         """Hide the given field names from the response."""
@@ -59,7 +74,7 @@ class Join():
 
     def terms(self, *args: Term) -> 'Join':
         """Apply the given list of terms to the join."""
-        self._terms = list(args)
+        self.terms = list(args)
         return self
 
     def process_join(self) -> str:
@@ -88,8 +103,8 @@ class Join():
         elif self.hide:
             string += '^hide:' + "'".join(self.hide)
         # Terms
-        if self._terms:
-            string += '^terms:' + '\''.join([t.to_url() for t in self._terms])
+        if self.terms:
+            string += '^terms:' + '\''.join([t.to_url() for t in self.terms])
         # Process inner joins
         if self._inner_joins:
             string += '('
