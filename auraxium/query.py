@@ -1,5 +1,5 @@
 from typing import Any, Dict, List, Optional, Tuple
-from .census import retrieve, SearchModifier, Term
+from .census import retrieve, SearchModifier, Term, generate_term
 from .constants import CENSUS_ENDPOINT
 from .join import Join
 from .type import CensusValue
@@ -44,9 +44,10 @@ class Query():
         self.start = start
         self.sort_by: List[str] = []
         self.timing = timing
-        # Additional kwargs are passed on to the `add_term` method
+        # Additional kwargs are passed on to the `generate_term` method
         self.terms: List[Term] = []
-        _ = [self.add_term(k.replace('__', '.'), kwargs[k]) for k in kwargs]
+        for field, value in kwargs.items():
+            self.terms.append(generate_term(field.replace('__', '.'), value))
 
     def add_term(self, field: str, value: CensusValue,
                  modifier: SearchModifier = SearchModifier.EQUAL_TO) -> 'Query':
