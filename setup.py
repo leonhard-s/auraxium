@@ -1,7 +1,7 @@
 import setuptools
 
 setuptools.setup(name='auraxium',
-                 version='0.0.2',
+                 version='0.0.3',
                  author='Leonhard S.',
                  author_email='leonhard-s@users.noreply.github.com',
                  description='A python wrapper for the PlanetSide 2 Census API.',
