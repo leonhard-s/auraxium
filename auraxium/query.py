@@ -47,7 +47,7 @@ class Query():
         # Additional kwargs are passed on to the `generate_term` method
         self.terms: List[Term] = []
         for field, value in kwargs.items():
-            self.terms.append(generate_term(field.replace('__', '.'), value))
+            self.terms.append(generate_term(field.replace('__', '.'), str(value)))
 
     def add_term(self, field: str, value: CensusValue,
                  modifier: SearchModifier = SearchModifier.EQUAL_TO) -> 'Query':

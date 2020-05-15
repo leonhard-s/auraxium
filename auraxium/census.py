@@ -44,14 +44,17 @@ class Term():
         modifier = '=' + MODIFIER_LIST[self.modifier.value]
         return self.field + modifier + _value_to_str(self.value)
 
+    def __eq__(self, other):
+        return self.field == other.field and self.modifier == other.modifier and self.value == other.value
 
-def generate_term(field, value: str):
-    MODIFIER_LIST: List[str] = ['', '!', '<', '[', '>', ']', '^', '*']
 
-    modifier = 0
+def generate_term(field: str, value: str):
+    """Generate a term from field and value, parsing search modifier"""
+    MODIFIER_LIST: List[str] = ['=', '!', '<', '[', '>', ']', '^', '*']
 
-    for (modifier_index, operator) in enumerate(MODIFIER_LIST[1:], start=1):  # Skip the first item, since we don't care
-        # if the modifier is '='
+    modifier = SearchModifier.EQUAL_TO
+
+    for (modifier_index, operator) in enumerate(MODIFIER_LIST):
         if operator in value:
             modifier = SearchModifier(modifier_index)
             value = value.replace(operator, '')  # remove the operator from the term
