@@ -40,6 +40,31 @@ class TestURLs(unittest.TestCase):
         test = auraxium.Query('world', name__en='Connery').url()
         self.assertEqual(test, EXPECTED)
 
+    def test_query_term_with_modifier_string(self):
+        """Test whether a modifer (>, <, [, ], *, !) is correctly handled"""
+        EXPECTED = f'{self.ENDPOINT}s:example/get/ps2:v2/character_name' \
+                   f'?name.first_lower=^lite&c:show=name.first&c:limit=10'
+        test_query = auraxium.Query('character_name', name__first_lower='^lite', limit=10, show_fields=['name.first'])
+
+        self.assertEqual(test_query.url(), EXPECTED)
+
+        correct_term = auraxium.census.Term('name.first_lower', 'lite', auraxium.census.SearchModifier.STARTS_WITH)
+
+        self.assertTrue(correct_term in test_query.terms)
+
+
+    def test_generate_term_with_extra_equals(self):
+        EXPECTED = f'{self.ENDPOINT}s:example/get/ps2:v2/character?character_id=5428018587875812257&c:show=name'
+        test = auraxium.Query('character', character_id='=5428018587875812257', show_fields=['name']).url()
+        self.assertEqual(test, EXPECTED)
+
+    def test_query_term_with_number(self):
+        """Test whether a term with a int value is correctly parsed"""
+
+        EXPECTED = f'{self.ENDPOINT}s:example/get/ps2:v2/character?character_id=5428018587875812257&c:show=name'
+        test = auraxium.Query('character', show_fields=['name'], character_id=5428018587875812257).url()
+        self.assertEqual(test, EXPECTED)
+
     def test_query_term_multi(self):
         """Test whether multiple query terms are correctly parsed."""
         # NOTE: NC Flash
