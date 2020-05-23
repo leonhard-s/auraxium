@@ -118,7 +118,7 @@ class QueryBase:
         return self
 
     @classmethod
-    def copy(cls: Type[_QueryBaseT], template: QueryBase, copy_joins: bool = False,
+    def copy(cls: Type[_QueryBaseT], template: 'QueryBase', copy_joins: bool = False,
              deep_copy: bool = False, **kwargs: Any) -> _QueryBaseT:
         """Create a new query, copying most data from the template.
 

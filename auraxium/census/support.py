@@ -62,7 +62,7 @@ class SearchModifier(enum.Enum):
             return cls(cls.EQUAL_TO)
 
     @staticmethod
-    def serialise(enum_value: Union[int, SearchModifier]) -> str:
+    def serialise(enum_value: Union[int, 'SearchModifier']) -> str:
         """Return the string literal for the given enum value.
 
         This is mostly used during URL generation.
