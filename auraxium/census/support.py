@@ -81,7 +81,7 @@ class SearchModifier(enum.Enum):
         """
         # Convert the enum value to an integer
         if isinstance(enum_value, SearchModifier):
-            enum_value = SearchModifier.value
+            enum_value = enum_value.value
         assert isinstance(enum_value, int)
         # Return the appropriate string literal
         try:

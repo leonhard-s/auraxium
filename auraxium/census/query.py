@@ -62,7 +62,7 @@ class QueryBase:
         self.terms: List[SearchTerm] = []
         # Replace and double underscores with dots to allow accessing inner
         # fields like "name.first" or "battle_rank.value"
-        kwargs = {k.replace('__', ' .'): v for k, v in kwargs.items()}
+        kwargs = {k.replace('__', '.'): v for k, v in kwargs.items()}
         # Run the add_term method for each of the converted key/value pairs
         _ = [self.add_term(k, v, parse_modifier=True)
              for k, v in kwargs.items()]
@@ -228,7 +228,7 @@ class QueryBase:
 
         """
         self.hide_fields = [field]
-        self.hide_fields.extend(*args)
+        self.hide_fields.extend(args)
         return self
 
     def set_show_fields(self: _QueryBaseT, field: str, *args: str) -> _QueryBaseT:
@@ -250,7 +250,7 @@ class QueryBase:
 
         """
         self.show_fields = [field]
-        self.show_fields.extend(*args)
+        self.show_fields.extend(args)
         return self
 
 
@@ -315,6 +315,7 @@ class Query(QueryBase):
         super().__init__(collection, **kwargs)
         self.distinct: Optional[str] = None
         self.exact_match_first: bool = False
+        self.fail_early: bool = False
         self.has_fields: List[str] = []
         self.ignore_case: bool = False
         self.include_null: bool = False
@@ -395,7 +396,7 @@ class Query(QueryBase):
 
         """
         self.has_fields = [field]
-        self.has_fields.extend(*args)
+        self.has_fields.extend(args)
         return self
 
     def set_distinct(self, field: Optional[str]) -> 'Query':
@@ -566,6 +567,24 @@ class Query(QueryBase):
         """
         self.resolves = [name]
         self.resolves.extend(args)
+        return self
+
+    def set_retry(self, retry: bool = False) -> 'Query':
+        """Enable automatic query retry.
+
+        By default, failed queries will be retried automatically. Set
+        this to False to disable this behaviour if you want to fail
+        early.
+
+        Args:
+            retry (optional): Whether to enable automatic query
+                retrying. Defaults to False.
+
+        Returns:
+            The full URL describing this query and all of its joins.
+
+        """
+        self.fail_early = not retry
         return self
 
     def set_start(self, start: int) -> 'Query':

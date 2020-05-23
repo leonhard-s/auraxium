@@ -53,9 +53,9 @@ def generate_url(query: Query, verb: str, validate: bool = True) -> yarl.URL:
             warnings.warn(f'No collection specified, but {len(query.joins)} '
                           'joined queries provided')
     # Top-level query terms
-    url.with_query([t.as_tuple() for t in query.terms])
+    url = url.with_query([t.as_tuple() for t in query.terms])
     # Process query commands
-    url.update_query(process_query_commands(query, validate=validate))
+    url = url.update_query(process_query_commands(query, validate=validate))
     return url
 
 
@@ -86,7 +86,7 @@ def process_join(join: JoinedQuery, verbose: bool) -> str:
     # Flags
     if join.is_list or verbose:
         string += '^list:' + ('1' if join.is_list else '0')
-    if join.is_outer or verbose:
+    if not join.is_outer or verbose:
         string += '^outer:' + ('1' if join.is_outer else '0')
     # Show/hide field lists
     if join.show_fields:
@@ -176,6 +176,12 @@ def process_query_commands(query: Query,
     # c:exactMatchFirst
     if query.exact_match_first:
         commands['exactMatchFirst'] = '1'
+    # c:distinct
+    if query.distinct is not None:
+        commands['distinct'] = query.distinct
+    # c:retry
+    if query.fail_early:
+        commands['retry'] = '0'
 
     # Add the 'c:' prefix to all of the keys
     commands = {f'c:{k}': v for k, v in commands.items()}
