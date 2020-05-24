@@ -134,7 +134,7 @@ class TestURLs(unittest.TestCase):
         # NOTE: This check does intentionally not use sensible field names.
         # It only cares about whether the search modifier literals are
         # added correctly.
-        modifiers = ['', '<', '[', '>', ']',  '^', '*', '!']
+        modifiers = ['', '<', '[', '>', ']', '^', '*', '!']
         for index, prefix in enumerate(modifiers):
             query = census.Query('dummy')
             mod = census.SearchModifier(index)
@@ -149,21 +149,21 @@ class TestQueryCommands(unittest.TestCase):
 
     def test_qc_only(self) -> None:
         """Generate a query that uses a query command, but no terms."""
-        url = census.Query('ability').set_distinct('ability_type_id').url()
+        url = census.Query('ability').distinct('ability_type_id').url()
         self.assertDictEqual(
             dict(url.query), {'c:distinct': 'ability_type_id'},
             'Incorrect query string')
 
     def test_qc_multi(self) -> None:
         """Generate a query using multiple query commands."""
-        url = census.Query('vehicle').set_limit(10).set_start(20).url()
+        url = census.Query('vehicle').limit(10).start(20).url()
         self.assertDictEqual(
             dict(url.query), {'c:limit': '10', 'c:start': '20'},
             'Incorrect query string')
 
     def test_qc_mixed(self) -> None:
         """Generate a query using query commands and terms."""
-        url = census.Query('item', faction=1).set_limit(100).url()
+        url = census.Query('item', faction=1).limit(100).url()
         self.assertDictEqual(
             dict(url.query), {'faction': '1', 'c:limit': '100'},
             'Incorrect query string')
@@ -171,7 +171,7 @@ class TestQueryCommands(unittest.TestCase):
     def test_show(self) -> None:
         """Test the c:show query command."""
         query = census.Query('character')
-        url = query.set_show_fields('name.first', 'battle_rank.value').url()
+        url = query.show('name.first', 'battle_rank.value').url()
         self.assertDictEqual(
             dict(url.query), {'c:show': 'name.first,battle_rank.value'},
             'Incorrect query command: c:show')
@@ -179,7 +179,7 @@ class TestQueryCommands(unittest.TestCase):
     def test_hide(self) -> None:
         """Test the c:hide query command."""
         query = census.Query('character')
-        url = query.set_hide_fields('name.first_lower').url()
+        url = query.hide('name.first_lower').url()
         self.assertDictEqual(
             dict(url.query), {'c:hide': 'name.first_lower'},
             'Incorrect query command: c:hide')
@@ -195,7 +195,7 @@ class TestQueryCommands(unittest.TestCase):
     def test_has(self) -> None:
         """Test the c:has query command."""
         query = census.Query('weapon')
-        url = query.require_fields('heat_capacity').url()
+        url = query.has('heat_capacity').url()
         self.assertDictEqual(
             dict(url.query), {'c:has': 'heat_capacity'},
             'Incorrect query command: c:has')
@@ -203,7 +203,7 @@ class TestQueryCommands(unittest.TestCase):
     def test_resolve(self) -> None:
         """Test the c:resolve query command."""
         query = census.Query('character')
-        url = query.set_resolves('online_status').url()
+        url = query.resolve('online_status').url()
         self.assertDictEqual(
             dict(url.query), {'c:resolve': 'online_status'},
             'Incorrect query command: c:resolve')
@@ -213,7 +213,7 @@ class TestQueryCommands(unittest.TestCase):
         query = census.Query('item')
         query.add_term('name.en', 'Pulsar',
                        modifier=census.SearchModifier.CONTAINS)
-        url = query.case_insensitive(True).url()
+        url = query.case(False).url()
         self.assertDictEqual(
             dict(url.query), {'name.en': '*Pulsar', 'c:case': '0'},
             'Incorrect query command: c:case')
@@ -221,7 +221,7 @@ class TestQueryCommands(unittest.TestCase):
     def test_limit(self) -> None:
         """Test the c:limit query command."""
         query = census.Query('faction')
-        url = query.set_limit(5).url()
+        url = query.limit(5).url()
         self.assertDictEqual(
             dict(url.query), {'c:limit': '5'},
             'Incorrect query command: c:limit')
@@ -229,7 +229,7 @@ class TestQueryCommands(unittest.TestCase):
     def test_limit_per_db(self) -> None:
         """Test the c:limit_per_db query command."""
         query = census.Query('character')
-        url = query.set_limit_per_db(20).url()
+        url = query.limit_per_db(20).url()
         self.assertDictEqual(
             dict(url.query), {'c:limitPerDB': '20'},
             'Incorrect query command: c:limitPerDB')
@@ -237,15 +237,20 @@ class TestQueryCommands(unittest.TestCase):
     def test_start(self) -> None:
         """Test the c:start query command."""
         query = census.Query('weapon')
-        url = query.sort('weapon_id').set_start(20).url()
+        url = query.sort('weapon_id').start(20).url()
         self.assertDictEqual(
             dict(url.query), {'c:sort': 'weapon_id', 'c:start': '20'},
             'Incorrect query command: c:start')
+        query = census.Query('item')
+        url = query.sort('item_id').offset(30).url()
+        self.assertDictEqual(
+            dict(url.query), {'c:sort': 'item_id', 'c:start': '30'},
+            'Incorrect query command: c:start (aliased')
 
     def test_include_null(self) -> None:
         """Test the c:includeNull query command."""
         query = census.Query('weapon')
-        url = query.set_include_null(True).url()
+        url = query.include_null(True).url()
         self.assertDictEqual(
             dict(url.query), {'c:includeNull': '1'},
             'Incorrect query command: c:includeNull')
@@ -253,7 +258,7 @@ class TestQueryCommands(unittest.TestCase):
     def test_lang(self) -> None:
         """Test the c:lang query command."""
         query = census.Query('item')
-        url = query.set_locale('en').url()
+        url = query.lang('en').url()
         self.assertDictEqual(
             dict(url.query), {'c:lang': 'en'},
             'Incorrect query command: c:lang')
@@ -269,8 +274,8 @@ class TestQueryCommands(unittest.TestCase):
 
     def test_tree(self) -> None:
         """Test the c:tree query command."""
-        query = census.Query('vehicle').set_limit(40)
-        url = query.as_tree('type_id', True, 'type_').url()
+        query = census.Query('vehicle').limit(40)
+        url = query.tree('type_id', True, 'type_').url()
         self.assertIn('c:tree', dict(url.query),
                       'Missing query key: c:tree')
         tree_pairs = url.query['c:tree'].split('^')
@@ -288,28 +293,28 @@ class TestQueryCommands(unittest.TestCase):
 
     def test_timing(self) -> None:
         """Test the c:timing query command."""
-        url = census.Query('character').profile(True).url()
+        url = census.Query('character').timing(True).url()
         self.assertDictEqual(
             dict(url.query), {'c:timing': '1'},
             'Incorrect query command: c:timing')
 
     def test_exact_match_first(self) -> None:
         """Test the c:exactMatchFirst query command."""
-        url = census.Query('character').promote_exact_matches(True).url()
+        url = census.Query('character').exact_match_first(True).url()
         self.assertDictEqual(
             dict(url.query), {'c:exactMatchFirst': '1'},
             'Incorrect query command: c:exactMatchFirst')
 
     def test_distinct(self) -> None:
         """Test the c:distinct query command."""
-        url = census.Query('effect').set_distinct('effect_type_id').url()
+        url = census.Query('effect').distinct('effect_type_id').url()
         self.assertDictEqual(
             dict(url.query), {'c:distinct': 'effect_type_id'},
             'Incorrect query command: c:distinct')
 
     def test_retry(self) -> None:
         """Test the c:retry query command."""
-        url = census.Query('character').set_retry(False).url()
+        url = census.Query('character').retry(False).url()
         self.assertDictEqual(
             dict(url.query), {'c:retry': '0'},
             'Incorrect query command: c:retry')

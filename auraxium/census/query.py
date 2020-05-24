@@ -4,12 +4,12 @@ This includes top-level queries, as well as inner, joined queries.
 """
 
 import copy
-from typing import (Any, Callable, Dict, List, Optional, Tuple, Type, TypeVar,
+from typing import (Any, Callable, List, Optional, Tuple, Type, TypeVar,
                     Union)
 
 import yarl
 
-from .support import CensusValue, SearchModifier, SearchTerm
+from .support import CensusValue, SearchModifier, SearchTerm, query_command
 
 _QueryBaseT = TypeVar('_QueryBaseT', bound='QueryBase')
 _T = TypeVar('_T')
@@ -56,9 +56,7 @@ class QueryBase:
 
         """
         self.collection = collection
-        self.hide_fields: List[str] = []
         self.joins: List['JoinedQuery'] = []
-        self.show_fields: List[str] = []
         self.terms: List[SearchTerm] = []
         # Replace and double underscores with dots to allow accessing inner
         # fields like "name.first" or "battle_rank.value"
@@ -182,8 +180,8 @@ class QueryBase:
         instance.terms = copy_func(template.terms)
         if copy_joins:
             instance.joins = copy_func(template.joins)
-        instance.hide_fields = copy_func(template.hide_fields)
-        instance.show_fields = copy_func(template.show_fields)
+        instance.hide.value = copy_func(template.hide.value)
+        instance.show.value = copy_func(template.show.value)
 
         return instance
 
@@ -209,14 +207,15 @@ class QueryBase:
         self.joins.append(join)
         return join
 
-    def set_hide_fields(self: _QueryBaseT, field: str, *args: str) -> _QueryBaseT:
+    @query_command([])
+    def hide(self: _QueryBaseT, field: str, *args: str) -> _QueryBaseT:
         """Set the fields to hide in the response.
 
         The given fields will not be included in the result. Note that
         this can break joins if the field they are attached to is not
         included.
 
-        This is mutually exclusive with set_show_fields; setting one
+        This is mutually exclusive with QueryBase.show(); setting one
         will undo any changes made by the other.
 
         Args:
@@ -227,18 +226,20 @@ class QueryBase:
             The query instance; this allows for chaining of operations.
 
         """
-        self.hide_fields = [field]
-        self.hide_fields.extend(args)
+        self.hide.value = [field]
+        self.hide.value.extend(args)
+        self.show.value = []
         return self
 
-    def set_show_fields(self: _QueryBaseT, field: str, *args: str) -> _QueryBaseT:
+    @query_command([])
+    def show(self: _QueryBaseT, field: str, *args: str) -> _QueryBaseT:
         """Set the fields to show in the response.
 
         Any other fields will not be included in the result. Note that
         this can break joins if the field they are attached to is not
         included.
 
-        This is mutually exclusive with set_hide_fields; setting one
+        This is mutually exclusive with QueryBase.hide(); setting one
         will undo any changes made by the other.
 
         Args:
@@ -249,8 +250,9 @@ class QueryBase:
             The query instance; this allows for chaining of operations.
 
         """
-        self.show_fields = [field]
-        self.show_fields.extend(args)
+        self.show.value = [field]
+        self.show.value.extend(args)
+        self.hide.value = []
         return self
 
 
@@ -268,29 +270,9 @@ class Query(QueryBase):
     respective setter methods.
 
     Attributes:
-        distinct: A list of fields whos distinct values to enumerate.
-        exact_match_first: If True, exact matches will be placed first
-            in the result list.
-        has_fields: Only results with non-NULL values in the given
-            fields will be returned.
-        ignore_case: If True, a slower, case-insensitive mode will be
-            used for text comparisons.
-        include_null: If True, NULL values will be included in the
-            response.
-        limit: The number of results to return.
-        limit_per_db: The number of results to return per database.
-        locale: If specified, only text in the given locale will be
-            included in the response.
         namespace: The API namespace to access.
-        profiling: If enabled, query profiling information will be
-            included in the response.
-        resolves: A list of resolvable fields to expand.
         service_id: A unique ID used to identify your API client. Note
             that the default service ID is heavily rate limited.
-        sort_by: A list of fields to sort the return list by.
-        start: Skip the given number of results.
-        tree: If provided, returned data will be reformatted into a
-            tree view.
 
     """
 
@@ -313,22 +295,8 @@ class Query(QueryBase):
 
         """
         super().__init__(collection, **kwargs)
-        self.distinct: Optional[str] = None
-        self.exact_match_first: bool = False
-        self.fail_early: bool = False
-        self.has_fields: List[str] = []
-        self.ignore_case: bool = False
-        self.include_null: bool = False
-        self.limit: Optional[int] = None
-        self.limit_per_db: Optional[int] = None
-        self.locale: Optional[str] = None
         self.namespace = namespace
-        self.profiling: bool = False
-        self.resolves: List[str] = []
         self.service_id = service_id
-        self.sort_by: List[Union[str, Tuple[str, bool]]] = []
-        self.start: int = 0
-        self.tree: Optional[Dict[str, Any]] = None
 
     def __str__(self) -> str:
         """Return the string representation of the query.
@@ -342,7 +310,8 @@ class Query(QueryBase):
         """
         return str(self.url().human_repr())
 
-    def case_insensitive(self, ignore_case: bool = False) -> 'Query':
+    @query_command(True)
+    def case(self, value: bool = True) -> 'Query':
         """Globally ignore case for this query.
 
         Note that case-insensitive look-ups are significantly slower.
@@ -350,35 +319,18 @@ class Query(QueryBase):
         lowercase field like ps2/character.name.first_lower.
 
         Args:
-            ignore_case (optional): Whether to ignore case for this
-                query. Defaults to False.
+            value (optional): Whether to ignore case for this query.
+                Defaults to True.
 
         Returns:
             The full URL describing this query and all of its joins.
 
         """
-        self.ignore_case = ignore_case
+        self.case.value = value
         return self
 
-    def profile(self, enable: bool = True) -> 'Query':
-        """Enabling query profiling output.
-
-        Setting this flag will include an additional "timing" key in
-        the response, providing timing information for the main query
-        and any joins.
-
-        Args:
-            enable (optional): Whether to enable profiling. Defaults to
-                True.
-
-        Returns:
-            The full URL describing this query and all of its joins.
-
-        """
-        self.profiling = enable
-        return self
-
-    def require_fields(self, field: str, *args: str) -> 'Query':
+    @query_command([])
+    def has(self, field: str, *args: str) -> 'Query':
         """Hide results with a NULL value at the given field.
 
         This is useful for filtering large data sets by optional
@@ -395,11 +347,12 @@ class Query(QueryBase):
             The query instance; this allows for chaining of operations.
 
         """
-        self.has_fields = [field]
-        self.has_fields.extend(args)
+        self.has.value = [field]
+        self.has.value.extend(args)
         return self
 
-    def set_distinct(self, field: Optional[str]) -> 'Query':
+    @query_command(None)
+    def distinct(self, field: Optional[str]) -> 'Query':
         """Query command used to show all unique values for a field.
 
         Args:
@@ -410,10 +363,11 @@ class Query(QueryBase):
             The query instance; this allows for chaining of operations.
 
         """
-        self.distinct = field
+        self.distinct.value = field
         return self
 
-    def promote_exact_matches(self, value: bool = True) -> 'Query':
+    @query_command(False)
+    def exact_match_first(self, value: bool = True) -> 'Query':
         """Whether to display exact matches before partial matches.
 
         When performing RegEx searches (i.e. ones using either
@@ -429,10 +383,11 @@ class Query(QueryBase):
             The query instance; this allows for chaining of operations.
 
         """
-        self.exact_match_first = value
+        self.exact_match_first.value = value
         return self
 
-    def set_include_null(self, value: bool) -> 'Query':
+    @query_command(False)
+    def include_null(self, value: bool) -> 'Query':
         """Whether to include NULL values in the response.
 
         This is useful for API introspection, but it is generally more
@@ -449,10 +404,11 @@ class Query(QueryBase):
             The query instance; this allows for chaining of operations.
 
         """
-        self.include_null = value
+        self.include_null.value = value
         return self
 
-    def set_limit(self, limit: int) -> 'Query':
+    @query_command(1)
+    def limit(self, limit: int) -> 'Query':
         """Specify the number of results returned.
 
         By default, the API will only return the first match for any
@@ -475,11 +431,12 @@ class Query(QueryBase):
         """
         if limit < 1:
             raise ValueError('limit must be greater than or equal to 1')
-        self.limit_per_db = None
-        self.limit = limit
+        self.limit_per_db.value = 1
+        self.limit.value = limit
         return self
 
-    def set_limit_per_db(self, limit_per_db: int) -> 'Query':
+    @query_command(1)
+    def limit_per_db(self, limit_per_db: int) -> 'Query':
         """Specify the number of results returned per database.
 
         This method works similarly to Query.set_limit(), but will
@@ -500,11 +457,12 @@ class Query(QueryBase):
         """
         if limit_per_db < 1:
             raise ValueError('limit_per_db must be greater than or equal to 1')
-        self.limit = None
-        self.limit_per_db = limit_per_db
+        self.limit.value = 1
+        self.limit_per_db.value = limit_per_db
         return self
 
-    def set_locale(self, lang: Optional[str] = None) -> 'Query':
+    @query_command(None)
+    def lang(self, lang: Optional[str] = None) -> 'Query':
         """Set the locale to user for the query.
 
         By default, queries return all locales for localised strings.
@@ -524,10 +482,11 @@ class Query(QueryBase):
             The query instance; this allows for chaining of operations.
 
         """
-        self.locale = lang
+        self.lang.value = lang
         return self
 
-    def set_offset(self, offset: int) -> 'Query':
+    @query_command(0)
+    def offset(self, offset: int) -> 'Query':
         """Alias for the Query.start() method.
 
         Refer to its docstring for details.
@@ -543,11 +502,13 @@ class Query(QueryBase):
 
         """
         try:
-            return self.set_start(offset)
+            self.start(offset)
         except ValueError as err:
             raise ValueError('offset may not be negative') from err
+        return self
 
-    def set_resolves(self, name: str, *args: str) -> 'Query':
+    @query_command([])
+    def resolve(self, name: str, *args: str) -> 'Query':
         """Resolve additional data for a collection.
 
         Resolves are a lighter version of joined queries and can be
@@ -565,11 +526,12 @@ class Query(QueryBase):
             The query instance; this allows for chaining of operations.
 
         """
-        self.resolves = [name]
-        self.resolves.extend(args)
+        self.resolve.value = [name]
+        self.resolve.value.extend(args)
         return self
 
-    def set_retry(self, retry: bool = False) -> 'Query':
+    @query_command(True)
+    def retry(self, retry: bool = False) -> 'Query':
         """Enable automatic query retry.
 
         By default, failed queries will be retried automatically. Set
@@ -584,10 +546,11 @@ class Query(QueryBase):
             The full URL describing this query and all of its joins.
 
         """
-        self.fail_early = not retry
+        self.retry.value = retry
         return self
 
-    def set_start(self, start: int) -> 'Query':
+    @query_command(0)
+    def start(self, start: int) -> 'Query':
         """Skip the given number of results in the response.
 
         Together with Query.set_limit(), this can be used to create
@@ -605,9 +568,10 @@ class Query(QueryBase):
         """
         if start < 1:
             raise ValueError('start may not be negative')
-        self.start = start
+        self.start.value = start
         return self
 
+    @query_command(None)
     def sort(self, field: Union[str, Tuple[str, bool]],
              *args: Union[str, Tuple[str, bool]]) -> 'Query':
         """Sort the results by one or more fields.
@@ -629,12 +593,32 @@ class Query(QueryBase):
             The query instance; this allows for chaining of operations.
 
         """
-        self.sort_by = [field]
-        self.sort_by.extend(args)
+        self.sort.value = [field]
+        self.sort.value.extend(args)
         return self
 
-    def as_tree(self, field: str, is_list: bool = False, prefix: str = '',
-                start: Optional[str] = None) -> 'Query':
+    @query_command(False)
+    def timing(self, value: bool = True) -> 'Query':
+        """Enabling query profiling output.
+
+        Setting this flag will include an additional "timing" key in
+        the response, providing timing information for the main query
+        and any joins.
+
+        Args:
+            value (optional): Whether to enable profiling. Defaults to
+                True.
+
+        Returns:
+            The full URL describing this query and all of its joins.
+
+        """
+        self.timing.value = value
+        return self
+
+    @query_command(None)
+    def tree(self, field: str, is_list: bool = False, prefix: str = '',
+             start: Optional[str] = None) -> 'Query':
         """Reformat a result list into a data tree.
 
         This is useful for lists of data with obvious categorisation,
@@ -654,8 +638,8 @@ class Query(QueryBase):
             The query instance; this allows for chaining of operations.
 
         """
-        self.tree = {'field': field, 'is_list': is_list,
-                     'prefix': prefix, 'start': start}
+        self.tree.value = {'field': field, 'is_list': is_list,
+                           'prefix': prefix, 'start': start}
         return self
 
     def url(self, verb: str = 'get', skip_checks: bool = False) -> yarl.URL:
@@ -780,7 +764,7 @@ class JoinedQuery(QueryBase):
         # If the original query had a non-default limit value, the join should
         # also return a list.
         if (isinstance(template, Query)
-                and template.limit is not None and template.limit > 1):
+                and template.limit is not None and template.limit.value > 1):
             instance.is_list = True
         return instance
 
