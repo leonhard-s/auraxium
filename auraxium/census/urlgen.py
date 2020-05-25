@@ -89,10 +89,10 @@ def process_join(join: JoinedQuery, verbose: bool) -> str:
     if not join.is_outer or verbose:
         string += '^outer:' + ('1' if join.is_outer else '0')
     # Show/hide field lists
-    if join.show.value:
-        string += '^show:' + '\''.join(str(s) for s in join.show.value)
-    elif join.hide.value:
-        string += '^hide:' + '\''.join(str(s) for s in join.hide.value)
+    if join.commands.get('show', []):
+        string += '^show:' + '\''.join(str(s) for s in join.commands['show'])
+    elif join.commands['hide']:
+        string += '^hide:' + '\''.join(str(s) for s in join.commands['hide'])
     # Inject at name
     if join.inject_at is not None:
         string += f'^inject_at:{join.inject_at}'
@@ -126,61 +126,61 @@ def process_query_commands(query: Query,
     """
     commands: Dict[str, str] = {}
     # c:show
-    if query.show.value:
-        commands['show'] = ','.join(str(f) for f in query.show.value)
-        if validate and query.hide.value:
+    if query.commands['show']:
+        commands['show'] = ','.join(str(f) for f in query.commands['show'])
+        if validate and query.commands['hide']:
             warnings.warn('Query.show and Query.hide are mutually exclusive, '
                           'the latter will be ignored')
     # c:hide
-    elif query.hide.value:
-        commands['hide'] = ','.join(str(f) for f in query.hide.value)
+    elif query.commands['hide']:
+        commands['hide'] = ','.join(str(f) for f in query.commands['hide'])
     # c:sort
-    if query.sort.value is not None:
-        commands['sort'] = ','.join(_process_sorts(query.sort.value))
+    if query.commands['sort']:
+        commands['sort'] = ','.join(_process_sorts(query.commands['sort']))
     # c:has
-    if query.has.value:
-        commands['has'] = ','.join(query.has.value)
+    if query.commands['has']:
+        commands['has'] = ','.join(query.commands['has'])
     # c:resolve
-    if query.resolve.value:
-        commands['resolve'] = ','.join(query.resolve.value)
+    if query.commands['resolve']:
+        commands['resolve'] = ','.join(query.commands['resolve'])
     # c:case
-    if not query.case.value:
+    if not query.commands['case']:
         commands['case'] = '0'
     # c:limit
-    if query.limit.value > 1:
-        commands['limit'] = str(query.limit.value)
-        if validate and query.limit_per_db.value > 1:
+    if query.commands['limit'] > 1:
+        commands['limit'] = str(query.commands['limit'])
+        if validate and query.commands['limit_per_db'] > 1:
             warnings.warn('Query.limit and Query.limit_per_db are mutually '
                           'exclusive, the latter will be ignored')
     # c:limitPerDB
-    elif query.limit_per_db.value > 1:
-        commands['limitPerDB'] = str(query.limit_per_db.value)
+    elif query.commands['limit_per_db'] > 1:
+        commands['limitPerDB'] = str(query.commands['limit_per_db'])
     # c:start
-    if query.start.value:
-        commands['start'] = str(query.start.value)
+    if query.commands['start'] > 0:
+        commands['start'] = str(query.commands['start'])
     # c:includeNull
-    if query.include_null.value:
+    if query.commands['include_null']:
         commands['includeNull'] = '1'
     # c:lang
-    if query.lang.value is not None:
-        commands['lang'] = query.lang.value
+    if query.commands['lang'] is not None:
+        commands['lang'] = query.commands['lang']
     # c:join
     if query.joins:
         commands['join'] = ','.join(j.serialise() for j in query.joins)
     # c:tree
-    if query.tree.value is not None:
-        commands['tree'] = _process_tree(query.tree.value)
+    if query.commands['tree'] is not None:
+        commands['tree'] = _process_tree(query.commands['tree'])
     # c:timing
-    if query.timing.value:
+    if query.commands['timing']:
         commands['timing'] = '1'
     # c:exactMatchFirst
-    if query.exact_match_first.value:
+    if query.commands['exact_match_first']:
         commands['exactMatchFirst'] = '1'
     # c:distinct
-    if query.distinct.value is not None:
-        commands['distinct'] = query.distinct.value
+    if query.commands['distinct'] is not None:
+        commands['distinct'] = query.commands['distinct']
     # c:retry
-    if not query.retry.value:
+    if not query.commands['retry']:
         commands['retry'] = '0'
 
     # Add the 'c:' prefix to all of the keys

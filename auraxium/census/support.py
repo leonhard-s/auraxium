@@ -1,96 +1,43 @@
 """Supporting classes and helper methods for the census module."""
 
-import copy
 import enum
-from typing import Any, Callable, List, Optional, Tuple, Type, TypeVar, Union
+from typing import Any, Dict, List, Optional, Tuple, TypedDict, Union
 
 CensusValue = Union[float, int, str]
-_T = TypeVar('_T')
 
 # This list connects the string literals to the enum values. The index of the
 # list element must match the corresponding enum value.
 _conversion_list: List[str] = ['', '<', '[', '>', ']', '^', '*', '!']
 
 
-class CallableAttribute:
-    """An attribute wrapper used to chain attribute assignments.
+class QueryData(TypedDict):
+    """A typed dictionary used to specify types for query command data.
 
-    The setter method is the preferred way to update the attribute. It
-    is possible to access and update the value manually through the
-    CallableAttribute.value attribute.
-
-    Attributes:
-        value: The value of the attribute. This  is the value updated
-            by the setter method.
-
+    This behaves much like a dictionary, but allows Mypy or other type
+    checkers to infer if the attributes passed are valid.
     """
+    # NOTE: Typed dictionaries do not support default values. Those are
+    # specified in the default_query_data() method, which is called when
+    # instantiating this typed dict.
 
-    def __init__(self, setter: Callable[..., _T], default: Any) -> None:
-        """Initialise the attribute descriptor.
-
-        This will set up the setter method and default value. It cannot
-        set up a reference to the parent object here, this is done in
-        the __get__ descriptor method.
-
-        Args:
-            setter: The setter method for this attribute.
-            default: The default value of the attribute.
-
-        """
-        self._default = default
-        self._setter = setter
-        # NOTE: Due to the decorator being called before the query object is
-        # instantiated, we cannot store a reference to the parent object here.
-        # We need this reference to make the self attribute behave correctly
-        # in the setter method, so it will be set by the __get__ magic method.
-        self._last_parent: Optional[_T] = None
-
-    @property
-    def value(self) -> Any:
-        """Internal property for accessing the per-instance value."""
-        return getattr(
-            self._last_parent, f'_ca_{self._setter.__name__}', self._default)
-
-    @value.setter
-    def value(self, value: Any) -> None:
-        setattr(self._last_parent, f'_ca_{self._setter.__name__}', value)
-
-    def __call__(self, *args: Any, **kwargs: Any) -> _T:
-        """Call the setter method for this attribute.
-
-        The arguments and return values are identical to the setter.
-
-        Args:
-            *args: Positional arguments for the setter.
-            **kwargs: Keyword arguments for the setter.
-
-        Returns:
-            The return value of the setter method.
-
-        """
-        assert self._last_parent is not None, 'Missing reference to parent'
-        return self._setter(self._last_parent, *args, **kwargs)
-
-    def __get__(self, instance: Optional[_T],
-                owner: Type[_T]) -> 'CallableAttribute':
-        """Return the attribute of the owner class or instance.
-
-        This is only used to store a reference to the owner and returns
-        a reference to the descriptor itself.
-
-        Args:
-            instance: The class instance this attribute was accessed
-                through, or None if accessed via the class.
-            owner: The owning class of this attribute.
-
-        Returns:
-            A reference to the descriptor.
-        """
-        # NOTE: This sets the "parent" flag whenever this object is accessed,
-        # since the descriptor cannot know the parent object at decorator
-        # instantiation.
-        self._last_parent = instance
-        return self
+    # These keys are shared between query commands and joins
+    hide: List[str]
+    show: List[str]
+    # The following are only used by query commands
+    case: bool
+    has: List[str]
+    distinct: Optional[str]
+    exact_match_first: bool
+    include_null: bool
+    lang: Optional[str]
+    limit: int
+    limit_per_db: int
+    resolve: List[str]
+    retry: bool
+    start: int
+    sort: List[Union[str, Tuple[str, bool]]]
+    timing: bool
+    tree: Optional[Dict[str, Any]]
 
 
 class SearchModifier(enum.Enum):
@@ -263,44 +210,26 @@ class SearchTerm:
         return literal
 
 
-def query_command(default: Any = None
-                  ) -> Callable[[Callable[..., _T]], CallableAttribute]:
-    """Turn the given function into a query command.
-
-    This decorator will wrap the given function inside a descriptor,
-    effectively creating a callable attribute. Calling this attribute
-    will invoke the setter provided to the decorator.
-
-    Note that this will dynamically subclass any object assigned. This
-    should mostly be invisible, but it will overwrite any __call__()
-    methods defined for that this type.
-
-    Args:
-        setter: The setter to invoke when calling the argument.
-        default (optional): The default value to initialize the
-            attribute to. Defaults to None.
+def default_query_data() -> QueryData:
+    """Return a query data dictionary populated with default values.
 
     Returns:
-        A descriptor wrapping the given setter function.
+        A dictionary populated with default values.
 
     """
-
-    def wrapper(setter: Callable[..., _T]) -> CallableAttribute:
-        """Inner wrapper for the query_command decorator.
-
-        The name of the created attribute has the same name as the
-        setter function given.
-
-        Args:
-            setter: The setter method to use for updating the value.
-
-        Returns:
-            A descriptor wrapping the given attribute.
-
-        """
-        # Deepcopy used to ensure mutable default values stay distinct between
-        # instances
-        instance = CallableAttribute(setter, copy.deepcopy(default))
-        return instance
-
-    return wrapper
+    return {'hide': [],
+            'show': [],
+            'case': True,
+            'has': [],
+            'distinct': None,
+            'exact_match_first': False,
+            'include_null': False,
+            'lang': None,
+            'limit': 1,
+            'limit_per_db': 1,
+            'resolve': [],
+            'retry': True,
+            'start': 0,
+            'sort': [],
+            'timing': False,
+            'tree': None}
