@@ -441,6 +441,9 @@ class Query(QueryBase):
         Args:
             limit: The number of results to return. Must be at least 1.
 
+        Raises:
+            ValueError: Raised if limit is less than 1.
+
         Returns:
             The query instance; this allows for chaining of operations.
 
@@ -465,6 +468,9 @@ class Query(QueryBase):
         Args:
             limit_per_db: The number of results to return per database.
                 Must be at least 1.
+
+        Raises:
+            ValueError: Raised if limit_per_db is less than 1.
 
         Returns:
             The query instance; this allows for chaining of operations.
