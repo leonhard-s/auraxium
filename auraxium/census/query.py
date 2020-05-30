@@ -117,8 +117,9 @@ class QueryBase:
         return self
 
     @classmethod
-    def copy(cls: Type[_QueryBaseT], template: 'QueryBase', copy_joins: bool = False,
-             deep_copy: bool = False, **kwargs: Any) -> _QueryBaseT:
+    def copy(cls: Type[_QueryBaseT], template: 'QueryBase',
+             copy_joins: bool = False, deep_copy: bool = False,
+             **kwargs: Any) -> _QueryBaseT:
         """Create a new query, copying most data from the template.
 
         The new query will share the collection, terms and show/hide
@@ -176,7 +177,6 @@ class QueryBase:
         copy_func: Callable[[_T], _T] = dummy_copy
         if deep_copy:
             copy_func = copy.deepcopy
-
         instance = cls(copy_func(template.collection), **kwargs)
         instance.terms = copy_func(template.terms)
         if copy_joins:
@@ -746,11 +746,9 @@ class JoinedQuery(QueryBase):
         # A joined query cannot be created without a collection
         if template.collection is None:
             raise TypeError('JoinedQuery requries a collection')
-
         # Run the original implementation as normal
         instance = super().copy(template, copy_joins=copy_joins,
                                 deep_copy=deep_copy, **kwargs)
-
         # If the original query had a non-default limit value, the join should
         # also return a list.
         if (isinstance(template, Query)

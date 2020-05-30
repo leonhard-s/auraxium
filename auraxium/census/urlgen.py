@@ -99,7 +99,6 @@ def process_join(join: JoinedQuery, verbose: bool) -> str:
     # QueryBase terms
     if join.terms:
         string += '^terms:' + '\''.join(t.serialise() for t in join.terms)
-
     # Process nested (inner) joins
     if join.joins:
         string += '('
@@ -182,7 +181,6 @@ def process_query_commands(query: Query,
     # c:retry
     if not query.commands['retry']:
         commands['retry'] = '0'
-
     # Add the 'c:' prefix to all of the keys
     commands = {f'c:{k}': v for k, v in commands.items()}
     return commands

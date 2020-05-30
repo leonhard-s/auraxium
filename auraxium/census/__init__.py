@@ -12,5 +12,7 @@ This module does not perform any queries; it only generates the URLs.
 Use an HTTP library of your choice to perform your queries.
 """
 
-from .query import JoinedQuery, Query, QueryBase
+from .query import JoinedQuery, Query
 from .support import SearchModifier, SearchTerm
+
+__all__ = ['JoinedQuery', 'Query', 'SearchModifier', 'SearchTerm']

@@ -14,5 +14,6 @@ project's repository at https://github.com/leonhard-s/auraxium.
 
 from . import census
 
+__all__ = ['census']
 __author__ = 'Leonhard S.'
 __version__ = '0.1.0a0'
