@@ -12,8 +12,12 @@ For additional information, bug reports or feature requests, visit the
 project's repository at https://github.com/leonhard-s/auraxium.
 """
 
+from . import base
 from . import census
+from . import errors
+from . import ps2
+from .client import Client
 
-__all__ = ['census']
+__all__ = ['census', 'Client', 'errors', 'ps2']
 __author__ = 'Leonhard S.'
 __version__ = '0.1.0a0'
