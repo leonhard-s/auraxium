@@ -93,8 +93,10 @@ class TLRUCache(Generic[K, V]):
 
     def clear(self) -> None:
         """Clear the cache, removing all items."""
-        log.debug('%s: Clearing cache: %d item(s) will be removed',
-                  self.name, len(self._data))
+        if log.isEnabledFor(logging.DEBUG):
+            count = len(self._data)
+            log.debug('%s: Clearing cache: %d item%s will be removed',
+                      self.name, count, 's' if count > 1 else '')
         self._data.clear()
 
     def footprint(self) -> int:
@@ -133,8 +135,9 @@ class TLRUCache(Generic[K, V]):
             raise ValueError(f'Unable to provide {count} available slots, '
                              f'{self.name} can only hold {self.size} items')
         available = self.size - len(self._data)
-        log.debug('%s: %d slots requested (available: %d)',
-                  self.name, count, available)
+        if log.isEnabledFor(logging.DEBUG):
+            log.debug('%s: %d slot%s requested (available: %d)',
+                      self.name, count, 's' if count > 1 else '', available)
         if self.ttu > 0:
             available += self.remove_expired()
         if available >= count:
