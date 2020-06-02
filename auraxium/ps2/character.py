@@ -73,17 +73,16 @@ class Character(Named, cache_size=256, cache_ttu=300.0):
             The entry with the matching name, or None if not found.
 
         """
-        COLLECTION = Final['character']
         log.debug('%s "%s"[%s] requested', cls.__name__, name, locale)
         if (instance := cls._cache.get(f'_{name.lower()}')) is not None:
             log.debug('%r restored from cache', instance)
             return instance
         log.debug('%s "%s"[%s] not cached, generating API query...',
                   cls.__name__, name, locale)
-        query = Query(collection=COLLECTION, service_id=client.service_id)
+        query = Query(collection=cls._collection, service_id=client.service_id)
         query.add_term(field='name.first_lower', value=name.lower())
         data = await run_query(query, session=client.session)
-        payload = extract_single(data, COLLECTION)
+        payload = extract_single(data, cls._collection)
         return cls(payload, client=client)
 
     def name(self, locale: str = 'en') -> str:
@@ -95,12 +94,12 @@ class Character(Named, cache_size=256, cache_ttu=300.0):
         This will always return the capitalised version of the name.
         Use the built-int str.lower() method for a lowercase version.
         """
-        return str(self._data['name']['first'])
+        return str(self._data['name'])
 
     @staticmethod
     def _check_payload(payload: CensusData) -> CensusData:
         data = {}
-        data['name'] = payload.pop('name')['first_lower']
+        data['name'] = payload.pop('name')['first']
         data['faction_id'] = payload.pop('faction_id')
         data['head_id'] = payload.pop('head_id')
         data['title_id'] = payload.pop('title_id')
