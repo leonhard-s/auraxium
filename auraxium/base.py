@@ -3,14 +3,15 @@
 import abc
 import logging
 import warnings
-from typing import (Any, ClassVar, List, Optional, Type, TYPE_CHECKING,
+from typing import (Any, ClassVar, List, Optional, Tuple, Type, TYPE_CHECKING,
                     TypeVar, Union)
 
 from .cache import TLRUCache
 from .census import Query
 from .errors import BadPayloadError
 from .request import extract_payload, extract_single, run_query
-from .types import CensusData
+from .types import CensusData, CensusInfo
+from .utils import nested_dict_get, nested_dict_pop
 
 if TYPE_CHECKING:
     # This is only imported when type checking is performed to avoid a circular
@@ -28,7 +29,7 @@ log = logging.getLogger('auraxium.ps2')
 class Ps2Object(metaclass=abc.ABCMeta):
     """Common base class for all PS2-related objects.
 
-    Subclasses must implement the abstract Ps2Object._check_payload()
+    Subclasses must implement the abstract Ps2Object._extract_fields()
     method used to validate Census API responses before storage.
     """
 
@@ -39,6 +40,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
     # these attributes while still requiring subclasses to overwrite them.
     _collection: ClassVar[str] = ''
     _id_field: ClassVar[str] = ''
+    _census_info: ClassVar[CensusInfo]
 
     @property  # type: ignore
     @classmethod
@@ -52,8 +54,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
     def _id_field(cls) -> str:
         raise NotImplementedError
 
-    def __init__(self, payload: CensusData,
-                 client: 'Client'):
+    def __init__(self, payload: CensusData, client: 'Client'):
         """Initialise the object.
 
         This sets the object's id attribute and populates it using the
@@ -72,10 +73,11 @@ class Ps2Object(metaclass=abc.ABCMeta):
         self.id = id_  # pylint: disable=invalid-name
         self._client = client
         try:
-            self._data = self._check_payload(payload)
+            self._data = self._process_payload(payload)
         except KeyError as err:
-            raise BadPayloadError(f'Unable to populate {self} due to a '
-                                  f'missing key: {err.args[0]}') from err
+            raise BadPayloadError(
+                f'Unable to populate {self.__class__.__name__} due to a '
+                f'missing key: {err.args[0]}') from err
         if payload:
             warnings.warn(f'Encountered {len(payload)} unexpected keys while '
                           f'instantiating {self}: {", ".join(payload.keys())}')
@@ -143,6 +145,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
             A list of matching entries.
 
         """
+        kwargs = dict(cls._translate_field(k, v) for k, v in kwargs.items())
         service_id = 's:example' if client is None else client.service_id
         query = Query(cls._collection, service_id=service_id, **kwargs)
         query.limit(results)
@@ -197,9 +200,28 @@ class Ps2Object(metaclass=abc.ABCMeta):
             return results[0]
         return None
 
-    @abc.abstractmethod
-    def _check_payload(self, payload: CensusData) -> CensusData:
-        raise NotImplementedError()
+    @classmethod
+    def _process_payload(cls, payload: CensusData) -> CensusData:
+        data: CensusData = {}
+        for census_name, arx_name in cls._census_info.fields.items():
+            value = nested_dict_pop(payload, census_name)
+            if census_name in cls._census_info.converter:
+                value = cls._census_info.converter[census_name]
+            data[arx_name] = value
+        # for census_name in cls._census_info.exclude:
+        #     _ = nested_dict_pop(payload, census_name)
+        return data
+
+    @classmethod
+    def _translate_field(cls, arx_name: str, value: Any) -> Tuple[str, Any]:
+        inverted = {v: k for k, v in cls._census_info.fields.items()}
+        try:
+            census_name = inverted[arx_name]
+        except KeyError:
+            census_name = arx_name
+        if arx_name in cls._census_info.converter:
+            value = cls._census_info.converter[arx_name](value)
+        return census_name, value
 
 
 class Cached(Ps2Object, metaclass=abc.ABCMeta):

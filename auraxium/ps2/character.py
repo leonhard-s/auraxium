@@ -8,7 +8,7 @@ from ..cache import TLRUCache
 from ..census import Query
 from ..client import Client
 from ..request import extract_single, run_query
-from ..types import CensusData
+from ..types import CensusInfo
 from .faction import Faction
 
 __all__ = ['Character']
@@ -22,6 +22,34 @@ class Character(Named, cache_size=256, cache_ttu=300.0):
     _cache: ClassVar[TLRUCache[Union[int, str], 'Character']]
     _collection = 'character'
     _id_field = 'character_id'
+
+    _census_info = CensusInfo(
+        # Census name to ARX name
+        {'name.first': 'name',
+         'name.first_lower': 'name_lower',
+         'faction_id': 'faction_id',
+         'title_id': 'title_id',
+         'prestige_level': 'asp_rank',
+         'times.creation': 'created',
+         'times.last_save': 'last_seen',
+         'times.last_login': 'last_login',
+         'times.login_count': 'login_count',
+         'times.minutes_played': 'playtime',
+         'certs.available_points': 'certs',
+         'certs.earned_points': 'certs_earned',
+         'certs.gifted_points': 'certs_gifted',
+         'certs.spent_points': 'certs_spent',
+         'battle_rank.value': 'battle_rank',
+         'battle_rank.percent_to_next': 'battle_rank_progress',
+         'profile_id': 'profile_id',
+         'daily_ribbon.count': 'daily_ribbons'},
+        # Field names to exclude
+        ['head_id', 'times.creation_date', 'times.last_save_date',
+         'times.last_login_date', 'certs.percent_to_next',
+         'daily_ribbon.time', 'daily_ribbon.date'],
+        # Converter functions
+        {'times.minutes_played': lambda x: x/60.0,
+         'playtime': lambda x: int(x*60)})
 
     @property
     def faction(self) -> Awaitable[Faction]:
@@ -43,17 +71,17 @@ class Character(Named, cache_size=256, cache_ttu=300.0):
             The character with the matching ID, or None if not found.
 
         """
-        COLLECTION = Final['single_character_by_id']
+        table = Final['single_character_by_id']
         log.debug('<%s:%d> requested', cls.__name__, id_)
         if (instance := cls._cache.get(id_)) is not None:
             log.debug('%r restored from cache', instance)
             return instance
         log.debug('<%s:%d> not cached, generating API query...',
                   cls.__name__, id_)
-        query = Query(collection=COLLECTION, service_id=client.service_id)
+        query = Query(collection=table, service_id=client.service_id)
         query.add_term(field=cls._id_field, value=id_).limit(1)
         data = await run_query(query, session=client.session)
-        payload = extract_single(data, COLLECTION)
+        payload = extract_single(data, table)
         return cls(payload, client=client)
 
     @classmethod
@@ -95,44 +123,3 @@ class Character(Named, cache_size=256, cache_ttu=300.0):
         Use the built-int str.lower() method for a lowercase version.
         """
         return str(self._data['name'])
-
-    @staticmethod
-    def _check_payload(payload: CensusData) -> CensusData:
-        data = {}
-        data['name'] = payload.pop('name')['first']
-        data['faction_id'] = payload.pop('faction_id')
-        data['head_id'] = payload.pop('head_id')
-        data['title_id'] = payload.pop('title_id')
-        data['profile_id'] = payload.pop('profile_id')
-        data['prestige_level'] = payload.pop('prestige_level')
-        times = payload['times']
-        data['times'] = {
-            'creation': times.pop('creation'),
-            'last_save': times.pop('last_save'),
-            'last_login': times.pop('last_login'),
-            'login_count': times.pop('login_count'),
-            'minutes_played': times.pop('minutes_played')}
-        certs = payload['certs']
-        data['certs'] = {
-            'earned_points': certs.pop('earned_points'),
-            'gifted_points': certs.pop('gifted_points'),
-            'spent_points': certs.pop('spent_points'),
-            'available_points': certs.pop('available_points'),
-            'percent_to_next': certs.pop('percent_to_next')}
-        battle_rank = payload['battle_rank']
-        data['battle_rank'] = {
-            'value': battle_rank.pop('value'),
-            'percent_to_next': battle_rank.pop('percent_to_next')}
-        daily_ribbon = payload['daily_ribbon']
-        data['daily_ribbon'] = {
-            'count': daily_ribbon.pop('count'),
-            'time': daily_ribbon.pop('time')}
-        if not times:
-            del data['times']
-        if not certs:
-            del data['certs']
-        if not battle_rank:
-            del data['battle_rank']
-        if not daily_ribbon:
-            del data['daily_ribbon']
-        return data
