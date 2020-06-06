@@ -559,9 +559,10 @@ class Query(QueryBase):
             The query instance; this allows for chaining of operations.
 
         """
-        if start < 1:
+        if start < 0:
             raise ValueError('start may not be negative')
-        self.commands['start'] = start
+        if start > 0:
+            self.commands['start'] = start
         return self
 
     def sort(self, field: Union[str, Tuple[str, bool]],
