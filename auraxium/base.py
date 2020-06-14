@@ -53,7 +53,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
     def _id_field(cls) -> str:
         raise NotImplementedError
 
-    def __init__(self, payload: CensusData, client: 'Client'):
+    def __init__(self, payload: CensusData, client: 'Client') -> None:
         """Initialise the object.
 
         This sets the object's id attribute and populates it using the
@@ -405,8 +405,8 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
             return instance  # type: ignore
         log.debug('%s "%s"[%s] not cached, generating API query...',
                   cls.__name__, name, locale)
-        query = Query(cls._collection).case(False).add_term(
-            field=f'name.{locale}', value=name)
+        query = Query(cls._collection, service_id=client.service_id)
+        query.case(False).add_term(field=f'name.{locale}', value=name)
         payload = await run_query(query, verb='get', session=client.session)
         payload = extract_single(payload, cls._collection)
         return cls(payload, locale=locale, client=client)
