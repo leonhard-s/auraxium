@@ -206,6 +206,15 @@ class Ps2Object(metaclass=abc.ABCMeta):
 
         return data
 
+    def query(self) -> Query:
+        """Return a query from the current object.
+
+        This is a utility method targetted at advanced users and
+        developers. It is generally not required for most use cases.
+        """
+        return Query(collection=self._collection,
+                     service_id=self._client.service_id)
+
     @classmethod
     def _translate_field(cls, arx_name: str, value: Any) -> Tuple[str, Any]:
         inverted = {v: k for k, v in cls._census_info.fields.items()}
