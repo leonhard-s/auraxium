@@ -7,8 +7,8 @@ from types import TracebackType
 import aiohttp
 
 if TYPE_CHECKING:
-    # This is only imported when type checking is performed to avoid a circular
-    # import
+    # This is only imported during static type checking to resolve the forward
+    # references. During runtime, this would cause a circular import.
     from .base import Named, Ps2Object
 
 __all__ = ['Client']

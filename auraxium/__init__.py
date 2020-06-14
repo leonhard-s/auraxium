@@ -15,8 +15,8 @@ project's repository at https://github.com/leonhard-s/auraxium.
 from . import base
 from . import census
 from . import errors
-from . import ps2
 from .client import Client
+from .ps2 import Character, Faction
 
 __all__ = ['census', 'Client', 'errors', 'ps2']
 __author__ = 'Leonhard S.'

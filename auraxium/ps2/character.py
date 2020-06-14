@@ -1,13 +1,14 @@
 """Objects related to characters."""
 
+import datetime
 import logging
-from typing import Awaitable, ClassVar, Final, Optional, Union
+from typing import Awaitable, ClassVar, Final, Iterable, List, Optional, Union
 
 from ..base import Named
 from ..cache import TLRUCache
 from ..census import Query
 from ..client import Client
-from ..request import extract_single, run_query
+from ..request import extract_payload, extract_single, run_query
 from ..types import CensusInfo
 from .faction import Faction
 
@@ -43,20 +44,118 @@ class Character(Named, cache_size=256, cache_ttu=300.0):
          'battle_rank.percent_to_next': 'battle_rank_progress',
          'profile_id': 'profile_id',
          'daily_ribbon.count': 'daily_ribbons'},
-        # Field names to exclude
-        ['head_id', 'times.creation_date', 'times.last_save_date',
-         'times.last_login_date', 'certs.percent_to_next',
-         'daily_ribbon.time', 'daily_ribbon.date'],
         # Converter functions
         {'times.minutes_played': lambda x: x/60.0,
          'playtime': lambda x: int(x*60)})
 
     @property
+    def asp_rank(self) -> int:
+        """Return the ASP rank of the player."""
+        return int(self._data['asp_rank'])
+
+    @property
+    def battle_rank(self) -> int:
+        """Return the battle rank of the player."""
+        return int(self._data['battle_rank'])
+
+    @property
+    def battle_rank_progress(self) -> float:
+        """Return the progress to the next battle rank."""
+        return float(self._data['battle_rank_progress'])
+
+    @property
+    def created(self) -> datetime.datetime:
+        """Return the creation date of the character."""
+        return datetime.datetime.utcfromtimestamp(int(self._data['creation']))
+
+    @property
+    def daily_ribbons(self) -> int:
+        """Return the number of available daily ribbons."""
+        return int(self._data['daily_ribbons'])
+
+    @property
     def faction(self) -> Awaitable[Faction]:
         """Return the faction of the player."""
-        faction_id = int(self._data['faction_id'])
-        faction = Faction.get_by_id(faction_id, client=self._client)
-        return faction  # type: ignore
+
+        async def get_faction() -> Faction:
+            faction_id = int(self._data['faction_id'])
+            faction = await Faction.get_by_id(faction_id, client=self._client)
+            assert faction is not None
+            return faction
+
+        return get_faction()
+
+    @property
+    def last_seen(self) -> datetime.datetime:
+        """Return the last save date of the character."""
+        return datetime.datetime.utcfromtimestamp(int(self._data['last_seen']))
+
+    @property
+    def last_login(self) -> datetime.datetime:
+        """Return the last save date of the character."""
+        return datetime.datetime.utcfromtimestamp(
+            int(self._data['last_login']))
+
+    @property
+    def playtime(self) -> float:
+        """Return the total playtime of the character in hours."""
+        return float(self._data['playtime'])
+
+    @property
+    def certs(self) -> int:
+        """Return the current certification balance of the player."""
+        return int(self._data['certs'])
+
+    @property
+    def certs_earned(self) -> int:
+        """Return the number of earned certification points."""
+        return int(self._data['certs_earned'])
+
+    @property
+    def certs_gifted(self) -> int:
+        """Return the number of gifted certification points."""
+        return int(self._data['certs_gifted'])
+
+    @property
+    def certs_spent(self) -> int:
+        """Return the number of spent certification points."""
+        return int(self._data['certs_spent'])
+
+    # @property
+    # def profile(self) -> Awaitable[Profile]:
+    #     """Return the current profile of the player."""
+
+    #     async def get_profile() -> Profile:
+    #         profile_id = int(self._data['profile_id'])
+    #         profile = await Profile.get_by_id(profile_id, client=self._client)
+    #         assert profile is not None
+    #         return profile
+
+    #     return get_profile()
+
+    # @property
+    # def title(self) -> Awaitable[Title]:
+    #     """Return the title of the player."""
+
+    #     async def get_title() -> Title:
+    #         title_id = int(self._data['title_id'])
+    #         title = await Title.get_by_id(title_id, client=self._client)
+    #         assert title is not None
+    #         return title
+
+    #     return get_title()
+
+    @property
+    def is_online(self) -> Awaitable[bool]:
+        """Return the online status of the player."""
+
+        async def get_online_status() -> bool:
+            query = Query('characters_online_status', character_id=self.id)
+            data = await run_query(query, session=self._client.session)
+            payload = extract_single(data, 'characters_online_status')
+            return bool(payload['online_status'])
+
+        return get_online_status()
 
     @classmethod
     async def get_by_id(cls, id_: int, *, client: Client
@@ -71,7 +170,7 @@ class Character(Named, cache_size=256, cache_ttu=300.0):
             The character with the matching ID, or None if not found.
 
         """
-        table = Final['single_character_by_id']
+        table: Final[str] = 'single_character_by_id'
         log.debug('<%s:%d> requested', cls.__name__, id_)
         if (instance := cls._cache.get(id_)) is not None:
             log.debug('%r restored from cache', instance)

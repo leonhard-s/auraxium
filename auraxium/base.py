@@ -2,7 +2,6 @@
 
 import abc
 import logging
-import warnings
 from typing import (Any, ClassVar, List, Optional, Tuple, Type, TYPE_CHECKING,
                     TypeVar, Union)
 
@@ -11,11 +10,11 @@ from .census import Query
 from .errors import BadPayloadError
 from .request import extract_payload, extract_single, run_query
 from .types import CensusData, CensusInfo
-from .utils import nested_dict_get, nested_dict_pop
+from .utils import nested_dict_pop
 
 if TYPE_CHECKING:
-    # This is only imported when type checking is performed to avoid a circular
-    # import
+    # This is only imported during static type checking to resolve the 'Client'
+    # forward reference. During runtime, this would cause a circular import.
     from .client import Client
 
 __all__ = ['Ps2Object', 'Cached', 'Named']
@@ -78,9 +77,6 @@ class Ps2Object(metaclass=abc.ABCMeta):
             raise BadPayloadError(
                 f'Unable to populate {self.__class__.__name__} due to a '
                 f'missing key: {err.args[0]}') from err
-        if payload:
-            warnings.warn(f'Encountered {len(payload)} unexpected keys while '
-                          f'instantiating {self}: {", ".join(payload.keys())}')
 
     def __repr__(self) -> str:
         """Return the unique string representation of this object.
@@ -108,7 +104,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
         """
         service_id = 's:example' if client is None else client.service_id
         query = Query(cls._collection, service_id=service_id, **kwargs)
-        result = await run_query(query, verb='count')
+        result = await run_query(query, verb='count', session=client.session)
         try:
             return int(result['count'])
         except KeyError as err:
@@ -152,7 +148,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
         if offset > 0:
             query.offset(offset)
         query.exact_match_first(promote_exact).case(check_case)
-        matches = await run_query(query, verb='get')
+        matches = await run_query(query, verb='get', session=client.session)
         return [cls(i, client=client) for i in extract_payload(
             matches, cls._collection)]
 
@@ -194,8 +190,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
 
         """
         filters: CensusData = {cls._id_field: id_}
-        results = await cls.find(
-            client=client, results=1, **filters)
+        results = await cls.find(client=client, results=1, **filters)
         if results:
             return results[0]
         return None
@@ -208,8 +203,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
             if census_name in cls._census_info.converter:
                 value = cls._census_info.converter[census_name]
             data[arx_name] = value
-        # for census_name in cls._census_info.exclude:
-        #     _ = nested_dict_pop(payload, census_name)
+
         return data
 
     @classmethod
@@ -404,7 +398,7 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
                   cls.__name__, name, locale)
         query = Query(cls._collection).case(False).add_term(
             field=f'name.{locale}', value=name)
-        payload = await run_query(query)
+        payload = await run_query(query, verb='get', session=client.session)
         payload = extract_single(payload, cls._collection)
         return cls(payload, locale=locale, client=client)
 

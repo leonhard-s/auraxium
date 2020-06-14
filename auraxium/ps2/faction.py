@@ -1,8 +1,11 @@
+"""Object definition for the faction type."""
+
 from ..base import Named
 from ..types import CensusInfo
 
 
 class Faction(Named, cache_size=10):
+    """A faction in PS2."""
 
     _collection = 'faction'
     _id_field = 'faction_id'
@@ -11,9 +14,7 @@ class Faction(Named, cache_size=10):
         # Census name to ARX name
         {'name': 'name',
          'image_set_id': 'image_set_id',
-         'code_tag': 'tag'},
-        # Field names to exclude
-        ['image_id', 'image_path', 'user_selectable'])
+         'code_tag': 'tag'})
 
     # @property
     # def image(self) -> Awaitable[Image]:
