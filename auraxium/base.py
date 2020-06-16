@@ -2,15 +2,14 @@
 
 import abc
 import logging
-from typing import (Any, ClassVar, List, Optional, Tuple, Type, TYPE_CHECKING,
+from typing import (Any, ClassVar, List, Optional, Type, TYPE_CHECKING,
                     TypeVar, Union)
 
 from .cache import TLRUCache
 from .census import Query
 from .errors import BadPayloadError
 from .request import extract_payload, extract_single, run_query
-from .types import CensusData, CensusInfo
-from .utils import nested_dict_pop
+from .types import CensusData
 
 if TYPE_CHECKING:
     # This is only imported during static type checking to resolve the 'Client'
@@ -21,8 +20,25 @@ __all__ = ['Ps2Object', 'Cached', 'Named']
 
 CachedT = TypeVar('CachedT', bound='Cached')
 NamedT = TypeVar('NamedT', bound='Named')
+Ps2DataT = TypeVar('Ps2DataT', bound='Ps2Data')
 Ps2ObjectT = TypeVar('Ps2ObjectT', bound='Ps2Object')
 log = logging.getLogger('auraxium.ps2')
+
+
+class Ps2Data(metaclass=abc.ABCMeta):
+    """Base class for PS2 data classes.
+
+    This defines the interface used to populate the data classes.
+    """
+
+    @classmethod
+    @abc.abstractmethod
+    def populate(cls: Type[Ps2DataT], payload: CensusData) -> Ps2DataT:
+        """Populate the data class with values from the dictionary.
+
+        This parses the API response and casts the appropriate types.
+        """
+        ...
 
 
 class Ps2Object(metaclass=abc.ABCMeta):
@@ -39,7 +55,6 @@ class Ps2Object(metaclass=abc.ABCMeta):
     # these attributes while still requiring subclasses to overwrite them.
     _collection: ClassVar[str] = ''
     _id_field: ClassVar[str] = ''
-    _census_info: ClassVar[CensusInfo]
 
     @property  # type: ignore
     @classmethod
@@ -66,13 +81,13 @@ class Ps2Object(metaclass=abc.ABCMeta):
                 performed via this object. Defaults to None.
 
         """
-        id_ = int(payload.pop(self._id_field))
+        id_ = int(payload[self._id_field])
         log.debug('Instantiating <%s:%d> using payload: %s',
                   self.__class__.__name__, id_, payload)
         self.id = id_  # pylint: disable=invalid-name
         self._client = client
         try:
-            self._data = self._process_payload(payload)
+            self.data = self._build_dataclass(payload)
         except KeyError as err:
             raise BadPayloadError(
                 f'Unable to populate {self.__class__.__name__} due to a '
@@ -88,6 +103,10 @@ class Ps2Object(metaclass=abc.ABCMeta):
 
         """
         return f'<{self.__class__.__name__}:{self.id}>'
+
+    @abc.abstractmethod
+    def _build_dataclass(self, payload: CensusData) -> Ps2Data:
+        ...
 
     @classmethod
     async def count(cls: Type[Ps2ObjectT], client: 'Client',
@@ -141,7 +160,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
             A list of matching entries.
 
         """
-        kwargs = dict(cls._translate_field(k, v) for k, v in kwargs.items())
+        # kwargs = dict(cls._translate_field(k, v) for k, v in kwargs.items())
         service_id = 's:example' if client is None else client.service_id
         query = Query(cls._collection, service_id=service_id, **kwargs)
         query.limit(results)
@@ -195,17 +214,6 @@ class Ps2Object(metaclass=abc.ABCMeta):
             return results[0]
         return None
 
-    @classmethod
-    def _process_payload(cls, payload: CensusData) -> CensusData:
-        data: CensusData = {}
-        for census_name, arx_name in cls._census_info.fields.items():
-            value = nested_dict_pop(payload, census_name)
-            if census_name in cls._census_info.converter:
-                value = cls._census_info.converter[census_name]
-            data[arx_name] = value
-
-        return data
-
     def query(self) -> Query:
         """Return a query from the current object.
 
@@ -214,17 +222,6 @@ class Ps2Object(metaclass=abc.ABCMeta):
         """
         return Query(collection=self._collection,
                      service_id=self._client.service_id)
-
-    @classmethod
-    def _translate_field(cls, arx_name: str, value: Any) -> Tuple[str, Any]:
-        inverted = {v: k for k, v in cls._census_info.fields.items()}
-        try:
-            census_name = inverted[arx_name]
-        except KeyError:
-            census_name = arx_name
-        if arx_name in cls._census_info.converter:
-            value = cls._census_info.converter[arx_name](value)
-        return census_name, value
 
 
 class Cached(Ps2Object, metaclass=abc.ABCMeta):
@@ -426,6 +423,6 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
 
         """
         try:
-            return str(self._data['name'][locale])
+            return str(self.data.name[locale])  # type: ignore
         except KeyError as err:
             raise ValueError(f'Invalid locale: {locale}') from err

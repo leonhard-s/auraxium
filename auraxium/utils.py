@@ -1,6 +1,6 @@
 """Shared utility methods used throughout Auraxium."""
 
-from typing import Any, Dict, Union
+from typing import Any, Dict
 
 # NOTE: The functions below are a dummy implementation for testing and will be
 # revisited soon.
@@ -20,7 +20,6 @@ def nested_dict_pop(dict_: Dict[str, Any], key: str) -> Any:
     def nested_pop(sub_: Dict[str, Any], inner: str, *args: str) -> Any:
         if not args:
             return sub_.pop(inner)
-        # pylint: disable=no-value-for-parameter
         value = nested_pop(sub_[inner], *args)
         if not sub_[inner]:
             del sub_[inner]

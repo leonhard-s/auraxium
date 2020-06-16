@@ -18,6 +18,6 @@ from . import errors
 from .client import Client
 from .ps2 import Character, Faction
 
-__all__ = ['census', 'Client', 'errors', 'ps2']
+__all__ = ['census', 'Client', 'Character', 'errors', 'Faction', 'ps2']
 __author__ = 'Leonhard S.'
 __version__ = '0.1.0a0'
