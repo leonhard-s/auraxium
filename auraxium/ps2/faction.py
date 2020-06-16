@@ -3,25 +3,40 @@
 import dataclasses
 
 from ..base import Named, Ps2Data
+from ..image import CensusImage
 from ..types import CensusData
 from ..utils import LocaleData
 
 
 @dataclasses.dataclass(frozen=True)
 class FactionData(Ps2Data):
-    """Data container for Faction objects."""
+    """Data container for the Faction class."""
 
     faction_id: int
     name: LocaleData
     code_tag: str
+    user_selectable: bool
+    image_set_id: int
+    image_id: int
 
     @classmethod
     def populate(cls, payload: CensusData) -> 'FactionData':
+        if (image_set_id := payload.get('image_set_id')) is not None:
+            image_set_id = int(image_set_id)
+        if (image_id := payload.get('image_id')) is not None:
+            image_id = int(image_id)
+        # image_path = payload.get('image_set_id')
         return cls(
             # Required
             int(payload['faction_id']),
             LocaleData.populate(payload['name']),
-            payload['code_tag'])
+            payload['code_tag'],
+            bool(payload['user_selectable']),
+            # Optional
+            image_set_id,
+            image_id,
+            # image_path,
+        )
 
 
 class Faction(Named, cache_size=10):
@@ -31,15 +46,9 @@ class Faction(Named, cache_size=10):
     data: FactionData
     _id_field = 'faction_id'
 
-    # @property
-    # def image(self) -> Awaitable[Image]:
-    #     image_id = int(self.data['image_id'])
-    #     return Image.get_by_id(image_id)
-
-    # @property
-    # def image_set(self) -> Awaitable[ImageSet]:
-    #     image_id = int(self.data['image_set_id'])
-    #     return ImageSet.get_by_id(image_id)
+    @property
+    def image(self) -> CensusImage:
+        return CensusImage(self.data.image_set_id, client=self._client)
 
     @property
     def tag(self) -> str:
