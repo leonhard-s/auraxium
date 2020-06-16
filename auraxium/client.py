@@ -130,7 +130,7 @@ class Client:
             A matching entry, or None if not found.
 
         """
-        return await type_.get(check_case=check_case, **kwargs)
+        return await type_.get(check_case=check_case, client=self, **kwargs)
 
     async def get_by_id(self, type_: Type[Ps2ObjectT], id_: int
                         ) -> Optional[Ps2ObjectT]:
