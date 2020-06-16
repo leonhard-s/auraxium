@@ -2,8 +2,8 @@
 
 import abc
 import logging
-from typing import (Any, ClassVar, List, Optional, Type, TYPE_CHECKING,
-                    TypeVar, Union)
+from typing import (Any, ClassVar, get_args, List, Optional, Type,
+                    TYPE_CHECKING, TypeVar, Union)
 
 from .cache import TLRUCache
 from .census import Query
@@ -30,6 +30,20 @@ class Ps2Data(metaclass=abc.ABCMeta):
 
     This defines the interface used to populate the data classes.
     """
+
+    def __post_init__(self) -> None:
+        """Enforce type constraints after initialisation."""
+        assert hasattr(self, '__annotations__')
+        # pylint: disable=no-member
+        for name, type_ in self.__annotations__.items():
+            value = getattr(self, name)
+            if types := get_args(type_):
+                if not any(isinstance(value, t) for t in types):
+                    raise TypeError(
+                        f'Field {name} got {type(value)}, expected {type_}')
+            elif not isinstance(value, type_):
+                raise TypeError(
+                    f'Field {name} got {type(value)}, expected {type_}')
 
     @classmethod
     @abc.abstractmethod
@@ -422,7 +436,9 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
             The localised name of the object.
 
         """
+        data = self.data
+        assert hasattr(data, 'name')
         try:
-            return str(self.data.name[locale])  # type: ignore
-        except KeyError as err:
+            return str(getattr(data.name, locale))  # type: ignore
+        except AttributeError as err:
             raise ValueError(f'Invalid locale: {locale}') from err
