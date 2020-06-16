@@ -68,7 +68,6 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
 
     _cache: ClassVar[TLRUCache[int, 'Weapon']]
     data: WeaponData
-    _dataclass = WeaponData
     _collection = 'weapon'
     _id_field = 'weapon_id'
 
