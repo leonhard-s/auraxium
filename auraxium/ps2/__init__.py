@@ -7,5 +7,7 @@ model will not match up to the Census API perfectly.
 
 from .character import Character
 from .faction import Faction
+from .item import Item
+from .weapon import Weapon
 
-__all__ = ['Character', 'Faction']
+__all__ = ['Character', 'Faction', 'Item', 'Weapon']
