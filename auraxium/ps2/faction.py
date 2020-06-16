@@ -46,6 +46,17 @@ class Faction(Named, cache_size=10):
     data: FactionData
     _id_field = 'faction_id'
 
+    def __repr__(self) -> str:
+        """Return the unique string representation of the faction.
+
+        This will take the form of <class:id:tag>, e.g. <Faction:2:NC>.
+
+        Returns:
+            A string representing the object.
+
+        """
+        return f'<{self.__class__.__name__}:{self.id}:{self.data.code_tag}>'
+
     @property
     def image(self) -> CensusImage:
         return CensusImage(self.data.image_set_id, client=self._client)

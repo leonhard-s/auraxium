@@ -110,7 +110,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
     def __repr__(self) -> str:
         """Return the unique string representation of this object.
 
-        This will take the form of <Class:id>, e.g. <Faction:2>.
+        This will take the form of <Class:id>, e.g. <Weapon:108>.
 
         Returns:
             A string representing the object.
@@ -380,6 +380,19 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
         if locale is not None:
             key = f'{locale}_{self.name(locale=locale).lower()}'
             self._cache.add(key, self)
+
+    def __repr__(self) -> str:
+        """Return the unique string representation of the faction.
+
+        This will take the form of <class:id:name>, e.g.
+        <Item:2:NC4 Mag-Shot>.
+
+        Returns:
+            A string representing the object.
+
+        """
+        return (f'<{self.__class__.__name__}:{self.id}:'
+                f'{self.name(locale="en")}>')
 
     def __str__(self) -> str:
         """Return the string representation of this object.
