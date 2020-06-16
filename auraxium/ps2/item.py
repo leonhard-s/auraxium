@@ -1,11 +1,18 @@
 import dataclasses
 import logging
-from typing import ClassVar, Optional
+from typing import ClassVar, Optional, TYPE_CHECKING
 
 from ..base import Named, Ps2Data
 from ..cache import TLRUCache
+from ..census import Query
+from ..proxy import InstanceProxy
 from ..types import CensusData
 from ..utils import LocaleData
+
+if TYPE_CHECKING:
+    # This is only imported during static type checking to resolve the forward
+    # references. During runtime, this would cause a circular import.
+    from .weapon import Weapon
 
 log = logging.getLogger('auraxium.ps2')
 
@@ -64,3 +71,13 @@ class Item(Named, cache_size=128, cache_ttu=3600.0):
 
     def _build_dataclass(self, payload: CensusData) -> ItemData:
         return ItemData.populate(payload)
+
+    def weapon(self) -> InstanceProxy['Weapon']:
+        from .weapon import Weapon
+        query = Query('item_to_weapon', service_id=self._client.service_id)
+        query.add_term(field=self._id_field, value=self.id)
+        join = query.create_join('weapon')
+        join.parent_field = 'weapon_id'
+        proxy: InstanceProxy['Weapon'] = InstanceProxy(
+            Weapon, query, client=self._client)
+        return proxy

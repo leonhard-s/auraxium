@@ -9,10 +9,12 @@ from ..base import Named, Ps2Data
 from ..cache import TLRUCache
 from ..census import Query
 from ..client import Client
+from ..proxy import SequenceProxy
 from ..request import extract_single, run_query
 from ..types import CensusData
 
 from .faction import Faction
+from .item import Item
 
 __all__ = ['Character']
 
@@ -218,6 +220,21 @@ class Character(Named, cache_size=256, cache_ttu=300.0):
     #         return title
 
     #     return get_title()
+
+    @property
+    def items(self) -> SequenceProxy[Item]:
+        """Return the character's unlocked items.
+
+        This returns a proxy object.
+        """
+        query = self.query()
+        join = query.create_join('characters_item').set_list(True)
+        join.parent_field = join.child_field = 'character_id'
+        inner = join.create_join('item')
+        inner.parent_field = inner.child_field = 'item_id'
+        proxy: SequenceProxy[Item] = SequenceProxy(
+            Item, query, client=self._client)
+        return proxy
 
     @property
     def is_online(self) -> Awaitable[bool]:

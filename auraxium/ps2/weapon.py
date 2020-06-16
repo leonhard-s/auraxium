@@ -4,7 +4,12 @@ from typing import ClassVar, Optional, Tuple
 
 from ..base import Cached, Ps2Data
 from ..cache import TLRUCache
+from ..client import Client
+from ..census import Query
+from ..proxy import InstanceProxy
 from ..types import CensusData
+
+from .item import Item
 
 log = logging.getLogger('auraxium')
 
@@ -108,3 +113,30 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
 
     def _build_dataclass(self, payload: CensusData) -> WeaponData:
         return WeaponData.populate(payload)
+
+    @classmethod
+    async def get_by_name(cls, name: str, *, locale: str = 'en',
+                          client: Client) -> Optional['Weapon']:
+        """Retrieve a weapon by name.
+
+        This is a helper method provided as weapons themselves do not
+        have a name. This looks up an item by name, then returns the
+        weapon associated with this item.
+
+        Returns:
+            The weapon associated with the given item, or None
+
+        """
+        item = await Item.get_by_name(name, locale=locale, client=client)
+        if item is None:
+            return None
+        return await item.weapon().resolve()
+
+    def item(self) -> InstanceProxy[Item]:
+        query = Query('item_to_weapon', service_id=self._client.service_id)
+        query.add_term(field=self._id_field, value=self.id)
+        join = query.create_join('item')
+        join.parent_field = 'item_id'
+        proxy: InstanceProxy[Item] = InstanceProxy(
+            Item, query, client=self._client)
+        return proxy
