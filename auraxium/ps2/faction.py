@@ -4,6 +4,7 @@ import dataclasses
 
 from ..base import Named, Ps2Data
 from ..types import CensusData
+from ..utils import LocaleData
 
 
 @dataclasses.dataclass(frozen=True)
@@ -11,7 +12,7 @@ class FactionData(Ps2Data):
     """Data container for Faction objects."""
 
     faction_id: int
-    name: CensusData
+    name: LocaleData
     code_tag: str
 
     @classmethod
@@ -19,7 +20,7 @@ class FactionData(Ps2Data):
         return cls(
             # Required
             int(payload['faction_id']),
-            payload['name'],
+            LocaleData.populate(payload['name']),
             payload['code_tag'])
 
 

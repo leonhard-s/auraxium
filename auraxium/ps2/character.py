@@ -3,7 +3,7 @@
 import dataclasses
 import datetime
 import logging
-from typing import Awaitable, ClassVar, Dict, Final, Optional, Union
+from typing import Awaitable, ClassVar, Final, NamedTuple, Optional, Union
 
 from ..base import Named, Ps2Data
 from ..cache import TLRUCache
@@ -20,34 +20,96 @@ log = logging.getLogger('auraxium.ps2')
 
 
 @dataclasses.dataclass(frozen=True)
-class CharacterData(Ps2Data):
+class CharacterData(Ps2Data):  # pylint: disable=too-many-instance-attributes
     """Data container for Character objects."""
 
+    class BattleRank(NamedTuple):
+        value: int
+        percent_to_next: float
+
+        @classmethod
+        def populate(cls, payload: CensusData) -> 'CharacterData.BattleRank':
+            return cls(
+                int(payload['value']),
+                float(payload['percent_to_next']))
+
+    class Certs(NamedTuple):
+        earned_points: int
+        gifted_points: int
+        spent_points: int
+        available_points: int
+        percent_to_next: float
+
+        @classmethod
+        def populate(cls, payload: CensusData) -> 'CharacterData.Certs':
+            return cls(
+                int(payload['earned_points']),
+                int(payload['gifted_points']),
+                int(payload['spent_points']),
+                int(payload['available_points']),
+                float(payload['percent_to_next']))
+
+    class DailyRibbon(NamedTuple):
+        count: int  # type: ignore
+        time: int
+
+        @classmethod
+        def populate(cls, payload: CensusData) -> 'CharacterData.DailyRibbon':
+            return cls(
+                int(payload['count']),
+                int(payload['time']))
+
+    class Names(NamedTuple):
+        first: str
+        first_lower: str
+
+        @classmethod
+        def populate(cls, payload: CensusData) -> 'CharacterData.Names':
+            return cls(
+                payload['first'],
+                payload['first_lower'])
+
+    class Times(NamedTuple):
+        creation: int
+        last_save: int
+        last_login: int
+        login_count: int
+        minutes_played: int
+
+        @classmethod
+        def populate(cls, payload: CensusData) -> 'CharacterData.Times':
+            return cls(
+                int(payload['creation']),
+                int(payload['last_save']),
+                int(payload['last_login']),
+                int(payload['login_count']),
+                int(payload['minutes_played']))
+
     character_id: int
-    name: Dict[str, str]
+    name: Names
     faction_id: int
-    title_id: Optional[int]
+    title_id: int
     prestige_level: int
-    times: CensusData
-    certs: CensusData
-    battle_rank: CensusData
+    times: Times
+    certs: Certs
+    battle_rank: BattleRank
     profile_id: int
-    daily_ribbon: CensusData  # Optional for deleted chars?
+    daily_ribbon: DailyRibbon  # Optional for deleted chars?
 
     @classmethod
     def populate(cls, payload: CensusData) -> 'CharacterData':
         return cls(
             # Required
             int(payload['character_id']),
-            payload['name'],
+            cls.Names.populate(payload['name']),
             int(payload['faction_id']),
-            int(payload.get('title_id', -1)),
+            int(payload['title_id']),
             int(payload['prestige_level']),
-            payload['times'],
-            payload['certs'],
-            payload['battle_rank'],
+            cls.Times.populate(payload['times']),
+            cls.Certs.populate(payload['certs']),
+            cls.BattleRank.populate(payload['battle_rank']),
             int(payload['profile_id']),
-            payload['daily_ribbon'])
+            cls.DailyRibbon.populate(payload['daily_ribbon']))
 
 
 class Character(Named, cache_size=256, cache_ttu=300.0):
@@ -66,23 +128,23 @@ class Character(Named, cache_size=256, cache_ttu=300.0):
     @property
     def battle_rank(self) -> int:
         """Return the battle rank of the player."""
-        return int(self.data.battle_rank['value'])
+        return int(self.data.battle_rank.value)
 
     @property
     def battle_rank_progress(self) -> float:
         """Return the progress to the next battle rank."""
-        return float(self.data.battle_rank['percent_to_next'])
+        return float(self.data.battle_rank.percent_to_next)
 
     @property
     def created(self) -> datetime.datetime:
         """Return the creation date of the character."""
         return datetime.datetime.utcfromtimestamp(
-            int(self.data.times['creation']))
+            int(self.data.times.creation))
 
     @property
     def daily_ribbons(self) -> int:
         """Return the number of available daily ribbons."""
-        return int(self.data.daily_ribbon['count'])
+        return int(self.data.daily_ribbon.count)
 
     @property
     def faction(self) -> Awaitable[Faction]:
@@ -100,38 +162,38 @@ class Character(Named, cache_size=256, cache_ttu=300.0):
     def last_seen(self) -> datetime.datetime:
         """Return the last save date of the character."""
         return datetime.datetime.utcfromtimestamp(
-            int(self.data.times['last_seen']))
+            int(self.data.times.last_save))
 
     @property
     def last_login(self) -> datetime.datetime:
         """Return the last save date of the character."""
         return datetime.datetime.utcfromtimestamp(
-            int(self.data.times['last_login']))
+            int(self.data.times.last_login))
 
     @property
     def playtime(self) -> float:
         """Return the total playtime of the character in hours."""
-        return float(self.data.times['minutes_played']) / 60.0
+        return float(self.data.times.minutes_played) / 60.0
 
     @property
     def certs(self) -> int:
         """Return the current certification balance of the player."""
-        return int(self.data.certs['available_points'])
+        return int(self.data.certs.available_points)
 
     @property
     def certs_earned(self) -> int:
         """Return the number of earned certification points."""
-        return int(self.data.certs['earned_points'])
+        return int(self.data.certs.earned_points)
 
     @property
     def certs_gifted(self) -> int:
         """Return the number of gifted certification points."""
-        return int(self.data.certs['gifted_points'])
+        return int(self.data.certs.gifted_points)
 
     @property
     def certs_spent(self) -> int:
         """Return the number of spent certification points."""
-        return int(self.data.certs['spent_points'])
+        return int(self.data.certs.spent_points)
 
     # @property
     # def profile(self) -> Awaitable[Profile]:
@@ -236,4 +298,4 @@ class Character(Named, cache_size=256, cache_ttu=300.0):
         This will always return the capitalised version of the name.
         Use the built-int str.lower() method for a lowercase version.
         """
-        return str(self.data.name)
+        return str(self.data.name.first)

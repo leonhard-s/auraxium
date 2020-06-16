@@ -1,6 +1,26 @@
 """Shared utility methods used throughout Auraxium."""
 
-from typing import Any, Dict
+from typing import Any, Dict, NamedTuple
+
+from .types import CensusData
+
+
+class LocaleData(NamedTuple):
+    de: str
+    en: str
+    es: str
+    fr: str
+    it: str
+
+    @classmethod
+    def populate(cls, payload: CensusData) -> 'LocaleData':
+        return cls(
+            payload['de'],
+            payload['en'],
+            payload['es'],
+            payload['fr'],
+            payload['it'])
+
 
 # NOTE: The functions below are a dummy implementation for testing and will be
 # revisited soon.
