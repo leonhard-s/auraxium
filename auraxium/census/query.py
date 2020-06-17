@@ -313,7 +313,7 @@ class Query(QueryBase):
         """Globally ignore case for this query.
 
         Note that case-insensitive look-ups are significantly slower.
-        Where available, use a case-sensitive query targetting a
+        Where available, use a case-sensitive query targeting a
         lowercase field like ps2/character.name.first_lower.
 
         Args:
@@ -431,7 +431,7 @@ class Query(QueryBase):
         given query, you can increase the number of results using this
         method.
 
-        The maximum number of values permissable varies from collection
+        The maximum number of values permissible varies from collection
         to collection, e.g. 100k for ps2/character, but only 5000 for
         ps2/item. Use your best judgement.
 
@@ -643,7 +643,7 @@ class Query(QueryBase):
                 options are 'get', used to return a list of results,
                 and 'count', used to return the length of that list.
                 Defaults to 'get'.
-            skip_checks (optional): By default, the url generator will
+            skip_checks (optional): By default, the URL generator will
                 perform a number of checks to validate your query.
                 Enabling this flag will skip the checks. Defaults to
                 False.
@@ -746,7 +746,7 @@ class JoinedQuery(QueryBase):
         """
         # A joined query cannot be created without a collection
         if template.collection is None:
-            raise TypeError('JoinedQuery requries a collection')
+            raise TypeError('JoinedQuery requires a collection')
         # Run the original implementation as normal
         instance = super().copy(template, copy_joins=copy_joins,
                                 deep_copy=deep_copy, **kwargs)
@@ -804,7 +804,7 @@ class JoinedQuery(QueryBase):
 
         If True, the join will return any matching elements. Be wary of
         large relational collections such as ps2/characters_item; there
-        is no limiting system, just an eventual hard cutoff. Use terms
+        is no limiting system, just an eventual hard cut-off. Use terms
         to reduce the number of matching elements when flagging a join
         as a list.
 
@@ -837,7 +837,7 @@ class JoinedQuery(QueryBase):
         discard any results that do not meet the join's terms.
 
         Args:
-            is_outer: If Truethe join will be an outer join. Set to
+            is_outer: If True, the join will be an outer join. Set to
                 False for inner join behaviour.
 
         Returns:

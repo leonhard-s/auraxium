@@ -130,7 +130,7 @@ class SearchTerm:
         Search terms are used to filter the results before returning.
         This is particularly important for lists returned by joined
         queries, as they do not have access to limiting mechanisms like
-        Query, easily resulgint in excessively long return lists.
+        Query, easily resulting in excessively long return lists.
 
         Use the SearchTerm.infer() factory if you prefer defining
         search modifiers via their string literals as used by the API,

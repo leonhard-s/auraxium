@@ -1,6 +1,6 @@
 """Low-level Census API wrapper and URL generator.
 
-This module is reponsible for generating the URLs used to interface
+This module is responsible for generating the URLs used to interface
 with the Census API. It is game agnostic and should work for any game
 supporting the Census.
 

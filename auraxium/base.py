@@ -231,7 +231,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
     def query(self) -> Query:
         """Return a query from the current object.
 
-        This is a utility method targetted at advanced users and
+        This is a utility method targeted at advanced users and
         developers. It is generally not required for most use cases.
         """
         return Query(collection=self._collection,
@@ -239,7 +239,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
 
 
 class Cached(Ps2Object, metaclass=abc.ABCMeta):
-    """Base class for cachable data types.
+    """Base class for cacheable data types.
 
     This generates a cache for each subclass that allows the storage
     and retrieval of objects by ID. This cache can be customised using
@@ -268,7 +268,7 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
     @classmethod
     def __init_subclass__(cls: Type[CachedT], cache_size: int,
                           cache_ttu: float = 0.0) -> None:
-        """Initialise a cachable subclass.
+        """Initialise a cacheable subclass.
 
         This sets up the TLRU cache for the given subclass using the
         keyword arguments provided.
@@ -370,7 +370,7 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
 
         Args:
             locale: The locale under which to cache this object.
-            *args: Any extra positional argumetns are forwarded to the
+            *args: Any extra positional arguments are forwarded to the
                 Cached class's initialiser.
             **kwargs: Any keyword arguments are forwarded to the
                 Cached class's initialiser.
@@ -400,7 +400,7 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
         This calls the Named.name() method for the English locale.
 
         Returns:
-            A string representaiton of the object.
+            A string representation of the object.
 
         """
         return self.name(locale='en')

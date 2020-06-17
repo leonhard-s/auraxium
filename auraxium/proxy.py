@@ -75,7 +75,7 @@ class Proxy(Generic[Ps2ObjectT]):
             payload: The raw payload returned from the API
 
         Raises:
-            RuntimeError: Raised if the query has more thsan one join
+            RuntimeError: Raised if the query has more than one join
             RuntimeError: Raised if the parent field of a query is not
                 given
 

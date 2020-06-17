@@ -18,7 +18,7 @@ def generate_url(query: Query, verb: str, validate: bool = True) -> yarl.URL:
     Args:
         query: The top-level query to process.
         verb: The query verb to use for the query.
-        validate (optional): By default, the url generator will perform
+        validate (optional): By default, the URL generator will perform
             a number of checks to validate the query, raising errors or
             warnings as necessary. Disabling this flag will skip the
             checks. Defaults to True
@@ -109,7 +109,7 @@ def process_join(join: JoinedQuery, verbose: bool) -> str:
 
 def process_query_commands(query: Query,
                            validate: bool = True) -> Dict[str, str]:
-    """Process any query commands defiend for the given query.
+    """Process any query commands defined for the given query.
 
     This also recursively processes any joins defined.
 

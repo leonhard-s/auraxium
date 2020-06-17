@@ -116,7 +116,7 @@ class TLRUCache(Generic[K, V]):
         """Release items from the cache.
 
         This will clear any expired items, followed by as many of the
-        least recently used items as requried.
+        least recently used items as required.
 
         The number of slots freed may exceed the number of slots
         requested. This is due to all expired items being cleared.
