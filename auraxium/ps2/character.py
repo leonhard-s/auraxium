@@ -30,10 +30,10 @@ class CharacterData(Ps2Data):  # pylint: disable=too-many-instance-attributes
         percent_to_next: float
 
         @classmethod
-        def populate(cls, payload: CensusData) -> 'CharacterData.BattleRank':
+        def from_census(cls, data: CensusData) -> 'CharacterData.BattleRank':
             return cls(
-                int(payload['value']),
-                float(payload['percent_to_next']))
+                int(data['value']),
+                float(data['percent_to_next']))
 
     class Certs(NamedTuple):
         earned_points: int
@@ -43,33 +43,35 @@ class CharacterData(Ps2Data):  # pylint: disable=too-many-instance-attributes
         percent_to_next: float
 
         @classmethod
-        def populate(cls, payload: CensusData) -> 'CharacterData.Certs':
+        def from_census(cls, data: CensusData
+                        ) -> 'CharacterData.Certs':
             return cls(
-                int(payload['earned_points']),
-                int(payload['gifted_points']),
-                int(payload['spent_points']),
-                int(payload['available_points']),
-                float(payload['percent_to_next']))
+                int(data['earned_points']),
+                int(data['gifted_points']),
+                int(data['spent_points']),
+                int(data['available_points']),
+                float(data['percent_to_next']))
 
     class DailyRibbon(NamedTuple):
         count: int  # type: ignore
         time: int
 
         @classmethod
-        def populate(cls, payload: CensusData) -> 'CharacterData.DailyRibbon':
+        def from_census(cls, data: CensusData
+                        ) -> 'CharacterData.DailyRibbon':
             return cls(
-                int(payload['count']),
-                int(payload['time']))
+                int(data['count']),
+                int(data['time']))
 
     class Names(NamedTuple):
         first: str
         first_lower: str
 
         @classmethod
-        def populate(cls, payload: CensusData) -> 'CharacterData.Names':
+        def from_census(cls, data: CensusData) -> 'CharacterData.Names':
             return cls(
-                payload['first'],
-                payload['first_lower'])
+                data['first'],
+                data['first_lower'])
 
     class Times(NamedTuple):
         creation: int
@@ -79,13 +81,13 @@ class CharacterData(Ps2Data):  # pylint: disable=too-many-instance-attributes
         minutes_played: int
 
         @classmethod
-        def populate(cls, payload: CensusData) -> 'CharacterData.Times':
+        def from_census(cls, data: CensusData) -> 'CharacterData.Times':
             return cls(
-                int(payload['creation']),
-                int(payload['last_save']),
-                int(payload['last_login']),
-                int(payload['login_count']),
-                int(payload['minutes_played']))
+                int(data['creation']),
+                int(data['last_save']),
+                int(data['last_login']),
+                int(data['login_count']),
+                int(data['minutes_played']))
 
     character_id: int
     name: Names
@@ -99,19 +101,19 @@ class CharacterData(Ps2Data):  # pylint: disable=too-many-instance-attributes
     daily_ribbon: DailyRibbon  # Optional for deleted chars?
 
     @classmethod
-    def populate(cls, payload: CensusData) -> 'CharacterData':
+    def from_census(cls, data: CensusData) -> 'CharacterData':
         return cls(
             # Required
-            int(payload['character_id']),
-            cls.Names.populate(payload['name']),
-            int(payload['faction_id']),
-            int(payload['title_id']),
-            int(payload['prestige_level']),
-            cls.Times.populate(payload['times']),
-            cls.Certs.populate(payload['certs']),
-            cls.BattleRank.populate(payload['battle_rank']),
-            int(payload['profile_id']),
-            cls.DailyRibbon.populate(payload['daily_ribbon']))
+            int(data['character_id']),
+            cls.Names.from_census(data['name']),
+            int(data['faction_id']),
+            int(data['title_id']),
+            int(data['prestige_level']),
+            cls.Times.from_census(data['times']),
+            cls.Certs.from_census(data['certs']),
+            cls.BattleRank.from_census(data['battle_rank']),
+            int(data['profile_id']),
+            cls.DailyRibbon.from_census(data['daily_ribbon']))
 
 
 class Character(Named, cache_size=256, cache_ttu=300.0):
@@ -248,8 +250,8 @@ class Character(Named, cache_size=256, cache_ttu=300.0):
 
         return get_online_status()
 
-    def _build_dataclass(self, payload: CensusData) -> CharacterData:
-        return CharacterData.populate(payload)
+    def _build_dataclass(self, data: CensusData) -> CharacterData:
+        return CharacterData.from_census(data)
 
     @classmethod
     async def get_by_id(cls, id_: int, *, client: Client

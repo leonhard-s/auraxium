@@ -34,37 +34,37 @@ class WeaponData(Ps2Data):
     melee_detect_height: Optional[float] = None
 
     @classmethod
-    def populate(cls, payload: CensusData) -> 'WeaponData':
-        heat_capacity = payload.get('heat_capacity')
+    def from_census(cls, data: CensusData) -> 'WeaponData':
+        heat_capacity = data.get('heat_capacity')
         if heat_capacity is not None:
             heat_capacity = int(heat_capacity)
-        heat_bleed_off_rate = payload.get('heat_bleed_off_rate')
+        heat_bleed_off_rate = data.get('heat_bleed_off_rate')
         if heat_bleed_off_rate is not None:
             heat_bleed_off_rate = int(heat_bleed_off_rate)
-        heat_overheat_penalty_ms = payload.get('heat_overheat_penalty_ms')
+        heat_overheat_penalty_ms = data.get('heat_overheat_penalty_ms')
         if heat_overheat_penalty_ms is not None:
             heat_overheat_penalty_ms = int(heat_overheat_penalty_ms)
-        melee_detect_width = payload.get('melee_detect_width')
+        melee_detect_width = data.get('melee_detect_width')
         if melee_detect_width is not None:
             melee_detect_width = float(melee_detect_width)
-        melee_detect_height = payload.get('melee_detect_height')
+        melee_detect_height = data.get('melee_detect_height')
         if melee_detect_height is not None:
             melee_detect_height = float(melee_detect_height)
         return cls(
             # Required
-            int(payload['weapon_id']),
-            int(payload['weapon_group_id']),
-            float(payload['turn_modifier']),
-            float(payload['move_modifier']),
-            int(payload['sprint_recovery_ms']),
-            int(payload['equip_ms']),
-            int(payload['unequip_ms']),
-            int(payload['to_iron_sights_ms']),
-            int(payload['from_iron_sights_ms']),
+            int(data['weapon_id']),
+            int(data['weapon_group_id']),
+            float(data['turn_modifier']),
+            float(data['move_modifier']),
+            int(data['sprint_recovery_ms']),
+            int(data['equip_ms']),
+            int(data['unequip_ms']),
+            int(data['to_iron_sights_ms']),
+            int(data['from_iron_sights_ms']),
             # Optional
-            int(payload['heat_capacity']),
-            float(payload['heat_bleed_off_rate']),  # float or int?
-            int(payload['heat_overheat_penalty_ms']),
+            int(data['heat_capacity']),
+            float(data['heat_bleed_off_rate']),  # float or int?
+            int(data['heat_overheat_penalty_ms']),
             melee_detect_width,
             melee_detect_height)
 
@@ -111,8 +111,8 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
             value /= 1000.0
         return value
 
-    def _build_dataclass(self, payload: CensusData) -> WeaponData:
-        return WeaponData.populate(payload)
+    def _build_dataclass(self, data: CensusData) -> WeaponData:
+        return WeaponData.from_census(data)
 
     @classmethod
     async def get_by_name(cls, name: str, *, locale: str = 'en',

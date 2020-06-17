@@ -13,13 +13,13 @@ class LocaleData(NamedTuple):
     it: str
 
     @classmethod
-    def populate(cls, payload: CensusData) -> 'LocaleData':
+    def from_census(cls, data: CensusData) -> 'LocaleData':
         return cls(
-            payload['de'],
-            payload['en'],
-            payload['es'],
-            payload['fr'],
-            payload['it'])
+            data['de'],
+            data['en'],
+            data['es'],
+            data['fr'],
+            data['it'])
 
 
 # NOTE: The functions below are a dummy implementation for testing and will be

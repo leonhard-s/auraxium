@@ -20,18 +20,18 @@ class FactionData(Ps2Data):
     image_id: int
 
     @classmethod
-    def populate(cls, payload: CensusData) -> 'FactionData':
-        if (image_set_id := payload.get('image_set_id')) is not None:
+    def from_census(cls, data: CensusData) -> 'FactionData':
+        if (image_set_id := data.get('image_set_id')) is not None:
             image_set_id = int(image_set_id)
-        if (image_id := payload.get('image_id')) is not None:
+        if (image_id := data.get('image_id')) is not None:
             image_id = int(image_id)
-        # image_path = payload.get('image_set_id')
+        # image_path = data.get('image_set_id')
         return cls(
             # Required
-            int(payload['faction_id']),
-            LocaleData.populate(payload['name']),
-            payload['code_tag'],
-            bool(payload['user_selectable']),
+            int(data['faction_id']),
+            LocaleData.from_census(data['name']),
+            data['code_tag'],
+            bool(data['user_selectable']),
             # Optional
             image_set_id,
             image_id,
@@ -66,5 +66,5 @@ class Faction(Named, cache_size=10):
         """Return the tag of this faction (VS, TR, NC, and NSO)."""
         return str(self.data.code_tag)
 
-    def _build_dataclass(self, payload: CensusData) -> FactionData:
-        return FactionData.populate(payload)
+    def _build_dataclass(self, data: CensusData) -> FactionData:
+        return FactionData.from_census(data)

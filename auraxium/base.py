@@ -47,7 +47,7 @@ class Ps2Data(metaclass=abc.ABCMeta):
 
     @classmethod
     @abc.abstractmethod
-    def populate(cls: Type[Ps2DataT], payload: CensusData) -> Ps2DataT:
+    def from_census(cls: Type[Ps2DataT], data: CensusData) -> Ps2DataT:
         """Populate the data class with values from the dictionary.
 
         This parses the API response and casts the appropriate types.
@@ -82,26 +82,26 @@ class Ps2Object(metaclass=abc.ABCMeta):
     def _id_field(cls) -> str:
         raise NotImplementedError
 
-    def __init__(self, payload: CensusData, client: 'Client') -> None:
+    def __init__(self, data: CensusData, client: 'Client') -> None:
         """Initialise the object.
 
         This sets the object's id attribute and populates it using the
         provided payload.
 
         Args:
-            payload: The census response dictionary to populate the
+            data: The census response dictionary to populate the
                 object with.
             client (optional): The client object to use for requests
                 performed via this object. Defaults to None.
 
         """
-        id_ = int(payload[self._id_field])
+        id_ = int(data[self._id_field])
         log.debug('Instantiating <%s:%d> using payload: %s',
-                  self.__class__.__name__, id_, payload)
+                  self.__class__.__name__, id_, data)
         self.id = id_  # pylint: disable=invalid-name
         self._client = client
         try:
-            self.data = self._build_dataclass(payload)
+            self.data = self._build_dataclass(data)
         except KeyError as err:
             raise BadPayloadError(
                 f'Unable to populate {self.__class__.__name__} due to a '
@@ -119,7 +119,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
         return f'<{self.__class__.__name__}:{self.id}>'
 
     @abc.abstractmethod
-    def _build_dataclass(self, payload: CensusData) -> Ps2Data:
+    def _build_dataclass(self, data: CensusData) -> Ps2Data:
         ...
 
     @classmethod
@@ -259,10 +259,10 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
 
     _cache: ClassVar[TLRUCache[int, Any]]
 
-    def __init__(self, payload: CensusData,
+    def __init__(self, data: CensusData,
                  client: 'Client') -> None:
         """Initialise the cached object."""
-        super().__init__(payload=payload, client=client)
+        super().__init__(data=data, client=client)
         self._cache.add(self.id, self)
 
     @classmethod

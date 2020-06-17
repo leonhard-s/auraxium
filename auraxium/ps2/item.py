@@ -36,34 +36,34 @@ class ItemData(Ps2Data):
     is_default_attachment: bool
 
     @classmethod
-    def populate(cls, payload: CensusData) -> 'ItemData':
-        active_ability = payload.get('activatable_ability_id', None)
+    def from_census(cls, data: CensusData) -> 'ItemData':
+        active_ability = data.get('activatable_ability_id', None)
         if active_ability is not None:
             active_ability = int(active_ability)
-        passive_ability = payload.get('passive_ability_id', None)
+        passive_ability = data.get('passive_ability_id', None)
         if passive_ability is not None:
             passive_ability = int(passive_ability)
-        skill_set = payload.get('skill_set_id')
+        skill_set = data.get('skill_set_id')
         if skill_set is not None:
             skill_set = int(skill_set)
-        if (image_set_id := payload.get('image_set_id')) is not None:
+        if (image_set_id := data.get('image_set_id')) is not None:
             image_set_id = int(image_set_id)
         return cls(
             # Required
-            int(payload['item_id']),
-            int(payload['item_type_id']),
-            int(payload['item_category_id']),
+            int(data['item_id']),
+            int(data['item_type_id']),
+            int(data['item_category_id']),
             # Optional
             active_ability,
             passive_ability,
-            bool(payload['is_vehicle_weapon']),
-            LocaleData.populate(payload['name']),
-            LocaleData.populate(payload['description']),
-            int(payload['faction_id']),
-            int(payload['max_stack_size']),
+            bool(data['is_vehicle_weapon']),
+            LocaleData.from_census(data['name']),
+            LocaleData.from_census(data['description']),
+            int(data['faction_id']),
+            int(data['max_stack_size']),
             image_set_id,
             skill_set,
-            bool(payload['is_default_attachment']))
+            bool(data['is_default_attachment']))
 
 
 class Item(Named, cache_size=128, cache_ttu=3600.0):
@@ -73,8 +73,8 @@ class Item(Named, cache_size=128, cache_ttu=3600.0):
     data: ItemData
     _id_field = 'item_id'
 
-    def _build_dataclass(self, payload: CensusData) -> ItemData:
-        return ItemData.populate(payload)
+    def _build_dataclass(self, data: CensusData) -> ItemData:
+        return ItemData.from_census(data)
 
     @property
     def image(self) -> CensusImage:
