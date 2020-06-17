@@ -1,8 +1,10 @@
 """Shared utility methods used throughout Auraxium."""
 
-from typing import Any, Dict, NamedTuple
+from typing import Any, Callable, Dict, NamedTuple, Optional, TypeVar
 
 from .types import CensusData
+
+AnyT = TypeVar('AnyT')
 
 
 class LocaleData(NamedTuple):
@@ -51,4 +53,11 @@ def nested_dict_pop(dict_: Dict[str, Any], key: str) -> Any:
     value = nested_pop(dict_[outer], *inner)
     if not dict_[outer]:
         del dict_[outer]
+    return value
+
+
+def optional(data: CensusData, key: str,
+             cast: Callable[[Any], AnyT]) -> Optional[AnyT]:
+    if (raw := data.get(key)) is not None:
+        value = cast(raw)
     return value

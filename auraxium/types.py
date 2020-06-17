@@ -1,6 +1,6 @@
 """Custom types used by the auraxium module."""
 
-from typing import Any, Callable, Dict, NamedTuple
+from typing import Any, Dict
 
 __all__ = ['CensusData']
 

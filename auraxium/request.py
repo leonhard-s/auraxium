@@ -108,7 +108,7 @@ async def run_query(query: Query, verb: str = 'get',
         # The API returned a non-JSON response; something went wrong
         raise err
     except aiohttp.ClientResponseError as err:
-        # The response was not valid or the status code misformed.
+        # The response was not valid or the status code malformed.
         raise err
     finally:
         if close_session:
