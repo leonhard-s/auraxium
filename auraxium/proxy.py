@@ -3,7 +3,8 @@
 import asyncio
 import datetime
 import warnings
-from typing import Any, Dict, Generic, Iterator, List, Optional, Type, TypeVar
+from typing import (Any, Dict, Generator, Generic, Iterator, List, Optional,
+                    Type, TypeVar)
 
 from .base import Ps2Object
 from .census import Query
@@ -58,8 +59,7 @@ class Proxy(Generic[Ps2ObjectT]):
     async def _poll(self) -> None:
         """Query the API, retrieving the data."""
         async with self._lock:
-            payload = await run_query(
-                self.query, session=self._client.session)
+            payload = await run_query(self.query, session=self._client.session)
             list_ = self._resolve_nested_payload(payload)
             self._data = [self._type(data, self._client) for data in list_]
             self._last_fetched = datetime.datetime.now()
@@ -154,7 +154,7 @@ class InstanceProxy(Proxy[Ps2ObjectT]):
 
     """
 
-    def __await__(self) -> Iterator[Optional[Ps2ObjectT]]:
+    def __await__(self) -> Generator[Any, None, Optional[Ps2ObjectT]]:
         return self.resolve().__await__()
 
     async def resolve(self) -> Optional[Ps2ObjectT]:

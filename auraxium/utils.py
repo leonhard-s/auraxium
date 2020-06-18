@@ -58,6 +58,7 @@ def nested_dict_pop(dict_: Dict[str, Any], key: str) -> Any:
 
 def optional(data: CensusData, key: str,
              cast: Callable[[Any], AnyT]) -> Optional[AnyT]:
+    raw: Optional[AnyT]
     if (raw := data.get(key)) is not None:
-        value = cast(raw)
-    return value
+        raw = cast(raw)
+    return raw
