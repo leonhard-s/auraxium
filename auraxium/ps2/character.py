@@ -1,31 +1,35 @@
-"""Objects related to characters."""
+"""Character class definition."""
 
 import dataclasses
-import datetime
 import logging
-from typing import Awaitable, ClassVar, Final, NamedTuple, Optional, Union
+from typing import ClassVar, Final, NamedTuple, Optional, Union
 
 from ..base import Named, Ps2Data
 from ..cache import TLRUCache
 from ..census import Query
 from ..client import Client
-from ..proxy import SequenceProxy
+from ..proxy import InstanceProxy, SequenceProxy
 from ..request import extract_single, run_query
 from ..types import CensusData
+from ..utils import optional
 
 from .faction import Faction
 from .item import Item
-
-__all__ = ['Character']
 
 log = logging.getLogger('auraxium.ps2')
 
 
 @dataclasses.dataclass(frozen=True)
-class CharacterData(Ps2Data):  # pylint: disable=too-many-instance-attributes
-    """Data container for Character objects."""
+class CharacterData(Ps2Data):
+    """Data class for :class:`auraxium.ps2.character.Character`.
+
+    This class mirrors the payload data returned by the API, you may
+    use its attributes as keys in filters or queries.
+    """
 
     class BattleRank(NamedTuple):
+        """Object representation of the "battle_rank" sub-key."""
+
         value: int
         percent_to_next: float
 
@@ -36,6 +40,8 @@ class CharacterData(Ps2Data):  # pylint: disable=too-many-instance-attributes
                 float(data['percent_to_next']))
 
     class Certs(NamedTuple):
+        """Object representation of the "certs" sub-key."""
+
         earned_points: int
         gifted_points: int
         spent_points: int
@@ -53,30 +59,41 @@ class CharacterData(Ps2Data):  # pylint: disable=too-many-instance-attributes
                 float(data['percent_to_next']))
 
     class DailyRibbon(NamedTuple):
+        """Object representation of the "daily_ribbon" sub-key."""
+
         count: int  # type: ignore
-        time: int
+        time: Optional[int]
+        date: Optional[str]
 
         @classmethod
         def from_census(cls, data: CensusData
                         ) -> 'CharacterData.DailyRibbon':
             return cls(
                 int(data['count']),
-                int(data['time']))
+                optional(data, 'time', int),
+                optional(data, 'date', str))
 
-    class Names(NamedTuple):
+    class Name(NamedTuple):
+        """Object representation of the "name" sub-key."""
+
         first: str
         first_lower: str
 
         @classmethod
-        def from_census(cls, data: CensusData) -> 'CharacterData.Names':
+        def from_census(cls, data: CensusData) -> 'CharacterData.Name':
             return cls(
                 data['first'],
                 data['first_lower'])
 
     class Times(NamedTuple):
+        """Object representation of the "times" sub-key."""
+
         creation: int
+        creation_date: str
         last_save: int
+        last_save_date: str
         last_login: int
+        last_login_date: str
         login_count: int
         minutes_played: int
 
@@ -84,150 +101,105 @@ class CharacterData(Ps2Data):  # pylint: disable=too-many-instance-attributes
         def from_census(cls, data: CensusData) -> 'CharacterData.Times':
             return cls(
                 int(data['creation']),
+                str(data['creation_date']),
                 int(data['last_save']),
+                str(data['last_save_date']),
                 int(data['last_login']),
+                str(data['last_login_date']),
                 int(data['login_count']),
                 int(data['minutes_played']))
 
     character_id: int
-    name: Names
+    name: Name
     faction_id: int
+    head_id: int
     title_id: int
-    prestige_level: int
     times: Times
     certs: Certs
     battle_rank: BattleRank
     profile_id: int
-    daily_ribbon: DailyRibbon  # Optional for deleted chars?
+    daily_ribbon: DailyRibbon
+    prestige_level: int
 
     @classmethod
     def from_census(cls, data: CensusData) -> 'CharacterData':
         return cls(
-            # Required
             int(data['character_id']),
-            cls.Names.from_census(data['name']),
+            cls.Name.from_census(data['name']),
             int(data['faction_id']),
+            int(data['head_id']),
             int(data['title_id']),
-            int(data['prestige_level']),
             cls.Times.from_census(data['times']),
             cls.Certs.from_census(data['certs']),
             cls.BattleRank.from_census(data['battle_rank']),
             int(data['profile_id']),
-            cls.DailyRibbon.from_census(data['daily_ribbon']))
+            cls.DailyRibbon.from_census(data['daily_ribbon']),
+            int(data['prestige_level']))
 
 
-class Character(Named, cache_size=256, cache_ttu=300.0):
-    """A player-controlled character."""
+class Character(Named, cache_size=256, cache_ttu=30.0):
+    """A player-controlled fighter."""
 
     _cache: ClassVar[TLRUCache[Union[int, str], 'Character']]
-    data: CharacterData
     _collection = 'character'
+    data: CharacterData
     _id_field = 'character_id'
 
-    @property
-    def asp_rank(self) -> int:
-        """Return the ASP rank of the player."""
-        return int(self.data.prestige_level)
+    def _build_dataclass(self, data: CensusData) -> CharacterData:
+        return CharacterData.from_census(data)
 
-    @property
-    def battle_rank(self) -> int:
-        """Return the battle rank of the player."""
-        return int(self.data.battle_rank.value)
+    def faction(self) -> InstanceProxy[Faction]:
+        """Return the faction of the character.
 
-    @property
-    def battle_rank_progress(self) -> float:
-        """Return the progress to the next battle rank."""
-        return float(self.data.battle_rank.percent_to_next)
+        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        """
+        query = Query('faction', service_id=self._client.service_id,
+                      faction_id=self.data.faction_id)
+        proxy: InstanceProxy[Faction] = InstanceProxy(
+            Faction, query, client=self._client)
+        return proxy
 
-    @property
-    def created(self) -> datetime.datetime:
-        """Return the creation date of the character."""
-        return datetime.datetime.utcfromtimestamp(
-            int(self.data.times.creation))
+    @classmethod
+    async def get_by_id(cls, id_: int, *, client: Client
+                        ) -> Optional['Character']:
+        """Retrieve a character by their unique ID."""
+        collection: Final[str] = 'single_character_by_id'
+        log.debug('<%s:%d> requested', cls.__name__, id_)
+        if (instance := cls._cache.get(id_)) is not None:
+            log.debug('%r restored from cache', instance)
+            return instance
+        log.debug('<%s:%d> not cached, generating API query...',
+                  cls.__name__, id_)
+        query = Query(collection, service_id=client.service_id,
+                      character_id=id_).limit(1)
+        data = await run_query(query, session=client.session)
+        payload = extract_single(data, collection)
+        return cls(payload, client=client)
 
-    @property
-    def daily_ribbons(self) -> int:
-        """Return the number of available daily ribbons."""
-        return int(self.data.daily_ribbon.count)
+    @classmethod
+    async def get_by_name(cls, name: str, *, locale: str = 'en', client: Client
+                          ) -> Optional['Character']:
+        """Retrieve an object by its unique name.
 
-    @property
-    def faction(self) -> Awaitable[Faction]:
-        """Return the faction of the player."""
+        This query is always case-insensitive.
 
-        async def get_faction() -> Faction:
-            faction_id = int(self.data.faction_id)
-            faction = await Faction.get_by_id(faction_id, client=self._client)
-            assert faction is not None
-            return faction
+        """
+        log.debug('%s "%s"[%s] requested', cls.__name__, name, locale)
+        if (instance := cls._cache.get(f'_{name.lower()}')) is not None:
+            log.debug('%r restored from cache', instance)
+            return instance
+        log.debug('%s "%s"[%s] not cached, generating API query...',
+                  cls.__name__, name, locale)
+        query = Query(cls._collection, service_id=client.service_id,
+                      name__first_lower=name.lower()).limit(1)
+        data = await run_query(query, session=client.session)
+        payload = extract_single(data, cls._collection)
+        return cls(payload, client=client)
 
-        return get_faction()
-
-    @property
-    def last_seen(self) -> datetime.datetime:
-        """Return the last save date of the character."""
-        return datetime.datetime.utcfromtimestamp(
-            int(self.data.times.last_save))
-
-    @property
-    def last_login(self) -> datetime.datetime:
-        """Return the last save date of the character."""
-        return datetime.datetime.utcfromtimestamp(
-            int(self.data.times.last_login))
-
-    @property
-    def playtime(self) -> float:
-        """Return the total playtime of the character in hours."""
-        return float(self.data.times.minutes_played) / 60.0
-
-    @property
-    def certs(self) -> int:
-        """Return the current certification balance of the player."""
-        return int(self.data.certs.available_points)
-
-    @property
-    def certs_earned(self) -> int:
-        """Return the number of earned certification points."""
-        return int(self.data.certs.earned_points)
-
-    @property
-    def certs_gifted(self) -> int:
-        """Return the number of gifted certification points."""
-        return int(self.data.certs.gifted_points)
-
-    @property
-    def certs_spent(self) -> int:
-        """Return the number of spent certification points."""
-        return int(self.data.certs.spent_points)
-
-    # @property
-    # def profile(self) -> Awaitable[Profile]:
-    #     """Return the current profile of the player."""
-
-    #     async def get_profile() -> Profile:
-    #         profile_id = int(self.data.profile_id)
-    #         profile = await Profile.get_by_id(profile_id, client=self._client)
-    #         assert profile is not None
-    #         return profile
-
-    #     return get_profile()
-
-    # @property
-    # def title(self) -> Awaitable[Title]:
-    #     """Return the title of the player."""
-
-    #     async def get_title() -> Title:
-    #         title_id = int(self.data.title_id)
-    #         title = await Title.get_by_id(title_id, client=self._client)
-    #         assert title is not None
-    #         return title
-
-    #     return get_title()
-
-    @property
     def items(self) -> SequenceProxy[Item]:
-        """Return the character's unlocked items.
+        """Return the items available to the character.
 
-        This returns a proxy object.
+        This returns a :class:`auraxium.proxy.SequenceProxy`.
         """
         query = self.query()
         join = query.create_join('characters_item').set_list(True)
@@ -238,81 +210,19 @@ class Character(Named, cache_size=256, cache_ttu=300.0):
             Item, query, client=self._client)
         return proxy
 
-    @property
-    def is_online(self) -> Awaitable[bool]:
-        """Return the online status of the player."""
-
-        async def get_online_status() -> bool:
-            query = Query('characters_online_status', character_id=self.id)
-            data = await run_query(query, session=self._client.session)
-            payload = extract_single(data, 'characters_online_status')
-            return bool(payload['online_status'])
-
-        return get_online_status()
-
-    def _build_dataclass(self, data: CensusData) -> CharacterData:
-        return CharacterData.from_census(data)
-
-    @classmethod
-    async def get_by_id(cls, id_: int, *, client: Client
-                        ) -> Optional['Character']:
-        """Retrieve an object by their unique Census ID.
-
-        Args:
-            id_: The unique ID of the character.
-            client: The client through which to perform the request.
-
-        Returns:
-            The character with the matching ID, or None if not found.
-
-        """
-        table: Final[str] = 'single_character_by_id'
-        log.debug('<%s:%d> requested', cls.__name__, id_)
-        if (instance := cls._cache.get(id_)) is not None:
-            log.debug('%r restored from cache', instance)
-            return instance
-        log.debug('<%s:%d> not cached, generating API query...',
-                  cls.__name__, id_)
-        query = Query(collection=table, service_id=client.service_id)
-        query.add_term(field=cls._id_field, value=id_).limit(1)
-        data = await run_query(query, session=client.session)
-        payload = extract_single(data, table)
-        return cls(payload, client=client)
-
-    @classmethod
-    async def get_by_name(cls, name: str, *, locale: str = 'en', client: Client
-                          ) -> Optional['Character']:
-        """Retrieve an object by its unique name.
-
-        This query is always case-insensitive.
-
-        Args:
-            client: The client through which to perform the request.
-            name: The name to search for.
-            locale (optional): The locale of the search key. Defaults
-                to 'en'.
-
-        Returns:
-            The entry with the matching name, or None if not found.
-
-        """
-        log.debug('%s "%s"[%s] requested', cls.__name__, name, locale)
-        if (instance := cls._cache.get(f'_{name.lower()}')) is not None:
-            log.debug('%r restored from cache', instance)
-            return instance
-        log.debug('%s "%s"[%s] not cached, generating API query...',
-                  cls.__name__, name, locale)
-        query = Query(collection=cls._collection, service_id=client.service_id)
-        query.add_term(field='name.first_lower', value=name.lower())
-        data = await run_query(query, session=client.session)
-        payload = extract_single(data, cls._collection)
-        return cls(payload, client=client)
+    async def is_online(self) -> bool:
+        """Return whether the given character is online."""
+        collection: Final[str] = 'characters_online_status'
+        query = Query(collection, character_id=self.id)
+        payload = await run_query(query, session=self._client.session)
+        data = extract_single(payload, collection)
+        return bool(data['online_status'])
 
     def name(self, locale: str = 'en') -> str:
         """Return the unique name of the player.
 
-        Since character names are not localised, the "locale" kwarg is
-        ignored.
+        Since character names are not localised, the "locale" keyword
+        argument is ignored.
 
         This will always return the capitalised version of the name.
         Use the built-int str.lower() method for a lowercase version.
