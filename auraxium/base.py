@@ -67,19 +67,19 @@ class Ps2Object(metaclass=abc.ABCMeta):
     # Callable[[], str].
     # This is redundant but ensures mypy can supply correct type hints for
     # these attributes while still requiring subclasses to overwrite them.
-    _collection: ClassVar[str] = ''
-    _id_field: ClassVar[str] = ''
+    collection: ClassVar[str] = ''
+    id_field: ClassVar[str] = ''
 
     @property  # type: ignore
     @classmethod
     @abc.abstractmethod
-    def _collection(cls) -> str:
+    def collection(cls) -> str:  # pylint: disable=function-redefined
         raise NotImplementedError
 
     @property  # type: ignore
     @classmethod
     @abc.abstractmethod
-    def _id_field(cls) -> str:
+    def id_field(cls) -> str:  # pylint: disable=function-redefined
         raise NotImplementedError
 
     def __init__(self, data: CensusData, client: 'Client') -> None:
@@ -95,7 +95,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
                 performed via this object. Defaults to None.
 
         """
-        id_ = int(data[self._id_field])
+        id_ = int(data[self.id_field])
         log.debug('Instantiating <%s:%d> using payload: %s',
                   self.__class__.__name__, id_, data)
         self.id = id_  # pylint: disable=invalid-name
@@ -136,7 +136,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
 
         """
         service_id = 's:example' if client is None else client.service_id
-        query = Query(cls._collection, service_id=service_id, **kwargs)
+        query = Query(cls.collection, service_id=service_id, **kwargs)
         result = await run_query(query, verb='count', session=client.session)
         try:
             return int(result['count'])
@@ -176,14 +176,14 @@ class Ps2Object(metaclass=abc.ABCMeta):
         """
         # kwargs = dict(cls._translate_field(k, v) for k, v in kwargs.items())
         service_id = 's:example' if client is None else client.service_id
-        query = Query(cls._collection, service_id=service_id, **kwargs)
+        query = Query(cls.collection, service_id=service_id, **kwargs)
         query.limit(results)
         if offset > 0:
             query.offset(offset)
         query.exact_match_first(promote_exact).case(check_case)
         matches = await run_query(query, verb='get', session=client.session)
         return [cls(i, client=client) for i in extract_payload(
-            matches, cls._collection)]
+            matches, cls.collection)]
 
     @classmethod
     async def get(cls: Type[Ps2ObjectT], client: 'Client',
@@ -222,7 +222,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
             The entry with the matching ID, or None if not found.
 
         """
-        filters: CensusData = {cls._id_field: id_}
+        filters: CensusData = {cls.id_field: id_}
         results = await cls.find(client=client, results=1, **filters)
         if results:
             return results[0]
@@ -234,7 +234,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
         This is a utility method targeted at advanced users and
         developers. It is generally not required for most use cases.
         """
-        return Query(collection=self._collection,
+        return Query(collection=self.collection,
                      service_id=self._client.service_id)
 
 
@@ -347,7 +347,7 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
             found.
 
         """
-        filters: CensusData = {cls._id_field: id_}
+        filters: CensusData = {cls.id_field: id_}
         log.debug('<%s:%d> requested', cls.__name__, id_)
         if (instance := cls._cache.get(id_)) is not None:
             log.debug('%r restored from cache', instance)
@@ -429,10 +429,10 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
             return instance  # type: ignore
         log.debug('%s "%s"[%s] not cached, generating API query...',
                   cls.__name__, name, locale)
-        query = Query(cls._collection, service_id=client.service_id)
+        query = Query(cls.collection, service_id=client.service_id)
         query.case(False).add_term(field=f'name.{locale}', value=name)
         payload = await run_query(query, verb='get', session=client.session)
-        payload = extract_single(payload, cls._collection)
+        payload = extract_single(payload, cls.collection)
         return cls(payload, locale=locale, client=client)
 
     def name(self, locale: str = 'en') -> str:

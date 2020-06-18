@@ -32,9 +32,9 @@ class CurrencyData(Ps2Data):
 class Currency(Cached, cache_size=10, cache_ttu=3600.0):
     """A currency obtainable by characters."""
 
-    _collection = 'currency'
+    collection = 'currency'
     data: CurrencyData
-    _id_field = 'currency_id'
+    id_field = 'currency_id'
 
     def _build_dataclass(self, data: CensusData) -> CurrencyData:
         return CurrencyData.from_census(data)

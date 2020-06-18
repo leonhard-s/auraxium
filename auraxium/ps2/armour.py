@@ -2,7 +2,7 @@
 
 import dataclasses
 import enum
-from typing import Awaitable, List, Optional
+from typing import Optional
 
 from ..base import Cached, Ps2Data
 from ..utils import optional
@@ -26,7 +26,7 @@ class ArmorFacing(enum.IntEnum):
 
 
 @dataclasses.dataclass(frozen=True)
-class ArmorInfoData(Ps2Data):
+class ArmourInfoData(Ps2Data):
     """Data class for :class:`auraxium.ps2.armour.ArmorInfo`.
 
     This class mirrors the payload data returned by the API, you may
@@ -40,7 +40,7 @@ class ArmorInfoData(Ps2Data):
     description: str
 
     @classmethod
-    def from_census(cls, data: CensusData) -> 'ArmorInfoData':
+    def from_census(cls, data: CensusData) -> 'ArmourInfoData':
         return cls(
             int(data['armor_info_id']),
             int(data['armor_facing_id']),
@@ -49,17 +49,22 @@ class ArmorInfoData(Ps2Data):
             str(data['description']))
 
 
-class ArmorInfo(Cached, cache_size=100, cache_ttu=60.0):
+class ArmourInfo(Cached, cache_size=100, cache_ttu=60.0):
     """An armour stat for a given entity.
 
-    Note that any given entity may have multiple :class:`ArmorInfo`
-    instances associated with it, one for each :class:`ArmorFacing`
+    Note that any given entity may have multiple :class:`ArmourInfo`
+    instances associated with it, one for each :class:`ArmourFacing`
     value.
     """
 
-    _collection = 'armor_info'
-    data: ArmorInfoData
-    _id_field = 'armor_info_id'
+    collection = 'armor_info'
+    data: ArmourInfoData
+    id_field = 'armor_info_id'
 
-    def _build_dataclass(self, data: CensusData) -> ArmorInfoData:
-        return ArmorInfoData.from_census(data)
+    @property
+    def facing(self) -> ArmorFacing:
+        """Return the facing direction for this stat entry."""
+        return ArmorFacing(self.data.armor_info_id)
+
+    def _build_dataclass(self, data: CensusData) -> ArmourInfoData:
+        return ArmourInfoData.from_census(data)

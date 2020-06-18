@@ -141,9 +141,9 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     """A player-controlled fighter."""
 
     _cache: ClassVar[TLRUCache[Union[int, str], 'Character']]
-    _collection = 'character'
+    collection = 'character'
     data: CharacterData
-    _id_field = 'character_id'
+    id_field = 'character_id'
 
     def _build_dataclass(self, data: CensusData) -> CharacterData:
         return CharacterData.from_census(data)
@@ -153,11 +153,9 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
         This returns an :class:`auraxium.proxy.InstanceProxy`.
         """
-        query = Query('faction', service_id=self._client.service_id,
-                      faction_id=self.data.faction_id)
-        proxy: InstanceProxy[Faction] = InstanceProxy(
-            Faction, query, client=self._client)
-        return proxy
+        query = Query(Faction.collection, service_id=self._client.service_id)
+        query.add_term(field=Faction.id_field, value=self.data.faction_id)
+        return InstanceProxy(Faction, query, client=self._client)
 
     @classmethod
     async def get_by_id(cls, id_: int, *, client: Client
@@ -190,10 +188,10 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
             return instance
         log.debug('%s "%s"[%s] not cached, generating API query...',
                   cls.__name__, name, locale)
-        query = Query(cls._collection, service_id=client.service_id,
+        query = Query(cls.collection, service_id=client.service_id,
                       name__first_lower=name.lower()).limit(1)
         data = await run_query(query, session=client.session)
-        payload = extract_single(data, cls._collection)
+        payload = extract_single(data, cls.collection)
         return cls(payload, client=client)
 
     def items(self) -> SequenceProxy[Item]:
@@ -201,14 +199,12 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
         This returns a :class:`auraxium.proxy.SequenceProxy`.
         """
-        query = self.query()
-        join = query.create_join('characters_item').set_list(True)
-        join.parent_field = join.child_field = 'character_id'
-        inner = join.create_join('item')
-        inner.parent_field = inner.child_field = 'item_id'
-        proxy: SequenceProxy[Item] = SequenceProxy(
-            Item, query, client=self._client)
-        return proxy
+        collection: Final[str] = 'characters_item'
+        query = Query(collection, service_id=self._client.service_id)
+        query.limit(5000)
+        join = query.create_join(Item.collection)
+        join.parent_field = join.child_field = Item.id_field
+        return SequenceProxy(Item, query, client=self._client)
 
     async def is_online(self) -> bool:
         """Return whether the given character is online."""

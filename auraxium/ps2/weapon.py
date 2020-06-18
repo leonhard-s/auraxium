@@ -73,8 +73,8 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
 
     _cache: ClassVar[TLRUCache[int, 'Weapon']]
     data: WeaponData
-    _collection = 'weapon'
-    _id_field = 'weapon_id'
+    collection = 'weapon'
+    id_field = 'weapon_id'
 
     @property
     def equip_times(self) -> Optional[Tuple[float, float]]:
@@ -134,9 +134,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
 
     def item(self) -> InstanceProxy[Item]:
         query = Query('item_to_weapon', service_id=self._client.service_id)
-        query.add_term(field=self._id_field, value=self.id)
+        query.add_term(field=self.id_field, value=self.id)
         join = query.create_join('item')
         join.parent_field = 'item_id'
-        proxy: InstanceProxy[Item] = InstanceProxy(
-            Item, query, client=self._client)
-        return proxy
+        return InstanceProxy(Item, query, client=self._client)

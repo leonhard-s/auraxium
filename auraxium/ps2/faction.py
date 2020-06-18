@@ -42,9 +42,9 @@ class FactionData(Ps2Data):
 class Faction(Named, cache_size=10):
     """A faction in PS2."""
 
-    _collection = 'faction'
+    collection = 'faction'
     data: FactionData
-    _id_field = 'faction_id'
+    id_field = 'faction_id'
 
     def __repr__(self) -> str:
         """Return the unique string representation of the faction.

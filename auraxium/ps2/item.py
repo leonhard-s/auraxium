@@ -69,9 +69,9 @@ class ItemData(Ps2Data):
 class Item(Named, cache_size=128, cache_ttu=3600.0):
 
     _cache: ClassVar[TLRUCache[int, 'Item']]  # type: ignore
-    _collection = 'item'
+    collection = 'item'
     data: ItemData
-    _id_field = 'item_id'
+    id_field = 'item_id'
 
     def _build_dataclass(self, data: CensusData) -> ItemData:
         return ItemData.from_census(data)
@@ -83,9 +83,7 @@ class Item(Named, cache_size=128, cache_ttu=3600.0):
     def weapon(self) -> InstanceProxy['Weapon']:
         from .weapon import Weapon
         query = Query('item_to_weapon', service_id=self._client.service_id)
-        query.add_term(field=self._id_field, value=self.id)
+        query.add_term(field=self.id_field, value=self.id)
         join = query.create_join('weapon')
         join.parent_field = 'weapon_id'
-        proxy: InstanceProxy['Weapon'] = InstanceProxy(
-            Weapon, query, client=self._client)
-        return proxy
+        return InstanceProxy(Weapon, query, client=self._client)

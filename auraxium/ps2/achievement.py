@@ -8,7 +8,7 @@ import dataclasses
 from ..base import Named, Ps2Data
 from ..image import CensusImage
 from ..types import CensusData
-from ..utils import LocaleData, optional
+from ..utils import LocaleData
 
 
 @dataclasses.dataclass(frozen=True)
@@ -51,9 +51,9 @@ class Achievement(Named, cache_size=50, cache_ttu=60.0):
     Achievements include weapon medals and service ribbons.
     """
 
-    _collection = 'achievement'
+    collection = 'achievement'
     data: AchievementData
-    _id_field = 'achievement_id'
+    id_field = 'achievement_id'
 
     def _build_dataclass(self, data: CensusData) -> AchievementData:
         return AchievementData.from_census(data)

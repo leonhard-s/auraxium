@@ -1,11 +1,13 @@
 """Ability and ability type class definitions."""
 
 import dataclasses
-from typing import Awaitable, List, Optional
+from typing import List, Optional
 
 from ..base import Cached, Ps2Data
-from ..utils import optional
+from ..census import Query
+from ..proxy import InstanceProxy
 from ..types import CensusData
+from ..utils import optional
 
 
 @dataclasses.dataclass(frozen=True)
@@ -56,9 +58,9 @@ class AbilityType(Cached, cache_size=20, cache_ttu=60.0):
     This class mostly specifies the purpose of any generic parameters.
     """
 
-    _collection = 'ability_type'
+    collection = 'ability_type'
     data: AbilityTypeData
-    _id_field = 'ability_type_id'
+    id_field = 'ability_type_id'
 
     def _build_dataclass(self, data: CensusData) -> AbilityTypeData:
         return AbilityTypeData.from_census(data)
@@ -134,21 +136,17 @@ class Ability(Cached, cache_size=10, cache_ttu=60.0):
     parameters.
     """
 
-    _collection = 'ability'
+    collection = 'ability'
     data: AbilityData
-    _id_field = 'ability_id'
-
-    @property
-    def type(self) -> Awaitable[AbilityType]:
-        """Return the ability type of this ability."""
-
-        async def get_type() -> AbilityType:
-            id_ = int(self.data.ability_type_id)
-            ability = await AbilityType.get_by_id(id_, client=self._client)
-            assert ability is not None
-            return ability
-
-        return get_type()
+    id_field = 'ability_id'
 
     def _build_dataclass(self, data: CensusData) -> AbilityData:
         return AbilityData.from_census(data)
+
+    def type(self) -> InstanceProxy[AbilityType]:
+        """Return the ability type of this ability."""
+        query = Query(
+            AbilityType.collection, service_id=self._client.service_id)
+        query.add_term(
+            field=AbilityType.id_field, value=self.data.ability_type_id)
+        return InstanceProxy(AbilityType, query, client=self._client)
