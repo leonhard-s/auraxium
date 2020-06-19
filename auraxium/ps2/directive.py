@@ -73,7 +73,7 @@ class DirectiveTreeData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'DirectiveTreeData':
         if (description := data.get('description')) is not None:
-            description = LocaleData.from_census(description),
+            description = LocaleData.from_census(description)
         return cls(
             int(data['directive_tree_id']),
             int(data['directive_tree_category_id']),
