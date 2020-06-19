@@ -60,5 +60,8 @@ def optional(data: CensusData, key: str,
              cast: Callable[[Any], AnyT]) -> Optional[AnyT]:
     raw: Optional[AnyT]
     if (raw := data.get(key)) is not None:
-        raw = cast(raw)
+        if raw == 'NULL':
+            raw = None
+        else:
+            raw = cast(raw)
     return raw
