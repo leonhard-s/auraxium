@@ -6,9 +6,11 @@ from typing import Final, Optional
 
 from ..base import Cached, Ps2Data
 from ..census import Query
-from ..proxy import SequenceProxy
+from ..proxy import InstanceProxy, SequenceProxy
 from ..types import CensusData
 from ..utils import LocaleData, optional
+
+from .projectile import Projectile
 
 
 class FireModeType(enum.IntEnum):
@@ -246,6 +248,15 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
 
     def _build_dataclass(self, data: CensusData) -> FireModeData:
         return FireModeData.from_census(data)
+
+    def projectile(self) -> InstanceProxy[Projectile]:
+        """Return the projectile associated with this fire mode."""
+        collection: Final[str] = 'fire_mode_to_projectile'
+        query = Query(collection, service_id=self._client.service_id)
+        query.add_term(field=self.id_field, value=self.id)
+        join = query.create_join(Projectile.collection)
+        join.parent_field = join.child_field = Projectile.id_field
+        return InstanceProxy(Projectile, query, client=self._client)
 
 
 @dataclasses.dataclass(frozen=True)
