@@ -1,42 +1,39 @@
 """Object definition for the faction type."""
 
 import dataclasses
+from typing import Optional
 
 from ..base import Named, Ps2Data
-from ..image import CensusImage
 from ..types import CensusData
-from ..utils import LocaleData
+from ..utils import LocaleData, optional
 
 
 @dataclasses.dataclass(frozen=True)
 class FactionData(Ps2Data):
-    """Data container for the Faction class."""
+    """Data class for :class:`auraxium.ps2.faction.Faction`.
+
+    This class mirrors the payload data returned by the API, you may
+    use its attributes as keys in filters or queries.
+    """
 
     faction_id: int
     name: LocaleData
     code_tag: str
     user_selectable: bool
-    image_set_id: int
-    image_id: int
+    image_set_id: Optional[int]
+    image_id: Optional[int]
+    image_path: Optional[str]
 
     @classmethod
     def from_census(cls, data: CensusData) -> 'FactionData':
-        if (image_set_id := data.get('image_set_id')) is not None:
-            image_set_id = int(image_set_id)
-        if (image_id := data.get('image_id')) is not None:
-            image_id = int(image_id)
-        # image_path = data.get('image_set_id')
         return cls(
-            # Required
             int(data['faction_id']),
             LocaleData.from_census(data['name']),
-            data['code_tag'],
+            str(data['code_tag']),
             bool(data['user_selectable']),
-            # Optional
-            image_set_id,
-            image_id,
-            # image_path,
-        )
+            optional(data, 'image_set_id', int),
+            optional(data, 'image_id', int),
+            optional(data, 'image_path', str))
 
 
 class Faction(Named, cache_size=10):
@@ -58,12 +55,8 @@ class Faction(Named, cache_size=10):
         return f'<{self.__class__.__name__}:{self.id}:{self.data.code_tag}>'
 
     @property
-    def image(self) -> CensusImage:
-        return CensusImage(self.data.image_set_id, client=self._client)
-
-    @property
     def tag(self) -> str:
-        """Return the tag of this faction (VS, TR, NC, and NSO)."""
+        """Return the tag of this faction (VS, TR, NC, or NSO)."""
         return str(self.data.code_tag)
 
     def _build_dataclass(self, data: CensusData) -> FactionData:
