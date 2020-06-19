@@ -201,6 +201,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         """
         collection: Final[str] = 'characters_item'
         query = Query(collection, service_id=self._client.service_id)
+        query.add_term(field=self.id_field, value=self.id)
         query.limit(5000)
         join = query.create_join(Item.collection)
         join.parent_field = join.child_field = Item.id_field
@@ -209,7 +210,8 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     async def is_online(self) -> bool:
         """Return whether the given character is online."""
         collection: Final[str] = 'characters_online_status'
-        query = Query(collection, character_id=self.id)
+        query = Query(collection, service_id=self._client.service_id)
+        query.add_term(field=self.id_field, value=self.id)
         payload = await run_query(query, session=self._client.session)
         data = extract_single(payload, collection)
         return bool(data['online_status'])
