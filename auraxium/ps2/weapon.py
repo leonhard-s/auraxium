@@ -1,13 +1,13 @@
 import dataclasses
 import logging
-from typing import ClassVar, Optional, Tuple
+from typing import Optional
 
 from ..base import Cached, Ps2Data
-from ..cache import TLRUCache
 from ..client import Client
 from ..census import Query
 from ..proxy import InstanceProxy
 from ..types import CensusData
+from ..utils import optional
 
 from .item import Item
 
@@ -16,17 +16,21 @@ log = logging.getLogger('auraxium')
 
 @dataclasses.dataclass(frozen=True)
 class WeaponData(Ps2Data):
-    # Required
+    """Data class for :class:`auraxium.ps2.ability.Weapon`.
+
+    This class mirrors the payload data returned by the API, you may
+    use its attributes as keys in filters or queries.
+    """
+
     weapon_id: int
-    weapon_group_id: int
+    weapon_group_id: Optional[int]
     turn_modifier: float
     move_modifier: float
-    sprint_recovery_ms: int
-    equip_ms: int
-    unequip_ms: int
-    to_iron_sights_ms: int
-    from_iron_sights_ms: int
-    # Optional
+    sprint_recovery_ms: Optional[int]
+    equip_ms: Optional[int]
+    unequip_ms: Optional[int]
+    to_iron_sights_ms: Optional[int]
+    from_iron_sights_ms: Optional[int]
     heat_capacity: Optional[int] = None
     heat_bleed_off_rate: Optional[float] = None
     heat_overheat_penalty_ms: Optional[int] = None
@@ -35,81 +39,39 @@ class WeaponData(Ps2Data):
 
     @classmethod
     def from_census(cls, data: CensusData) -> 'WeaponData':
-        heat_capacity = data.get('heat_capacity')
-        if heat_capacity is not None:
-            heat_capacity = int(heat_capacity)
-        heat_bleed_off_rate = data.get('heat_bleed_off_rate')
-        if heat_bleed_off_rate is not None:
-            heat_bleed_off_rate = int(heat_bleed_off_rate)
-        heat_overheat_penalty_ms = data.get('heat_overheat_penalty_ms')
-        if heat_overheat_penalty_ms is not None:
-            heat_overheat_penalty_ms = int(heat_overheat_penalty_ms)
-        melee_detect_width = data.get('melee_detect_width')
-        if melee_detect_width is not None:
-            melee_detect_width = float(melee_detect_width)
-        melee_detect_height = data.get('melee_detect_height')
-        if melee_detect_height is not None:
-            melee_detect_height = float(melee_detect_height)
         return cls(
-            # Required
             int(data['weapon_id']),
-            int(data['weapon_group_id']),
+            optional(data, 'weapon_group_id', int),
             float(data['turn_modifier']),
             float(data['move_modifier']),
-            int(data['sprint_recovery_ms']),
-            int(data['equip_ms']),
-            int(data['unequip_ms']),
-            int(data['to_iron_sights_ms']),
-            int(data['from_iron_sights_ms']),
-            # Optional
-            int(data['heat_capacity']),
-            float(data['heat_bleed_off_rate']),  # float or int?
-            int(data['heat_overheat_penalty_ms']),
-            melee_detect_width,
-            melee_detect_height)
+            optional(data, 'sprint_recovery_ms', int),
+            optional(data, 'equip_ms', int),
+            optional(data, 'unequip_ms', int),
+            optional(data, 'to_iron_sights_ms', int),
+            optional(data, 'from_iron_sights_ms', int),
+            optional(data, 'heat_capacity', int),
+            optional(data, 'heat_bleed_off_rate_ms', int),
+            optional(data, 'heat_overhead_penalty_ms', int),
+            optional(data, 'melee_detect_width', float),
+            optional(data, 'melee_detect_height', float))
 
 
 class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
 
-    _cache: ClassVar[TLRUCache[int, 'Weapon']]
     data: WeaponData
     collection = 'weapon'
     id_field = 'weapon_id'
 
     @property
-    def equip_times(self) -> Optional[Tuple[float, float]]:
-        """Return the equip and unequip times in seconds."""
-        equip_time: Optional[int] = self.data.equip_ms
-        unequip_time: Optional[int] = self.data.unequip_ms
-        if equip_time is None or unequip_time is None:
-            return None
-        return equip_time / 1000.0, unequip_time / 1000.0
+    def is_heat_weapon(self) -> bool:
+        """Guess whether this weapon is using a heat mechanic.
 
-    @property
-    def ads_times(self) -> Optional[Tuple[float, float]]:
-        """Return the ADS enter and exit times in seconds."""
-        enter_ads: Optional[float] = self.data.to_iron_sights_ms
-        exit_ads: Optional[float] = self.data.from_iron_sights_ms
-        if enter_ads is None or exit_ads is None:
-            return None
-        return enter_ads / 1000.0, exit_ads / 1000.0
-
-    @property
-    def melee_hitbox(self) -> Optional[Tuple[float, float]]:
-        """Return the ADS enter and exit times in seconds."""
-        width: Optional[float] = self.data.melee_detect_width
-        height: Optional[float] = self.data.melee_detect_height
-        if width is None or height is None:
-            return None
-        return width / 1000.0, height / 1000.0
-
-    @property
-    def spring_recovery(self) -> Optional[float]:
-        """Return the sprint recovery time in seconds."""
-        value: Optional[float]
-        if (value := self.data.sprint_recovery_ms) is not None:
-            value /= 1000.0
-        return value
+        This checks for presence and non-zero value for the
+        "heat_mechanic" stat.
+        """
+        if (capacity := self.data.heat_capacity) is not None:
+            return capacity > 0
+        return False
 
     def _build_dataclass(self, data: CensusData) -> WeaponData:
         return WeaponData.from_census(data)
@@ -133,6 +95,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
         return await item.weapon().resolve()
 
     def item(self) -> InstanceProxy[Item]:
+        """Return the item associated with this weapon."""
         query = Query('item_to_weapon', service_id=self._client.service_id)
         query.add_term(field=self.id_field, value=self.id)
         join = query.create_join('item')
