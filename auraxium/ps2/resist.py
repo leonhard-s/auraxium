@@ -74,7 +74,7 @@ class ResistInfo(Cached, cache_size=100, cache_ttu=60.0):
 
     collection = 'resist_info'
     data: ResistInfoData
-    id_field = 'resist_info'
+    id_field = 'resist_info_id'
 
     def _build_dataclass(self, data: CensusData) -> ResistInfoData:
         return ResistInfoData.from_census(data)
