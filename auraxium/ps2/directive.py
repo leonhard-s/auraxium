@@ -101,7 +101,7 @@ class DirectiveTree(Named, cache_size=30, cache_ttu=60.0):
     def category(self) -> InstanceProxy[DirectiveTreeCategory]:
         """Return the category of the directive tree.
 
-        This returns a :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.proxy.InstanceProxy`.
         """
         query = Query(DirectiveTreeCategory.collection,
                       service_id=self._client.service_id)
@@ -186,7 +186,7 @@ class DirectiveTier(Named, cache_size=30, cache_ttu=60.0):
     def tree(self) -> InstanceProxy[DirectiveTree]:
         """Return the tree of the directive.
 
-        This returns a :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.proxy.InstanceProxy`.
         """
         query = Query(
             DirectiveTree.collection, service_id=self._client.service_id)
@@ -243,7 +243,7 @@ class Directive(Named, cache_size=30, cache_ttu=60.0):
     def tier(self) -> InstanceProxy[DirectiveTier]:
         """Return the tier of the directive.
 
-        This returns a :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.proxy.InstanceProxy`.
         """
         query = Query(
             DirectiveTier.collection, service_id=self._client.service_id)
@@ -254,7 +254,7 @@ class Directive(Named, cache_size=30, cache_ttu=60.0):
     def tree(self) -> InstanceProxy[DirectiveTree]:
         """Return the tree of the directive.
 
-        This returns a :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.proxy.InstanceProxy`.
         """
         query = Query(
             DirectiveTree.collection, service_id=self._client.service_id)

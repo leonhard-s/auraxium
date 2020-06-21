@@ -18,7 +18,7 @@ class UserError(AuraxiumException):
 
 
 class CensusError(AuraxiumException):
-    """Raised for Census API-related errrors.
+    """Raised for Census API-related errors.
 
     These are generally not user-provoked and should rarely leave the
     wrapper module.

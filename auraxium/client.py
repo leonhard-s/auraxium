@@ -48,7 +48,7 @@ class Client:
     async def __aexit__(self, exc_type: Optional[Type[BaseException]],
                         exc_value: Optional[BaseException],
                         traceback: Optional[TracebackType]) -> Literal[False]:
-        """Exit the ontext manager.
+        """Exit the context manager.
 
         This closes the internal HTTP session before exiting, no error
         handling will be performed.

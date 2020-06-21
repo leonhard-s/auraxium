@@ -9,7 +9,7 @@ from ..utils import optional
 from ..types import CensusData
 
 
-class ArmorFacing(enum.IntEnum):
+class ArmourFacing(enum.IntEnum):
     """Enumerator for armour facing directions.
 
     This is used to list different armour values for a vehicle based on
@@ -62,9 +62,9 @@ class ArmourInfo(Cached, cache_size=100, cache_ttu=60.0):
     id_field = 'armor_info_id'
 
     @property
-    def facing(self) -> ArmorFacing:
+    def facing(self) -> ArmourFacing:
         """Return the facing direction for this stat entry."""
-        return ArmorFacing(self.data.armor_info_id)
+        return ArmourFacing(self.data.armor_info_id)
 
     def _build_dataclass(self, data: CensusData) -> ArmourInfoData:
         return ArmourInfoData.from_census(data)

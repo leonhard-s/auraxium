@@ -129,10 +129,10 @@ class AbilityData(Ps2Data):
 
 
 class Ability(Cached, cache_size=10, cache_ttu=60.0):
-    """An ability cast by a player.
+    """An ability cast by a character.
 
     Access the corresponding :class:`auraxium.ps2.ability.AbilityType`
-    instance via the :meth:`type` property for information on generic
+    instance via the :meth:`type` method for information on generic
     parameters.
     """
 
