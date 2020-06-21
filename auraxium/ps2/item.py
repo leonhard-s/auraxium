@@ -10,6 +10,8 @@ from ..proxy import InstanceProxy, SequenceProxy
 from ..types import CensusData
 from ..utils import LocaleData, optional
 
+from .profile import Profile
+
 if TYPE_CHECKING:
     # This is only imported during static type checking to resolve the forward
     # references. During runtime, this would cause a circular import.
@@ -172,6 +174,19 @@ class Item(Named, cache_size=128, cache_ttu=3600.0):
         query.add_term(
             field=ItemCategory.id_field, value=self.data.item_category_id)
         return InstanceProxy(ItemCategory, query, client=self._client)
+
+    def profiles(self) -> SequenceProxy[Profile]:
+        """Return the profiles the item is available to.
+
+        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        """
+        collection: Final[str] = 'item_profile'
+        query = Query(collection, service_id=self._client.service_id)
+        query.add_term(field=self.id_field, value=self.id)
+        query.limit(50)
+        join = query.create_join(Profile.collection)
+        join.parent_field = join.child_field = Profile.id_field
+        return SequenceProxy(Profile, query, client=self._client)
 
     def type(self) -> InstanceProxy[ItemType]:
         """Return the type of item.
