@@ -121,7 +121,7 @@ class ItemData(Ps2Data):
             optional(data, 'item_category_id', int),
             optional(data, 'activatable_ability_id', int),
             optional(data, 'passive_ability_id', int),
-            bool(data['is_vehicle_weapon']),
+            bool(int(data['is_vehicle_weapon'])),
             LocaleData.from_census(data['name']),
             LocaleData.from_census(data['description']),
             optional(data, 'faction_id', int),
@@ -130,7 +130,7 @@ class ItemData(Ps2Data):
             optional(data, 'image_id', int),
             optional(data, 'image_path', str),
             optional(data, 'skill_set_id', int),
-            bool(data['is_default_attachment']))
+            bool(int(data['is_default_attachment'])))
 
 
 class Item(Named, cache_size=128, cache_ttu=3600.0):

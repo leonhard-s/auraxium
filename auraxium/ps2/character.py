@@ -214,7 +214,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.add_term(field=self.id_field, value=self.id)
         payload = await run_query(query, session=self._client.session)
         data = extract_single(payload, collection)
-        return bool(data['online_status'])
+        return bool(int(data['online_status']))
 
     def name(self, locale: str = 'en') -> str:
         """Return the unique name of the player.

@@ -30,7 +30,7 @@ class FactionData(Ps2Data):
             int(data['faction_id']),
             LocaleData.from_census(data['name']),
             str(data['code_tag']),
-            bool(data['user_selectable']),
+            bool(int(data['user_selectable'])),
             optional(data, 'image_set_id', int),
             optional(data, 'image_id', int),
             optional(data, 'image_path', str))

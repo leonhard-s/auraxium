@@ -37,7 +37,7 @@ class AchievementData(Ps2Data):
             int(data['item_id']),
             int(data['objective_group_id']),
             int(data['reward_id']),
-            bool(data['repeatable']),
+            bool(int(data['repeatable'])),
             LocaleData.from_census(data['name']),
             LocaleData.from_census(data['description']),
             int(data['image_set_id']),

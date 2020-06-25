@@ -136,7 +136,7 @@ class FireModeData(Ps2Data):
             int(data['fire_mode_type_id']),
             optional(data, 'ability_id', int),
             optional(data, 'ammo_slot', int),
-            bool(data['automatic']),
+            bool(int(data['automatic'])),
             optional(data, 'grief_immune', bool),
             optional(data, 'iron_sights', bool),
             optional(data, 'laser_guided', bool),
