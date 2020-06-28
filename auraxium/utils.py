@@ -20,12 +20,17 @@ class LocaleData(NamedTuple):
 
     @classmethod
     def from_census(cls, data: CensusData) -> 'LocaleData':
+        de_ = optional(data, 'de', str) or 'Missing String'
+        en_ = optional(data, 'en', str) or 'Missing String'
+        es_ = optional(data, 'es', str) or 'Missing String'
+        fr_ = optional(data, 'fr', str) or 'Missing String'
+        it_ = optional(data, 'it', str) or 'Missing String'
         return cls(
-            data['de'],
-            data['en'],
-            data['es'],
-            data['fr'],
-            data['it'])
+            de_,
+            en_,
+            es_,
+            fr_,
+            it_)
 
 
 # NOTE: The functions below are a dummy implementation for testing and will be
