@@ -115,6 +115,10 @@ class ItemData(Ps2Data):
 
     @classmethod
     def from_census(cls, data: CensusData) -> 'ItemData':
+        if 'description' in data:
+            description = LocaleData.from_census(data['description'])
+        else:
+            description = LocaleData.empty()
         return cls(
             int(data['item_id']),
             optional(data, 'item_type_id', int),
@@ -123,7 +127,7 @@ class ItemData(Ps2Data):
             optional(data, 'passive_ability_id', int),
             bool(int(data['is_vehicle_weapon'])),
             LocaleData.from_census(data['name']),
-            LocaleData.from_census(data['description']),
+            description,
             optional(data, 'faction_id', int),
             int(data['max_stack_size']),
             optional(data, 'image_set_id', int),
