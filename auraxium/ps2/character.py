@@ -11,12 +11,41 @@ from ..client import Client
 from ..proxy import InstanceProxy, SequenceProxy
 from ..request import extract_single, run_query
 from ..types import CensusData
-from ..utils import optional
+from ..utils import LocaleData, optional
 
 from .faction import Faction
 from .item import Item
 
 log = logging.getLogger('auraxium.ps2')
+
+
+@dataclasses.dataclass(frozen=True)
+class TitleData(Ps2Data):
+    """Data class for :class:`auraxium.ps2.character.Title`.
+
+    This class mirrors the payload data returned by the API, you may
+    use its attributes as keys in filters or queries.
+    """
+
+    title_id: int
+    name: LocaleData
+
+    @classmethod
+    def from_census(cls, data: CensusData) -> 'TitleData':
+        return cls(
+            int(data['title_id']),
+            LocaleData.from_census(data))
+
+
+class Title(Named, cache_size=300, cache_ttu=300.0):
+    """A title selectable by a character."""
+
+    collection = 'title'
+    data: TitleData
+    id_field = 'title_id'
+
+    def _build_dataclass(self, data: CensusData) -> TitleData:
+        return TitleData.from_census(data)
 
 
 @dataclasses.dataclass(frozen=True)
@@ -180,7 +209,6 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         """Retrieve an object by its unique name.
 
         This query is always case-insensitive.
-
         """
         log.debug('%s "%s"[%s] requested', cls.__name__, name, locale)
         if (instance := cls._cache.get(f'_{name.lower()}')) is not None:
@@ -226,3 +254,21 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         Use the built-int str.lower() method for a lowercase version.
         """
         return str(self.data.name.first)
+
+    async def name_long(self) -> str:
+        """Return the full name of the player.
+
+        This includes an optional player title if the player has
+        selected one.
+        """
+        return f'{await self.title()} {self.name()}'
+
+    def title(self) -> InstanceProxy[Title]:
+        """Return the current title of the character, if any.
+
+        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        """
+        title_id = self.data.title_id or -1
+        query = Query(Title.collection, service_id=self._client.service_id)
+        query.add_term(field=Title.id_field, value=title_id)
+        return InstanceProxy(Title, query, client=self._client)
