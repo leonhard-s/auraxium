@@ -1,11 +1,11 @@
 """Facility and map class definitions."""
 
 import dataclasses
-from typing import Optional
+from typing import Final, Optional, Set
 
 from ..base import Cached, Named, Ps2Data
 from ..census import Query
-from ..proxy import InstanceProxy
+from ..proxy import InstanceProxy, SequenceProxy
 from ..types import CensusData
 from ..utils import LocaleData, optional
 
@@ -94,9 +94,9 @@ class MapRegionData(Ps2Data):
     facility_name: str
     facility_type_id: int
     facility_type: str
-    location_x: float
-    location_y: float
-    location_z: float
+    location_x: Optional[float]
+    location_y: Optional[float]
+    location_z: Optional[float]
     reward_amount: Optional[int]
     reward_currency_id: Optional[int]
 
@@ -109,9 +109,9 @@ class MapRegionData(Ps2Data):
             str(data['facility_name']),
             int(data['facility_type_id']),
             str(data['facility_type']),
-            float(data['location_x']),
-            float(data['location_y']),
-            float(data['location_z']),
+            optional(data, 'location_x', float),
+            optional(data, 'location_y', float),
+            optional(data, 'location_z', float),
             optional(data, 'reward_amount', int),
             optional(data, 'reward_currency_di', int))
 
@@ -126,7 +126,31 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
     def _build_dataclass(self, data: CensusData) -> MapRegionData:
         return MapRegionData.from_census(data)
 
-    # def reward_currency(self) -> InstanceProxy[Reward]
+    async def get_connected(self) -> Set['MapRegion']:
+        """Return the facilities connected to this region."""
+        # NOTE: This operation cannot be done in a single query as there is no
+        # "or" operator.
+        collection: Final[str] = 'facility_link'
+        connected: Set['MapRegion'] = set()
+        # Set up the base query
+        query = Query(collection, service_id=self._client.service_id)
+        query.limit(10)
+        join = query.create_join(self.collection)
+        join.parent_field = 'facility_id_a'
+        join.child_field = 'facility_id'
+        join = query.create_join(self.collection)
+        join.parent_field = 'facility_id_b'
+        join.child_field = 'facility_id'
+        # Modified query A
+        query.add_term(field='facility_id_a', value=self.data.facility_id)
+        proxy = SequenceProxy(MapRegion, query, client=self._client)
+        connected.update(await proxy.flatten())
+        # Modified query B
+        query.terms = []
+        query.add_term(field='facility_id_b', value=self.data.facility_id)
+        proxy = SequenceProxy(MapRegion, query, client=self._client)
+        connected.update(await proxy.flatten())
+        return connected
 
     def zone(self) -> InstanceProxy[Zone]:
         """Return the zone/continent of the region.
