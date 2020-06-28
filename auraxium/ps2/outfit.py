@@ -2,7 +2,7 @@
 
 import dataclasses
 import logging
-from typing import ClassVar, List, Optional, Union
+from typing import ClassVar, Final, List, Optional, Union
 
 from ..base import Cached, Named, Ps2Data
 from ..cache import TLRUCache
