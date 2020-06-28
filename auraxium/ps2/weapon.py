@@ -1,14 +1,15 @@
 import dataclasses
 import logging
-from typing import Optional
+from typing import Final, Optional
 
 from ..base import Cached, Ps2Data
 from ..client import Client
 from ..census import Query
-from ..proxy import InstanceProxy
+from ..proxy import InstanceProxy, SequenceProxy
 from ..types import CensusData
 from ..utils import optional
 
+from .fire import FireGroup
 from .item import Item
 
 log = logging.getLogger('auraxium')
@@ -73,8 +74,36 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
             return capacity > 0
         return False
 
+    def attachments(self) -> SequenceProxy[Item]:
+        """Return the attachments available for this weapon.
+
+        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        """
+        collection: Final[str] = 'weapon_to_attachment'
+        group_id = self.data.weapon_group_id or -1
+        query = Query(collection, service_id=self._client.service_id)
+        query.add_term(field='weapon_group_id', value=group_id)
+        query.limit(100)
+        join = query.create_join(Item.collection)
+        join.parent_field = join.child_field = Item.id_field
+        join.set_outer(False)
+        return SequenceProxy(Item, query, client=self._client)
+
     def _build_dataclass(self, data: CensusData) -> WeaponData:
         return WeaponData.from_census(data)
+
+    def fire_groups(self) -> SequenceProxy[FireGroup]:
+        """Return the fire groups for this weapon.
+
+        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        """
+        collection: Final[str] = 'weapon_to_fire_group'
+        query = Query(collection, service_id=self._client.service_id)
+        query.add_term(field=self.id_field, value=self.id)
+        query.limit(20)
+        join = query.create_join(FireGroup.collection)
+        join.parent_field = join.child_field = FireGroup.id_field
+        return SequenceProxy(FireGroup, query, client=self._client)
 
     @classmethod
     async def get_by_name(cls, name: str, *, locale: str = 'en',
