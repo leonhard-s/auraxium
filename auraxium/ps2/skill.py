@@ -25,21 +25,25 @@ class SkillSetData(Ps2Data):
     required_item_id: Optional[int]
     name: LocaleData
     description: LocaleData
-    image_set_id: int
-    image_id: int
-    image_path: str
+    image_set_id: Optional[int]
+    image_id: Optional[int]
+    image_path: Optional[str]
 
     @classmethod
     def from_census(cls, data: CensusData) -> 'SkillSetData':
+        if 'description' in data:
+            description = LocaleData.from_census(data['description'])
+        else:
+            description = LocaleData.empty()
         return cls(
             int(data['skill_set_id']),
             optional(data, 'skill_points', int),
             optional(data, 'required_item_id', int),
             LocaleData.from_census(data['name']),
-            LocaleData.from_census(data['description']),
-            int(data['image_set_id']),
-            int(data['image_id']),
-            str(data['image_path']))
+            description,
+            optional(data, 'image_set_id', int),
+            optional(data, 'image_id', int),
+            optional(data, 'image_path', str))
 
 
 class SkillSet(Named, cache_size=100, cache_ttu=60.0):
