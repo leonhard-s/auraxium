@@ -15,6 +15,10 @@ class LocaleData(NamedTuple):
     it: str
 
     @classmethod
+    def empty(cls) -> 'LocaleData':
+        return cls(*(None,)*5)  # type: ignore
+
+    @classmethod
     def from_census(cls, data: CensusData) -> 'LocaleData':
         return cls(
             data['de'],
