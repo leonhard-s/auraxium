@@ -7,7 +7,7 @@ from typing import (Any, Dict, Generator, Generic, Iterator, List, Optional,
                     Type, TypeVar)
 
 from .base import Ps2Object
-from .census import Query
+from .census import JoinedQuery, Query
 from .client import Client
 from .request import extract_payload, run_query
 
@@ -83,32 +83,43 @@ class Proxy(Generic[Ps2ObjectT]):
             The native list of payloads, ready for instantiation
 
         """
+
+        def resolve_join(join: JoinedQuery, parent: List[Dict[str, Any]]
+                         ) -> List[Dict[str, Any]]:
+            # NOTE: The parent list will always be a list of all items the join
+            # has been applied to. The resulting list should be a merged set of
+            # the elements therein.
+            assert join.collection is not None
+            if (on_ := join.parent_field) is None:
+                raise RuntimeError('Parent field of None not supported')
+            # Filter out the payload sub-dict corresponding to the given join
+            data: List[Dict[str, Any]] = []
+            for element in parent:
+                value = element[f'{on_}_join_{join.collection}']
+                if join.is_list:
+                    data.extend(value)
+                else:
+                    data.append(value)
+            # Recursively resolve any inner joins
+            if join.joins:
+                parent = data
+                data = []
+                for inner in join.joins:
+                    data.extend(resolve_join(inner, parent))
+            return data
+
         # Main query
         assert self.query.collection is not None
-        outer_list = extract_payload(payload, self.query.collection)
-        # Resolve join, this may be the final type or an intermediate type
+        data = extract_payload(payload, self.query.collection)
+        # Resolve any joins
         if self.query.joins:
-            join = self.query.joins[0]
-            assert join.collection is not None
-            if len(self.query.joins) > 1:
-                raise RuntimeError('Proxy only supports one joined query')
-            on_ = join.parent_field
-            if on_ is None:
-                raise RuntimeError('Parent field of None not supported')
-            joins_list = [
-                i[f'{on_}_join_{join.collection}'] for i in outer_list]
-            if join.joins:
-                inner = join.joins[0]
-                assert inner.collection is not None
-                if len(join.joins) > 1:
-                    raise RuntimeError('Proxy only supports one nested join')
-                on_ = inner.parent_field
-                if on_ is None:
-                    raise RuntimeError('Parent field of None not supported')
-                joins_list = [
-                    i[f'{on_}_join_{inner.collection}'] for i in joins_list[0]]
-            return joins_list
-        return outer_list
+            parent = data
+            # If any joins were defined, resolve each of the joins and merge
+            # their outputs before returning
+            data = []
+            for join in self.query.joins:
+                data.extend(resolve_join(join, parent))
+        return data
 
 
 class SequenceProxy(Proxy[Ps2ObjectT]):
