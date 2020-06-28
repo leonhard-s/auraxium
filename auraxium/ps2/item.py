@@ -160,8 +160,8 @@ class Item(Named, cache_size=128, cache_ttu=3600.0):
         collection: Final[str] = 'item_attachment'
         query = Query(collection, service_id=self._client.service_id)
         query.add_term(field=self.id_field, value=self.id)
+        query.limit(100)
         join = query.create_join(self.collection)
-        join.is_list = True
         join.parent_field = 'attachment_item_id'
         join.child_field = self.id_field
         return SequenceProxy(self.__class__, query, client=self._client)
