@@ -11,6 +11,35 @@ from ..utils import optional
 
 
 @dataclasses.dataclass(frozen=True)
+class ResourceTypeData(Ps2Data):
+    """Data class for :class:`auraxium.ps2.ability.ResourceType`.
+
+    This class mirrors the payload data returned by the API, you may
+    use its attributes as keys in filters or queries.
+    """
+
+    resource_type_id: int
+    description: str
+
+    @classmethod
+    def from_census(cls, data: CensusData) -> 'ResourceTypeData':
+        return cls(
+            int(data['resource_type_id']),
+            str(data['description']))
+
+
+class ResourceType(Cached, cache_size=50, cache_ttu=3600.0):
+    """A type of resource consumed by an ability."""
+
+    collection = 'resource_type'
+    data: ResourceTypeData
+    id_field = 'resource_type_id'
+
+    def _build_dataclass(self, data: CensusData) -> ResourceTypeData:
+        return ResourceTypeData.from_census(data)
+
+
+@dataclasses.dataclass(frozen=True)
 class AbilityTypeData(Ps2Data):
     """Data class for :class:`auraxium.ps2.ability.AbilityType`.
 
@@ -142,6 +171,14 @@ class Ability(Cached, cache_size=10, cache_ttu=60.0):
 
     def _build_dataclass(self, data: CensusData) -> AbilityData:
         return AbilityData.from_census(data)
+
+    def resource_type(self) -> InstanceProxy[ResourceType]:
+        """Return the resource type used by this ability, if any."""
+        type_id = self.data.resource_type_id or -1
+        query = Query(
+            ResourceType.collection, service_id=self._client.service_id)
+        query.add_term(field=ResourceType.id_field, value=type_id)
+        return InstanceProxy(ResourceType, query, client=self._client)
 
     def type(self) -> InstanceProxy[AbilityType]:
         """Return the ability type of this ability."""
