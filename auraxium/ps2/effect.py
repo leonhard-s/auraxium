@@ -1,6 +1,7 @@
 """Effect and effect type class definitions."""
 
 import dataclasses
+import enum
 from typing import List, Optional
 
 from ..base import Cached, Ps2Data
@@ -8,6 +9,15 @@ from ..census import Query
 from ..proxy import InstanceProxy
 from ..types import CensusData
 from ..utils import optional
+
+
+class TargetType(enum.IntEnum):
+    """Enumerate the types of targets for effects."""
+
+    SELF = 1
+    ANY = 2
+    ENEMY = 3
+    ALLY = 4
 
 
 @dataclasses.dataclass(frozen=True)
@@ -116,6 +126,12 @@ class Effect(Cached, cache_size=10, cache_ttu=60.0):
 
     def _build_dataclass(self, data: CensusData) -> EffectData:
         return EffectData.from_census(data)
+
+    def target_type(self) -> Optional[TargetType]:
+        """Return the target type of this effect."""
+        if self.data.target_type_id is None:
+            return None
+        return TargetType(self.data.target_type_id)
 
     def type(self) -> InstanceProxy[EffectType]:
         """Return the effect type of this effect."""
