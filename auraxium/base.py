@@ -74,12 +74,14 @@ class Ps2Object(metaclass=abc.ABCMeta):
     @classmethod
     @abc.abstractmethod
     def collection(cls) -> str:  # pylint: disable=function-redefined
+        """Return the unique collection associated with this object."""
         raise NotImplementedError
 
     @property  # type: ignore
     @classmethod
     @abc.abstractmethod
     def id_field(cls) -> str:  # pylint: disable=function-redefined
+        """Return the ID field name for this object."""
         raise NotImplementedError
 
     def __init__(self, data: CensusData, client: 'Client') -> None:
@@ -392,7 +394,7 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
 
         """
         return (f'<{self.__class__.__name__}:{self.id}:'
-                f'{self.name(locale="en")}>')
+                f'\'{self.name(locale="en")}\'>')
 
     def __str__(self) -> str:
         """Return the string representation of this object.
