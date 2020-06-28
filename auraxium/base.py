@@ -109,6 +109,14 @@ class Ps2Object(metaclass=abc.ABCMeta):
                 f'Unable to populate {self.__class__.__name__} due to a '
                 f'missing key: {err.args[0]}') from err
 
+    def __eq__(self, value: Any) -> bool:
+        if not isinstance(value, self.__class__):
+            return False
+        return self.id == value.id
+
+    def __hash__(self) -> int:
+        return hash((self.__class__, self.id))
+
     def __repr__(self) -> str:
         """Return the unique string representation of this object.
 
