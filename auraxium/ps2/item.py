@@ -1,11 +1,11 @@
 """Item and item attachment class definitions."""
 
 import dataclasses
-from typing import ClassVar, Final, Optional, TYPE_CHECKING
+from typing import Final, Optional, TYPE_CHECKING
 
 from ..base import Cached, Named, Ps2Data
-from ..cache import TLRUCache
 from ..census import Query
+from ..request import extract_single, run_query
 from ..proxy import InstanceProxy, SequenceProxy
 from ..types import CensusData
 from ..utils import LocaleData, optional
@@ -15,7 +15,7 @@ from .profile import Profile
 if TYPE_CHECKING:
     # This is only imported during static type checking to resolve the forward
     # references. During runtime, this would cause a circular import.
-    from .weapon import Weapon
+    from .weapon import Weapon, WeaponDatasheet
 
 
 @dataclasses.dataclass(frozen=True)
@@ -178,6 +178,16 @@ class Item(Named, cache_size=128, cache_ttu=3600.0):
         query.add_term(
             field=ItemCategory.id_field, value=self.data.item_category_id)
         return InstanceProxy(ItemCategory, query, client=self._client)
+
+    async def datasheet(self) -> 'WeaponDatasheet':
+        """Return the datasheet for the weapon."""
+        from .weapon import WeaponDatasheet
+        collection: Final[str] = 'weapon_datasheet'
+        query = Query(collection, service_id=self._client.service_id)
+        query.add_term(field=self.id_field, value=self.id)
+        payload = await run_query(query, session=self._client.session)
+        data = extract_single(payload, collection)
+        return WeaponDatasheet.from_census(data)
 
     def profiles(self) -> SequenceProxy[Profile]:
         """Return the profiles the item is available to.
