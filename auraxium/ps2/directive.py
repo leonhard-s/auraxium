@@ -10,6 +10,8 @@ from ..proxy import InstanceProxy, SequenceProxy
 from ..types import CensusData
 from ..utils import LocaleData, optional
 
+from .objective import Objective
+
 
 @dataclasses.dataclass(frozen=True)
 class DirectiveTreeCategoryData(Ps2Data):
@@ -239,6 +241,23 @@ class Directive(Named, cache_size=30, cache_ttu=60.0):
 
     def _build_dataclass(self, data: CensusData) -> DirectiveData:
         return DirectiveData.from_census(data)
+
+    def objectives(self) -> SequenceProxy[Objective]:
+        """Return the objectives for this directive.
+
+        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        """
+        # NOTE: This table is being treated as a single set mapping to multiple
+        # objectives via their common group. This is a guess. I was not able to
+        # find any directives with multiple objectives associated.
+        collection: Final[str] = 'objective_set_to_objective'
+        query = Query(collection, service_id=self._client.service_id)
+        query.add_term(
+            field='objective_set_id', value=self.data.objective_set_id)
+        join = query.create_join(Objective.collection)
+        join.parent_field = join.child_field = 'objective_group_id'
+        join.set_list(True)
+        return SequenceProxy(Objective, query, client=self._client)
 
     def tier(self) -> InstanceProxy[DirectiveTier]:
         """Return the tier of the directive.
