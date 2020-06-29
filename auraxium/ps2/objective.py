@@ -5,7 +5,7 @@ from typing import List, Optional
 
 from ..base import Cached, Ps2Data
 from ..census import Query
-from ..proxy import InstanceProxy, SequenceProxy
+from ..proxy import InstanceProxy
 from ..types import CensusData
 from ..utils import optional
 
