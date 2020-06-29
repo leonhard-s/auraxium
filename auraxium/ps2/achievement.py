@@ -6,7 +6,6 @@ Achievements include weapon medals and service ribbons.
 import dataclasses
 
 from ..base import Named, Ps2Data
-from ..image import CensusImage
 from ..types import CensusData
 from ..utils import LocaleData
 
@@ -57,8 +56,3 @@ class Achievement(Named, cache_size=50, cache_ttu=60.0):
 
     def _build_dataclass(self, data: CensusData) -> AchievementData:
         return AchievementData.from_census(data)
-
-    @property
-    def image(self) -> CensusImage:
-        """Get the image for a given object."""
-        return CensusImage(self.data.image_set_id, client=self._client)
