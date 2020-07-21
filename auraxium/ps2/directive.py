@@ -1,7 +1,7 @@
 """Directive class definitions."""
 
 import dataclasses
-from typing import ClassVar, Optional, Union
+from typing import ClassVar, Final, Optional, Union
 
 from ..base import Named, Ps2Data
 from ..cache import TLRUCache
