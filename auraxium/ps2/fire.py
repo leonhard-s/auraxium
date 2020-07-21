@@ -2,15 +2,17 @@
 
 import dataclasses
 import enum
-from typing import Final, Optional
+from typing import Dict, Final, Optional
 
 from ..base import Cached, Ps2Data
 from ..census import Query
 from ..proxy import InstanceProxy, SequenceProxy
+from ..request import extract_payload, run_query
 from ..types import CensusData
 from ..utils import LocaleData, optional
 
 from .projectile import Projectile
+from .states import PlayerState, PlayerStateGroup
 
 
 class FireModeType(enum.IntEnum):
@@ -248,6 +250,22 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
 
     def _build_dataclass(self, data: CensusData) -> FireModeData:
         return FireModeData.from_census(data)
+
+    async def state_groups(self) -> Dict[PlayerState, PlayerStateGroup]:
+        """Return the state-specific data for a fire mode."""
+        collection: Final[str] = 'player_state_group_2'
+        query = Query(collection, service_id=self._client.service_id)
+        query.add_term(field='player_state_group_id',
+                       value=self.data.player_state_group_id)
+        query.limit(10)
+        payload = await run_query(query, session=self._client.session)
+        data = extract_payload(payload, collection)
+        states: Dict[PlayerState, PlayerStateGroup] = {}
+        for group_data in data:
+            group = PlayerStateGroup.from_census(group_data)
+            state = PlayerState(group.player_state_id)
+            states[state] = group
+        return states
 
     def projectile(self) -> InstanceProxy[Projectile]:
         """Return the projectile associated with this fire mode."""
