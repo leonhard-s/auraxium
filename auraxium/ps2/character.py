@@ -14,7 +14,6 @@ from ..request import extract_payload, extract_single, run_query
 from ..types import CensusData
 from ..utils import LocaleData, optional
 
-from .directive import Directive
 from .faction import Faction
 from .item import Item
 from .outfit import Outfit, OutfitMember
@@ -285,6 +284,50 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         data = extract_single(payload, collection)
         return int(data['quantity']), int(data['prestige_currency'])
 
+    async def directive(self, results: int = 1,
+                        **kwargs: Any) -> List[CensusData]:
+        """Query the directive status for this character."""
+        collection: Final[str] = 'characters_directive'
+        query = Query(collection, service_id=self._client.service_id, **kwargs)
+        query.add_term(field=self.id_field, value=self.id)
+        query.limit(results)
+        payload = await run_query(query, session=self._client.session)
+        data = extract_payload(payload, collection)
+        return data
+
+    async def directive_objective(self, results: int = 1,
+                                  **kwargs: Any) -> List[CensusData]:
+        """Query the objective status for a directive."""
+        collection: Final[str] = 'characters_directive_objective'
+        query = Query(collection, service_id=self._client.service_id, **kwargs)
+        query.add_term(field=self.id_field, value=self.id)
+        query.limit(results)
+        payload = await run_query(query, session=self._client.session)
+        data = extract_payload(payload, collection)
+        return data
+
+    async def directive_tier(self, results: int = 1,
+                             **kwargs: Any) -> List[CensusData]:
+        """Query the directive tier status for this character."""
+        collection: Final[str] = 'characters_directive_tier'
+        query = Query(collection, service_id=self._client.service_id, **kwargs)
+        query.add_term(field=self.id_field, value=self.id)
+        query.limit(results)
+        payload = await run_query(query, session=self._client.session)
+        data = extract_payload(payload, collection)
+        return data
+
+    async def directive_tree(self, results: int = 1,
+                             **kwargs: Any) -> List[CensusData]:
+        """Query the directive tree status for this character."""
+        collection: Final[str] = 'characters_directive_tree'
+        query = Query(collection, service_id=self._client.service_id, **kwargs)
+        query.add_term(field=self.id_field, value=self.id)
+        query.limit(results)
+        payload = await run_query(query, session=self._client.session)
+        data = extract_payload(payload, collection)
+        return data
+
     async def events(self, **kwargs: Any) -> List[CensusData]:
         """Return and process past events for this character.
 
@@ -413,8 +456,12 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         """
         return f'{await self.title()} {self.name()}'
 
-    async def online_status(self) -> bool:
-        """Return the online status of the character."""
+    async def online_status(self) -> int:
+        """Return the online status of the character.
+
+        This returns 0 if the character is offline, or the world_id of
+        the server they are logged into.
+        """
         collection: Final[str] = 'characters_online_status'
         query = Query(collection, service_id=self._client.service_id)
         query.add_term(field=self.id_field, value=self.id)
@@ -450,6 +497,70 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query = Query(Profile.collection, service_id=self._client.service_id)
         query.add_term(field=Profile.id_field, value=self.data.profile_id)
         return InstanceProxy(Profile, query, client=self._client)
+
+    async def skill(self, results: int = 1, **kwargs: Any) -> List[CensusData]:
+        """Return the skills unlocked by this character."""
+        collection: Final[str] = 'characters_skill'
+        query = Query(collection, service_id=self._client.service_id, **kwargs)
+        query.add_term(field=self.id_field, value=self.id)
+        query.limit(results)
+        payload = await run_query(query, session=self._client.session)
+        data = extract_payload(payload, collection)
+        return data
+
+    async def stat(self, results: int = 1, **kwargs: Any) -> List[CensusData]:
+        """Return global statistics for this character."""
+        collection: Final[str] = 'characters_skill'
+        query = Query(collection, service_id=self._client.service_id, **kwargs)
+        query.add_term(field=self.id_field, value=self.id)
+        query.limit(results)
+        payload = await run_query(query, session=self._client.session)
+        data = extract_payload(payload, collection)
+        return data
+
+    async def stat_by_faction(self, results: int = 1,
+                              **kwargs: Any) -> List[CensusData]:
+        """Return faction-specific statistics for this character."""
+        collection: Final[str] = 'characters_stat_by_faction'
+        query = Query(collection, service_id=self._client.service_id, **kwargs)
+        query.add_term(field=self.id_field, value=self.id)
+        query.limit(results)
+        payload = await run_query(query, session=self._client.session)
+        data = extract_payload(payload, collection)
+        return data
+
+    async def stat_history(self, results: int = 1,
+                           **kwargs: Any) -> List[CensusData]:
+        """Return historical statistics for this character."""
+        collection: Final[str] = 'characters_stat_history'
+        query = Query(collection, service_id=self._client.service_id, **kwargs)
+        query.add_term(field=self.id_field, value=self.id)
+        query.limit(results)
+        payload = await run_query(query, session=self._client.session)
+        data = extract_payload(payload, collection)
+        return data
+
+    async def weapon_stat(self, results: int = 1,
+                          **kwargs: Any) -> List[CensusData]:
+        """Return weapon-specific statistics for this character."""
+        collection: Final[str] = 'characters_weapon_stat'
+        query = Query(collection, service_id=self._client.service_id, **kwargs)
+        query.add_term(field=self.id_field, value=self.id)
+        query.limit(results)
+        payload = await run_query(query, session=self._client.session)
+        data = extract_payload(payload, collection)
+        return data
+
+    async def weapon_stat_by_faction(self, results: int = 1,
+                                     **kwargs: Any) -> List[CensusData]:
+        """Return per-faction weapon statistics for this character."""
+        collection: Final[str] = 'characters_weapon_stat_by_faction'
+        query = Query(collection, service_id=self._client.service_id, **kwargs)
+        query.add_term(field=self.id_field, value=self.id)
+        query.limit(results)
+        payload = await run_query(query, session=self._client.session)
+        data = extract_payload(payload, collection)
+        return data
 
     def title(self) -> InstanceProxy[Title]:
         """Return the current title of the character, if any.
