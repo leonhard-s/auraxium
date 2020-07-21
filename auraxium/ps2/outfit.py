@@ -2,7 +2,7 @@
 
 import dataclasses
 import logging
-from typing import ClassVar, Final, List, Optional, Union
+from typing import ClassVar, Final, List, Optional, TYPE_CHECKING, Union
 
 from ..base import Cached, Named, Ps2Data
 from ..cache import TLRUCache
@@ -12,7 +12,10 @@ from ..proxy import InstanceProxy, SequenceProxy
 from ..request import extract_payload, extract_single, run_query
 from ..types import CensusData
 
-from .character import Character
+if TYPE_CHECKING:
+    # This is only imported during static type checking to resolve the forward
+    # references. During runtime, this would cause a circular import.
+    from .character import Character
 
 log = logging.getLogger('auraxium.ps2')
 
@@ -52,16 +55,20 @@ class OutfitMember(Cached, cache_size=100, cache_ttu=300.0):
 
     collection = 'outfit_member'
     data: OutfitMemberData
-    id_field = 'outfit_member_id'
+    id_field = 'character_id'
 
     def _build_dataclass(self, data: CensusData) -> OutfitMemberData:
         return OutfitMemberData.from_census(data)
 
-    def character(self) -> InstanceProxy[Character]:
+    def character(self) -> InstanceProxy['Character']:
         """Return the character associated with this member.
 
         This returns an :class:`auraxium.proxy.InstanceProxy`.
         """
+        # NOTE: This is required due to OutfitMember effectively being an
+        # extension of Character.
+        # pylint: disable=import-outside-toplevel
+        from .character import Character
         query = Query(Character.collection, service_id=self._client.service_id)
         query.add_term(field=Character.id_field, value=self.data.character_id)
         return InstanceProxy(Character, query, client=self._client)
@@ -176,17 +183,18 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         payload = extract_single(data, cls.collection)
         return cls(payload, client=client)
 
-    def leader(self) -> InstanceProxy[Character]:
+    def leader(self) -> InstanceProxy[OutfitMember]:
         """Return the current leader of the outfit.
 
         This returns an :class:`auraxium.proxy.InstanceProxy`.
         """
-        query = Query(Character.collection, service_id=self._client.service_id)
+        query = Query(
+            OutfitMember.collection, service_id=self._client.service_id)
         query.add_term(
-            field=Character.id_field, value=self.data.leader_character_id)
-        return InstanceProxy(Character, query, client=self._client)
+            field=OutfitMember.id_field, value=self.data.leader_character_id)
+        return InstanceProxy(OutfitMember, query, client=self._client)
 
-    def members(self) -> SequenceProxy['OutfitMember']:
+    def members(self) -> SequenceProxy[OutfitMember]:
         """Return the members of the outfit.
 
         This returns a :class:`auraxium.proxy.SequenceProxy`.
