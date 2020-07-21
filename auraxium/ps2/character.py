@@ -298,7 +298,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.add_term(field=self.id_field, value=self.id)
         query.limit(1000)
         payload = await run_query(query, session=self._client.session)
-        data = await extract_payload(payload, collection=collection)
+        data = extract_payload(payload, collection=collection)
         return data
 
     async def events_grouped(self, **kwargs: Any) -> List[CensusData]:
@@ -308,7 +308,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.add_term(field=self.id_field, value=self.id)
         query.limit(100_000)
         payload = await run_query(query, session=self._client.session)
-        data = await extract_payload(payload, collection=collection)
+        data = extract_payload(payload, collection=collection)
         return data
 
     def faction(self) -> InstanceProxy[Faction]:
