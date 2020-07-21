@@ -89,7 +89,7 @@ def process_join(join: JoinedQuery, verbose: bool) -> str:
     if not join.is_outer or verbose:
         string += '^outer:' + ('1' if join.is_outer else '0')
     # Show/hide field lists
-    if join.commands.get('show', []):
+    if join.commands['show']:
         string += '^show:' + '\''.join(str(s) for s in join.commands['show'])
     elif join.commands['hide']:
         string += '^hide:' + '\''.join(str(s) for s in join.commands['hide'])
