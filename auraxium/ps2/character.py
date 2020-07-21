@@ -2,21 +2,79 @@
 
 import dataclasses
 import logging
-from typing import ClassVar, Final, NamedTuple, Optional, Union
+from typing import ClassVar, Final, List, NamedTuple, Optional, Tuple, Union
 
 from ..base import Named, Ps2Data
 from ..cache import TLRUCache
 from ..census import Query
 from ..client import Client
 from ..proxy import InstanceProxy, SequenceProxy
-from ..request import extract_single, run_query
+from ..request import extract_payload, extract_single, run_query
 from ..types import CensusData
 from ..utils import LocaleData, optional
 
+from .directive import Directive
 from .faction import Faction
 from .item import Item
+from .outfit import Outfit, OutfitMember
+from .profile import Profile
+from .world import World
 
 log = logging.getLogger('auraxium.ps2')
+
+
+class CharacterAchievement(NamedTuple):
+    """Data container for a character's achievement status."""
+
+    character_id: int
+    achievement_id: int
+    earned_count: int
+    start: int
+    start_date: str
+    finish: int
+    finish_date: str
+    last_save: int
+    last_save_date: str
+
+    @classmethod
+    def from_census(cls, data: CensusData) -> 'CharacterAchievement':
+        """Populate the data class with values from the dictionary.
+
+        This parses the API response and casts the appropriate types.
+        """
+        return cls(
+            int(data['character_id']),
+            int(data['achievement_id']),
+            int(data['earned_count']),
+            int(data['start']),
+            str(data['start_date']),
+            int(data['finish']),
+            str(data['finish_date']),
+            int(data['last_save']),
+            str(data['last_save_date']))
+
+
+class CharacterDirective(NamedTuple):
+    """Data container for a character's directive status."""
+
+    character_id: int
+    directive_tree_id: int
+    directive_id: int
+    completion_time: int
+    completion_time_date: str
+
+    @classmethod
+    def from_census(cls, data: CensusData) -> 'CharacterDirective':
+        """Populate the data class with values from the dictionary.
+
+        This parses the API response and casts the appropriate types.
+        """
+        return cls(
+            int(data['character_id']),
+            int(data['directive_tree_id']),
+            int(data['directive_id']),
+            int(data['completion_time']),
+            str(data['completion_time_date']))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -64,6 +122,11 @@ class CharacterData(Ps2Data):
 
         @classmethod
         def from_census(cls, data: CensusData) -> 'CharacterData.BattleRank':
+            """Populate the data class with values from the dictionary.
+
+            This parses the API response and casts the appropriate
+            types.
+            """
             return cls(
                 int(data['value']),
                 float(data['percent_to_next']))
@@ -78,8 +141,12 @@ class CharacterData(Ps2Data):
         percent_to_next: float
 
         @classmethod
-        def from_census(cls, data: CensusData
-                        ) -> 'CharacterData.Certs':
+        def from_census(cls, data: CensusData) -> 'CharacterData.Certs':
+            """Populate the data class with values from the dictionary.
+
+            This parses the API response and casts the appropriate
+            types.
+            """
             return cls(
                 int(data['earned_points']),
                 int(data['gifted_points']),
@@ -95,8 +162,12 @@ class CharacterData(Ps2Data):
         date: Optional[str]
 
         @classmethod
-        def from_census(cls, data: CensusData
-                        ) -> 'CharacterData.DailyRibbon':
+        def from_census(cls, data: CensusData) -> 'CharacterData.DailyRibbon':
+            """Populate the data class with values from the dictionary.
+
+            This parses the API response and casts the appropriate
+            types.
+            """
             return cls(
                 int(data['count']),
                 optional(data, 'time', int),
@@ -110,6 +181,11 @@ class CharacterData(Ps2Data):
 
         @classmethod
         def from_census(cls, data: CensusData) -> 'CharacterData.Name':
+            """Populate the data class with values from the dictionary.
+
+            This parses the API response and casts the appropriate
+            types.
+            """
             return cls(
                 data['first'],
                 data['first_lower'])
@@ -128,6 +204,11 @@ class CharacterData(Ps2Data):
 
         @classmethod
         def from_census(cls, data: CensusData) -> 'CharacterData.Times':
+            """Populate the data class with values from the dictionary.
+
+            This parses the API response and casts the appropriate
+            types.
+            """
             return cls(
                 int(data['creation']),
                 str(data['creation_date']),
@@ -174,8 +255,60 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     data: CharacterData
     id_field = 'character_id'
 
+    async def achievements(self, **kwargs) -> List[CharacterAchievement]:
+        """Return the achievement status for a character."""
+        collection: Final[str] = 'characters_achievement'
+        query = Query(collection, service_id=self._client.service_id, **kwargs)
+        query.limit(5000)
+        query.add_term(field=self.id_field, value=self.id)
+        payload = await run_query(query, session=self._client.session)
+        data = extract_payload(payload, collection)
+        return [CharacterAchievement.from_census(d) for d in data]
+
     def _build_dataclass(self, data: CensusData) -> CharacterData:
         return CharacterData.from_census(data)
+
+    async def currency(self) -> Tuple[int, int]:
+        """Return the currencies of the character.
+
+        This returns a tuple of the number of Nanites and ASP tokens
+        available to the player.
+
+        Other currencies are not exposed to the API as of the writing
+        of this module.
+        """
+        collection: Final[str] = 'characters_currency'
+        query = Query(collection, service_id=self._client.service_id)
+        query.add_term(field=self.id_field, value=self.id)
+        payload = await run_query(query, session=self._client.session)
+        data = extract_single(payload, collection)
+        return int(data['quantity']), int(data['prestige_currency'])
+
+    async def events(self, **kwargs) -> List[CensusData]:
+        """Return and process past events for this character.
+
+        This provides a REST endpoint for past character events.
+
+        This is always limited to at most 1000 return values. Use the
+        begin and end parameters to poll more data.
+        """
+        collection: Final[str] = 'characters_event'
+        query = Query(collection, service_id=self._client.service_id, **kwargs)
+        query.add_term(field=self.id_field, value=self.id)
+        query.limit(1000)
+        payload = await run_query(query, session=self._client.session)
+        data = await extract_payload(payload, collection=collection)
+        return data
+
+    async def events_grouped(self, **kwargs) -> List[CensusData]:
+        """Used to obtain kills and deaths on a per-player basis."""
+        collection: Final[str] = 'characters_event_grouped'
+        query = Query(collection, service_id=self._client.service_id, **kwargs)
+        query.add_term(field=self.id_field, value=self.id)
+        query.limit(100_000)
+        payload = await run_query(query, session=self._client.session)
+        data = await extract_payload(payload, collection=collection)
+        return data
 
     def faction(self) -> InstanceProxy[Faction]:
         """Return the faction of the character.
@@ -185,6 +318,27 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query = Query(Faction.collection, service_id=self._client.service_id)
         query.add_term(field=Faction.id_field, value=self.data.faction_id)
         return InstanceProxy(Faction, query, client=self._client)
+
+    async def friends(self) -> List['Character']:
+        """Return the friends list of the character."""
+        # NOTE: Due to the strange formatting of the characters_friend
+        # collection, I does not seem possible to retrieve the associated
+        # characters through joins.
+        # This is solved through a second query matching the IDs, though this
+        # does slow this query down dramatically.
+        collection: Final[str] = 'characters_friend'
+        query = Query(collection, service_id=self._client.service_id)
+        query.add_term(field=Character.id_field, value=self.id)
+        join = query.create_join(self.collection)
+        join.set_list(True)
+        payload = await run_query(query, session=self._client.session)
+        data = extract_single(payload, collection)
+        character_ids: List[str] = [
+            str(d['character_id']) for d in data['friend_list']]
+        characters = await Character.find(
+            results=len(character_ids), client=self._client,
+            character_id=','.join(character_ids))
+        return characters
 
     @classmethod
     async def get_by_id(cls, id_: int, *, client: Client
@@ -237,12 +391,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
     async def is_online(self) -> bool:
         """Return whether the given character is online."""
-        collection: Final[str] = 'characters_online_status'
-        query = Query(collection, service_id=self._client.service_id)
-        query.add_term(field=self.id_field, value=self.id)
-        payload = await run_query(query, session=self._client.session)
-        data = extract_single(payload, collection)
-        return bool(int(data['online_status']))
+        return bool(int(await self.online_status()))
 
     def name(self, locale: str = 'en') -> str:
         """Return the unique name of the player.
@@ -263,6 +412,44 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         """
         return f'{await self.title()} {self.name()}'
 
+    async def online_status(self) -> bool:
+        """Return the online status of the character."""
+        collection: Final[str] = 'characters_online_status'
+        query = Query(collection, service_id=self._client.service_id)
+        query.add_term(field=self.id_field, value=self.id)
+        payload = await run_query(query, session=self._client.session)
+        data = extract_single(payload, collection)
+        return int(data['online_status'])
+
+    def outfit(self) -> InstanceProxy[Outfit]:
+        """Return the outfit of the character, if any.
+
+        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        """
+        collection: Final[str] = 'outfit_member_extended'
+        query = Query(collection, service_id=self._client.service_id)
+        query.add_term(field=self.id_field, value=self.id)
+        return InstanceProxy(Outfit, query, client=self._client)
+
+    def outfit_member(self) -> InstanceProxy[OutfitMember]:
+        """Return the outfit member of the character, if any.
+
+        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        """
+        query = Query(
+            OutfitMember.collection, service_id=self._client.service_id)
+        query.add_term(field=self.id_field, value=self.id)
+        return InstanceProxy(OutfitMember, query, client=self._client)
+
+    def profile(self) -> InstanceProxy[Profile]:
+        """Return the last played profile of the character.
+
+        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        """
+        query = Query(Profile.collection, service_id=self._client.service_id)
+        query.add_term(field=Profile.id_field, value=self.data.profile_id)
+        return InstanceProxy(Profile, query, client=self._client)
+
     def title(self) -> InstanceProxy[Title]:
         """Return the current title of the character, if any.
 
@@ -272,3 +459,15 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query = Query(Title.collection, service_id=self._client.service_id)
         query.add_term(field=Title.id_field, value=title_id)
         return InstanceProxy(Title, query, client=self._client)
+
+    def world(self) -> InstanceProxy[World]:
+        """Return the world of the character.
+
+        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        """
+        collection: Final[str] = 'characters_world'
+        query = Query(collection, service_id=self._client.service_id)
+        query.add_term(field=self.id_field, value=self.id)
+        join = query.create_join(World.collection)
+        join.parent_field = join.child_field = 'world_id'
+        return InstanceProxy(World, query, client=self._client)
