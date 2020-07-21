@@ -10,6 +10,8 @@ from ..request import extract_payload, run_query
 from ..types import CensusData
 from ..utils import LocaleData
 
+from .zone import Zone
+
 
 @dataclasses.dataclass(frozen=True)
 class WorldData(Ps2Data):
@@ -74,3 +76,18 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
             if world.name(locale=locale).lower() == name:
                 return world
         return None
+
+    async def map(self, zone: Union[int, Zone],
+                  *args: Union[int, Zone]) -> List[CensusData]:
+        """Return the map status of a given zone."""
+        collection: Final[str] = 'map'
+        query = Query(collection, service_id=self._client.service_id)
+        query.add_term(field=self.id_field, value=self.id)
+        zone_ids: List[int] = [zone if isinstance(zone, int) else zone.id]
+        zone_ids.extend(z if isinstance(z, int) else z.id for z in args)
+        value = ','.join(str(z) for z in zone_ids)
+        query.add_term(field='zone_ids', value=value)
+        query.limit(3000)
+        payload = await run_query(query, session=self._client.session)
+        data = extract_payload(payload, collection=collection)
+        return data
