@@ -1,7 +1,7 @@
 """World class definition."""
 
 import dataclasses
-from typing import Final, List, Optional
+from typing import Any, Final, List, Optional, Union
 
 from ..base import Named, Ps2Data
 from ..census import Query
@@ -41,7 +41,7 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
     def _build_dataclass(self, data: CensusData) -> WorldData:
         return WorldData.from_census(data)
 
-    async def events(self, **kwargs) -> List[CensusData]:
+    async def events(self, **kwargs: Any) -> List[CensusData]:
         """Return events for this world.
 
         This provides a REST endpoint for past alerts (MetagameEvent)
@@ -55,7 +55,7 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
         query.add_term(field=self.id_field, value=self.id)
         query.limit(1000)
         payload = await run_query(query, session=self._client.session)
-        data = await extract_payload(payload, collection=collection)
+        data = extract_payload(payload, collection=collection)
         return data
 
     @classmethod

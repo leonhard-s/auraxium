@@ -2,7 +2,8 @@
 
 import dataclasses
 import logging
-from typing import ClassVar, Final, List, NamedTuple, Optional, Tuple, Union
+from typing import (Any, ClassVar, Final, List, NamedTuple, Optional, Tuple,
+                    Union)
 
 from ..base import Named, Ps2Data
 from ..cache import TLRUCache
@@ -255,7 +256,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     data: CharacterData
     id_field = 'character_id'
 
-    async def achievements(self, **kwargs) -> List[CharacterAchievement]:
+    async def achievements(self, **kwargs: Any) -> List[CharacterAchievement]:
         """Return the achievement status for a character."""
         collection: Final[str] = 'characters_achievement'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
@@ -284,7 +285,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         data = extract_single(payload, collection)
         return int(data['quantity']), int(data['prestige_currency'])
 
-    async def events(self, **kwargs) -> List[CensusData]:
+    async def events(self, **kwargs: Any) -> List[CensusData]:
         """Return and process past events for this character.
 
         This provides a REST endpoint for past character events.
@@ -300,7 +301,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         data = await extract_payload(payload, collection=collection)
         return data
 
-    async def events_grouped(self, **kwargs) -> List[CensusData]:
+    async def events_grouped(self, **kwargs: Any) -> List[CensusData]:
         """Used to obtain kills and deaths on a per-player basis."""
         collection: Final[str] = 'characters_event_grouped'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
