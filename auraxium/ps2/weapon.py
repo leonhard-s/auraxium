@@ -189,7 +189,8 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
         join.set_outer(False)
         return SequenceProxy(Item, query, client=self._client)
 
-    def _build_dataclass(self, data: CensusData) -> WeaponData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> WeaponData:
         return WeaponData.from_census(data)
 
     async def datasheet(self) -> WeaponDatasheet:

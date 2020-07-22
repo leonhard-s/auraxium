@@ -47,7 +47,8 @@ class ItemCategory(Named, cache_size=32, cache_ttu=3600.0):
     data: ItemCategoryData
     id_field = 'item_category_id'
 
-    def _build_dataclass(self, data: CensusData) -> ItemCategoryData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> ItemCategoryData:
         return ItemCategoryData.from_census(data)
 
 
@@ -85,7 +86,8 @@ class ItemType(Cached, cache_size=10, cache_ttu=60.0):
     data: ItemTypeData
     id_field = 'item_type_id'
 
-    def _build_dataclass(self, data: CensusData) -> ItemTypeData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> ItemTypeData:
         return ItemTypeData.from_census(data)
 
 
@@ -149,7 +151,8 @@ class Item(Named, cache_size=128, cache_ttu=3600.0):
     data: ItemData
     id_field = 'item_id'
 
-    def _build_dataclass(self, data: CensusData) -> ItemData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> ItemData:
         return ItemData.from_census(data)
 
     def attachments(self) -> SequenceProxy['Item']:

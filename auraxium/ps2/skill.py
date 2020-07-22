@@ -53,7 +53,8 @@ class SkillSet(Named, cache_size=100, cache_ttu=60.0):
     data: SkillSetData
     id_field = 'skill_set_id'
 
-    def _build_dataclass(self, data: CensusData) -> SkillSetData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> SkillSetData:
         return SkillSetData.from_census(data)
 
     def categories(self) -> SequenceProxy['SkillCategory']:
@@ -125,7 +126,8 @@ class SkillCategory(Named, cache_size=50, cache_ttu=60.0):
     data: SkillCategoryData
     id_field = 'skill_category_id'
 
-    def _build_dataclass(self, data: CensusData) -> SkillCategoryData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> SkillCategoryData:
         return SkillCategoryData.from_census(data)
 
     def skill_lines(self) -> SequenceProxy['SkillLine']:
@@ -187,7 +189,8 @@ class SkillLine(Named, cache_size=50, cache_ttu=60.0):
     data: SkillLineData
     id_field = 'skill_line_id'
 
-    def _build_dataclass(self, data: CensusData) -> SkillLineData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> SkillLineData:
         return SkillLineData.from_census(data)
 
     def category(self) -> InstanceProxy[SkillCategory]:
@@ -254,7 +257,8 @@ class Skill(Named, cache_size=50, cache_ttu=60.0):
     data: SkillData
     id_field = 'skill_id'
 
-    def _build_dataclass(self, data: CensusData) -> SkillData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> SkillData:
         return SkillData.from_census(data)
 
     def grant_item(self) -> InstanceProxy[Item]:

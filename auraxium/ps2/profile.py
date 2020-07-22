@@ -60,7 +60,8 @@ class Profile(Cached, cache_size=200, cache_ttu=60.0):
         join.parent_field = join.child_field = ArmourInfo.id_field
         return SequenceProxy(ArmourInfo, query, client=self._client)
 
-    def _build_dataclass(self, data: CensusData) -> ProfileData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> ProfileData:
         return ProfileData.from_census(data)
 
     def resist_info(self) -> SequenceProxy[ResistInfo]:
@@ -106,7 +107,8 @@ class Loadout(Cached, cache_size=20, cache_ttu=3600.0):
     data: LoadoutData
     id_field = 'loadout_id'
 
-    def _build_dataclass(self, data: CensusData) -> LoadoutData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> LoadoutData:
         return LoadoutData.from_census(data)
 
     def armour_info(self) -> SequenceProxy[ArmourInfo]:

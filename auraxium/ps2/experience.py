@@ -40,7 +40,8 @@ class Experience(Cached, cache_size=100, cache_ttu=3600.0):
     data: ExperienceData
     id_field = 'experience_id'
 
-    def _build_dataclass(self, data: CensusData) -> ExperienceData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> ExperienceData:
         return ExperienceData.from_census(data)
 
 

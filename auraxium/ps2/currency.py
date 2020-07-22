@@ -36,5 +36,6 @@ class Currency(Cached, cache_size=10, cache_ttu=3600.0):
     data: CurrencyData
     id_field = 'currency_id'
 
-    def _build_dataclass(self, data: CensusData) -> CurrencyData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> CurrencyData:
         return CurrencyData.from_census(data)

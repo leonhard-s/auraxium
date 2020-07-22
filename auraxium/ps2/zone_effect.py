@@ -48,7 +48,8 @@ class ZoneEffectType(Cached, cache_size=20, cache_ttu=60.0):
     data: ZoneEffectTypeData
     id_field = 'zone_effect_type_id'
 
-    def _build_dataclass(self, data: CensusData) -> ZoneEffectTypeData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> ZoneEffectTypeData:
         return ZoneEffectTypeData.from_census(data)
 
 
@@ -93,7 +94,8 @@ class ZoneEffect(Cached, cache_size=10, cache_ttu=60.0):
     data: ZoneEffectData
     id_field = 'zone_effect_id'
 
-    def _build_dataclass(self, data: CensusData) -> ZoneEffectData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> ZoneEffectData:
         return ZoneEffectData.from_census(data)
 
     def ability(self) -> InstanceProxy[Ability]:

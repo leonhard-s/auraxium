@@ -54,5 +54,6 @@ class Achievement(Named, cache_size=50, cache_ttu=60.0):
     data: AchievementData
     id_field = 'achievement_id'
 
-    def _build_dataclass(self, data: CensusData) -> AchievementData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> AchievementData:
         return AchievementData.from_census(data)

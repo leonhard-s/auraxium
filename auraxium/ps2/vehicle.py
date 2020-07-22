@@ -68,7 +68,8 @@ class Vehicle(Named, cache_size=50, cache_ttu=3600.0):
     data: VehicleData
     id_field = 'vehicle_id'
 
-    def _build_dataclass(self, data: CensusData) -> VehicleData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> VehicleData:
         return VehicleData.from_census(data)
 
     def factions(self) -> SequenceProxy[Faction]:
@@ -152,7 +153,8 @@ class VehicleAttachment(Cached, cache_size=250, cache_ttu=180.0):
     data: VehicleAttachmentData
     id_field = 'vehicle_attachment_id'
 
-    def _build_dataclass(self, data: CensusData) -> VehicleAttachmentData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> VehicleAttachmentData:
         return VehicleAttachmentData.from_census(data)
 
     def faction(self) -> InstanceProxy[Faction]:

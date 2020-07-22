@@ -82,5 +82,6 @@ class Projectile(Cached, cache_size=100, cache_ttu=60.0):
         """Return the flight type of the projectile."""
         return ProjectileFlightType(self.data.projectile_flight_type_id)
 
-    def _build_dataclass(self, data: CensusData) -> ProjectileData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> ProjectileData:
         return ProjectileData.from_census(data)

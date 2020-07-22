@@ -248,7 +248,8 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
         """Return the type of fire mode as an enum."""
         return FireModeType(self.data.fire_mode_type_id)
 
-    def _build_dataclass(self, data: CensusData) -> FireModeData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> FireModeData:
         return FireModeData.from_census(data)
 
     async def state_groups(self) -> Dict[PlayerState, PlayerStateGroup]:
@@ -315,7 +316,8 @@ class FireGroup(Cached, cache_size=10, cache_ttu=60.0):
     data: FireGroupData
     id_field = 'fire_group_id'
 
-    def _build_dataclass(self, data: CensusData) -> FireGroupData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> FireGroupData:
         return FireGroupData.from_census(data)
 
     def fire_modes(self) -> SequenceProxy[FireMode]:

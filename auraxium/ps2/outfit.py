@@ -57,7 +57,8 @@ class OutfitMember(Cached, cache_size=100, cache_ttu=300.0):
     data: OutfitMemberData
     id_field = 'character_id'
 
-    def _build_dataclass(self, data: CensusData) -> OutfitMemberData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> OutfitMemberData:
         return OutfitMemberData.from_census(data)
 
     def character(self) -> InstanceProxy['Character']:
@@ -145,7 +146,8 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
     data: OutfitData
     id_field = 'outfit_id'
 
-    def _build_dataclass(self, data: CensusData) -> OutfitData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> OutfitData:
         return OutfitData.from_census(data)
 
     @classmethod

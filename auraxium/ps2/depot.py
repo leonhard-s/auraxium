@@ -52,7 +52,8 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
     data: MarketingBundleData
     id_field = 'marketing_bundle_id'
 
-    def _build_dataclass(self, data: CensusData) -> MarketingBundleData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> MarketingBundleData:
         return MarketingBundleData.from_census(data)
 
     async def items(self) -> List[Tuple[Item, int]]:
@@ -116,7 +117,8 @@ class MarketingBundleSingle(Cached, cache_size=100, cache_ttu=60.0):
     data: MarketingBundleSingleData
     id_field = 'marketing_bundle_id'
 
-    def _build_dataclass(self, data: CensusData) -> MarketingBundleSingleData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> MarketingBundleSingleData:
         return MarketingBundleSingleData.from_census(data)
 
     def item(self) -> InstanceProxy[Item]:

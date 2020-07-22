@@ -49,5 +49,6 @@ class MetagameEvent(Cached, cache_size=100, cache_ttu=60.0):
     data: MetagameEventData
     id_field = 'metagame_event_id'
 
-    def _build_dataclass(self, data: CensusData) -> MetagameEventData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> MetagameEventData:
         return MetagameEventData.from_census(data)

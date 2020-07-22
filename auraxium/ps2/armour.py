@@ -66,5 +66,6 @@ class ArmourInfo(Cached, cache_size=100, cache_ttu=60.0):
         """Return the facing direction for this stat entry."""
         return ArmourFacing(self.data.armor_info_id)
 
-    def _build_dataclass(self, data: CensusData) -> ArmourInfoData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> ArmourInfoData:
         return ArmourInfoData.from_census(data)

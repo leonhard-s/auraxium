@@ -64,7 +64,8 @@ class EffectType(Cached, cache_size=20, cache_ttu=60.0):
     data: EffectTypeData
     id_field = 'effect_type_id'
 
-    def _build_dataclass(self, data: CensusData) -> EffectTypeData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> EffectTypeData:
         return EffectTypeData.from_census(data)
 
 
@@ -124,7 +125,8 @@ class Effect(Cached, cache_size=10, cache_ttu=60.0):
     data: EffectData
     id_field = 'effect_id'
 
-    def _build_dataclass(self, data: CensusData) -> EffectData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> EffectData:
         return EffectData.from_census(data)
 
     def target_type(self) -> Optional[TargetType]:

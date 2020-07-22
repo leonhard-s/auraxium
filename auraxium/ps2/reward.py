@@ -52,7 +52,8 @@ class RewardType(Cached, cache_size=10, cache_ttu=3600.0):
     data: RewardTypeData
     id_field = 'reward_type_id'
 
-    def _build_dataclass(self, data: CensusData) -> RewardTypeData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> RewardTypeData:
         return RewardTypeData.from_census(data)
 
 
@@ -99,7 +100,8 @@ class Reward(Cached, cache_size=50, cache_ttu=60.0):
     data: RewardData
     id_field = 'reward_id'
 
-    def _build_dataclass(self, data: CensusData) -> RewardData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> RewardData:
         return RewardData.from_census(data)
 
     @classmethod

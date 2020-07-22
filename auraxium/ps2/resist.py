@@ -39,7 +39,8 @@ class ResistType(Cached, cache_size=100, cache_ttu=60.0):
     data: ResistTypeData
     id_field = 'resist_type_id'
 
-    def _build_dataclass(self, data: CensusData) -> ResistTypeData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> ResistTypeData:
         return ResistTypeData.from_census(data)
 
 
@@ -76,7 +77,8 @@ class ResistInfo(Cached, cache_size=100, cache_ttu=60.0):
     data: ResistInfoData
     id_field = 'resist_info_id'
 
-    def _build_dataclass(self, data: CensusData) -> ResistInfoData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> ResistInfoData:
         return ResistInfoData.from_census(data)
 
     def type(self) -> InstanceProxy[ResistType]:

@@ -128,8 +128,9 @@ class Ps2Object(metaclass=abc.ABCMeta):
         """
         return f'<{self.__class__.__name__}:{self.id}>'
 
+    @staticmethod
     @abc.abstractmethod
-    def _build_dataclass(self, data: CensusData) -> Ps2Data:
+    def _build_dataclass(data: CensusData) -> Ps2Data:
         ...
 
     @classmethod
@@ -269,8 +270,7 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
 
     _cache: ClassVar[TLRUCache[int, Any]]
 
-    def __init__(self, data: CensusData,
-                 client: 'Client') -> None:
+    def __init__(self, data: CensusData, client: 'Client') -> None:
         """Initialise the cached object."""
         super().__init__(data=data, client=client)
         self._cache.add(self.id, self)

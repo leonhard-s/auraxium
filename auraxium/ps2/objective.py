@@ -50,7 +50,8 @@ class ObjectiveType(Cached, cache_size=10, cache_ttu=60.0):
     data: ObjectiveTypeData
     id_field = 'objective_type_id'
 
-    def _build_dataclass(self, data: CensusData) -> ObjectiveTypeData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> ObjectiveTypeData:
         return ObjectiveTypeData.from_census(data)
 
 
@@ -93,7 +94,8 @@ class Objective(Cached, cache_size=10, cache_ttu=60.0):
     data: ObjectiveData
     id_field = 'objective_id'
 
-    def _build_dataclass(self, data: CensusData) -> ObjectiveData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> ObjectiveData:
         return ObjectiveData.from_census(data)
 
     def type(self) -> InstanceProxy[ObjectiveType]:

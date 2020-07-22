@@ -59,5 +59,6 @@ class Faction(Named, cache_size=10):
         """Return the tag of this faction (VS, TR, NC, or NSO)."""
         return str(self.data.code_tag)
 
-    def _build_dataclass(self, data: CensusData) -> FactionData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> FactionData:
         return FactionData.from_census(data)

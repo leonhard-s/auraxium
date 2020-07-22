@@ -35,7 +35,8 @@ class ResourceType(Cached, cache_size=50, cache_ttu=3600.0):
     data: ResourceTypeData
     id_field = 'resource_type_id'
 
-    def _build_dataclass(self, data: CensusData) -> ResourceTypeData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> ResourceTypeData:
         return ResourceTypeData.from_census(data)
 
 
@@ -91,7 +92,8 @@ class AbilityType(Cached, cache_size=20, cache_ttu=60.0):
     data: AbilityTypeData
     id_field = 'ability_type_id'
 
-    def _build_dataclass(self, data: CensusData) -> AbilityTypeData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> AbilityTypeData:
         return AbilityTypeData.from_census(data)
 
 
@@ -169,7 +171,8 @@ class Ability(Cached, cache_size=10, cache_ttu=60.0):
     data: AbilityData
     id_field = 'ability_id'
 
-    def _build_dataclass(self, data: CensusData) -> AbilityData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> AbilityData:
         return AbilityData.from_census(data)
 
     def resource_type(self) -> InstanceProxy[ResourceType]:

@@ -102,7 +102,8 @@ class Title(Named, cache_size=300, cache_ttu=300.0):
     data: TitleData
     id_field = 'title_id'
 
-    def _build_dataclass(self, data: CensusData) -> TitleData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> TitleData:
         return TitleData.from_census(data)
 
 
@@ -265,7 +266,8 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         data = extract_payload(payload, collection)
         return [CharacterAchievement.from_census(d) for d in data]
 
-    def _build_dataclass(self, data: CensusData) -> CharacterData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> CharacterData:
         return CharacterData.from_census(data)
 
     async def currency(self) -> Tuple[int, int]:

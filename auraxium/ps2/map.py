@@ -37,7 +37,8 @@ class FacilityType(Cached, cache_size=10, cache_ttu=3600.0):
     data: FacilityTypeData
     id_field = 'facility_type_id'
 
-    def _build_dataclass(self, data: CensusData) -> FacilityTypeData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> FacilityTypeData:
         return FacilityTypeData.from_census(data)
 
 
@@ -76,7 +77,8 @@ class MapHex(Cached, cache_size=100, cache_ttu=60.0):
     data: MapHexData
     id_field = 'map_hex_id'
 
-    def _build_dataclass(self, data: CensusData) -> MapHexData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> MapHexData:
         return MapHexData.from_census(data)
 
 
@@ -123,7 +125,8 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
     data: MapRegionData
     id_field = 'map_region_id'
 
-    def _build_dataclass(self, data: CensusData) -> MapRegionData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> MapRegionData:
         return MapRegionData.from_census(data)
 
     async def get_connected(self) -> Set['MapRegion']:
@@ -191,7 +194,8 @@ class Region(Named, cache_size=100, cache_ttu=60.0):
     data: RegionData
     id_field = 'region_id'
 
-    def _build_dataclass(self, data: CensusData) -> RegionData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> RegionData:
         return RegionData.from_census(data)
 
     def map_region(self) -> InstanceProxy[MapRegion]:

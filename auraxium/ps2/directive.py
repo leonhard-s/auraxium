@@ -42,7 +42,8 @@ class DirectiveTreeCategory(Named, cache_size=10, cache_ttu=300.0):
     data: DirectiveTreeCategoryData
     id_field = 'directive_tree_category_id'
 
-    def _build_dataclass(self, data: CensusData) -> DirectiveTreeCategoryData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> DirectiveTreeCategoryData:
         return DirectiveTreeCategoryData.from_census(data)
 
     def trees(self) -> SequenceProxy['DirectiveTree']:
@@ -97,7 +98,8 @@ class DirectiveTree(Named, cache_size=30, cache_ttu=60.0):
     data: DirectiveTreeData
     id_field = 'directive_tree_id'
 
-    def _build_dataclass(self, data: CensusData) -> DirectiveTreeData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> DirectiveTreeData:
         return DirectiveTreeData.from_census(data)
 
     def category(self) -> InstanceProxy[DirectiveTreeCategory]:
@@ -173,7 +175,8 @@ class DirectiveTier(Named, cache_size=30, cache_ttu=60.0):
     data: DirectiveTierData
     id_field = 'directive_tier_id'
 
-    def _build_dataclass(self, data: CensusData) -> DirectiveTierData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> DirectiveTierData:
         return DirectiveTierData.from_census(data)
 
     def directives(self) -> SequenceProxy['Directive']:
@@ -239,7 +242,8 @@ class Directive(Named, cache_size=30, cache_ttu=60.0):
     data: DirectiveData
     id_field = 'directive_id'
 
-    def _build_dataclass(self, data: CensusData) -> DirectiveData:
+    @staticmethod
+    def _build_dataclass(data: CensusData) -> DirectiveData:
         return DirectiveData.from_census(data)
 
     def objectives(self) -> SequenceProxy[Objective]:
