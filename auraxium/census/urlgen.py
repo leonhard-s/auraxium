@@ -7,7 +7,12 @@ import yarl
 
 from .query import JoinedQuery, Query
 
-_REST_ENDPOINT = 'https://census.daybreakgames.com'
+__all__ = [
+    'generate_url',
+    'process_join',
+]
+
+REST_ENDPOINT = 'https://census.daybreakgames.com'
 
 
 def generate_url(query: Query, verb: str, validate: bool = True) -> yarl.URL:
@@ -15,13 +20,13 @@ def generate_url(query: Query, verb: str, validate: bool = True) -> yarl.URL:
 
     This will also recursively process any joined queries.
 
-    Args:
+    Arguments:
         query: The top-level query to process.
         verb: The query verb to use for the query.
         validate (optional): By default, the URL generator will perform
             a number of checks to validate the query, raising errors or
             warnings as necessary. Disabling this flag will skip the
-            checks. Defaults to True
+            checks. Defaults to ``True``.
 
     Returns:
         A yarl URL representing the query.
@@ -31,7 +36,7 @@ def generate_url(query: Query, verb: str, validate: bool = True) -> yarl.URL:
     # components.
 
     # Census endpoint
-    url = yarl.URL(_REST_ENDPOINT)
+    url = yarl.URL(REST_ENDPOINT)
     # Service ID
     url /= query.service_id
     if validate and query.service_id == 's:example':
@@ -65,11 +70,11 @@ def process_join(join: JoinedQuery, verbose: bool) -> str:
     This generates is the string that will be inserted into the
     URL. This will also recursively process any inner joins added.
 
-    Args:
+    Arguments:
         verbose(optional): By default, the serialisation will try
             to save space by omitting fields left at their default
             value. Set this flag to True to change that. Defaults
-            to False.
+            to ``False``.
 
     Returns:
         The string representation of the joined query.
@@ -113,10 +118,10 @@ def process_query_commands(query: Query,
 
     This also recursively processes any joins defined.
 
-    Args:
+    Arguments:
         query: The top-level query to process.
         validate (optional): Whether to perform checks on the query and
-            warn the user about bad arguments. Defaults to True.
+            warn the user about bad arguments. Defaults to ``True``.
 
     Returns:
         A dict of all query commands for the given query, this will be
@@ -191,7 +196,7 @@ def _process_sorts(sorts: Iterable[Union[str, Tuple[str, bool]]]) -> List[str]:
 
     This mostly handles the sorting direction tuples.
 
-    Args:
+    Arguments:
         sorts: The sorting values to process.
 
     Raises:
@@ -217,9 +222,9 @@ def _process_sorts(sorts: Iterable[Union[str, Tuple[str, bool]]]) -> List[str]:
 
 
 def _process_tree(tree: Dict[str, Optional[Union[str, bool]]]) -> str:
-    """Process the dict created by the Query.as_tree() method.
+    """Process the dict created by the :meth:`Query.as_tree()` method.
 
-    Args:
+    Arguments:
         tree: The mapping to process.
 
     Returns:

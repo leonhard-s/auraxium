@@ -3,11 +3,18 @@
 import enum
 from typing import Any, Dict, List, Optional, Tuple, TypedDict, Union
 
-CensusValue = Union[float, int, str]
+__all__ = [
+    'CensusValue',
+    'default_query_data',
+    'QueryData',
+    'SearchModifier',
+    'SearchTerm'
+]
 
+CensusValue = Union[float, int, str]
 # This list connects the string literals to the enum values. The index of the
 # list element must match the corresponding enum value.
-_conversion_list: List[str] = ['', '<', '[', '>', ']', '^', '*', '!']
+conversion_list: List[str] = ['', '<', '[', '>', ']', '^', '*', '!']
 
 
 class QueryData(TypedDict):
@@ -17,8 +24,8 @@ class QueryData(TypedDict):
     checkers to infer if the attributes passed are valid.
     """
     # NOTE: Typed dictionaries do not support default values. Those are
-    # specified in the default_query_data() method, which is called when
-    # instantiating this typed dict.
+    # specified in the default_query_data() method below, which is
+    # called when instantiating this typed dict.
 
     # These keys are shared between query commands and joins
     hide: List[str]
@@ -46,7 +53,7 @@ class SearchModifier(enum.Enum):
     Note that a given search modifier may not be valid for all fields.
 
     The following is a list of all search modifier literals and their
-    corresponding enum value:
+    corresponding enum value:::
 
         EQUAL_TO: '',               LESS_THAN: '<',
         LESS_THAN_OR_EQUAL: '[',    GREATER_THAN: '>',
@@ -73,9 +80,9 @@ class SearchModifier(enum.Enum):
         the corresponding SearchModifier enum value is returned.
 
         If the input is not a string or its first character does not
-        match any API literal, this will return EQUAL_TO.
+        match any API literal, this will return ``EQUAL_TO``.
 
-        Args:
+        Arguments:
             value: A value to infer the search modifier from.
 
         Returns:
@@ -87,7 +94,7 @@ class SearchModifier(enum.Enum):
             return cls(cls.EQUAL_TO)
         # For strings, return the corresponding enum value
         try:
-            return cls(_conversion_list.index(value[0]))
+            return cls(conversion_list.index(value[0]))
         except ValueError:
             return cls(cls.EQUAL_TO)
 
@@ -97,7 +104,7 @@ class SearchModifier(enum.Enum):
 
         This is mostly used during URL generation.
 
-        Args:
+        Arguments:
             enum_value: The enum value or index to serialise.
 
         Raises:
@@ -106,7 +113,7 @@ class SearchModifier(enum.Enum):
 
         Returns:
             The string representation of the search modifier. This will
-            be an empty string for SearchModifier.EQUAL_TO.
+            be an empty string for ``SearchModifier.EQUAL_TO``.
 
         """
         # Convert the enum value to an integer
@@ -115,7 +122,7 @@ class SearchModifier(enum.Enum):
         assert isinstance(enum_value, int)
         # Return the appropriate string literal
         try:
-            return _conversion_list[enum_value]
+            return conversion_list[enum_value]
         except IndexError as err:
             raise ValueError(f'Invalid enum value {enum_value}') from err
 
@@ -132,16 +139,16 @@ class SearchTerm:
         queries, as they do not have access to limiting mechanisms like
         Query, easily resulting in excessively long return lists.
 
-        Use the SearchTerm.infer() factory if you prefer defining
-        search modifiers via their string literals as used by the API,
-        rather than manually specifying the enum value.
+        Use the :meth:`SearchTerm.infer()` factory if you prefer
+        defining search modifiers via their string literals as used by
+        the API, rather than manually specifying the enum value.
 
-        Args:
+        Arguments:
             field: The field to compare.
             value: The value to compare the field against.
             modifier(optional): The search modifier to use. Modifiers
                 can be used to get non-exact or partial matches.
-                Defaults to SearchModifier.EQUAL_TO.
+                Defaults to ``SearchModifier.EQUAL_TO``.
 
         """
         self.field = field
@@ -151,8 +158,9 @@ class SearchTerm:
     def as_tuple(self) -> Tuple[str, str]:
         """Return a key/value pair representing the search term.
 
-        This is a helper function that calls SearchTerm.serialise() and
-        then splits the returned string at the equal sign.
+        This is a helper function that calls
+        :meth:`SearchTerm.serialise()` and then splits the returned
+        string at the equal sign.
 
         Returns:
             A key/value pair representing the search term.
@@ -167,14 +175,14 @@ class SearchTerm:
 
         This is a more natural way of defining search terms for users
         familiar with the API literals. See the docstring of the
-        SearchModifier enum for a list of search modifiers.
+        :class:`SearchModifier` enum for a list of search modifiers.
 
         Note that this requires the value to be a str instance; this
-        can obscure the actual field value(this is generally not of
+        can obscure the actual field value (this is generally not of
         concern as this information will be lost during URL generation
         regardless).
 
-        Args:
+        Arguments:
             field: The field to compare.
             value: The value to compare the field against. If a string,
                 it will be checked for a search modifier literal.
