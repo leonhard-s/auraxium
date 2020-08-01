@@ -90,7 +90,7 @@ import auraxium
 async def main():
     with auraxium.Client() as client:
 
-        item = await client.get(Item, name__en='*Pulsar')
+        item = await client.get(auraxium.ps2.Item, name__en='*Pulsar')
         # Get a list of classes that can use this item
         users = [p.data.description for p in await item.profiles()]
         users_str = ', '.join(users[:-1]) + ', and ' + users[-1]
