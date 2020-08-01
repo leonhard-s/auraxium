@@ -266,7 +266,7 @@ class Trigger:
         if self.action is None:
             warnings.warn(f'Trigger {self} run with no action specified')
             return
-        if asyncio.iscoroutine(self.action):
+        if asyncio.iscoroutinefunction(self.action):
             await self.action(event)
         else:
             self.action(event)
