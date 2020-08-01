@@ -1,24 +1,27 @@
+"""Package deployment script."""
+
 import setuptools
 
+with open('README.md') as readme:
+    long_description = readme.read()
+
 setuptools.setup(name='auraxium',
-                 version='0.0.3',
+                 version='0.1.0a1',
                  author='Leonhard S.',
-                 author_email='leonhard-s@users.noreply.github.com',
+                 author_email='leonhard-sei@outlook.com',
                  description='A python wrapper for the PlanetSide 2 Census API.',
-                 long_description=('# Auraxium\n\nA Python wrapper meant to facilitate the '
-                                   'use of the [Daybreak Game Company Census API]'
-                                   '(https://census.daybreakgames.com/).'),
+                 long_description=long_description,
                  long_description_content_type='text/markdown',
                  keywords='auraxium python daybreak census planetside ps2',
                  url='https://github.com/leonhard-s/auraxium',
                  packages=setuptools.find_packages(),
                  classifiers=['Development Status :: 3 - Alpha',
-                              'Programming Language :: Python :: 3',
+                              'Programming Language :: Python :: 3.8',
                               'License :: OSI Approved :: MIT License',
                               'Operating System :: OS Independent'],
                  install_requires=[
-                     'requests >= 2.21.0',
-                     'websockets >= 3.1'
+                     'aiohttp',
+                     'yarl'
                  ],
                  license='MIT',
                  include_package_data=True,
