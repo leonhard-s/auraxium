@@ -56,8 +56,6 @@ class EventType(enum.IntEnum):
     FACILITY_CONTROL = 32
     METAGAME_EVENT = 33
 
-    ...
-
     @classmethod
     def from_event_name(cls, event_name: str) -> 'EventType':
         """Return the appropriate enum value for the given name.
