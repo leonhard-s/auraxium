@@ -18,7 +18,8 @@ It provides a simple object model that can be used by players and outfits withou
   - [Boilerplate Code](#boilerplate-code)
 - [Usage](#usage)
   - *Under construction*
-- [Alternatives]
+- [Object Model Alternatives](#object-model-alternatives)
+- [Contributing](#contributing)
 
 ## Overview
 
