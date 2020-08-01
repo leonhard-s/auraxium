@@ -21,7 +21,8 @@ setuptools.setup(name='auraxium',
                               'Operating System :: OS Independent'],
                  install_requires=[
                      'aiohttp',
-                     'yarl'
+                     'yarl',
+                     'websockets'
                  ],
                  license='MIT',
                  include_package_data=True,
