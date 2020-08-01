@@ -1,84 +1,156 @@
 # <img src="assets/icon_256.png" align="left" height="140"/>Auraxium
 
-Auraxium is a Python wrapper for the [Daybreak Game Company Census API](https://census.daybreakgames.com/). While its core components have been designed to work with any title using the Census API syntax, it is mainly being developed and tested with [PlanetSide 2](https://www.planetside2.com/) in mind.
+Auraxium is an object-oriented, pure-Python wrapper for the [PlanetSide 2](https://www.planetside2.com/) API.\
+It provides a simple object model that can be used by players and outfits without requiring deep knowledge of the API and its idiosyncrasies.
 
 ***
 
+- Clean, Pythonic API.
+- Asynchronous endpoints keep apps **responsive** during high API load
+- Low-level interface for more optimised, custom queries.
+- User-configurable **caching** system.
+- Fully type annotated.
+
+## Table of Contents
+
+- [Overview](#overview)
+- [Getting Started](#getting-started)
+    - [Boilerplate Code](#boilerplate-code)
+- [Usage](#usage)
+    - *Under construction*
+- [Alternatives]
+
+
 ## Overview
 
-Auraxium's goal is to facilitate the use of the API without compromising functionality. This is achieved by first instantiating an object representing the query to perform, which then generates the URL required.
+The [Census API](https://census.daybreakgames.com/) used by PlanetSide 2 is powerful, but its design also carries a steep learning curve that makes a lot of basic API interactions rather tedious.
 
-This functionality is available for all games that support the original Census API.
+Auraxium streamlines this by hiding the game-agnostic queries behind an object model specific to PlanetSide 2. Whenever data is accessed that is not currently loaded, the library dynamically generates and performs the necessary queries in the background before resuming execution.
 
-For PlanetSide 2, it additionaly provides <!--[an object-oriented interface](#object-model) as well as -->a client for the PlanetSide 2 [Event Streaming Service](https://census.daybreakgames.com/#what-is-websocket) (ESS).
+All queries that may incur network traffic and latency are asynchronous, which keeps multi-user applications - such as Discord bots - responsive.
 
-## How to use
+## Getting Started
 
-This section provides basic usage examples for the API wrapper. For a proper how-to and detailed examples, check out to [the Auraxium wiki](https://github.com/leonhard-s/auraxium/wiki) instead. The following snippets are only meant to showcase the syntax.
+All API interactions are performed through the [`auraxium.Client`](#) object. It is the main endpoint used to interact with the API and contains a number of essential references, like the current event loop, the connection pool, or the unique service ID used to identify your app.
 
-**Note:** Testing for namespaces other than `ps2` (i.e. PlanetSide 2, PC version) has been either extremely basic or simply non-existant. If you would like to expand the current tests to cover other games or namespaces, [do feel free to contribute](#contributing).
+> **Regarding service IDs:** You can use the default value of `s:example` for testing, but you may run into rate limiting issues if your app generates more than 5-6 queries a minute.
+>
+> You can apply for your custom service ID [here](https://census.daybreakgames.com/#devSignup); the process is free and you usually hear back within a few hours.
 
-### Basic requests
+Some of these references are also required for any queries carried out behind the scenes, so the client object is also handed around behind the scenes; be mindful when updating them as this may cause issues with ongoing background queries.
 
-Requests are defined by instantiating a `Query` object and passing it the collection to access, as well as the game namespace to use, like `ps2`, `dcuo` or `eq2`.
+### Boilerplate code
 
-Any remaining keyword arguments will be interpreted as field/value pairs to pass to the query. To generate the URL and retrieve the response, use the `Query.get()` method.
+The aforementioned `auraxium.Client` object must be closed using the `auraxium.Client.close()` method before it is destroyed to avoid issues.
 
-```py
-import auraxium
-
-# Retrieve and print the PlanetSide 2 weapon with the ID "22"
-my_query = auraxium.Query('weapon', namespace='ps2', weapon_id='22')
-print(my_query.get())
-```
-
-**Note:** Double-underscores will be interpreted as dots, which can be used to access subkeys in your queries. See the next section for an example.
-
-### Query commands
-
-Query commands like `c:sort` or `c:join` are represented through methods of the `Query` object.
-
-To illustrate, the following is a compound query that retrieves a weapon by name, which requires two nested joins to achieve in a single request:
+Alternatively, you can use the context manager interface to automatically close it when leaving the block:
 
 ```py
 import auraxium
 
-# Get the weapon's item by name
-my_query = auraxium.Query('item', namespace='ps2', name__en='^Orion')
-# Attach the intermediate query to the item
-my_join = my_query.join('item_to_weapon', on='item_id', to='weapon_id')
-# Attach an inner query to the intermediate one
-my_join.join('weapon', on='weapon_id', to='weapon_id')
-# Generate the URL and return the response
-print(my_query.get())
+with auraxium.Client() as client:
+    # Your code here
 ```
 
-<!--
-## Object model
+Since Auraxium is an asynchronous library, we also need to wrap our code in a coroutine to be able to use the `async` keyword.
 
-This submodule provides an object-oriented access point where Queries are mostly happening in the background. This is especially useful for cases where a user needs to browse the game data without being familiar with the API and its collections.
-
-Currently, this is only implemented for PlanetSide 2.
-
-**Example:**
+This gives us the following snippet:
 
 ```py
+import asyncio
 import auraxium
-from auraxiumm.object_models import ps2
 
-# Get a character by name (case-insensitive by default)
-my_char = ps2.Character.get_by_name('auroram')
+async def main():
+    with auraxium.Client() as client:
+        # Your code here
 
-# Return various attributes of the character
-print('Name: ' + my_char.name)
-print('Server: ' + my_char.world.name.en)
+asyncio.run_until_complete(main())
 ```
 
-In this example, `my_char.name` access the `name_first` field of the character whereas `my_char.world.name.en` returns the English localization of the server name, which has been quietly retrieved in the background.
--->
+With that, the stage is set for some actual code.
+
+## Usage
+
+The game-specific object representations for PlanetSide 2 can be found in the `auraxium.ps2` sub module. Common ones include `Character`, `Outfit`, or `Item`.
+
+> **Note:** The original data used to build a given object representation is always available via that object's `.data` attribute, which will be a type-hinted, [named tuple](https://docs.python.org/3/library/collections.html#collections.namedtuple).
+
+A lot of object representations are linked through methods. For example, you can use `Weapon.item()` to retrieve the item data for a given weapon, or `Item.weapon()` to get back to the associated weapon.
+
+### Under Construction
+
+This project is still undergoing development, and a lot of features and endpoints are not yet implemented.
+
+Take this final snippet for inspiration and refer to source code introspection for details:
+
+```py
+import asyncio
+import auraxium
+
+async def main():
+    with auraxium.Client() as client:
+
+        item = await client.get(Item, name__en='*Pulsar')
+        # Get a list of classes that can use this item
+        users = [p.data.description for p in await item.profiles()]
+        users_str = ', '.join(users[:-1]) + ', and ' + users[-1]
+        category = (await item.category()).data.name.en
+        print(f'The {item.name()} is a(n) {category} usable by {users_str}.')
+
+asyncio.run_until_complete(main())
+```
+
+## Object Model Alternatives
+
+For some users or applications, Auraxium's object model may be a bad fit, like for highly nested, complex queries or for users that are already familiar with the Census API.
+
+Here are a few Python alternatives for these cases:
+
+- The URL generator used by Auraxium to generate the queries for the object model can also be used on its own.
+
+    This still requires *some* understanding of the Census API data model, but takes away the syntactic pitfalls involved.
+
+    It only generates queries, so you will have to pick your own flavour of HTTP library (like [requests](https://requests.readthedocs.io/en/master/) or [aiohttp](https://docs.aiohttp.org/en/stable/)) to make the queries.
+
+    ```py
+    """Usage example for the auraxium.census module."""
+    from auraxium import census
+
+    query = census.Query('character', service_id='s:example')
+    query.add_term('name.first_lower', 'auroram')
+    query.limit(20)
+    join = query.create_join('characters_online_status')
+    url = str(query.url())
+
+    print(url)
+    # https://census.daybreakgames.com/s:example/get/ps2:v2/character?c:limit=20&c:join=characters_online_status
+    ```
+
+    Refer to the [census module documentation](#) for details.
+
+- For an even simpler syntax, you can check out [spascou/ps2-census](https://github.com/spascou/ps2-census), which was inspired by an earlier version of Auraxium.
+
+    It too sticks closely to the original Census API, but also provides methods for retrieving the queried data.
+    
+    It also features a query factory system that allows creation of common queries from templates.
+
+    ```py
+    """Usage example for spascou's ps2-census module."""
+    import ps2_census as ps2
+
+    query = ps2.Query(ps2.Collection.CHARACTER, service_id='s:example')
+    query.filter('name.first_lower', 'auroram')
+    query.limit(20)
+    query.join(ps2.Join(ps2.Collection.CHARACTERS_ONLINE_STATUS))
+
+    print(query.get())
+    # {'character_list': [...], 'returned': 1}
+    ```
+
+    Refer to the [ps2-census documentation](https://github.com/spascou/ps2-census#query-building) for details.
+
 ## Contributing
 
-If you found a bug or would like to suggest a new feature, feel free to [create an issue](https://github.com/leonhard-s/auraxium/issues).
+If you have found a bug or would like to suggest a new feature or change, feel free to get in touch via the [repository issues](https://github.com/leonhard-s/auraxium/issues).
 
-That said, while I am passionate about this project, the amount of time I can dedicate to it is limited.
-So if you are the coding type, feel free to just [fork away](https://github.com/leonhard-s/auraxium/fork) and see how things go. :blush:
+Please check out [CONTRIBUTING.md](https://github.com/leonhard-s/auraxium/blob/master/CONTRIBUTING.md) before opening any pull requests for details.
