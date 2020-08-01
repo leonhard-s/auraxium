@@ -1,12 +1,23 @@
-"""The auraxium wrapper module for the DBG census API.
+"""A Python wrapper for the PlanetSide 2 API.
 
-For usage instructions and additional information, visit
-https://github.com/leonhard-s/auraxium/.
+This module provides an intuitive, object-oriented interface for using
+the Census API. It targets interactive or medium traffic use-cases such
+as Discord bots, player and outfit trackers, or aggregation of
+historical data for AI purposes.
+
+This is explicitly not targeting higher traffic use cases like website
+back-ends, experiment at your own risk.
+
+For additional information, bug reports or feature requests, visit the
+project's repository at https://github.com/leonhard-s/auraxium.
 """
 
-from .census import SearchModifier
-from .query import Query
-from . import ess, utils
+from . import census
+from . import errors
+from .client import Client
+from .ps2 import Character, Faction, Item, Weapon
 
-namespace = 'ps2:v2'
-service_id = 'example'
+__all__ = ['census', 'Client', 'Character', 'errors', 'Faction', 'Item', 'ps2',
+           'Weapon']
+__author__ = 'Leonhard S.'
+__version__ = '0.1.0a0'
