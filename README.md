@@ -15,11 +15,10 @@ It provides a simple object model that can be used by players and outfits withou
 
 - [Overview](#overview)
 - [Getting Started](#getting-started)
-    - [Boilerplate Code](#boilerplate-code)
+  - [Boilerplate Code](#boilerplate-code)
 - [Usage](#usage)
-    - *Under construction*
+  - *Under construction*
 - [Alternatives]
-
 
 ## Overview
 
@@ -31,7 +30,7 @@ All queries that may incur network traffic and latency are asynchronous, which k
 
 ## Getting Started
 
-All API interactions are performed through the [`auraxium.Client`](#) object. It is the main endpoint used to interact with the API and contains a number of essential references, like the current event loop, the connection pool, or the unique service ID used to identify your app.
+All API interactions are performed through the `auraxium.Client` object. It is the main endpoint used to interact with the API and contains a number of essential references, like the current event loop, the connection pool, or the unique service ID used to identify your app.
 
 > **Regarding service IDs:** You can use the default value of `s:example` for testing, but you may run into rate limiting issues if your app generates more than 5-6 queries a minute.
 >
@@ -126,12 +125,12 @@ Here are a few Python alternatives for these cases:
     # https://census.daybreakgames.com/s:example/get/ps2:v2/character?c:limit=20&c:join=characters_online_status
     ```
 
-    Refer to the [census module documentation](#) for details.
+    Refer to the [census module documentation](https://auraxium.readthedocs.io/en/latest/) for details.
 
 - For an even simpler syntax, you can check out [spascou/ps2-census](https://github.com/spascou/ps2-census), which was inspired by an earlier version of Auraxium.
 
     It too sticks closely to the original Census API, but also provides methods for retrieving the queried data.
-    
+
     It also features a query factory system that allows creation of common queries from templates.
 
     ```py
