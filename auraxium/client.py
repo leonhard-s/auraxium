@@ -3,6 +3,7 @@
 import asyncio
 import contextlib
 import json
+import logging
 from typing import Any, List, Literal, Optional, Type, TYPE_CHECKING, TypeVar
 from types import TracebackType
 
@@ -21,6 +22,7 @@ __all__ = ['Client']
 
 NamedT = TypeVar('NamedT', bound='Named')
 Ps2ObjectT = TypeVar('Ps2ObjectT', bound='Ps2Object')
+log = logging.getLogger('auraxium.client')
 
 
 class Client:
@@ -82,10 +84,12 @@ class Client:
             trigger: The trigger to add.
 
         """
+        log.debug('Adding trigger %s', trigger)
         self._triggers.append(trigger)
         subscription = trigger.generate_subscription()
         self._ws_send_queue.append(subscription)
         if self._ws is None:
+            log.debug('Websocket not connected, scheduling connection')
             self.loop.create_task(self._ws_connect())
 
     def remove_trigger(self, trigger: Trigger) -> None:
@@ -95,14 +99,16 @@ class Client:
             trigger: The trigger to remove.
 
         """
+        log.debug('Removing trigger %s', trigger)
         with contextlib.suppress(ValueError):
             self._triggers.remove(trigger)
         if not self._triggers:
-            print('No more triggers, discarding websocket')
+            log.info('All triggers have been removed, closing websocket')
             self.loop.create_task(self._ws_close())
 
     async def close(self) -> None:
         """Shut down the client."""
+        log.info('Shutting down client')
         await self._ws_close()
         await self.session.close()
 
@@ -257,18 +263,18 @@ class Client:
         if self._ws_connected:
             self._ws_connected = False
             if self._ws is not None and self._ws.open:
-                code = await self._ws.close()
-                print(f'websocket closed with code {code}')
+                await self._ws.close()
 
     async def _ws_connect(self) -> None:
         if self._ws is not None:
-            print('Websocket already running!')
+            log.warning('A websocket connection is already open, closing...')
             await self._ws.close()
-        print('Starting websocket...')
+        log.info('Connecting to websocket endpoint...')
         self._ws_connected = True
 
         url = f'{ESS_ENDPOINT}?environment=ps2&service-id={self.service_id}'
         async with websockets.connect(url) as websocket:
+            log.info('Connected')
             self._ws = websocket
             # This loop will go on until the "close" method is called.
             while self._ws_connected:
@@ -279,15 +285,14 @@ class Client:
                     except asyncio.TimeoutError:
                         if self._ws_send_queue:
                             msg = self._ws_send_queue.pop(0)
-                            print(msg)
+                            log.info('Sending message: %s', msg)
                             await self._ws.send(msg)
                     else:
+                        log.debug('Received response: %s', response)
                         self._ws_process_response(response)
                 except websockets.exceptions.ConnectionClosed as err:
-                    print('Restarting event steam')
-                    # Print the error and attempt to reconnect
-                    print(err)
-                    await self.close()
+                    log.warning('Connection was closed, reconnecting: %s', err)
+                    await self._ws_close()
                     await self._ws_connect()
                     return
 
@@ -305,14 +310,14 @@ class Client:
         # When the ESS sees a subscription message, it echos it back to confirm the subscription
         # has been registered.
         if 'subscription' in data:
-            print('Subscription echo: {}'.format(data))
+            log.debug('Subscription echo: %s', data)
             return
         # Heartbeat
         # For as long as the connection is alive, the server will broadcast the status for all of
         # the API endpoints. While technically a service message, it is filtered out here to keep
         # things tidy.
         if data['service'] == 'event' and data['type'] == 'heartbeat':
-            print('(Heartbeat received)')
+            log.debug('Heartbeat received')
             return
 
         # Event messages
@@ -320,10 +325,10 @@ class Client:
             event = Event(data['payload'])
             # Check for appropriate triggers
             for trigger in self._triggers:
-                print(f'Checking trigger {trigger}')
+                log.debug('Checking trigger %s', trigger)
                 if trigger.check(event):
-                    print(f'Scheduling trigger {trigger}')
+                    log.info('Scheduling trigger %s', trigger)
                     self.loop.create_task(trigger.run(event))
                     if trigger.single_shot:
+                        log.info('Removing single-shot trigger %s', trigger)
                         self.remove_trigger(trigger)
-                        print(f'Removed trigger {trigger}')
