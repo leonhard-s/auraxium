@@ -37,11 +37,11 @@ All queries that may incur network traffic and latency are asynchronous, which k
 
 ## Getting Started
 
-All API interactions are performed through the `auraxium.Client` object. It is the main endpoint used to interact with the API and contains a number of essential references, like the current event loop, the connection pool, or the unique service ID used to identify your app.
+All API interactions are performed through the `auraxium.Client` object. It is the main endpoint used to interact with the API and contains a few essential references, like the current event loop, the connection pool, or the unique service ID used to identify your app.
 
 > **Regarding service IDs:** You can use the default value of `s:example` for testing, but you may run into rate limiting issues if your app generates more than 5-6 queries a minute.
 >
-> You can apply for your custom service ID [here](https://census.daybreakgames.com/#devSignup); the process is free and you usually hear back within a few hours.
+> You can apply for your custom service ID [here](https://census.daybreakgames.com/#devSignup); the process is free, and you usually hear back within a few hours.
 
 Some of these references are also required for any queries carried out behind the scenes, so the client object is also handed around behind the scenes; be mindful when updating them as this may cause issues with ongoing background queries.
 
@@ -49,7 +49,7 @@ Some of these references are also required for any queries carried out behind th
 
 The aforementioned `auraxium.Client` object must be closed using the `auraxium.Client.close()` method before it is destroyed to avoid issues.
 
-Alternatively, you can use the asyncronous context manager interface to automatically close it when leaving the block:
+Alternatively, you can use the asynchronous context manager interface to automatically close it when leaving the block:
 
 ```py
 import auraxium
@@ -83,9 +83,9 @@ The game-specific object representations for PlanetSide 2 can be found in the `a
 
 ### Retrieving Data
 
-The `auraxium.Client` class exposes a number of methods used to access the REST API data, like `Client.get()`, used to return a single match, or `Client.find()`, used to return a list of matching entries.
+The `auraxium.Client` class exposes several methods used to access the REST API data, like `Client.get()`, used to return a single match, or `Client.find()`, used to return a list of matching entries.
 
-There are also a number of utility methods, like `Client.get_by_id()` and `Client.get_by_name()`. They behave much like the more general `Client.get()`, but are cached to provide better performance for common look-ups.
+It also provides some utility methods, like `Client.get_by_id()` and `Client.get_by_name()`. They behave much like the more general `Client.get()` but are cached to provide better performance for common lookups.
 
 This means that repeatedly accessing an object through `.get_by_id()` will only generate network traffic once, after which it is retrieved from cache (refer to the [Caching](#caching) section for more information).
 
@@ -143,13 +143,13 @@ The events available are stored in the `auraxium.EventType` enumerator. See [her
 
 #### Conditions
 
-Trigger conditions are simply a series of callable or values that must be True for the event to trigger the associated action.
+Trigger conditions are just a series of callable or values that must be True for the event to trigger the associated action.
 
 This is useful if you have a commonly encountered event (like `EventType.DEATH`) and would like your action to only run if the event data matches some other requirement (for example "the killing player must be part of my outfit").
 
 #### Action
 
-The action is simply a method or function that will be run when the event fires and all conditions evaluate to True.
+The trigger's action is a method or function that will be run when the event fires and all conditions evaluate to True.
 
 If the action is a coroutine according to [`asyncio.iscoroutinefunction()`](https://docs.python.org/3/library/asyncio-task.html#asyncio.iscoroutinefunction), it will be awaited.
 
@@ -169,7 +169,7 @@ async def example_action(event: Event) -> None:
 
 The easiest way to register a trigger to the client is via the `auraxium.Client.trigger()` decorator. It takes the event/s to listen for as the arguments and creates a trigger using the decorated function as the trigger action.
 
-> **Important:** Keep in mind that the websocket connection will be contiguously looping, waiting for new events to come in.
+> **Important:** Keep in mind that the websocket connection will be continuously looping, waiting for new events to come in.
 >
 > This means that using `auraxium.Client()` as a context manager may cause issues since the context manager will close the connection when the context manager is exited.
 
@@ -191,7 +191,7 @@ async def main():
         char = await client.get_by_id(ps2.Character, char_id)
 
         # NOTE: This value is likely different from char.data.battle_rank as
-        # the REST API tends to lag behind the event stream by a few minutes.
+        # the REST API tends to lag by a few minutes.
         new_battle_rank = int(event.payload['battle_rank'])
 
         print(f'{await char.name_long()} has reached BR {new_battle_rank}!')
@@ -202,11 +202,11 @@ loop.run_forever()
 
 ## Technical Details
 
-The following section contains more detailed implementation details for those who want to know; it is safe to ignore if you're just getting stared.
+The following section contains more detailed implementation details for those who want to know; it is safe to ignore if you are only getting started.
 
 ### Object Hierarchy
 
-All classes in the Auraxium object model inherit from `Ps2Object`. It defines the API table and ID field to use for generic queries, and also implements methods like `.get()` or `.find()`.
+All classes in the Auraxium object model inherit from `Ps2Object`. It defines the API table and ID field to use for generic queries and implements methods like `.get()` or `.find()`.
 
 These are the methods called by the corresponding methods in `auraxium.Client` and allow customisation of the generated queries. This lets subclasses customise the query generation; `auraxium.ps2.Character` for example uses the heavily indexed `'single_character_by_id'` collection for `.get_by_id()`, rather than the default, `'character'`.)
 
@@ -220,9 +220,9 @@ See the [Caching](#caching) section for details on the caching system.
 
 #### Named Objects
 
-Named objects are based off the `Named` class and always cached. This base class adds the `.name(locale='en')` method, and also modified the `.get_by_name()` method to use its own cache.
+Named objects are based off the `Named` class and always cached. This base class adds the `.name(locale='en')` method and overwrites the `.get_by_name()` method to use its own, modified cache.
 
-This caching strategy is similar to the one used for IDs, except that it uses a string constructed of the lowercase name and locale identifier to store objects (e.g. `'en_sunderer'`).
+This caching strategy is almost identical to the one used for IDs, except that it uses a string constructed of the lowercase name and locale identifier to store objects (e.g. `'en_sunderer'`).
 
 ### Caching
 
@@ -237,11 +237,11 @@ The LRU side of things is implemented via an [`collections.OrderedDict`](https:/
 
 ### Network Connections
 
-For as long as it is active, the `auraxium.Client` object will always have a [`aiohttp.ClientSession`](https://docs.aiohttp.org/en/stable/client_reference.html#aiohttp.ClientSession) running in case the REST API has to be accessed.
+For as long as it is active, the `auraxium.Client` object will always have a [`aiohttp.ClientSession`](https://docs.aiohttp.org/en/stable/client_reference.html#aiohttp.ClientSession) running in case the REST API must be accessed.
 
-The websocket connection, which is required for event streaming, is only active as long as there are triggers registered and active.
+The websocket connection, which is required for event streaming, is only active when there are triggers registered and active.
 
-If the last trigger is removed, the websocket connection is quietly closed after a delay. If a new trigger is added, it will automatically recreated in the background.
+If the last trigger is removed, the websocket connection is quietly closed after a delay. If a new trigger is added, it will automatically be recreated in the background.
 
 ## Object Model Alternatives
 
@@ -251,7 +251,7 @@ Here are a few Python alternatives for these cases:
 
 - The URL generator used by Auraxium to generate the queries for the object model can also be used on its own.
 
-    This still requires *some* understanding of the Census API data model, but takes away the syntactic pitfalls involved.
+    This still requires *some* understanding of the Census API data model but takes away the syntactic pitfalls involved.
 
     It only generates queries, so you will have to pick your own flavour of HTTP library (like [requests](https://requests.readthedocs.io/en/master/) or [aiohttp](https://docs.aiohttp.org/en/stable/)) to make the queries.
 
