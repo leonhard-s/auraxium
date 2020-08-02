@@ -20,4 +20,4 @@ from .ps2 import Character, Faction, Item, Weapon
 __all__ = ['census', 'Client', 'Character', 'errors', 'Faction', 'Item', 'ps2',
            'Weapon']
 __author__ = 'Leonhard S.'
-__version__ = '0.1.0a0'
+__version__ = '0.1.0a1'

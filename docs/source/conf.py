@@ -16,11 +16,13 @@ import sys
 
 sys.path.insert(0, os.path.abspath('../..'))
 
+
 # -- Project information -----------------------------------------------------
 
 project = 'Auraxium'
 copyright = '2020, Leonhard S.'
 author = 'Leonhard S.'
+version = '0.1.0a1'
 
 
 # -- General configuration ---------------------------------------------------
