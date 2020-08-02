@@ -15,9 +15,10 @@ project's repository at https://github.com/leonhard-s/auraxium.
 from . import census
 from . import errors
 from .client import Client
+from .event import Event, EventType, Trigger
 from .ps2 import Character, Faction, Item, Weapon
 
-__all__ = ['census', 'Client', 'Character', 'errors', 'Faction', 'Item', 'ps2',
-           'Weapon']
+__all__ = ['census', 'Client', 'Character', 'errors', 'Event', 'EventType',
+           'Faction', 'Item', 'ps2', 'Trigger', 'Weapon']
 __author__ = 'Leonhard S.'
 __version__ = '0.1.0a1'

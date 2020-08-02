@@ -17,7 +17,12 @@ It provides a simple object model that can be used by players and outfits withou
 - [Getting Started](#getting-started)
   - [Boilerplate Code](#boilerplate-code)
 - [Usage](#usage)
-  - *Under construction*
+  - [Retrieving Data](#retrieving-data)
+  - [Event Streaming](#event-streaming)
+- [Technical Details](#technical-details)
+  - [Object Hierarchy](#object-hierarchy)
+  - [Caching](#caching)
+  - [Network Connections](#network-connections)
 - [Object Model Alternatives](#object-model-alternatives)
 - [Contributing](#contributing)
 
@@ -71,34 +76,171 @@ With that, the stage is set for some actual code.
 
 ## Usage
 
-The game-specific object representations for PlanetSide 2 can be found in the `auraxium.ps2` sub module. Common ones include `Character`, `Outfit`, or `Item`.
+The game-specific object representations for PlanetSide 2 can be found in the `auraxium.ps2` submodule. Common ones include `ps2.Character`, `ps2.Outfit`, or `ps2.Item`.
 
 > **Note:** The original data used to build a given object representation is always available via that object's `.data` attribute, which will be a type-hinted, [named tuple](https://docs.python.org/3/library/collections.html#collections.namedtuple).
 
-A lot of object representations are linked through methods. For example, you can use `Weapon.item()` to retrieve the item data for a given weapon, or `Item.weapon()` to get back to the associated weapon.
+### Retrieving Data
 
-### Under Construction
+The `auraxium.Client` class exposes a number of methods used to access the REST API data, like `Client.get()`, used to return a single match, or `Client.find()`, used to return a list of matching entries.
 
-This project is still undergoing development, and a lot of features and endpoints are not yet implemented.
+There are also a number of utility methods, like `Client.get_by_id()` and `Client.get_by_name()`. They behave much like the more general `Client.get()`, but are cached to provide better performance for common look-ups.
 
-Take this final snippet for inspiration and refer to source code introspection for details:
+This means that repeatedly accessing an object through `.get_by_id()` will only generate network traffic once, after which it is retrieved from cache (refer to the [Caching](#caching) section for more information).
+
+Here is the above boilerplate code again, this time with a simple script that prints various character properties:
 
 ```py
 import asyncio
 import auraxium
+from auraxium import ps2
 
 async def main():
     with auraxium.Client() as client:
 
-        item = await client.get(auraxium.ps2.Item, name__en='*Pulsar')
-        # Get a list of classes that can use this item
-        users = [p.data.description for p in await item.profiles()]
-        users_str = ', '.join(users[:-1]) + ', and ' + users[-1]
-        category = (await item.category()).data.name.en
-        print(f'The {item.name()} is a(n) {category} usable by {users_str}.')
+        char = await client.get_by_name(ps2.Character, 'auroram')
+        print(char.name())
+        print(character.data.asp_rank)
+
+        # NOTE: Any methods that might incur network traffic are asynchronous.
+        # If the data type has been cached locally, no network communication
+        # is required.
+
+        # This will only generate a request once per faction, as the faction
+        # data type is cached forever by default.
+        print(await char.faction())
+
+        # The outfit data type is only cached for a few seconds before being
+        # requeried as it might change.
+        outfit = await char.outfit()
+        print(outfit.name())
 
 asyncio.run_until_complete(main())
 ```
+
+## Event Streaming
+
+In addition to the REST interface wrapped by Auraxium's object model, PlanetSide 2 also exposes an event stream that can be used to react to in-game events in next to real time.
+
+This can be used to track outfit member performance, implement your own stat tracker, or monitor server population.
+
+The Auraxium client supports this endpoint through a trigger/action system.
+
+### Triggers
+
+To receive data through the event stream, you must define a trigger. A trigger is made up of three things:
+
+- One or more **events** that tells it to wake up
+- Any number of **conditions** that decide whether to run or not
+- An **action** that is will be run if the conditions are met
+
+#### Events
+
+The events available are stored in the `auraxium.EventType` enumerator. See [here](http://census.daybreakgames.com/#what-is-websocket) for details on when these events fire.
+
+> **Note:** Some events, like `ContinentUnlock`, are currently broken on Daybreak's side. Do your own tests before investing too much time, things break a lot with the event streaming API.
+
+#### Conditions
+
+Trigger conditions are simply a series of callable or values that must be True for the event to trigger the associated action.
+
+This is useful if you have a commonly encountered event (like `EventType.DEATH`) and would like your action to only run if the event data matches some other requirement (for example "the killing player must be part of my outfit").
+
+#### Action
+
+The action is simply a method or function that will be run when the event fires and all conditions evaluate to True.
+
+If the action is a coroutine according to [`asyncio.iscoroutinefunction()`](https://docs.python.org/3/library/asyncio-task.html#asyncio.iscoroutinefunction), it will be awaited.
+
+The only argument passed to the function set as the trigger action is the event received:
+
+```py
+async def example_action(event: Event) -> None:
+    """Example function to showcase the signature used for actions.
+
+    Keep in mind that this could also be a regular function (i.e. one
+    defined without the "async" keyword).
+    """
+    # Do stuff here
+```
+
+### Registering Triggers
+
+The easiest way to register a trigger to the client is via the `auraxium.Client.trigger()` decorator. It takes the event/s to listen for as the arguments and creates a trigger using the decorated function as the trigger action.
+
+> **Important:** Keep in mind that the websocket connection will be contiguously looping, waiting for new events to come in.
+>
+> This means that using `auraxium.Client()` as a context manager may cause issues since the context manager will close the connection when the context manager is exited.
+
+```py
+import asyncio
+import auraxium
+from auraxium import ps2
+
+loop = asyncio.get_event_loop()
+
+async def main():
+    # NOTE: Depending on player activity, this script will likely exceed the
+    # ~6 requests per minute and IP address limit for the default service ID.
+    client = auraxium.Client(service_id='s:example')
+
+    @client.trigger(auraxium.EventType.BATTLE_RANK_UP)
+    async def print_levelup(event):
+        char_id = int(event.payload['character_id'])
+        char = await client.get_by_id(ps2.Character, char_id)
+
+        # NOTE: This value is likely different from char.data.battle_rank as
+        # the REST API tends to lag behind the event stream by a few minutes.
+        new_battle_rank = int(event.payload['battle_rank'])
+
+        print(f'{await char.name_long()} has reached BR {new_battle_rank}!')
+
+loop.create_task(main())
+loop.run_forever()
+```
+
+## Technical Details
+
+The following section contains more detailed implementation details for those who want to know; it is safe to ignore if you're just getting stared.
+
+### Object Hierarchy
+
+All classes in the Auraxium object model inherit from `Ps2Object`. It defines the API table and ID field to use for generic queries, and also implements methods like `.get()` or `.find()`.
+
+These are the methods called by the corresponding methods in `auraxium.Client` and allow customisation of the generated queries. This lets subclasses customise the query generation; `auraxium.ps2.Character` for example uses the heavily indexed `'single_character_by_id'` collection for `.get_by_id()`, rather than the default, `'character'`.)
+
+#### Cache Objects
+
+Cached objects are based off the `Cached` class, which mostly overrides the `.get_by_id()` method to check the class-specific cache for matching instances before falling back to the regular implementation.
+
+It also adds methods for updating the class cache settings at runtime.
+
+See the [Caching](#caching) section for details on the caching system.
+
+#### Named Objects
+
+Named objects are based off the `Named` class and always cached. This base class adds the `.name(locale='en')` method, and also modified the `.get_by_name()` method to use its own cache.
+
+This caching strategy is similar to the one used for IDs, except that it uses a string constructed of the lowercase name and locale identifier to store objects (e.g. `'en_sunderer'`).
+
+### Caching
+
+Auraxium uses timed least-recently-used (TLRU) caches for its objects.
+
+They have a size constraint (i.e. how many objects may be cached at any given time), as well as a maximum age per item (referred to as TTU, "time-to-use"). The TTU is used to ensure frequently used items are updated occasionally and not too far out of date.
+
+When new items are added to the cache, it first removes any expired items (i.e. `time_added - now > ttu`).
+It then removes as many least-recently-used items as necessary to accommodate the new elements.
+
+The LRU side of things is implemented via an [`collections.OrderedDict`](https://docs.python.org/3/library/collections.html#collections.OrderedDict); every time an item is retrieved from the cache (and is not expired), it is moved back to the start of the dictionary, the last items of the dictionary are then chopped off as needed.
+
+### Network Connections
+
+For as long as it is active, the `auraxium.Client` object will always have a [`aiohttp.ClientSession`](https://docs.aiohttp.org/en/stable/client_reference.html#aiohttp.ClientSession) running in case the REST API has to be accessed.
+
+The websocket connection, which is required for event streaming, is only active as long as there are triggers registered and active.
+
+If the last trigger is removed, the websocket connection is quietly closed after a delay. If a new trigger is added, it will automatically recreated in the background.
 
 ## Object Model Alternatives
 

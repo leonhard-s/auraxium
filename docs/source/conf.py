@@ -68,5 +68,6 @@ napoleon_include_special_with_doc = True
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
     'aiohttp': ('https://docs.aiohttp.org/en/stable/', None),
-    'yarl': ('https://yarl.readthedocs.io/en/latest/', None)
+    'yarl': ('https://yarl.readthedocs.io/en/latest/', None),
+    'websockets': ('https://websockets.readthedocs.io/en/stable/', None)
 }

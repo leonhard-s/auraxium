@@ -9,5 +9,12 @@ from .character import Character
 from .faction import Faction
 from .item import Item
 from .weapon import Weapon
+from .world import World
 
-__all__ = ['Character', 'Faction', 'Item', 'Weapon']
+__all__ = [
+    'Character',
+    'Faction',
+    'Item',
+    'Weapon',
+    'World'
+]
