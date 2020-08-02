@@ -92,7 +92,7 @@ class TitleData(Ps2Data):
     def from_census(cls, data: CensusData) -> 'TitleData':
         return cls(
             int(data['title_id']),
-            LocaleData.from_census(data))
+            LocaleData.from_census(data['name']))
 
 
 class Title(Named, cache_size=300, cache_ttu=300.0):
@@ -456,7 +456,9 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         This includes an optional player title if the player has
         selected one.
         """
-        return f'{await self.title()} {self.name()}'
+        if (title := await self.title()) is not None:
+            return f'{title.name()} {self.name()}'
+        return self.name()
 
     async def online_status(self) -> int:
         """Return the online status of the character.
