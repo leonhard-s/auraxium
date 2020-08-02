@@ -281,7 +281,7 @@ class Client:
         if timeout <= 0.0:
             timeout = None
         try:
-            await asyncio.wait_for(async_flag.wait(), timeout=None)
+            await asyncio.wait_for(async_flag.wait(), timeout=timeout)
         except asyncio.TimeoutError as err:
             raise TimeoutError from err
         return _received_event
