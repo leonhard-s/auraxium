@@ -4,13 +4,14 @@ import asyncio
 import contextlib
 import json
 import logging
-from typing import Any, List, Literal, Optional, Type, TYPE_CHECKING, TypeVar
+from typing import (Any, Callable, List, Literal, Optional, Type,
+                    TYPE_CHECKING, TypeVar, Union)
 from types import TracebackType
 
 import aiohttp
 import websockets
 
-from .event import ESS_ENDPOINT, Event, Trigger
+from .event import ESS_ENDPOINT, Event, EventType, Trigger
 from .types import CensusData
 
 if TYPE_CHECKING:
@@ -207,8 +208,34 @@ class Client:
         """
         return await type_.get_by_name(name, locale=locale, client=self)
 
-    async def wait_for_trigger(self, trigger: Trigger, *args: Trigger,
-                               timeout: float = 0.0) -> Event:
+    def trigger(self, event: Union[str, EventType],
+                *args: Union[str, EventType],
+                name: Optional[str] = None, **kwargs: Any
+                ) -> Callable[[Callable[[Event], None]], None]:
+        """Create and add a trigger for the given callback.
+
+        If no name is specified, the callback function's name will be
+        used as the trigger name.
+
+        Arguments:
+            event: The event to trigger on.
+            *args: Additional events that also trigger the callback.
+            name: The name to assign to the trigger. If not specified,
+                the callback function's name will be used.
+
+        """
+        trigger = Trigger(event, *args, name=name, **kwargs)
+
+        def wrapper(func: Callable[[Event], None]) -> None:
+            trigger.action = func
+            if trigger.name is None:
+                trigger.name = func.__name__
+
+        self.add_trigger(trigger)
+        return wrapper
+
+    async def wait_for(self, trigger: Trigger, *args: Trigger,
+                       timeout: float = 0.0) -> Event:
         """Wait for one or more triggers to fire.
 
         This methods creates any number of single-shot triggers and
