@@ -1,0 +1,34 @@
+{
+    "files.exclude": {
+        "**/.git": true,
+        "**/.svn": true,
+        "**/.hg": true,
+        "**/CVS": true,
+        "**/.DS_Store": true,
+        "**/__pycache__": true, // Python cache
+    },
+    // Python linting
+    "python.linting.pylintEnabled": true,
+    "python.linting.pylintArgs": [
+        "--enable=all", // Maximum pedantry
+        "--disable=suppressed-message,locally-disabled" // Allow disabling of messages
+    ],
+    // Python docstring generator (njpwerner.autodocstring)
+    "autoDocstring.customTemplatePath": ".vscode/docstring.mustache",
+    "autoDocstring.includeExtendedSummary": true,
+    // Python extension settings
+    "python.testing.unittestArgs": [
+        "-v",
+        "-s",
+        "./tests",
+        "-p",
+        "*_test.py"
+    ],
+    "python.testing.pytestEnabled": false,
+    "python.testing.nosetestsEnabled": false,
+    "python.testing.unittestEnabled": true,
+    // ReStructured text linter
+    "restructuredtext.linter.extraArgs": [
+        "--ignore-directives autoclass,automodule"
+    ]
+}
