@@ -6,7 +6,7 @@ It provides a simple object model that can be used by players and outfits withou
 ***
 
 - Clean, Pythonic API.
-- Asynchronous endpoints keep apps **responsive** during high API load
+- Asynchronous endpoints to keep apps **responsive** during high API load.
 - Low-level interface for more optimised, custom queries.
 - Support for the **real-time** event streaming service (ESS).
 - User-configurable **caching** system.
@@ -49,12 +49,12 @@ Some of these references are also required for any queries carried out behind th
 
 The aforementioned `auraxium.Client` object must be closed using the `auraxium.Client.close()` method before it is destroyed to avoid issues.
 
-Alternatively, you can use the context manager interface to automatically close it when leaving the block:
+Alternatively, you can use the asyncronous context manager interface to automatically close it when leaving the block:
 
 ```py
 import auraxium
 
-with auraxium.Client() as client:
+async with auraxium.Client() as client:
     # Your code here
 ```
 
@@ -67,7 +67,7 @@ import asyncio
 import auraxium
 
 async def main():
-    with auraxium.Client() as client:
+    async with auraxium.Client() as client:
         # Your code here
 
 asyncio.run_until_complete(main())
@@ -97,7 +97,7 @@ import auraxium
 from auraxium import ps2
 
 async def main():
-    with auraxium.Client() as client:
+    async with auraxium.Client() as client:
 
         char = await client.get_by_name(ps2.Character, 'auroram')
         print(char.name())
