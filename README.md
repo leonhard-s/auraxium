@@ -133,21 +133,21 @@ To receive data through the event stream, you must define a trigger. A trigger i
 
 - One or more **events** that tells it to wake up
 - Any number of **conditions** that decide whether to run or not
-- An **action** that is will be run if the conditions are met
+- An **action** that will be run if the conditions are met
 
 #### Events
 
-The events available are stored in the `auraxium.EventType` enumerator. See [here](http://census.daybreakgames.com/#what-is-websocket) for details on when these events fire.
+The events available are stored in the `auraxium.EventType` enumerator.
 
 > **Note:** Some events, like `ContinentUnlock`, are currently broken on Daybreak's side. Do your own tests before investing too much time, things break a lot with the event streaming API.
 
 #### Conditions
 
-Trigger conditions are just a series of callable or values that must be True for the event to trigger the associated action.
+Trigger conditions can be attached to a trigger to limit what events it will respond to, in addition to the event type.
 
 This is useful if you have a commonly encountered event (like `EventType.DEATH`) and would like your action to only run if the event data matches some other requirement (for example "the killing player must be part of my outfit").
 
-#### Action
+#### Actions
 
 The trigger's action is a method or function that will be run when the event fires and all conditions evaluate to True.
 

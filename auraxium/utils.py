@@ -8,6 +8,12 @@ AnyT = TypeVar('AnyT')
 
 
 class LocaleData(NamedTuple):
+    """Container for localised strings.
+
+    Note that the ``tr`` locale is ignored as it was abandoned by the
+    developers and is generally either missing or unpopulated.
+    """
+
     de: str
     en: str
     es: str
@@ -16,10 +22,20 @@ class LocaleData(NamedTuple):
 
     @classmethod
     def empty(cls) -> 'LocaleData':
+        """Return an empty :class:`LocaleData` instance.
+
+        This is mostly provided to easily handle payloads who's entire
+        localised string field is ``NULL``.
+        """
         return cls(*(None,)*5)  # type: ignore
 
     @classmethod
     def from_census(cls, data: CensusData) -> 'LocaleData':
+        """Create and populate an instance using the given payload.
+
+        This expects to be passed the inner dictionary containing the
+        localisation keys (i.e. ``{'de': '...', 'en': '...', ... }``).
+        """
         de_ = optional(data, 'de', str) or 'Missing String'
         en_ = optional(data, 'en', str) or 'Missing String'
         es_ = optional(data, 'es', str) or 'Missing String'
@@ -67,6 +83,20 @@ def nested_dict_pop(dict_: Dict[str, Any], key: str) -> Any:
 
 def optional(data: CensusData, key: str,
              cast: Callable[[Any], AnyT]) -> Optional[AnyT]:
+    """Cast an optional dictionary value to a given type.
+
+    This is a helper method that acts much like :meth:`dict.get()`, but
+    also casts the retrieved value to the given type if it is not None.
+
+    Arguments:
+        data: The dictionary to process.
+        key: The key to access.
+        cast: The type to cast the value to if it exists.
+
+    Returns:
+        The cast value retrieved from the dictionary, or None.
+
+    """
     raw: Optional[AnyT]
     if (raw := data.get(key)) is not None:
         if raw == 'NULL':

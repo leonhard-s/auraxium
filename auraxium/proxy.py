@@ -11,6 +11,12 @@ from .census import JoinedQuery, Query
 from .client import Client
 from .request import extract_payload, run_query
 
+__all__ = [
+    'InstanceProxy',
+    'Proxy',
+    'SequenceProxy'
+]
+
 Ps2ObjectT = TypeVar('Ps2ObjectT', bound=Ps2Object)
 
 
@@ -35,12 +41,12 @@ class Proxy(Generic[Ps2ObjectT]):
         Note that the lifetime argument may not exceed the UTC epoch
         seconds due to the way this value is initialised.
 
-        Args:
-            type_: The object type represented by the proxy
-            query: The query used to retrieve the data
-            client: The client through which to query the API
+        Arguments:
+            type_: The object type represented by the proxy.
+            query: The query used to retrieve the data.
+            client: The client through which to query the API.
             lifetime (optional): The time-to-use of the retrieved data.
-                Defaults to 60.0.
+                Defaults to ``60.0``.
 
         """
         self._type = type_
@@ -57,7 +63,12 @@ class Proxy(Generic[Ps2ObjectT]):
         assert self._ttu < max_age.total_seconds()
 
     async def _poll(self) -> None:
-        """Query the API, retrieving the data."""
+        """Query the API, retrieving the data.
+
+        This method uses a lock to ensure it does not try to query the
+        same object multiple times.
+
+        """
         async with self._lock:
             payload = await run_query(self.query, session=self._client.session)
             list_ = self._resolve_nested_payload(payload)
@@ -71,16 +82,16 @@ class Proxy(Generic[Ps2ObjectT]):
         This introspects the given query to determine the sub-key for
         the actual object to return.
 
-        Args:
-            payload: The raw payload returned from the API
+        Arguments:
+            payload: The raw payload returned from the API.
 
         Raises:
-            RuntimeError: Raised if the query has more than one join
+            RuntimeError: Raised if the query has more than one join.
             RuntimeError: Raised if the parent field of a query is not
-                given
+                given.
 
         Returns:
-            The native list of payloads, ready for instantiation
+            The native list of payloads, ready for instantiation.
 
         """
 

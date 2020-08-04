@@ -3,6 +3,7 @@
 This defines a generic cache that can be used to keep local copies of
 remote data. This is especially useful for small but expensive queries
 like character name resolution.
+
 """
 
 import datetime
@@ -11,7 +12,9 @@ import sys
 from collections import OrderedDict
 from typing import Dict, Generic, Iterable, List, Optional, Tuple, TypeVar
 
-__all__ = ['TLRUCache']
+__all__ = [
+    'TLRUCache'
+]
 
 K = TypeVar('K')  # pylint: disable=invalid-name
 V = TypeVar('V')  # pylint: disable=invalid-name
@@ -33,7 +36,7 @@ class TLRUCache(Generic[K, V]):
         size: The maximum number of items the cache may hold.
         ttu: The time in seconds that a cache item will be valid. If
             set to zero or less, the cache will behave like a regular
-            sized LRU cache.
+            LRU cache.
 
     """
 
@@ -41,18 +44,19 @@ class TLRUCache(Generic[K, V]):
                  name: Optional[str] = None) -> None:
         """Initialise a new, empty TLRU cache.
 
-        Args:
+        Arguments:
             size: The maximum number of items in the cache.
             ttu: The time-to-use for items in this cache. Set to zero
                 or less to cache objects indefinitely.
             name (optional): A display name to use for this cache.
-                Defaults to None.
+                Useful for debugging as this name will be used by the
+                logs. Defaults to ``None``.
 
         """
         # NOTE: Mypy currently does not support type hinting the OrderedDict
         # object in-code, hence the string literal type.
-        self._data: ('OrderedDict[K, '
-                     'Tuple[V, datetime.datetime, datetime.datetime]]')
+        self._data: (
+            'OrderedDict[K, Tuple[V, datetime.datetime, datetime.datetime]]')
         self._data = OrderedDict()
         self.name = name or 'TLRUCache'
         self.size = size
@@ -61,7 +65,11 @@ class TLRUCache(Generic[K, V]):
     def add(self, key: K, item: V) -> None:
         """Add a new item to the cache.
 
-        Args:
+        If the cache is full, this will clear any expired items (i.e.
+        items who's age is greater than the TTU set for the cache)
+        before removing the least recently used item.
+
+        Arguments:
             key: The unique identifier of the object added.
             item: The object to store in the cache.
 
@@ -75,9 +83,18 @@ class TLRUCache(Generic[K, V]):
     def add_many(self, items: Iterable[Tuple[K, V]]) -> None:
         """Add multiple items to the cache.
 
-        Args:
+        If the cache is full, this will clear any expired items (i.e.
+        items who's age is greater than the TTU set for the cache)
+        before removing the necessary number of least recently used
+        items.
+
+        Arguments:
             items: An iterable of tuples containing the ID/object pairs
                 to add to the cache.
+
+        Raises:
+            ValueError: Raised if the number of items to add exceeds
+                the size of the cache.
 
         """
         now = datetime.datetime.now()
@@ -104,7 +121,8 @@ class TLRUCache(Generic[K, V]):
     def footprint(self) -> int:
         """Return the size of the cache items in bytes.
 
-        Note that this is not an exact value.
+        Note that this is not an exact value, but can still be useful
+        for profiling.
 
         Returns:
             The size of the cache in bytes.
@@ -116,21 +134,23 @@ class TLRUCache(Generic[K, V]):
         """Release items from the cache.
 
         This will clear any expired items, followed by as many of the
-        least recently used items as required.
+        least recently used items as required to accommodate the number
+        of items specified via the ``count`` argument.
 
         The number of slots freed may exceed the number of slots
-        requested. This is due to all expired items being cleared.
+        requested due to all expired items being cleared.
 
-        Args:
+        Arguments:
             count (optional): The number of free slots to request.
-                Defaults to 1.
+                Defaults to ``1``.
 
         Raises:
             ValueError: Raised if the number of requested free slots
                 exceeds the size of the cache.
 
         Returns:
-            The number of available slots in the cache.
+            The number of available slots in the cache. This may be
+            greater than the number of slots requested.
 
         """
         if count > self.size:
@@ -150,12 +170,13 @@ class TLRUCache(Generic[K, V]):
     def get(self, key: K) -> Optional[V]:
         """Retrieve an item from the cache.
 
-        Args:
+        Arguments:
             key: The unique identifier of the object to retrieve.
 
         Returns:
-            The object stored under the given identifier, or None if
-            it is not found or expired.
+            The object stored under the given identifier, or ``None``
+            if it is not found or expired (i.e. its age exceeds the TTU
+            set for the cache).
 
         """
         now = datetime.datetime.now()
@@ -180,14 +201,15 @@ class TLRUCache(Generic[K, V]):
         return item
 
     def items(self) -> Dict[K, V]:
-        """Return a list of all items in the cache.
+        """Return a mapping of all key/value pairs in the cache.
 
         Note that this is mostly intended for introspection and
-        troubleshooting, you should only use TLRUCache.get() to
+        troubleshooting, you should only use :meth:`TLRUCache.get()` to
         retrieve items from the cache.
 
         Returns:
-            A list of all items in the cache.
+            A dictionary containing all items in the cache, with more
+            recently accessed items first.
 
         """
         return {k: v[0] for k, v in self._data.items()}
@@ -195,11 +217,14 @@ class TLRUCache(Generic[K, V]):
     def last_accessed(self, key: K) -> datetime.datetime:
         """Return the time the given item was last accessed.
 
-        Unlike TLRUCache.get(), this does not perform an expiration
-        check and also will not push the retrieved item to the top of
-        the cache.
+        Unlike :meth:`TLRUCache.get()`, this does not perform an
+        expiration check and also will not push the retrieved item to
+        the top of the cache.
 
-        Args:
+        This method is intended for introspection and troubleshooting,
+        but is also not very expensive.
+
+        Arguments:
             key: The unique identifier of the item to check.
 
         Raises:
@@ -243,9 +268,9 @@ class TLRUCache(Generic[K, V]):
 
         This will remove the least recently used (LRU) items first.
 
-        Args:
+        Arguments:
             count (optional): The number of items to remove. Defaults
-            to 1.
+            to ``1``.
 
         Raises:
             ValueError: raised if the number of items to remove is

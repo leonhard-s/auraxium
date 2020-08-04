@@ -1,5 +1,13 @@
 """Custom exceptions specific to the auraxium module."""
 
+__all__ = [
+    'AuraxiumException',
+    'BadPayloadError',
+    'CensusError',
+    'ResponseError',
+    'UserError'
+]
+
 
 class AuraxiumException(BaseException):
     """Base exception class for auraxium.
@@ -28,7 +36,8 @@ class CensusError(AuraxiumException):
 class ResponseError(CensusError):
     """Exception for HTTP-related errors.
 
-    This will generally be an instance of aiohttp.ClientResponse().
+    This will generally be an instance of
+    :class:`aiohttp.ClientResponse`.
     """
 
 

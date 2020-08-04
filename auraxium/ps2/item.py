@@ -14,7 +14,7 @@ from .profile import Profile
 
 if TYPE_CHECKING:
     # This is only imported during static type checking to resolve the forward
-    # references. During runtime, this would cause a circular import.
+    # references. This avoids a circular import at runtime.
     from .weapon import Weapon, WeaponDatasheet
 
 

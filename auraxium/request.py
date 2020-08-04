@@ -12,7 +12,11 @@ import aiohttp
 from .census import Query
 from .types import CensusData
 
-__all__ = ['extract_payload', 'extract_single', 'run_query']
+__all__ = [
+    'extract_payload',
+    'extract_single',
+    'run_query'
+]
 
 log = logging.getLogger('auraxium.ps2')
 
@@ -22,7 +26,7 @@ def extract_payload(data: CensusData, collection: str) -> List[CensusData]:
 
     This checks for missing keys and catches common API error states.
 
-    Args:
+    Arguments:
         data: The response dictionary to process.
         collection: The collection name to expect.
 
@@ -44,7 +48,7 @@ def extract_single(data: CensusData, collection: str) -> CensusData:
 
     This checks for missing keys and catches common API error states.
 
-    Args:
+    Arguments:
         data: The response dictionary to process.
         collection: The collection name to expect.
 
@@ -55,9 +59,10 @@ def extract_single(data: CensusData, collection: str) -> CensusData:
     list_ = extract_payload(data, collection)
     if not list_:
         raise ValueError  # TODO: NotFoundError
+    #   # NOTE: If replaced, update try block in leaderboard.by_char
     if len(list_) == 1:
         return list_[0]
-    raise ValueError  # TODO: CountWarning
+    raise ValueError  # TODO: Add CountWarning?
 
 
 def raise_for_dict(data: CensusData) -> None:
@@ -87,11 +92,11 @@ async def run_query(query: Query, verb: str = 'get',
 
     This also handles and HTTP-related errors.
 
-    Args:
+    Arguments:
         query: The query to run.
-        verb (optional): The query verb to use. Defaults to 'get'.
+        verb (optional): The query verb to use. Defaults to ``'get'``.
         session (optional): The session to use for the request.
-            Defaults to None.
+            Defaults to ``None``.
 
     Returns:
         The response dictionary received.

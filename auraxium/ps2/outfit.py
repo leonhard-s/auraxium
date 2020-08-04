@@ -13,8 +13,8 @@ from ..request import extract_payload, extract_single, run_query
 from ..types import CensusData
 
 if TYPE_CHECKING:
-    # This is only imported during static type checking to resolve the forward
-    # references. During runtime, this would cause a circular import.
+    # This is only imported during static type checking to resolve the
+    # 'Character' forward reference. This avoids a circular import at runtime.
     from .character import Character
 
 log = logging.getLogger('auraxium.ps2')
