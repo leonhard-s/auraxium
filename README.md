@@ -12,6 +12,8 @@ It provides a simple object model that can be used by players and outfits withou
 - User-configurable **caching** system.
 - Fully type annotated.
 
+The documentation for this project is hostead at [Read the Docs](https://auraxium.readthedocs.io/en/latest/).
+
 ## Table of Contents
 
 - [Overview](#overview)
