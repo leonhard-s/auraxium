@@ -70,7 +70,7 @@ async def main():
     async with auraxium.Client() as client:
         # Your code here
 
-asyncio.run_until_complete(main())
+asyncio.get_event_loop().run_until_complete(main())
 ```
 
 With that, the stage is set for some actual code.
