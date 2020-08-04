@@ -60,7 +60,7 @@ class Client:
             service ID at http://census.daybreakgames.com/#devSignup.
         session: The :class:`aiohttp.ClientSession` used for REST API
             requests.
-        trigger: The list of :class:`Triggers <Trigger>` registered for
+        triggers: The list of :class:`Triggers <Trigger>` registered for
             the client.
         websocket: The websocket client used for the real-time event
             stream. This will be automatically opened and closed by the
@@ -357,7 +357,7 @@ class Client:
 
         By default, any triggers passed will be automatically removed
         once the first has been triggered, regardless of the triggers'
-        :attr`Trigger.single_shot` setting.
+        :attr:`Trigger.single_shot` setting.
 
         Arguments:
             trigger: A trigger to wait for.

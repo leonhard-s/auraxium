@@ -37,7 +37,7 @@ All queries that may incur network traffic and latency are asynchronous, which k
 
 ## Getting Started
 
-All API interactions are performed through the `auraxium.Client` object. It is the main endpoint used to interact with the API and contains a few essential references, like the current event loop, the connection pool, or the unique service ID used to identify your app.
+All API interactions are performed through the [`auraxium.Client`](https://auraxium.readthedocs.io/en/latest/core.html#auraxium.Client) object. It is the main endpoint used to interact with the API and contains a few essential references, like the current event loop, the connection pool, or the unique service ID used to identify your app.
 
 > **Regarding service IDs:** You can use the default value of `s:example` for testing, but you may run into rate limiting issues if your app generates more than 5-6 queries a minute.
 >
@@ -47,7 +47,7 @@ Some of these references are also required for any queries carried out behind th
 
 ### Boilerplate code
 
-The aforementioned `auraxium.Client` object must be closed using the `auraxium.Client.close()` method before it is destroyed to avoid issues.
+The aforementioned [`auraxium.Client`](https://auraxium.readthedocs.io/en/latest/core.html#auraxium.Client) object must be closed using the [`auraxium.Client.close()`](https://auraxium.readthedocs.io/en/latest/core.html#auraxium.Client.close) method before it is destroyed to avoid issues.
 
 Alternatively, you can use the asynchronous context manager interface to automatically close it when leaving the block:
 
@@ -83,11 +83,11 @@ The game-specific object representations for PlanetSide 2 can be found in the `a
 
 ### Retrieving Data
 
-The `auraxium.Client` class exposes several methods used to access the REST API data, like `Client.get()`, used to return a single match, or `Client.find()`, used to return a list of matching entries.
+The `auraxium.Client` class exposes several methods used to access the REST API data, like [`Client.get()`](https://auraxium.readthedocs.io/en/latest/core.html#auraxium.Client.get), used to return a single match, or [`Client.find()`](https://auraxium.readthedocs.io/en/latest/core.html#auraxium.Client.find), used to return a list of matching entries.
 
-It also provides some utility methods, like `Client.get_by_id()` and `Client.get_by_name()`. They behave much like the more general `Client.get()` but are cached to provide better performance for common lookups.
+It also provides some utility methods, like [`Client.get_by_id()`](https://auraxium.readthedocs.io/en/latest/core.html#auraxium.Client.get_by_id) and [`Client.get_by_name()`](https://auraxium.readthedocs.io/en/latest/core.html#auraxium.Client.get_by_name). They behave much like the more general [`Client.get()`](https://auraxium.readthedocs.io/en/latest/core.html#auraxium.Client.get) but are cached to provide better performance for common lookups.
 
-This means that repeatedly accessing an object through `.get_by_id()` will only generate network traffic once, after which it is retrieved from cache (refer to the [Caching](#caching) section for more information).
+This means that repeatedly accessing an object through [`.get_by_id()`](https://auraxium.readthedocs.io/en/latest/core.html#auraxium.Client.get_by_id) will only generate network traffic once, after which it is retrieved from cache (refer to the [Caching](#caching) section for more information).
 
 Here is the above boilerplate code again, this time with a simple script that prints various character properties:
 
@@ -137,7 +137,7 @@ To receive data through the event stream, you must define a trigger. A trigger i
 
 #### Events
 
-The events available are stored in the `auraxium.EventType` enumerator.
+The events available are stored in the [`auraxium.EventType`](https://auraxium.readthedocs.io/en/latest/ess.html#auraxium.EventType) enumerator.
 
 > **Note:** Some events, like `ContinentUnlock`, are currently broken on Daybreak's side. Do your own tests before investing too much time, things break a lot with the event streaming API.
 
@@ -145,7 +145,7 @@ The events available are stored in the `auraxium.EventType` enumerator.
 
 Trigger conditions can be attached to a trigger to limit what events it will respond to, in addition to the event type.
 
-This is useful if you have a commonly encountered event (like `EventType.DEATH`) and would like your action to only run if the event data matches some other requirement (for example "the killing player must be part of my outfit").
+This is useful if you have a commonly encountered event (like [`EventType.DEATH`](https://auraxium.readthedocs.io/en/latest/ess.html#auraxium.EventType.DEATH)) and would like your action to only run if the event data matches some other requirement (for example "the killing player must be part of my outfit").
 
 #### Actions
 
@@ -167,11 +167,11 @@ async def example_action(event: Event) -> None:
 
 ### Registering Triggers
 
-The easiest way to register a trigger to the client is via the `auraxium.Client.trigger()` decorator. It takes the event/s to listen for as the arguments and creates a trigger using the decorated function as the trigger action.
+The easiest way to register a trigger to the client is via the [`auraxium.Client.trigger()`](https://auraxium.readthedocs.io/en/latest/core.html#auraxium.Client.trigger) decorator. It takes the event/s to listen for as the arguments and creates a trigger using the decorated function as the trigger action.
 
 > **Important:** Keep in mind that the websocket connection will be continuously looping, waiting for new events to come in.
 >
-> This means that using `auraxium.Client()` as a context manager may cause issues since the context manager will close the connection when the context manager is exited.
+> This means that using [`auraxium.Client()`](https://auraxium.readthedocs.io/en/latest/core.html#auraxium.Client) as a context manager may cause issues since the context manager will close the connection when the context manager is exited.
 
 ```py
 import asyncio
@@ -208,11 +208,11 @@ The following section contains more detailed implementation details for those wh
 
 All classes in the Auraxium object model inherit from `Ps2Object`. It defines the API table and ID field to use for generic queries and implements methods like `.get()` or `.find()`.
 
-These are the methods called by the corresponding methods in `auraxium.Client` and allow customisation of the generated queries. This lets subclasses customise the query generation; `auraxium.ps2.Character` for example uses the heavily indexed `'single_character_by_id'` collection for `.get_by_id()`, rather than the default, `'character'`.)
+These are the methods called by the corresponding methods in [`auraxium.Client`](https://auraxium.readthedocs.io/en/latest/core.html#auraxium.Client) and allow customisation of the generated queries. This lets subclasses customise the query generation; `auraxium.ps2.Character` for example uses the heavily indexed `'single_character_by_id'` collection for [`.get_by_id()`](https://auraxium.readthedocs.io/en/latest/core.html#auraxium.Client.get_by_id), rather than its default collection, `'character'`.)
 
 #### Cache Objects
 
-Cached objects are based off the `Cached` class, which mostly overrides the `.get_by_id()` method to check the class-specific cache for matching instances before falling back to the regular implementation.
+Cached objects are based off the `Cached` class, which mostly overrides the [`.get_by_id()`](https://auraxium.readthedocs.io/en/latest/core.html#auraxium.Client.get_by_id) method to check the class-specific cache for matching instances before falling back to the regular implementation.
 
 It also adds methods for updating the class cache settings at runtime.
 
@@ -220,7 +220,7 @@ See the [Caching](#caching) section for details on the caching system.
 
 #### Named Objects
 
-Named objects are based off the `Named` class and always cached. This base class adds the `.name(locale='en')` method and overwrites the `.get_by_name()` method to use its own, modified cache.
+Named objects are based off the `Named` class and always cached. This base class adds the [`.name(locale='en')`](https://auraxium.readthedocs.io/en/latest/ps2.html#auraxium.Cached.name) method and adds the [`.get_by_name()`](https://auraxium.readthedocs.io/en/latest/ps2.html#auraxium.) method, which is also cached.
 
 This caching strategy is almost identical to the one used for IDs, except that it uses a string constructed of the lowercase name and locale identifier to store objects (e.g. `'en_sunderer'`).
 
@@ -269,7 +269,7 @@ Here are a few Python alternatives for these cases:
     # https://census.daybreakgames.com/s:example/get/ps2:v2/character?c:limit=20&c:join=characters_online_status
     ```
 
-    Refer to the [census module documentation](https://auraxium.readthedocs.io/en/latest/) for details.
+    Refer to the [census module documentation](https://auraxium.readthedocs.io/en/latest/census.html) for details.
 
 - For an even simpler syntax, you can check out [spascou/ps2-census](https://github.com/spascou/ps2-census), which was inspired by an earlier version of Auraxium.
 
