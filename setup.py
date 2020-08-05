@@ -21,6 +21,7 @@ setuptools.setup(name='auraxium',
                               'Operating System :: OS Independent'],
                  install_requires=[
                      'aiohttp',
+                     'backoff',
                      'yarl',
                      'websockets'
                  ],

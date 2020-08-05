@@ -5,6 +5,7 @@ import warnings
 from typing import Final, List, Optional, Tuple, Union
 
 from ..census import Query
+from ..errors import NotFoundError
 from ..client import Client
 from ..request import extract_payload, extract_single, run_query
 
@@ -52,7 +53,7 @@ async def by_char(stat: Stat, character: Union[int, Character],
     payload = await run_query(query, session=client.session)
     try:
         data = extract_single(payload, collection)
-    except ValueError:
+    except NotFoundError:
         return None
     return int(data['rank']), int(data['value'])
 

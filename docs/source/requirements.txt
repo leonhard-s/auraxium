@@ -1,3 +1,4 @@
 aiohttp
+backoff
 yarl
 websockets
