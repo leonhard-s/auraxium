@@ -41,7 +41,7 @@ All queries that may incur network traffic and latency are asynchronous, which k
 
 All API interactions are performed through the [`auraxium.Client`](https://auraxium.readthedocs.io/en/latest/core.html#auraxium.Client) object. It is the main endpoint used to interact with the API and contains a few essential references, like the current event loop, the connection pool, or the unique service ID used to identify your app.
 
-> **Regarding service IDs:** You can use the default value of `s:example` for testing, but you may run into rate limiting issues if your app generates more than 5-6 queries a minute.
+> **Regarding service IDs:** You can use the default value of `s:example` for testing, but you may run into rate limiting issues if your app generates more than ~10 queries a minute.
 >
 > You can apply for your custom service ID [here](https://census.daybreakgames.com/#devSignup); the process is free, and you usually hear back within a few hours.
 
