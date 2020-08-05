@@ -9,7 +9,7 @@ from ..cache import TLRUCache
 from ..census import Query
 from ..client import Client
 from ..proxy import InstanceProxy, SequenceProxy
-from ..request import extract_payload, extract_single, run_query
+from ..request import extract_payload, extract_single
 from ..types import CensusData
 
 if TYPE_CHECKING:
@@ -166,7 +166,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
                   cls.__name__, name, locale)
         query = Query(cls.collection, service_id=client.service_id,
                       name_lower=name.lower()).limit(1)
-        data = await run_query(query, session=client.session)
+        data = await client.request(query)
         payload = extract_single(data, cls.collection)
         return cls(payload, client=client)
 
@@ -181,7 +181,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
                   cls.__name__, tag)
         query = Query(cls.collection, service_id=client.service_id,
                       alias_lower=tag.lower()).limit(1)
-        data = await run_query(query, session=client.session)
+        data = await client.request(query)
         payload = extract_single(data, cls.collection)
         return cls(payload, client=client)
 
@@ -224,6 +224,6 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         query = Query(collection, service_id=self._client.service_id)
         query.add_term(field=self.id_field, value=self.id)
         query.limit(20)
-        data = await run_query(query, session=self._client.session)
+        data = await self._client.request(query)
         payload = extract_payload(data, collection)
         return [OutfitRankData.from_census(c) for c in payload]

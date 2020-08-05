@@ -10,7 +10,7 @@ from ..cache import TLRUCache
 from ..census import Query
 from ..client import Client
 from ..proxy import InstanceProxy, SequenceProxy
-from ..request import extract_payload, extract_single, run_query
+from ..request import extract_payload, extract_single
 from ..types import CensusData
 from ..utils import LocaleData, optional
 
@@ -262,7 +262,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.limit(5000)
         query.add_term(field=self.id_field, value=self.id)
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_payload(payload, collection)
         return [CharacterAchievement.from_census(d) for d in data]
 
@@ -282,7 +282,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         collection: Final[str] = 'characters_currency'
         query = Query(collection, service_id=self._client.service_id)
         query.add_term(field=self.id_field, value=self.id)
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_single(payload, collection)
         return int(data['quantity']), int(data['prestige_currency'])
 
@@ -293,7 +293,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
         query.limit(results)
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_payload(payload, collection)
         return data
 
@@ -304,7 +304,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
         query.limit(results)
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_payload(payload, collection)
         return data
 
@@ -315,7 +315,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
         query.limit(results)
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_payload(payload, collection)
         return data
 
@@ -326,7 +326,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
         query.limit(results)
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_payload(payload, collection)
         return data
 
@@ -342,7 +342,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
         query.limit(1000)
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_payload(payload, collection=collection)
         return data
 
@@ -352,7 +352,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
         query.limit(100_000)
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_payload(payload, collection=collection)
         return data
 
@@ -377,7 +377,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.add_term(field=Character.id_field, value=self.id)
         join = query.create_join(self.collection)
         join.set_list(True)
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_single(payload, collection)
         character_ids: List[str] = [
             str(d['character_id']) for d in data['friend_list']]
@@ -399,7 +399,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
                   cls.__name__, id_)
         query = Query(collection, service_id=client.service_id,
                       character_id=id_).limit(1)
-        data = await run_query(query, session=client.session)
+        data = await client.request(query)
         payload = extract_single(data, collection)
         return cls(payload, client=client)
 
@@ -418,7 +418,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
                   cls.__name__, name, locale)
         query = Query(cls.collection, service_id=client.service_id,
                       name__first_lower=name.lower()).limit(1)
-        data = await run_query(query, session=client.session)
+        data = await client.request(query)
         payload = extract_single(data, cls.collection)
         return cls(payload, client=client)
 
@@ -469,7 +469,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         collection: Final[str] = 'characters_online_status'
         query = Query(collection, service_id=self._client.service_id)
         query.add_term(field=self.id_field, value=self.id)
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_single(payload, collection)
         return int(data['online_status'])
 
@@ -508,7 +508,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
         query.limit(results)
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_payload(payload, collection)
         return data
 
@@ -518,7 +518,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
         query.limit(results)
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_payload(payload, collection)
         return data
 
@@ -529,7 +529,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
         query.limit(results)
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_payload(payload, collection)
         return data
 
@@ -540,7 +540,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
         query.limit(results)
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_payload(payload, collection)
         return data
 
@@ -551,7 +551,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
         query.limit(results)
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_payload(payload, collection)
         return data
 
@@ -562,7 +562,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
         query.limit(results)
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_payload(payload, collection)
         return data
 

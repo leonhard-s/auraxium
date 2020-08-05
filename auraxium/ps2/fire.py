@@ -7,7 +7,7 @@ from typing import Dict, Final, Optional
 from ..base import Cached, Ps2Data
 from ..census import Query
 from ..proxy import InstanceProxy, SequenceProxy
-from ..request import extract_payload, run_query
+from ..request import extract_payload
 from ..types import CensusData
 from ..utils import LocaleData, optional
 
@@ -259,7 +259,7 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
         query.add_term(field='player_state_group_id',
                        value=self.data.player_state_group_id)
         query.limit(10)
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_payload(payload, collection)
         states: Dict[PlayerState, PlayerStateGroup] = {}
         for group_data in data:

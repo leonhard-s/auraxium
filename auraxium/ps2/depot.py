@@ -6,7 +6,7 @@ from typing import Final, List, Optional, Tuple
 from ..base import Named, Cached, Ps2Data
 from ..census import Query
 from ..proxy import InstanceProxy
-from ..request import extract_payload, run_query
+from ..request import extract_payload
 from ..types import CensusData
 from ..utils import LocaleData, optional
 
@@ -68,7 +68,7 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
         query.limit(100)
         join = query.create_join(Item.collection)
         join.parent_field = join.child_field = Item.id_field
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_payload(payload, collection)
         key_name = f'{Item.id_field}_join_{Item.collection}'
         items: List[Tuple[Item, int]] = []

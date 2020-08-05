@@ -6,7 +6,7 @@ from typing import Any, Final, List, Optional, Union
 from ..base import Named, Ps2Data
 from ..census import Query
 from ..client import Client
-from ..request import extract_payload, run_query
+from ..request import extract_payload
 from ..types import CensusData
 from ..utils import LocaleData
 
@@ -57,7 +57,7 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
         query.limit(1000)
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_payload(payload, collection=collection)
         return data
 
@@ -89,6 +89,6 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
         value = ','.join(str(z) for z in zone_ids)
         query.add_term(field='zone_ids', value=value)
         query.limit(3000)
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_payload(payload, collection=collection)
         return data

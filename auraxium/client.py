@@ -17,7 +17,9 @@ from types import TracebackType
 import aiohttp
 import websockets
 
+from .census import Query
 from .event import ESS_ENDPOINT, Event, EventType, Trigger
+from .request import run_query
 from .types import CensusData
 
 if TYPE_CHECKING:
@@ -69,7 +71,8 @@ class Client:
     """
 
     def __init__(self, loop: Optional[asyncio.AbstractEventLoop] = None,
-                 service_id: str = 's:example') -> None:
+                 service_id: str = 's:example', profiling: bool = False
+                 ) -> None:
         """Initialise a new Auraxium client.
 
         If loop is not specified, it will be retrieved is using
@@ -80,9 +83,13 @@ class Client:
                 client. Defaults to ``None``.
             service_id (optional): The unique, private service ID of
                 the client. Defaults to ``'s:example'``.
+            profiling (optional): Whether to enable query and socket
+                profiling.
 
         """
         self.loop = loop or asyncio.get_event_loop()
+        self.profiling = profiling
+        self._timing_cache: List[float] = []
         self.service_id = service_id
         self.session = aiohttp.ClientSession()
         self.triggers: List[Trigger] = []
@@ -113,6 +120,19 @@ class Client:
         """
         await self.close()
         return False  # Do not suppress any exceptions
+
+    @property
+    def latency(self) -> float:
+        """Return the average request latency for the client.
+
+        This averages up to the last 100 query times. Use the logging
+        utility to gain more insight into which queries take the most
+        time.
+
+        """
+        if not self._timing_cache:
+            return -1.0
+        return sum(self._timing_cache) / len(self._timing_cache)
 
     def add_trigger(self, trigger: Trigger) -> None:
         """Add a new event trigger to the client.
@@ -307,6 +327,37 @@ class Client:
 
         """
         return await type_.get_by_name(name, locale=locale, client=self)
+
+    async def request(self, query: Query, verb: str = 'get') -> CensusData:
+        """Perform a REST API request.
+
+        This performs the query and performs error checking to ensure
+        the query is valid.
+
+        Refer to the :meth:`auraxium.request.raise_for_dict()` method
+        for a list of exceptions raised from API errors.
+
+        Arguments:
+            query: The query to perform.
+            verb (optional): The query verb to utilise.
+                Defaults to ``'get'``.
+
+        Returns:
+            The API response payload received.
+
+        """
+        if self.profiling:
+            query.timing(True)
+        data = await run_query(query, verb=verb, session=self.session)
+        if self.profiling:
+            timing = data['timing']
+            if log.level <= logging.DEBUG:
+                url = query.url()
+                log.debug('Query times for "%s?%s": %s',
+                          '/'.join(url.parts[-2:]), url.query_string,
+                          ', '.join([f'{k}: {v}' for k, v in timing.items()]))
+            self._timing_cache.append(float(timing['total-ms']))
+        return data
 
     def trigger(self, event: Union[str, EventType],
                 *args: Union[str, EventType], name: Optional[str] = None,

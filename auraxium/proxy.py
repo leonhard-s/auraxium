@@ -9,7 +9,7 @@ from typing import (Any, Dict, Generator, Generic, Iterator, List, Optional,
 from .base import Ps2Object
 from .census import JoinedQuery, Query
 from .client import Client
-from .request import extract_payload, run_query
+from .request import extract_payload
 
 __all__ = [
     'InstanceProxy',
@@ -53,12 +53,10 @@ class Proxy(Generic[Ps2ObjectT]):
         self.query = query
         self._client = client
         self._ttu = lifetime
-
         self._data: List[Ps2ObjectT]
         self._index: int
         self._lock = asyncio.Lock()
         self._last_fetched = datetime.datetime.utcfromtimestamp(0)
-
         max_age = datetime.datetime.now() - self._last_fetched
         assert self._ttu < max_age.total_seconds()
 
@@ -70,7 +68,7 @@ class Proxy(Generic[Ps2ObjectT]):
 
         """
         async with self._lock:
-            payload = await run_query(self.query, session=self._client.session)
+            payload = await self._client.request(self.query)
             list_ = self._resolve_nested_payload(payload)
             self._data = [self._type(data, self._client) for data in list_]
             self._last_fetched = datetime.datetime.now()

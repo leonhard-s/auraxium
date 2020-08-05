@@ -8,7 +8,7 @@ from ..base import Cached, Ps2Data
 from ..client import Client
 from ..census import Query
 from ..proxy import InstanceProxy, SequenceProxy
-from ..request import extract_payload, extract_single, run_query
+from ..request import extract_payload, extract_single
 from ..types import CensusData
 from ..utils import LocaleData, optional
 
@@ -170,7 +170,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
         query = Query(collection, service_id=self._client.service_id)
         query.add_term(field=self.id_field, value=self.id)
         query.limit(10).sort('weapon_slot_index')
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_payload(payload, collection)
         return [WeaponAmmoSlot.from_census(d) for d in data]
 
@@ -200,7 +200,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
             raise RuntimeError(f'Invalid item for weapon ID: {self.id}')
         query = Query(collection, service_id=self._client.service_id)
         query.add_term(field=Item.id_field, value=item.id)
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_single(payload, collection)
         return WeaponDatasheet.from_census(data)
 

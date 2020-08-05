@@ -7,7 +7,7 @@ from typing import Final, List, Optional, Tuple, Union
 from ..census import Query
 from ..errors import NotFoundError
 from ..client import Client
-from ..request import extract_payload, extract_single, run_query
+from ..request import extract_payload, extract_single
 
 from .character import Character
 from .world import World
@@ -50,7 +50,7 @@ async def by_char(stat: Stat, character: Union[int, Character],
     query.add_term(field=Character.id_field, value=char_id)
     query.add_term(field='name', value=_name_from_stat(stat))
     query.add_term(field='period', value=_period_from_enum(period))
-    payload = await run_query(query, session=client.session)
+    payload = await client.request(query)
     try:
         data = extract_single(payload, collection)
     except NotFoundError:
@@ -74,12 +74,12 @@ async def by_char_multi(stat: Stat, character: Union[int, Character],
     query.add_term(field=Character.id_field, value=value)
     query.add_term(field='name', value=_name_from_stat(stat))
     query.add_term(field='period', value=_period_from_enum(period))
-    payload = await run_query(query, session=client.session)
+    payload = await client.request(query)
     data = extract_payload(payload, collection)
     return_ = {i: (-1, -1) for i in char_ids}
-    for d in data:
-        id_ = int(d['character_id'])
-        return_[id_] = int(d['rank']), int(d['value'])
+    for row in data:
+        id_ = int(row['character_id'])
+        return_[id_] = int(row['rank']), int(row['value'])
     return [return_[i] for i in char_ids]
 
 
@@ -106,7 +106,7 @@ async def top(stat: Stat, period: Period = Period.FOREVER, matches: int = 10,
     query.start(offset)
     join = query.create_join(Character.collection)
     join.parent_field = join.child_field = Character.id_field
-    payload = await run_query(query, session=client.session)
+    payload = await client.request(query)
     key = 'character_id_join_character'
     return [(int(d['value']), Character(d[key], client=client))
             for d in extract_payload(payload, collection=collection)]

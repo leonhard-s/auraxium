@@ -5,7 +5,7 @@ from typing import Final, Optional, TYPE_CHECKING
 
 from ..base import Cached, Named, Ps2Data
 from ..census import Query
-from ..request import extract_single, run_query
+from ..request import extract_single
 from ..proxy import InstanceProxy, SequenceProxy
 from ..types import CensusData
 from ..utils import LocaleData, optional
@@ -188,7 +188,7 @@ class Item(Named, cache_size=128, cache_ttu=3600.0):
         collection: Final[str] = 'weapon_datasheet'
         query = Query(collection, service_id=self._client.service_id)
         query.add_term(field=self.id_field, value=self.id)
-        payload = await run_query(query, session=self._client.session)
+        payload = await self._client.request(query)
         data = extract_single(payload, collection)
         return WeaponDatasheet.from_census(data)
 
