@@ -422,6 +422,21 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         payload = extract_single(data, cls.collection)
         return cls(payload, client=client)
 
+    @classmethod
+    async def get_online(cls, id_: int, *args: int, client: Client
+                         ) -> List['Character']:
+        """Retrieve the characters that are online from a list."""
+        char_ids = [id_]
+        char_ids.extend(args)
+        log.debug('Retrieving online status for %s characters', len(char_ids))
+        query = Query(cls.collection, service_id=client.service_id,
+                      character_id=','.join(str(c) for c in char_ids))
+        query.limit(len(char_ids)).resolve('online_status')
+        data = await client.request(query)
+        payload = extract_payload(data, cls.collection)
+        return [cls(c, client=client) for c in payload
+                if int(c['online_status'])]
+
     def items(self) -> SequenceProxy[Item]:
         """Return the items available to the character.
 
