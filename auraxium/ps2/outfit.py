@@ -8,6 +8,7 @@ from ..base import Cached, Named, Ps2Data
 from ..cache import TLRUCache
 from ..census import Query
 from ..client import Client
+from ..errors import NotFoundError
 from ..proxy import InstanceProxy, SequenceProxy
 from ..request import extract_payload, extract_single
 from ..types import CensusData
@@ -167,7 +168,10 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         query = Query(cls.collection, service_id=client.service_id,
                       name_lower=name.lower()).limit(1)
         data = await client.request(query)
-        payload = extract_single(data, cls.collection)
+        try:
+            payload = extract_single(data, cls.collection)
+        except NotFoundError:
+            return None
         return cls(payload, client=client)
 
     @classmethod
@@ -182,7 +186,10 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         query = Query(cls.collection, service_id=client.service_id,
                       alias_lower=tag.lower()).limit(1)
         data = await client.request(query)
-        payload = extract_single(data, cls.collection)
+        try:
+            payload = extract_single(data, cls.collection)
+        except NotFoundError:
+            return None
         return cls(payload, client=client)
 
     def leader(self) -> InstanceProxy[OutfitMember]:

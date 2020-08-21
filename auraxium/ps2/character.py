@@ -9,6 +9,7 @@ from ..base import Named, Ps2Data
 from ..cache import TLRUCache
 from ..census import Query
 from ..client import Client
+from ..errors import NotFoundError
 from ..proxy import InstanceProxy, SequenceProxy
 from ..request import extract_payload, extract_single
 from ..types import CensusData
@@ -400,7 +401,10 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query = Query(collection, service_id=client.service_id,
                       character_id=id_).limit(1)
         data = await client.request(query)
-        payload = extract_single(data, collection)
+        try:
+            payload = extract_single(data, collection)
+        except NotFoundError:
+            return None
         return cls(payload, client=client)
 
     @classmethod
@@ -419,7 +423,10 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query = Query(cls.collection, service_id=client.service_id,
                       name__first_lower=name.lower()).limit(1)
         data = await client.request(query)
-        payload = extract_single(data, cls.collection)
+        try:
+            payload = extract_single(data, cls.collection)
+        except NotFoundError:
+            return None
         return cls(payload, client=client)
 
     @classmethod

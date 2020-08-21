@@ -12,7 +12,7 @@ from typing import (Any, ClassVar, get_args, List, Optional, Type,
 
 from .cache import TLRUCache
 from .census import Query
-from .errors import BadPayloadError
+from .errors import BadPayloadError, NotFoundError
 from .request import extract_payload, extract_single
 from .types import CensusData
 
@@ -526,7 +526,10 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
         query = Query(cls.collection, service_id=client.service_id)
         query.case(False).add_term(field=f'name.{locale}', value=name)
         payload = await client.request(query)
-        payload = extract_single(payload, cls.collection)
+        try:
+            payload = extract_single(payload, cls.collection)
+        except NotFoundError:
+            return None
         return cls(payload, locale=locale, client=client)
 
     def name(self, locale: str = 'en') -> str:
