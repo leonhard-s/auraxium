@@ -183,7 +183,7 @@ class TLRUCache(Generic[K, V]):
         try:
             item, added, _ = self._data[key]
         except KeyError:
-            log.debug('%s: Key %d not found', self.name, key)
+            log.debug('%s: Key %s not found', self.name, key)
             return None
         if self.ttu > 0:
             age = now - added
