@@ -280,6 +280,12 @@ def _process_invalid_search_term(msg: str, url: yarl.URL) -> None:
             f'"{namespace}/{collection}". At least three characters must be '
             'provided in addition to the RegEx flag.',
             url, namespace, collection, field)
+    # No valid terms in show/hide fields
+    if chopped.startswith('c:show or c:hide resulted'):
+        method = 'show' if 'c:show' in str(url) else 'hide'
+        raise InvalidSearchTermError(
+            f'Invalid field names specified for QueryBase.{method}().',
+            url, namespace, collection, f'c:{method}')
 
 
 async def run_query(query: Query, session: aiohttp.ClientSession,
