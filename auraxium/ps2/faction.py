@@ -14,6 +14,16 @@ class FactionData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        faction_id: The unique ID of this faction.
+        name: The localised name of the faction.
+        code_tag: The canonical tag representation of the faction.
+        user_selectable: Whether this faction is playable.
+        image_set_id: The image set associated with this faction.
+        image_id: The default image asset for this faction.
+        image_path: The string version of the faction's default image.
+
     """
 
     faction_id: int

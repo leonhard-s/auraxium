@@ -10,6 +10,7 @@ from ..proxy import InstanceProxy, SequenceProxy
 from ..types import CensusData
 from ..utils import LocaleData, optional
 
+from .faction import Faction
 from .profile import Profile
 
 if TYPE_CHECKING:
@@ -24,6 +25,11 @@ class ItemCategoryData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        item_category_id: The unique ID of this item category.
+        name: The localised name of the category.
+
     """
 
     item_category_id: int
@@ -58,6 +64,12 @@ class ItemTypeData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        item_type_id: The unique ID of this item type.
+        name: The identifying name of this item type.
+        code: The internal code used to describe this item type.
+
     """
 
     item_type_id: int
@@ -97,6 +109,31 @@ class ItemData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        item_id: The unique ID of this item.
+        item_type_id: The ID of the item type for this item.
+        item_category_id: The ID of the item category for this item.
+        activatable_ability_id: (Not yet documented)
+        passive_ability_id: (Not yet documented)
+        is_vehicle_weapon: Whether this item is a vehicle weapon.
+        name: Localised name of the item.
+        description: Localised description of the item.
+        faction_id: The faction that has access to this item.
+        max_stack_size: The stack size for stackable items such as
+            grenades.
+        item_set_id: The image set for this item.
+        item_id: The default image asset for this item.
+        image_path: The path to the default image for this item.
+        skill_set_id: The skill set associated with this item. This is
+            used for upgradable items like the Medical Applicator or
+            Repair Tool.
+        is_default_attachment: Default attachments are generally not
+            visible to the user and are used whenever nothing is
+            selected. Examples include the default iron sights, or the
+            regular ammo type for weapon supporting non-standard
+            ammo types.
+
     """
 
     item_id: int
@@ -181,6 +218,25 @@ class Item(Named, cache_size=128, cache_ttu=3600.0):
         query.add_term(
             field=ItemCategory.id_field, value=self.data.item_category_id)
         return InstanceProxy(ItemCategory, query, client=self._client)
+
+    def description(self, locale: str = 'en') -> str:
+        """Return the description of this item in the given locale.
+
+        This will return "Missing String" if no string has been set for
+        the selected locale.
+        """
+        if hasattr(self.data.description, locale):
+            return str(getattr(self.data.description, locale))
+        return 'Missing String'
+
+    def faction(self) -> InstanceProxy[Faction]:
+        """Return the faction that has access to this item.
+
+        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        """
+        query = Query(Faction.collection, service_id=self._client.service_id)
+        query.add_term(field=Faction.id_field, value=self.data.faction_id)
+        return InstanceProxy(Faction, query, client=self._client)
 
     async def datasheet(self) -> 'WeaponDatasheet':
         """Return the datasheet for the weapon."""

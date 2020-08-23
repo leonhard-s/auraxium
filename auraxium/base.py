@@ -43,7 +43,7 @@ class Ps2Data(metaclass=abc.ABCMeta):
 
     Upon instantiation, a :class:`TypeError` will be raised for any
     attributes that do not match the annotation. This does process
-    compound types like :class:`typing.Union` or
+    compound type declarations like :class:`typing.Union` or
     :class:`typing.Optional`.
     """
 

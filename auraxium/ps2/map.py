@@ -18,6 +18,11 @@ class FacilityTypeData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        facility_type_id: The unique ID of this facility type.
+        description: The description of this facility type.
+
     """
 
     facility_type_id: int
@@ -48,6 +53,17 @@ class MapHexData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        zone_id: The ID of the zone (or continent) containing this hex.
+        map_region_id: The ID of the map region associated with this
+            hex.
+        x: The X map position of the hex.
+        y: The Y map position of the hex.
+        hex_type: The type of map hex. Refer to :attr:`type_name` for
+            details.
+        type_name: The name of the hex' type.
+
     """
 
     # pylint: disable=invalid-name
@@ -81,6 +97,12 @@ class MapHex(Cached, cache_size=100, cache_ttu=60.0):
     def _build_dataclass(data: CensusData) -> MapHexData:
         return MapHexData.from_census(data)
 
+    def map_region(self) -> InstanceProxy['MapRegion']:
+        """Return the map region associated with this map hex."""
+        query = Query(MapRegion.collection, service_id=self._client.service_id)
+        query.add_term(field=MapRegion.id_field, value=self.data.map_region_id)
+        return InstanceProxy(MapRegion, query, client=self._client)
+
 
 @dataclasses.dataclass(frozen=True)
 class MapRegionData(Ps2Data):
@@ -88,6 +110,20 @@ class MapRegionData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        map_region_id: The unique ID of this map region.
+        zone_id: The ID of the zone (i.e. continent) this region is in.
+        facility_id: The ID of the associated facility.
+        facility_name: The name of the associated facility.
+        facility_type_id: The type ID of the associated facility.
+        facility_type: The type name of the associated facility.
+        location_x: The X world position of the facility.
+        location_y: The Y world position of the facility.
+        location_z: The Z world position of the facility.
+        reward_amount: (Unused)
+        reward_currency_id: (Unused)
+
     """
 
     map_region_id: int
@@ -171,11 +207,18 @@ class RegionData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        region_id: The unique ID of the map region.
+        zone_id: The ID of the zone (i.e. continent) the region is in.
+        initial_faction_id: (Unused)
+        name: The localised name of the map region.
+
     """
 
     region_id: int
     zone_id: int
-    initial_faction_id: int  #: No longer used
+    initial_faction_id: int
     name: LocaleData
 
     @classmethod

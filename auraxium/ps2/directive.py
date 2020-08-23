@@ -19,6 +19,12 @@ class DirectiveTreeCategoryData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        directive_tree_category_id: The unique ID of the directive tree
+            category.
+        name: The localised name of the directive tree category.
+
     """
 
     directive_tree_category_id: int
@@ -63,6 +69,17 @@ class DirectiveTreeData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        directive_tree_id: The unique ID of the directive tree.
+        directive_tree_category_id: The category of the directive tree.
+        name: The localised name of the directive tree.
+        description: The localised description of the directive tree.
+        image_set_id: The image set for this directive tree.
+        image_id: The default image asset for this directive tree.
+        image_path: The path of the default image asset for this
+            directive tree.
+
     """
 
     directive_tree_id: int
@@ -139,6 +156,23 @@ class DirectiveTierData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        directive_tier_id: The unique ID of the directive tier.
+        directive_tree_id: The directive tree this directive belongs
+            to.
+        reward_set_id: The reward set awarded upon completion of this
+            directive tier.
+        directive_points: The directive points awarded upon completion
+            of this directive tier.
+        completion_count: The number of directives that must be
+            completed for completion of this directive tier.
+        name: The localised name of the directive tier.
+        image_set_id: The image set for this directive tier.
+        image_id: The default image asset for this directive tier.
+        image_path: The path of the default image asset for this
+            directive tier.
+
     """
 
     directive_tier_id: int
@@ -206,13 +240,29 @@ class DirectiveData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        directive_id: The unique ID of this directive.
+        directive_tree_id: The directive tree of this directive.
+        directive_tier_id: The directive tier of this directive.
+        objective_set_id: The objective set contributing towards this
+            directive.
+        qualify_requirement_id: An item that must be unlocked for this
+            directive to be available.
+        name: The localised name of the directive.
+        name: The localised description of the directive.
+        image_set_id: The image set for this directive.
+        image_id: The default image asset for this directive.
+        image_path: The path of the default image asset for this
+            directive.
+
     """
 
     directive_id: int
     directive_tree_id: int
     directive_tier_id: int
     objective_set_id: int
-    quality_requirement_id: Optional[int]
+    qualify_requirement_id: Optional[int]
     name: LocaleData
     description: LocaleData
     image_set_id: int

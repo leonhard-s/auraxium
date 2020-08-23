@@ -20,6 +20,11 @@ class ProfileData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        profile_id: The unique ID of this profile.
+        description: The description of the profile.
+
     """
 
     profile_id: int
@@ -84,6 +89,13 @@ class LoadoutData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        loadout_id: The unique ID of this loadout.
+        profile_id: The ID of the associated profile.
+        faction_id: The faction for this loadout.
+        code_name: A string describing the loadout.
+
     """
 
     loadout_id: int

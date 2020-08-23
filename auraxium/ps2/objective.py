@@ -16,6 +16,14 @@ class ObjectiveTypeData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        objective_type_id: The unique ID of the objective type.
+        description: A description of what the objective type is used
+            for.
+        param*: Descriptions of what the corresponding parameter is
+            used for in objectives of this type.
+
     """
 
     objective_type_id: int
@@ -61,6 +69,16 @@ class ObjectiveData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        objective_id: The unique ID of this objective.
+        objective_type_id: The associated objective type for this
+            objective.
+        objective_group_id: The objective group this objective
+            contributes to. Used to link objectives to directives.
+        param*: Type-specific parameters for this objective. Refer to
+            the corresponding :class:`ObjectiveType` for details.
+
     """
 
     objective_id: int

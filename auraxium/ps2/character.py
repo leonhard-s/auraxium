@@ -25,7 +25,24 @@ log = logging.getLogger('auraxium.ps2')
 
 
 class CharacterAchievement(NamedTuple):
-    """Data container for a character's achievement status."""
+    """Data container for a character's achievement status.
+
+    Attributes:
+        character_id: The ID of the character for this entry.
+        achievement_id: The ID of the achievement for this entry.
+        earned_count: How often the character has earned the given
+            achievement.
+        start: The UTC timestamp the character started progression
+            towards this achievement at.
+        start_date: Human-readable version of :attr:`start`.
+        finish: The time the character completed this achievement. Only
+            valid for one-time achievements such as medals.
+        finish_date: Human-readable version of :attr:`finish`.
+        last_save: The last time the character gained this
+            achievement at as a UTC timestamp.
+        last_save_date: Human-readable version of :attr:`last_save`.
+
+        """
 
     character_id: int
     achievement_id: int
@@ -56,7 +73,18 @@ class CharacterAchievement(NamedTuple):
 
 
 class CharacterDirective(NamedTuple):
-    """Data container for a character's directive status."""
+    """Data container for a character's directive status.
+    
+    Attributes:
+        character_id: The ID of the character for this entry.
+        directive_tree_id: The ID of the directive tree for this entry.
+        directive_id: The ID of the directive for this entry.
+        completion_time: The time the character completed this
+            directive.
+        completion_time_date: Human-readable version of
+            :attr:`completion_time`.
+            
+    """
 
     character_id: int
     directive_tree_id: int
@@ -82,8 +110,20 @@ class CharacterDirective(NamedTuple):
 class TitleData(Ps2Data):
     """Data class for :class:`auraxium.ps2.character.Title`.
 
+    .. important::
+        Unlike most other forms of API data, the ID used by titles is
+        **not** unique.
+
+        This is due to the ASP system re-using the same title IDs while
+        introducing a different name ("A.S.P. Operative" for ``en``).
+
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        title_id: The ID of this title.
+        name: The localised name of this title.
+
     """
 
     title_id: int
@@ -114,10 +154,31 @@ class CharacterData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        character_id: The unique name of the character.
+        name: The name of the player.
+        faction_id: The faction the character belongs to.
+        head_id: The head model for this character.
+        title_id: The current title selected for this character. May be
+            zero.
+        times: Play and login time data for the character.
+        certs: Certification data for the character.
+        battle_rank: Battle rank data for the character.
+        profile_id: The last profile the character used.
+        daily_ribbon: Daily ribbon data for the character.
+        prestige_level: The ASP rank of the character.
+
     """
 
     class BattleRank(NamedTuple):
-        """Object representation of the "battle_rank" sub-key."""
+        """Object representation of the "battle_rank" sub-key.
+
+        Attributes:
+            value: The current battle rank.
+            percent_to_next: The progress to the next battle rank.
+
+        """
 
         value: int
         percent_to_next: float
@@ -134,7 +195,20 @@ class CharacterData(Ps2Data):
                 float(data['percent_to_next']))
 
     class Certs(NamedTuple):
-        """Object representation of the "certs" sub-key."""
+        """Object representation of the "certs" sub-key.
+
+        Attributes:
+            earned_points: Certification points the player has ever
+                earned.
+            gifted_points: Certification points the player was gifted
+                through events.
+            spent_points: Certification points the character has spent.
+            available_points: The current certification point balance
+                of the character.
+            percent_to_next: The progress to the next certification
+                point for the character.
+
+            """
 
         earned_points: int
         gifted_points: int
@@ -157,7 +231,14 @@ class CharacterData(Ps2Data):
                 float(data['percent_to_next']))
 
     class DailyRibbon(NamedTuple):
-        """Object representation of the "daily_ribbon" sub-key."""
+        """Object representation of the "daily_ribbon" sub-key.
+
+        Attributes:
+            count: The number of daily ribbon bonuses available.
+            time: (Not yet documented)
+            date: Human-readable version of :attr:`time`.
+
+        """
 
         count: int  # type: ignore
         time: Optional[int]
@@ -176,7 +257,13 @@ class CharacterData(Ps2Data):
                 optional(data, 'date', str))
 
     class Name(NamedTuple):
-        """Object representation of the "name" sub-key."""
+        """Object representation of the "name" sub-key.
+        
+        Attributes:
+            first: The name of the character.
+            first_lower: Lowercase version of :attr:`first`.
+        
+        """
 
         first: str
         first_lower: str
@@ -193,7 +280,24 @@ class CharacterData(Ps2Data):
                 data['first_lower'])
 
     class Times(NamedTuple):
-        """Object representation of the "times" sub-key."""
+        """Object representation of the "times" sub-key.
+        
+        Attributes:
+            creation: The time the character was created.
+            creation_date: Human-readable version of :attr:`creation`.
+            last_save: The last time the character was updated. This
+                roughly matches the last time the character logged out.
+            last_save_date: Human-readable version of
+                :attr:`last_save`.
+            last_login: The last time the character logged in.
+            last_login_date: Human-readable version of
+                :attr:`last_login_date`.
+            login_count: The number of times the character has logged
+                in.
+            minutes_played: The total number of minutes this character
+                was logged into PS2.
+            
+            """
 
         creation: int
         creation_date: str

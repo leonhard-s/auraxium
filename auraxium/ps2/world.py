@@ -19,6 +19,12 @@ class WorldData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        world_id: The unique ID of the world.
+        state: The current state (i.e. online status) of the world.
+        name: The localised name of the world.
+
     """
 
     world_id: int

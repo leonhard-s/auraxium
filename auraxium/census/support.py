@@ -175,7 +175,8 @@ class SearchTerm:
 
         This is a more natural way of defining search terms for users
         familiar with the API literals. See the docstring of the
-        :class:`SearchModifier` enum for a list of search modifiers.
+        :class:`SearchModifier` enumerator for a list of search
+        modifiers.
 
         Note that this requires the value to be a str instance; this
         can obscure the actual field value (this is generally not of

@@ -16,6 +16,12 @@ class ResourceTypeData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        resource_type_id: The unique ID of this resource type.
+        description: A description of what this resource type is used
+            for.
+
     """
 
     resource_type_id: int
@@ -35,6 +41,11 @@ class ResourceType(Cached, cache_size=50, cache_ttu=3600.0):
     data: ResourceTypeData
     id_field = 'resource_type_id'
 
+    @property
+    def description(self) -> str:
+        """A description of what this resource type is used for."""
+        return self.data.description
+
     @staticmethod
     def _build_dataclass(data: CensusData) -> ResourceTypeData:
         return ResourceTypeData.from_census(data)
@@ -46,6 +57,16 @@ class AbilityTypeData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        ability_type_id: The unique ID for this ability type.
+        description: A description of what this ability type is used
+            for.
+        param*: Descriptions of what the corresponding parameter is
+            used for in abilities of this type.
+        string*: Descriptions of what the corresponding string value is
+            used for in abilities of this type.
+
     """
 
     ability_type_id: int
@@ -103,6 +124,25 @@ class AbilityData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    Attributes:
+        ability_id: The unique ID of this ability.
+        ability_type_id: The associated ability type for this ability.
+        expire_msec: The duration of the ability.
+        first_use_delay_msec: The initial cooldown of the ability.
+        next_use_delay_msec: The reuse cooldown of the ability.
+        resource_type_id: The resource type used by the ability.
+        resource_first_cost: The initial cast cost of the ability.
+        resource_cost_per_msec: The resource cost per second for
+            toggled abilities.
+        distance_max: (Not yet documented)
+        radius_max: (Not yet documented)
+        flag_toggle: Whether the ability is toggled.
+        param*: Type-specific parameters for this ability. Refer to the
+            corresponding :class:`AbilityType` for details.
+        string*: Type-specific string values for this ability. Refer to
+            the corresponding :class:`AbilityType` for details.
+
     """
 
     ability_id: int
