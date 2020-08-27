@@ -217,9 +217,10 @@ def raise_for_dict(data: CensusData, url: yarl.URL) -> None:
                 raise ServerError(
                     f'Error code: "{code}", error message: "{msg}"', url)
         if code == 'SERVER_ERROR':
-            # NOTE: There is at least one circumstance in which there is no
-            # message associated with a server error; that being an empty
-            # request (i.e. https://census.daybreakgames.com/get/).
+            # NOTE: There are at least two circumstances under which there is
+            # no message associated with a server error:
+            # 1. An empty request (i.e. https://census.daybreakgames.com/get/)
+            # 2. Not providing any arguments to ps2/event
             raise ServerError('Unknown server error', url)
         # Fallback for new and exciting error codes
         raise CensusError(
