@@ -5,7 +5,7 @@ from typing import Dict, Iterable, List, Optional, Tuple, Union
 
 import yarl
 
-from .query import JoinedQuery, Query
+from .support import JoinedQueryData, QueryData
 
 __all__ = [
     'generate_url',
@@ -15,7 +15,7 @@ __all__ = [
 REST_ENDPOINT = 'https://census.daybreakgames.com'
 
 
-def generate_url(query: Query, verb: str, validate: bool = True) -> yarl.URL:
+def generate_url(query: QueryData, verb: str, validate: bool = True) -> yarl.URL:
     """Generate the URL for a given query.
 
     This will also recursively process any joined queries.
@@ -48,13 +48,13 @@ def generate_url(query: Query, verb: str, validate: bool = True) -> yarl.URL:
     # Namespace
     url /= query.namespace
     # Collection
-    if query.collection is not None:
-        url /= query.collection
+    if (collection := query.collection) is not None:
+        url /= collection
     elif validate:
         if query.terms:
             warnings.warn(f'No collection specified, but {len(query.terms)} '
                           'query terms provided')
-        if query.joins:
+        elif query.joins:
             warnings.warn(f'No collection specified, but {len(query.joins)} '
                           'joined queries provided')
     # Top-level query terms
@@ -64,13 +64,14 @@ def generate_url(query: Query, verb: str, validate: bool = True) -> yarl.URL:
     return url
 
 
-def process_join(join: JoinedQuery, verbose: bool) -> str:
+def process_join(data: JoinedQueryData, verbose: bool) -> str:
     """Return a string representation of the joined query.
 
     This generates is the string that will be inserted into the
     URL. This will also recursively process any inner joins added.
 
     Arguments:
+        data: The data representing the joined query.
         verbose(optional): By default, the serialisation will try
             to save space by omitting fields left at their default
             value. Set this flag to True to change that. Defaults
@@ -82,44 +83,42 @@ def process_join(join: JoinedQuery, verbose: bool) -> str:
     """
     # The collection (sometimes referred to as "type" in the docs) to join
     string = 'type:' if verbose else ''
-    string += str(join.collection)
+    string += str(data.collection)
     # The fields used to link the two collections
-    if join.parent_field is not None:
-        string += f'^on:{join.parent_field}'
-    if join.child_field is not None:
-        string += f'^to:{join.child_field}'
+    if (parent := data.field_on) is not None:
+        string += f'^on:{parent}'
+    if (child := data.field_to) is not None:
+        string += f'^to:{child}'
     # Flags
-    if join.is_list or verbose:
-        string += '^list:' + ('1' if join.is_list else '0')
-    if not join.is_outer or verbose:
-        string += '^outer:' + ('1' if join.is_outer else '0')
+    if (is_list := data.is_list) or verbose:
+        string += '^list:' + ('1' if is_list else '0')
+    if not (is_outer := data.is_outer) or verbose:
+        string += '^outer:' + ('1' if is_outer else '0')
     # Show/hide field lists
-    if join.commands['show']:
-        string += '^show:' + '\''.join(str(s) for s in join.commands['show'])
-    elif join.commands['hide']:
-        string += '^hide:' + '\''.join(str(s) for s in join.commands['hide'])
+    if show := data.show:
+        string += '^show:' + '\''.join(str(s) for s in show)
+    elif hide := data.hide:
+        string += '^hide:' + '\''.join(str(s) for s in hide)
     # Inject at name
-    if join.inject_at is not None:
-        string += f'^inject_at:{join.inject_at}'
+    if name := data.inject_at is not None:
+        string += f'^inject_at:{name}'
     # QueryBase terms
-    if join.terms:
-        string += '^terms:' + '\''.join(t.serialise() for t in join.terms)
+    if terms := data.terms:
+        string += '^terms:' + '\''.join(t.serialise() for t in terms)
     # Process nested (inner) joins
-    if join.joins:
-        string += '('
-        string += ','.join(j.serialise(verbose) for j in join.joins)
-        string += ')'
+    if joins := data.joins:
+        string += f'({",".join(process_join(j, verbose) for j in joins)})'
     return string
 
 
-def process_query_commands(query: Query,
+def process_query_commands(data: QueryData,
                            validate: bool = True) -> Dict[str, str]:
     """Process any query commands defined for the given query.
 
     This also recursively processes any joins defined.
 
     Arguments:
-        query: The top-level query to process.
+        data: The top-level query to process.
         validate (optional): Whether to perform checks on the query and
             warn the user about bad arguments. Defaults to ``True``.
 
@@ -130,61 +129,62 @@ def process_query_commands(query: Query,
     """
     commands: Dict[str, str] = {}
     # c:show
-    if query.commands['show']:
-        commands['show'] = ','.join(str(f) for f in query.commands['show'])
-        if validate and query.commands['hide']:
+    if show := data.show:
+        commands['show'] = ','.join(str(f) for f in show)
+        if validate and data.hide:
             warnings.warn('Query.show and Query.hide are mutually exclusive, '
                           'the latter will be ignored')
     # c:hide
-    elif query.commands['hide']:
-        commands['hide'] = ','.join(str(f) for f in query.commands['hide'])
+    elif hide := data.hide:
+        commands['hide'] = ','.join(str(f) for f in hide)
     # c:sort
-    if query.commands['sort']:
-        commands['sort'] = ','.join(_process_sorts(query.commands['sort']))
+    if sort := data.sort:
+        commands['sort'] = ','.join(_process_sorts(sort))
     # c:has
-    if query.commands['has']:
-        commands['has'] = ','.join(query.commands['has'])
+    if has := data.has:
+        commands['has'] = ','.join(has)
     # c:resolve
-    if query.commands['resolve']:
-        commands['resolve'] = ','.join(query.commands['resolve'])
+    if resolve := data.resolve:
+        commands['resolve'] = ','.join(resolve)
     # c:case
-    if not query.commands['case']:
+    if not data.case:
         commands['case'] = '0'
     # c:limit
-    if query.commands['limit'] > 1:
-        commands['limit'] = str(query.commands['limit'])
-        if validate and query.commands['limit_per_db'] > 1:
+    if (limit := data.limit) > 1:
+        commands['limit'] = str(limit)
+        if validate and data.limit_per_db > 1:
             warnings.warn('Query.limit and Query.limit_per_db are mutually '
                           'exclusive, the latter will be ignored')
     # c:limitPerDB
-    elif query.commands['limit_per_db'] > 1:
-        commands['limitPerDB'] = str(query.commands['limit_per_db'])
+    elif (limit_per_db := data.limit_per_db) > 1:
+        commands['limitPerDB'] = str(limit_per_db)
     # c:start
-    if query.commands['start'] > 0:
-        commands['start'] = str(query.commands['start'])
+    if (start := data.start) > 0:
+        commands['start'] = str(start)
     # c:includeNull
-    if query.commands['include_null']:
+    if data.include_null:
         commands['includeNull'] = '1'
     # c:lang
-    if query.commands['lang'] is not None:
-        commands['lang'] = query.commands['lang']
+    if (lang := data.lang) is not None:
+        commands['lang'] = lang
     # c:join
-    if query.joins:
-        commands['join'] = ','.join(j.serialise() for j in query.joins)
+    if data.joins:
+        commands['join'] = ','.join(
+            process_join(j, False) for j in data.joins)
     # c:tree
-    if query.commands['tree'] is not None:
-        commands['tree'] = _process_tree(query.commands['tree'])
+    if (tree := data.tree) is not None:
+        commands['tree'] = _process_tree(tree)
     # c:timing
-    if query.commands['timing']:
+    if data.timing:
         commands['timing'] = '1'
     # c:exactMatchFirst
-    if query.commands['exact_match_first']:
+    if data.exact_match_first:
         commands['exactMatchFirst'] = '1'
     # c:distinct
-    if query.commands['distinct'] is not None:
-        commands['distinct'] = query.commands['distinct']
+    if (distinct := data.distinct) is not None:
+        commands['distinct'] = distinct
     # c:retry
-    if not query.commands['retry']:
+    if not data.retry:
         commands['retry'] = '0'
     # Add the 'c:' prefix to all of the keys
     commands = {f'c:{k}': v for k, v in commands.items()}
@@ -232,10 +232,10 @@ def _process_tree(tree: Dict[str, Optional[Union[str, bool]]]) -> str:
 
     """
     string = str(tree['field'])
-    if tree['prefix']:
-        string += f'^prefix:{tree["prefix"]}'
+    if prefix := tree['prefix']:
+        string += f'^prefix:{prefix}'
     if tree['is_list']:
         string += '^list:1'
-    if tree['start'] is not None:
-        string += f'^start{tree["start"]}'
+    if (start := tree['start']) is not None:
+        string += f'^start:{start}'
     return string

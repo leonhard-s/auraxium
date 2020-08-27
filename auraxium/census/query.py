@@ -9,8 +9,9 @@ from typing import Any, Callable, List, Optional, Tuple, Type, TypeVar, Union
 
 import yarl
 
-from .support import (CensusValue, default_query_data, QueryData,
+from .support import (CensusValue, JoinedQueryData, QueryBaseData, QueryData,
                       SearchModifier, SearchTerm)
+from .urlgen import generate_url
 
 __all__ = [
     'JoinedQuery',
@@ -52,10 +53,8 @@ class QueryBase:
                 :meth:`QueryBase.add_term()` method.
 
         """
-        self.collection = collection
-        self.commands: QueryData = default_query_data()
-        self.joins: List['JoinedQuery'] = []
-        self.terms: List[SearchTerm] = []
+        self.data = QueryBaseData(collection)
+        self.joins: List[JoinedQuery] = []
         # Replace and double underscores with dots to allow accessing inner
         # fields like "name.first" or "battle_rank.value"
         kwargs = {k.replace('__', '.'): v for k, v in kwargs.items()}
@@ -110,7 +109,7 @@ class QueryBase:
             term = SearchTerm.infer(field, value)
         else:
             term = SearchTerm(field, value, modifier=modifier)
-        self.terms.append(term)
+        self.data.terms.append(term)
         return self
 
     @classmethod
@@ -178,12 +177,12 @@ class QueryBase:
         copy_func: Callable[[_T], _T] = dummy_copy
         if deep_copy:
             copy_func = copy.deepcopy
-        instance = cls(copy_func(template.collection), **kwargs)
-        instance.terms = copy_func(template.terms)
+        instance = cls(copy_func(template.data.collection), **kwargs)
+        instance.data.terms = copy_func(template.data.terms)
         if copy_joins:
             instance.joins = copy_func(template.joins)
-        instance.commands['hide'] = copy_func(template.commands['hide'])
-        instance.commands['show'] = copy_func(template.commands['show'])
+        instance.hide = copy_func(template.hide)
+        instance.show = copy_func(template.show)
 
         return instance
 
@@ -227,9 +226,9 @@ class QueryBase:
             The query instance; this allows for chaining of operations.
 
         """
-        self.commands['hide'] = [field]
-        self.commands['hide'].extend(args)
-        self.commands['show'] = []
+        self.data.hide = [field]
+        self.data.hide.extend(args)
+        self.data.show = []
         return self
 
     def show(self: _QueryBaseT, field: str, *args: str) -> _QueryBaseT:
@@ -250,9 +249,9 @@ class QueryBase:
             The query instance; this allows for chaining of operations.
 
         """
-        self.commands['show'] = [field]
-        self.commands['show'].extend(args)
-        self.commands['hide'] = []
+        self.data.show = [field]
+        self.data.show.extend(args)
+        self.data.hide = []
         return self
 
 
@@ -295,8 +294,9 @@ class Query(QueryBase):
 
         """
         super().__init__(collection, **kwargs)
-        self.namespace = namespace
-        self.service_id = service_id
+        self.data = QueryData.from_base(self.data)
+        self.data.namespace = namespace
+        self.data.service_id = service_id
 
     def __str__(self) -> str:
         """Return the string representation of the query.
@@ -326,7 +326,7 @@ class Query(QueryBase):
             The full URL describing this query and all of its joins.
 
         """
-        self.commands['case'] = value
+        self.data.case = value
         return self
 
     def has(self, field: str, *args: str) -> 'Query':
@@ -344,8 +344,8 @@ class Query(QueryBase):
             The query instance; this allows for chaining of operations.
 
         """
-        self.commands['has'] = [field]
-        self.commands['has'].extend(args)
+        self.data.has = [field]
+        self.data.has.extend(args)
         return self
 
     def distinct(self, field: Optional[str]) -> 'Query':
@@ -359,7 +359,7 @@ class Query(QueryBase):
             The query instance; this allows for chaining of operations.
 
         """
-        self.commands['distinct'] = field
+        self.data.distinct = field
         return self
 
     def exact_match_first(self, value: bool = True) -> 'Query':
@@ -379,7 +379,7 @@ class Query(QueryBase):
             The query instance; this allows for chaining of operations.
 
         """
-        self.commands['exact_match_first'] = value
+        self.data.exact_match_first = value
         return self
 
     def include_null(self, value: bool) -> 'Query':
@@ -399,7 +399,7 @@ class Query(QueryBase):
             The query instance; this allows for chaining of operations.
 
         """
-        self.commands['include_null'] = value
+        self.data.include_null = value
         return self
 
     def lang(self, lang: Optional[str] = None) -> 'Query':
@@ -422,7 +422,7 @@ class Query(QueryBase):
             The query instance; this allows for chaining of operations.
 
         """
-        self.commands['lang'] = lang
+        self.data.lang = lang
         return self
 
     def limit(self, limit: int) -> 'Query':
@@ -451,8 +451,8 @@ class Query(QueryBase):
         """
         if limit < 1:
             raise ValueError('limit must be greater than or equal to 1')
-        self.commands['limit'] = limit
-        self.commands['limit_per_db'] = 1
+        self.data.limit = limit
+        self.data.limit_per_db = 1
         return self
 
     def limit_per_db(self, limit_per_db: int) -> 'Query':
@@ -479,8 +479,8 @@ class Query(QueryBase):
         """
         if limit_per_db < 1:
             raise ValueError('limit_per_db must be greater than or equal to 1')
-        self.commands['limit_per_db'] = limit_per_db
-        self.commands['limit'] = 1
+        self.data.limit_per_db = limit_per_db
+        self.data.limit = 1
         return self
 
     def offset(self, offset: int) -> 'Query':
@@ -522,8 +522,8 @@ class Query(QueryBase):
             The query instance; this allows for chaining of operations.
 
         """
-        self.commands['resolve'] = [name]
-        self.commands['resolve'].extend(args)
+        self.data.resolve = [name]
+        self.data.resolve.extend(args)
         return self
 
     def retry(self, retry: bool = False) -> 'Query':
@@ -541,7 +541,7 @@ class Query(QueryBase):
             The full URL describing this query and all of its joins.
 
         """
-        self.commands['retry'] = retry
+        self.data.retry = retry
         return self
 
     def start(self, start: int) -> 'Query':
@@ -563,7 +563,7 @@ class Query(QueryBase):
         if start < 0:
             raise ValueError('start may not be negative')
         if start > 0:
-            self.commands['start'] = start
+            self.data.start = start
         return self
 
     def sort(self, field: Union[str, Tuple[str, bool]],
@@ -589,8 +589,8 @@ class Query(QueryBase):
             The query instance; this allows for chaining of operations.
 
         """
-        self.commands['sort'] = [field]
-        self.commands['sort'].extend(args)
+        self.data.sort = [field]
+        self.data.sort.extend(args)
         return self
 
     def timing(self, value: bool = True) -> 'Query':
@@ -608,7 +608,7 @@ class Query(QueryBase):
             The full URL describing this query and all of its joins.
 
         """
-        self.commands['timing'] = value
+        self.data.timing = value
         return self
 
     def tree(self, field: str, is_list: bool = False, prefix: str = '',
@@ -632,8 +632,8 @@ class Query(QueryBase):
             The query instance; this allows for chaining of operations.
 
         """
-        self.commands['tree'] = {'field': field, 'is_list': is_list,
-                                 'prefix': prefix, 'start': start}
+        self.data.tree = {'field': field, 'is_list': is_list,
+                          'prefix': prefix, 'start': start}
         return self
 
     def url(self, verb: str = 'get', skip_checks: bool = False) -> yarl.URL:
@@ -655,10 +655,8 @@ class Query(QueryBase):
             A URL object representing the query.
 
         """
-        # NOTE: This local import is required to avoid a circular import.
-        # pylint: disable=import-outside-toplevel
-        from .urlgen import generate_url
-        return generate_url(self, verb, validate=not skip_checks)
+        self.data.joins = [j.serialise() for j in self.joins]
+        return generate_url(self.data, verb, validate=not skip_checks)
 
 
 class JoinedQuery(QueryBase):
@@ -687,11 +685,7 @@ class JoinedQuery(QueryBase):
     def __init__(self, collection: str, **kwargs: CensusValue) -> None:
         """Instantiate a joined, inner query."""
         super().__init__(collection, **kwargs)
-        self.inject_at: Optional[str] = None
-        self.is_list: bool = False
-        self.is_outer: bool = True
-        self.child_field: Optional[str] = None
-        self.parent_field: Optional[str] = None
+        self.data = JoinedQueryData.from_base(self.data)
 
     @classmethod
     def copy(cls, template: QueryBase, copy_joins: bool = False,
@@ -752,38 +746,47 @@ class JoinedQuery(QueryBase):
 
         """
         # A joined query cannot be created without a collection
-        if template.collection is None:
+        if template.data.collection is None:
             raise TypeError('JoinedQuery requires a collection')
         # Run the original implementation as normal
-        instance = super().copy(template, copy_joins=copy_joins,
-                                deep_copy=deep_copy, **kwargs)
+        instance: JoinedQuery = super().copy(  # type: ignore
+            template, copy_joins=copy_joins, deep_copy=deep_copy, **kwargs)
         # If the original query had a non-default limit value, the join should
         # also return a list.
-        if (isinstance(template, Query)
-                and template.limit is not None
-                and template.commands['limit'] > 1):
-            instance.is_list = True
+        if isinstance(template, Query) and template.data.limit > 1:
+            instance.data.is_list = True
         return instance
 
-    def set_fields(self, parent: str, child: str) -> 'JoinedQuery':
+    def serialise(self) -> JoinedQueryData:
+        """Process any internal joins and return a nested data dict."""
+        data = self.data
+        data.joins = [j.serialise() for j in self.joins]
+        return data
+
+    def set_fields(self, parent: Optional[str], child: Optional[str] = None
+                   ) -> 'JoinedQuery':
         """Set the field names to use for the join.
 
         The API will use inferred names whenever possible, inferred
         names might be ``<parent-collection>_id`` or`
         ``<child-collection>_id``.
 
-        Use this method to specify the field names manually.
+        Use this method to specify the field names manually. Either of
+        the given values may be ``None`` to use the default naming
+        system.
 
         Arguments:
             parent: The field name on the parent collection.
-            child: The field name on the child collection.
+            child (optional): The field name on the child collection.
 
         Returns:
             The query instance; this allows for chaining of operations.
 
         """
-        self.parent_field = parent
-        self.child_field = child
+        if parent is not None:
+            self.data.field_on = parent
+        if child is not None:
+            self.data.field_to = child
         return self
 
     def set_inject_at(self, name: str) -> 'JoinedQuery':
@@ -804,7 +807,7 @@ class JoinedQuery(QueryBase):
             The query instance; this allows for chaining of operations.
 
         """
-        self.inject_at = name
+        self.data.inject_at = name
         return self
 
     def set_list(self, is_list: bool) -> 'JoinedQuery':
@@ -823,7 +826,7 @@ class JoinedQuery(QueryBase):
             The query instance; this allows for chaining of operations.
 
         """
-        self.is_list = is_list
+        self.data.is_list = is_list
         return self
 
     def set_outer(self, is_outer: bool) -> 'JoinedQuery':
@@ -852,26 +855,5 @@ class JoinedQuery(QueryBase):
             The query instance; this allows for chaining of operations.
 
         """
-        self.is_outer = is_outer
+        self.data.is_outer = is_outer
         return self
-
-    def serialise(self, verbose: bool = False) -> str:
-        """Return a string representation of the joined query.
-
-        This generates is the string that will be inserted into the
-        URL. This will also recursively process any inner joins added.
-
-        Arguments:
-            verbose (optional): By default, the serialisation will try
-                to save space by omitting fields left at their default
-                value. Set this flag to True to change that. Defaults
-                to False.
-
-        Returns:
-            The string representation of the joined query.
-
-        """
-        # NOTE: This local import is required to avoid a circular import.
-        # pylint: disable=import-outside-toplevel
-        from .urlgen import process_join
-        return process_join(self, verbose)

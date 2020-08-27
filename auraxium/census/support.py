@@ -1,11 +1,13 @@
 """Supporting classes and helper methods for the census module."""
 
+import dataclasses
 import enum
-from typing import Any, Dict, List, Optional, Tuple, TypedDict, Union
+from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar, Union
 
 __all__ = [
     'CensusValue',
-    'default_query_data',
+    'JoinedQueryData',
+    'QueryBaseData',
     'QueryData',
     'SearchModifier',
     'SearchTerm'
@@ -15,36 +17,7 @@ CensusValue = Union[float, int, str]
 # This list connects the string literals to the enum values. The index of the
 # list element must match the corresponding enum value.
 conversion_list: List[str] = ['', '<', '[', '>', ']', '^', '*', '!']
-
-
-class QueryData(TypedDict):
-    """A typed dictionary used to specify types for query command data.
-
-    This behaves much like a dictionary, but allows Mypy or other type
-    checkers to infer if the attributes passed are valid.
-    """
-    # NOTE: Typed dictionaries do not support default values. Those are
-    # specified in the default_query_data() method below, which is
-    # called when instantiating this typed dict.
-
-    # These keys are shared between query commands and joins
-    hide: List[str]
-    show: List[str]
-    # The following are only used by query commands
-    case: bool
-    has: List[str]
-    distinct: Optional[str]
-    exact_match_first: bool
-    include_null: bool
-    lang: Optional[str]
-    limit: int
-    limit_per_db: int
-    resolve: List[str]
-    retry: bool
-    start: int
-    sort: List[Union[str, Tuple[str, bool]]]
-    timing: bool
-    tree: Optional[Dict[str, Any]]
+QueryBaseDataT = TypeVar('QueryBaseDataT', bound='QueryBaseData')
 
 
 class SearchModifier(enum.Enum):
@@ -213,32 +186,56 @@ class SearchTerm:
             The string representation of the search term.
 
         """
-        literal = f'{self.field}='
-        literal += SearchModifier.serialise(self.modifier)
-        literal += str(self.value)
-        return literal
+        return (f'{self.field}={SearchModifier.serialise(self.modifier)}'
+                f'{self.value}')
 
 
-def default_query_data() -> QueryData:
-    """Return a query data dictionary populated with default values.
+@dataclasses.dataclass()
+class QueryBaseData:
+    """A dataclass used to store generic query information."""
 
-    Returns:
-        A dictionary populated with default values.
+    collection: Optional[str]
+    hide: List[str] = dataclasses.field(default_factory=list)
+    joins: List['JoinedQueryData'] = dataclasses.field(default_factory=list)
+    show: List[str] = dataclasses.field(default_factory=list)
+    terms: List[SearchTerm] = dataclasses.field(default_factory=list)
 
-    """
-    return {'hide': [],
-            'show': [],
-            'case': True,
-            'has': [],
-            'distinct': None,
-            'exact_match_first': False,
-            'include_null': False,
-            'lang': None,
-            'limit': 1,
-            'limit_per_db': 1,
-            'resolve': [],
-            'retry': True,
-            'start': 0,
-            'sort': [],
-            'timing': False,
-            'tree': None}
+    @classmethod
+    def from_base(cls: Type[QueryBaseDataT],
+                  data: 'QueryBaseData') -> QueryBaseDataT:
+        """Helper used to copy the base query data components."""
+        return cls(**data.__dict__)
+
+
+@dataclasses.dataclass()
+class QueryData(QueryBaseData):
+    """A dataclass used to store global flags and settings for queries."""
+
+    case: bool = True
+    distinct: Optional[str] = None
+    exact_match_first: bool = False
+    has: List[str] = dataclasses.field(default_factory=list)
+    include_null: bool = False
+    lang: Optional[str] = None
+    limit: int = 1
+    limit_per_db: int = 1
+    namespace: str = 'ps2:v2'
+    resolve: List[str] = dataclasses.field(default_factory=list)
+    retry: bool = True
+    service_id: str = 's:example'
+    sort: List[Union[str, Tuple[str, bool]]] = dataclasses.field(
+        default_factory=list)
+    start: int = 0
+    timing: bool = False
+    tree: Optional[Dict[str, Any]] = None
+
+
+@dataclasses.dataclass()
+class JoinedQueryData(QueryBaseData):
+    """Data class for joined queries in the API."""
+
+    inject_at: Optional[str] = None
+    is_list: bool = False
+    is_outer: bool = True
+    field_on: Optional[str] = None
+    field_to: Optional[str] = None

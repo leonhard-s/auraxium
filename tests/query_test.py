@@ -51,7 +51,7 @@ class TestURLs(unittest.TestCase):
 
         correct_term = census.SearchTerm('name.first_lower', 'lite',
                                          census.SearchModifier.STARTS_WITH)
-        term = test_query.terms[0]
+        term = test_query.data.terms[0]
         self.assertTrue(term.field == correct_term.field
                         and term.value == correct_term.value
                         and term.modifier == correct_term.modifier)
