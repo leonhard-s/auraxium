@@ -1,10 +1,9 @@
 """Directive class definitions."""
 
 import dataclasses
-from typing import ClassVar, Final, Optional, Union
+from typing import Final, Optional
 
 from ..base import Named, Ps2Data
-from ..cache import TLRUCache
 from ..census import Query
 from ..proxy import InstanceProxy, SequenceProxy
 from ..types import CensusData
@@ -287,7 +286,6 @@ class DirectiveData(Ps2Data):
 class Directive(Named, cache_size=30, cache_ttu=60.0):
     """A directive a character may complete."""
 
-    _cache: ClassVar[TLRUCache[Union[int, str], 'Directive']]
     collection = 'directive'
     data: DirectiveData
     id_field = 'directive_id'

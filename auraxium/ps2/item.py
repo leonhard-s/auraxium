@@ -240,6 +240,7 @@ class Item(Named, cache_size=128, cache_ttu=3600.0):
 
     async def datasheet(self) -> 'WeaponDatasheet':
         """Return the datasheet for the weapon."""
+        # pylint: disable=import-outside-toplevel
         from .weapon import WeaponDatasheet
         collection: Final[str] = 'weapon_datasheet'
         query = Query(collection, service_id=self._client.service_id)
@@ -277,7 +278,7 @@ class Item(Named, cache_size=128, cache_ttu=3600.0):
 
         This returns an :class:`auraxium.proxy.InstanceProxy`.
         """
-        from .weapon import Weapon
+        from .weapon import Weapon  # pylint: disable=import-outside-toplevel
         collection: Final[str] = 'item_to_weapon'
         query = Query(collection, service_id=self._client.service_id)
         query.add_term(field=self.id_field, value=self.id)

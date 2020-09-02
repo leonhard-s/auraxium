@@ -107,35 +107,8 @@ class Ps2Object(metaclass=abc.ABCMeta):
     :class:`Ps2Data`.
     """
 
-    # NOTE: These names will be overwritten by the abstract class properties
-    # below, but Mypy seems to be confused by them, typing them as
-    # Callable[[], str].
-    # This is redundant but ensures Mypy can supply correct type hints for
-    # these attributes while still requiring subclasses to overwrite them.
-    collection: ClassVar[str] = ''
-    id_field: ClassVar[str] = ''
-
-    @property  # type: ignore
-    @classmethod
-    @abc.abstractmethod
-    def collection(cls) -> str:  # pylint: disable=function-redefined
-        """Return the unique collection associated with this object.
-
-        This is an abstract method and is re-implemented for every
-        subclass.
-        """
-        raise NotImplementedError
-
-    @property  # type: ignore
-    @classmethod
-    @abc.abstractmethod
-    def id_field(cls) -> str:  # pylint: disable=function-redefined
-        """Return the ID field name for this object.
-
-        This is an abstract method and is re-implemented for every
-        subclass.
-        """
-        raise NotImplementedError
+    collection: ClassVar[str] = 'bogus'
+    id_field: ClassVar[str] = 'bogus_id'
 
     def __init__(self, data: CensusData, client: 'Client') -> None:
         """Initialise the object.
@@ -415,8 +388,8 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
         return cls._cache.get(id_)
 
     @classmethod
-    async def get_by_id(cls: Type[CachedT], id_: int, *, client: 'Client'
-                        ) -> Optional[CachedT]:
+    async def get_by_id(cls: Type[CachedT], id_: int, *,  # type: ignore
+                        client: 'Client') -> Optional[CachedT]:
         """Retrieve an object by by ID.
 
         This query uses caches and might return an existing instance if
