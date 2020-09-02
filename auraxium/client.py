@@ -400,7 +400,7 @@ class Client:
         return wrapper
 
     async def wait_for(self, trigger: Trigger, *args: Trigger,
-                       timeout: float = 0.0) -> Event:
+                       timeout: Optional[float] = None) -> Event:
         """Wait for one or more triggers to fire.
 
         This method will wait until any of the given triggers have
@@ -414,8 +414,8 @@ class Client:
             trigger: A trigger to wait for.
             *args: Additional triggers that will also resume execution.
             timeout (optional): The maximum number of seconds to wait
-                for; never expires if set to ``0.0``. Defaults to
-                ``0.0``.
+                for; never expires if set to ``None``. Defaults to
+                ``None``.
 
         Raises:
             TimeoutError: Raised if the given timeout is exceeded.
@@ -428,14 +428,15 @@ class Client:
         # fires or expires. Think of it as an asynchronous flag.
         async_flag = asyncio.Event()
         # Used to store the event received
-        _received_event: Optional[Event] = None
+        received_event: Optional[Event] = None
 
         triggers: List[Trigger] = [trigger]
         triggers.extend(args)
 
         def callback(event: Event) -> None:
             # Store the received event
-            _received_event = event
+            nonlocal received_event
+            received_event = event
             # Remove the triggers. This suppresses any ValueErrors raised if
             # the trigger that fired was set to single shot mode.
             for trig in triggers:
@@ -454,17 +455,19 @@ class Client:
             async_flag.set()
 
         for trig in triggers:
-            trig.callback = callback
+            trig.action = callback
             self.add_trigger(trig)
 
         # Wait for the triggers to fire, or for the timeout to expire
-        if timeout <= 0.0:
+        if timeout is not None and timeout <= 0.0:
             timeout = None
         try:
             await asyncio.wait_for(async_flag.wait(), timeout=timeout)
         except asyncio.TimeoutError as err:
             raise TimeoutError from err
-        return _received_event
+
+        assert received_event is not None
+        return received_event
 
     async def wait_ready(self, interval: float = 0.05) -> None:
         """Wait for the websocket connection to be ready.
@@ -521,8 +524,8 @@ class Client:
             while self._ws_connected:
                 try:
                     try:
-                        response: str = await asyncio.wait_for(
-                            self.websocket.recv(), timeout=0.25)
+                        response = str(await asyncio.wait_for(
+                            self.websocket.recv(), timeout=0.25))
                     except asyncio.TimeoutError:
                         # NOTE: This inner timeout try block is used to ensure
                         # the websocket will regularly check for messages in
@@ -534,7 +537,9 @@ class Client:
                         pass
                     else:
                         log.debug('Received response: %s', response)
-                        self._ws_dispatch(response)
+                        event = Event(json.loads(response))
+                        log.debug('Event created: %s', event)
+                        self._ws_dispatch(event)
                     finally:
                         if self._ws_send_queue:
                             msg = self._ws_send_queue.pop(0)
@@ -583,7 +588,7 @@ class Client:
         """Process a response payload received through the websocket.
 
         This method filters out any non-event messages (such as service
-        messages, connection heartbeats or subscription echos) before
+        messages, connection heartbeats or subscription echoes) before
         passing any event payloads on to :meth:`Client._ws_dispatch()`.
 
         Arguments:
