@@ -8,6 +8,7 @@ streaming service (ESS).
 
 import asyncio
 import contextlib
+import copy
 import json
 import logging
 from typing import (Any, Callable, List, Literal, Optional, Type,
@@ -347,9 +348,11 @@ class Client:
 
         """
         if self.profiling:
+            # Create a copy of the query before modifying it
+            query = copy.copy(query)
             query.timing(True)
         data = await run_query(query, verb=verb, session=self.session)
-        if self.profiling:
+        if self.profiling and verb == 'get':
             timing = data['timing']
             if log.level <= logging.DEBUG:
                 url = query.url()
