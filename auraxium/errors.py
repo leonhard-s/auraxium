@@ -127,7 +127,7 @@ class InvalidSearchTermError(ServerError):
         collection: The collection that was accessed.
         namespace: The namespace of the collection.
         field: The field that caused the error. Might be ``None`` if
-            the culprit could not be determiend.
+            the culprit could not be determined.
 
     """
 

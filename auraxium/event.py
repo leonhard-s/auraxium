@@ -284,7 +284,7 @@ class Trigger:
 
         The action may be a regular callable or a coroutine.
         Any callable that is a coroutine according to
-        :meth:`asyncio.iscoroutine()` will be awaited.
+        :meth:`asyncio.iscoroutinefunction()` will be awaited.
 
         This method can be used as a decorator.
 
