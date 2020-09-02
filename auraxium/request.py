@@ -341,7 +341,7 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
     @backoff.on_exception(backoff.expo, aiohttp.ClientResponseError,
                           on_backoff=on_backoff, on_giveup=on_giveup,
                           on_success=on_success, max_time=10.0, max_tries=5)
-    async def retry_query() -> None:
+    async def retry_query() -> aiohttp.ClientResponse:
         """Request handling wrapper."""
         return await session.get(
             url, allow_redirects=False, raise_for_status=True)
