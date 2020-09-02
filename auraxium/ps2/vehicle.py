@@ -107,8 +107,9 @@ class Vehicle(Named, cache_size=50, cache_ttu=3600.0):
         query.add_term(field=Faction.id_field, value=faction_id)
         query.limit(500)
         join = query.create_join(cls.collection)
-        join.parent_field = join.child_field = cls.id_field
-        proxy = SequenceProxy(cls, query, client=client)
+        join.set_fields(cls.id_field)
+        proxy: SequenceProxy['Vehicle'] = SequenceProxy(
+            cls, query, client=client)
         return await proxy.flatten()
 
     def skill_sets(self, faction: Optional[Union[Faction, int]] = None
@@ -132,7 +133,7 @@ class Vehicle(Named, cache_size=50, cache_ttu=3600.0):
         query.limit(500)
         query.sort('display_index')
         join = query.create_join(SkillSet.collection)
-        join.parent_field = join.child_field = SkillSet.id_field
+        join.set_fields(SkillSet.id_field)
         return SequenceProxy(SkillSet, query, client=self._client)
 
 

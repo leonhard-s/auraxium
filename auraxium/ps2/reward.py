@@ -132,7 +132,7 @@ class Reward(Cached, cache_size=50, cache_ttu=60.0):
         query.add_term(field='reward_group_id', value=reward_group_id)
         query.limit(100)
         join = query.create_join(Reward.collection)
-        join.parent_field = join.child_field = Reward.id_field
+        join.set_fields(Reward.id_field)
         return SequenceProxy(Reward, query, client=client)
 
     @classmethod
@@ -144,9 +144,9 @@ class Reward(Cached, cache_size=50, cache_ttu=60.0):
         query.add_term(field='reward_set_id', value=reward_set_id)
         query.limit(100)
         join = query.create_join('reward_group_to_reward').set_list(True)
-        join.parent_field = join.child_field = 'reward_group_id'
+        join.set_fields('reward_group_id')
         nested = join.create_join(Reward.collection)
-        nested.parent_field = nested.child_field = Reward.id_field
+        nested.set_fields(Reward.id_field)
         return SequenceProxy(Reward, query, client=client)
 
     def type(self) -> InstanceProxy[RewardType]:

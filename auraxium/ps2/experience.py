@@ -30,7 +30,7 @@ class ExperienceData(Ps2Data):
 
     experience_id: int
     description: str
-    xp: int
+    xp: int  # pylint: disable=invalid-name
 
     @classmethod
     def from_census(cls, data: CensusData) -> 'ExperienceData':
@@ -88,6 +88,11 @@ class ExperienceRankData(Ps2Data):
         @classmethod
         def from_census(cls, data: CensusData
                         ) -> 'ExperienceRankData.EmpireData':
+            """Populate the data class with values from the dictionary.
+
+            This parses the API response and casts the appropriate
+            types.
+            """
             return cls(
                 LocaleData.from_census(data['title']),
                 int(data['image_set_id']),
@@ -95,11 +100,11 @@ class ExperienceRankData(Ps2Data):
 
     rank: int
     xp_max: int
-    vs: EmpireData
+    vs: EmpireData  # pylint: disable=invalid-name
     vs_image_path: str
-    nc: EmpireData
+    nc: EmpireData  # pylint: disable=invalid-name
     nc_image_path: str
-    tr: EmpireData
+    tr: EmpireData  # pylint: disable=invalid-name
     tr_image_path: str
 
     @classmethod

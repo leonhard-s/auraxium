@@ -202,8 +202,7 @@ class Item(Named, cache_size=128, cache_ttu=3600.0):
         query.add_term(field=self.id_field, value=self.id)
         query.limit(100)
         join = query.create_join(self.collection)
-        join.parent_field = 'attachment_item_id'
-        join.child_field = self.id_field
+        join.set_fields('attachment_item_id', self.id_field)
         return SequenceProxy(self.__class__, query, client=self._client)
 
     def category(self) -> InstanceProxy[ItemCategory]:
@@ -234,8 +233,9 @@ class Item(Named, cache_size=128, cache_ttu=3600.0):
 
         This returns an :class:`auraxium.proxy.InstanceProxy`.
         """
+        value = self.data.faction_id or -1
         query = Query(Faction.collection, service_id=self._client.service_id)
-        query.add_term(field=Faction.id_field, value=self.data.faction_id)
+        query.add_term(field=Faction.id_field, value=value)
         return InstanceProxy(Faction, query, client=self._client)
 
     async def datasheet(self) -> 'WeaponDatasheet':
@@ -258,7 +258,7 @@ class Item(Named, cache_size=128, cache_ttu=3600.0):
         query.add_term(field=self.id_field, value=self.id)
         query.limit(50)
         join = query.create_join(Profile.collection)
-        join.parent_field = join.child_field = Profile.id_field
+        join.set_fields(Profile.id_field)
         return SequenceProxy(Profile, query, client=self._client)
 
     def type(self) -> InstanceProxy[ItemType]:
@@ -282,5 +282,5 @@ class Item(Named, cache_size=128, cache_ttu=3600.0):
         query = Query(collection, service_id=self._client.service_id)
         query.add_term(field=self.id_field, value=self.id)
         join = query.create_join('weapon')
-        join.parent_field = join.child_field = 'weapon_id'
+        join.set_fields('weapon_id')
         return InstanceProxy(Weapon, query, client=self._client)

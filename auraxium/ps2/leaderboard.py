@@ -2,7 +2,7 @@
 
 import enum
 import warnings
-from typing import Final, List, Optional, Tuple, Union
+from typing import Dict, Final, List, Optional, Tuple, Union
 
 from ..census import Query
 from ..errors import NotFoundError
@@ -76,7 +76,7 @@ async def by_char_multi(stat: Stat, character: Union[int, Character],
     query.add_term(field='period', value=_period_from_enum(period))
     payload = await client.request(query)
     data = extract_payload(payload, collection)
-    return_ = {i: (-1, -1) for i in char_ids}
+    return_: Dict[int, Tuple[int, int]] = {i: (-1, -1) for i in char_ids}
     for row in data:
         id_ = int(row['character_id'])
         return_[id_] = int(row['rank']), int(row['value'])
@@ -105,7 +105,7 @@ async def top(stat: Stat, period: Period = Period.FOREVER, matches: int = 10,
     query.limit(matches)
     query.start(offset)
     join = query.create_join(Character.collection)
-    join.parent_field = join.child_field = Character.id_field
+    join.set_fields(Character.id_field)
     payload = await client.request(query)
     key = 'character_id_join_character'
     return [(int(d['value']), Character(d[key], client=client))

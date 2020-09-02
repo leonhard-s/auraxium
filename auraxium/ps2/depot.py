@@ -78,7 +78,7 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
         query.add_term(field=self.id_field, value=self.id)
         query.limit(100)
         join = query.create_join(Item.collection)
-        join.parent_field = join.child_field = Item.id_field
+        join.set_fields(Item.id_field)
         payload = await self._client.request(query)
         data = extract_payload(payload, collection)
         key_name = f'{Item.id_field}_join_{Item.collection}'

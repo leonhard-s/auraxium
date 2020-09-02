@@ -51,14 +51,14 @@ class Zone(Named, cache_size=20, cache_ttu=3600.0):
     data: ZoneData
     id_field = 'zone_id'
 
-    @property
-    def is_dynamic(self) -> bool:
-        """Return whether the given zone is dynamic or not.
+    # @property
+    # def is_dynamic(self) -> bool:
+    #     """Return whether the given zone is dynamic or not.
 
-        Dynamic zones are spun up for individual players as required,
-        such as the tutorial world space.
-        """
-        # TODO: Add dynamic zone detection
+    #     Dynamic zones are spun up for individual players as required,
+    #     such as the tutorial world space.
+    #     """
+    #     # TODO: Add dynamic zone detection
 
     @staticmethod
     def _build_dataclass(data: CensusData) -> ZoneData:

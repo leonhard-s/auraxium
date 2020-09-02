@@ -74,7 +74,7 @@ class CharacterAchievement(NamedTuple):
 
 class CharacterDirective(NamedTuple):
     """Data container for a character's directive status.
-    
+
     Attributes:
         character_id: The ID of the character for this entry.
         directive_tree_id: The ID of the directive tree for this entry.
@@ -83,7 +83,7 @@ class CharacterDirective(NamedTuple):
             directive.
         completion_time_date: Human-readable version of
             :attr:`completion_time`.
-            
+
     """
 
     character_id: int
@@ -258,11 +258,11 @@ class CharacterData(Ps2Data):
 
     class Name(NamedTuple):
         """Object representation of the "name" sub-key.
-        
+
         Attributes:
             first: The name of the character.
             first_lower: Lowercase version of :attr:`first`.
-        
+
         """
 
         first: str
@@ -281,7 +281,7 @@ class CharacterData(Ps2Data):
 
     class Times(NamedTuple):
         """Object representation of the "times" sub-key.
-        
+
         Attributes:
             creation: The time the character was created.
             creation_date: Human-readable version of :attr:`creation`.
@@ -296,7 +296,7 @@ class CharacterData(Ps2Data):
                 in.
             minutes_played: The total number of minutes this character
                 was logged into PS2.
-            
+
             """
 
         creation: int
@@ -558,7 +558,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.add_term(field=self.id_field, value=self.id)
         query.limit(5000)
         join = query.create_join(Item.collection)
-        join.parent_field = join.child_field = Item.id_field
+        join.set_fields(Item.id_field)
         return SequenceProxy(Item, query, client=self._client)
 
     async def is_online(self) -> bool:
@@ -711,5 +711,5 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query = Query(collection, service_id=self._client.service_id)
         query.add_term(field=self.id_field, value=self.id)
         join = query.create_join(World.collection)
-        join.parent_field = join.child_field = 'world_id'
+        join.set_fields('world_id')
         return InstanceProxy(World, query, client=self._client)

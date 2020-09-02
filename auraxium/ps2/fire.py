@@ -416,7 +416,7 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
         query = Query(collection, service_id=self._client.service_id)
         query.add_term(field=self.id_field, value=self.id)
         join = query.create_join(Projectile.collection)
-        join.parent_field = join.child_field = Projectile.id_field
+        join.set_fields(Projectile.id_field)
         return InstanceProxy(Projectile, query, client=self._client)
 
 
@@ -484,5 +484,5 @@ class FireGroup(Cached, cache_size=10, cache_ttu=60.0):
         query.add_term(field=self.id_field, value=self.id)
         query.limit(20)
         join = query.create_join(FireMode.collection)
-        join.parent_field = join.child_field = FireMode.id_field
+        join.set_fields(FireMode.id_field)
         return SequenceProxy(FireMode, query, client=self._client)

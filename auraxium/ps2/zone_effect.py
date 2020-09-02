@@ -19,7 +19,7 @@ class ZoneEffectTypeData(Ps2Data):
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
 
-    Attributes: 
+    Attributes:
         zone_effect_type_id: The unique ID of this zone effect type.
         description: A description of what this zone effect type is
             used for.

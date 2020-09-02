@@ -175,17 +175,15 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
         query = Query(collection, service_id=self._client.service_id)
         query.limit(10)
         join = query.create_join(self.collection)
-        join.parent_field = 'facility_id_a'
-        join.child_field = 'facility_id'
+        join.set_fields('facility_id_a', 'facility_id')
         join = query.create_join(self.collection)
-        join.parent_field = 'facility_id_b'
-        join.child_field = 'facility_id'
+        join.set_fields('facility_id_b', 'facility_id')
         # Modified query A
         query.add_term(field='facility_id_a', value=self.data.facility_id)
         proxy = SequenceProxy(MapRegion, query, client=self._client)
         connected.update(await proxy.flatten())
         # Modified query B
-        query.terms = []
+        query.data.terms = []
         query.add_term(field='facility_id_b', value=self.data.facility_id)
         proxy = SequenceProxy(MapRegion, query, client=self._client)
         connected.update(await proxy.flatten())

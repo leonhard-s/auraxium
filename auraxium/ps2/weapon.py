@@ -173,7 +173,7 @@ class WeaponData(Ps2Data):
         to_iron_sights_ms: The ADS enter time in milliseconds.
         from_iron_sights_ms: The ADS exit time in milliseconds.
         heat_capacity: The heat capacity of the weapon. Generally
-            identical to :attr:`~auraxium.ps2.FireMode.heat_treshold`,
+            identical to :attr:`~auraxium.ps2.FireMode.heat_threshold`,
             but this only uses the first fire mode of the weapon.
         heat_bleed_off_rate: The rate at which the weapon will cool
             down after firing stops.
@@ -261,7 +261,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
         query.add_term(field='weapon_group_id', value=group_id)
         query.limit(100)
         join = query.create_join(Item.collection)
-        join.parent_field = join.child_field = Item.id_field
+        join.set_fields(Item.id_field)
         join.set_outer(False)
         return SequenceProxy(Item, query, client=self._client)
 
@@ -290,7 +290,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
         query.add_term(field=self.id_field, value=self.id)
         query.limit(20)
         join = query.create_join(FireGroup.collection)
-        join.parent_field = join.child_field = FireGroup.id_field
+        join.set_fields(FireGroup.id_field)
         return SequenceProxy(FireGroup, query, client=self._client)
 
     @classmethod
@@ -316,5 +316,5 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
         query = Query('item_to_weapon', service_id=self._client.service_id)
         query.add_term(field=self.id_field, value=self.id)
         join = query.create_join('item')
-        join.parent_field = 'item_id'
+        join.set_fields('item_id', None)
         return InstanceProxy(Item, query, client=self._client)

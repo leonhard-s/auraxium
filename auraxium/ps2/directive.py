@@ -309,7 +309,7 @@ class Directive(Named, cache_size=30, cache_ttu=60.0):
         query.add_term(
             field='objective_set_id', value=self.data.objective_set_id)
         join = query.create_join(Objective.collection)
-        join.parent_field = join.child_field = 'objective_group_id'
+        join.set_fields('objective_group_id')
         join.set_list(True)
         return SequenceProxy(Objective, query, client=self._client)
 

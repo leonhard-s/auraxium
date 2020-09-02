@@ -70,7 +70,12 @@ class Proxy(Generic[Ps2ObjectT]):
         async with self._lock:
             payload = await self._client.request(self.query)
             list_ = self._resolve_nested_payload(payload)
-            self._data = [self._type(data, self._client) for data in list_]
+            # NOTE: There does not appear to be an easy way to type something
+            # as "subclass of an abstract class and all abstract methods have
+            # been overwritten", which is why this is typed as being a
+            # Ps2Object subclass and then promptly ignored here.
+            self._data = [self._type(  # type: ignore
+                data, client=self._client) for data in list_]
             self._last_fetched = datetime.datetime.now()
 
     def _resolve_nested_payload(self, payload: Dict[str, Any]
@@ -98,14 +103,14 @@ class Proxy(Generic[Ps2ObjectT]):
             # NOTE: The parent list will always be a list of all items the join
             # has been applied to. The resulting list should be a merged set of
             # the elements therein.
-            assert join.collection is not None
-            if (on_ := join.parent_field) is None:
+            assert join.data.collection is not None
+            if (on_ := join.data.field_on) is None:
                 raise RuntimeError('Parent field of None not supported')
             # Filter out the payload sub-dict corresponding to the given join
             data: List[Dict[str, Any]] = []
             for element in parent:
-                value = element[f'{on_}_join_{join.collection}']
-                if join.is_list:
+                value = element[f'{on_}_join_{join.data.collection}']
+                if join.data.is_list:
                     data.extend(value)
                 else:
                     data.append(value)
@@ -118,8 +123,8 @@ class Proxy(Generic[Ps2ObjectT]):
             return data
 
         # Main query
-        assert self.query.collection is not None
-        data = extract_payload(payload, self.query.collection)
+        assert self.query.data.collection is not None
+        data = extract_payload(payload, self.query.data.collection)
         # Resolve any joins
         if self.query.joins:
             parent = data

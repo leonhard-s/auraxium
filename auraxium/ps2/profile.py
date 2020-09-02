@@ -1,13 +1,12 @@
 """Profile and loadout class definitions."""
 
 import dataclasses
-from typing import Final, Optional
+from typing import Final
 
-from ..base import Named, Cached, Ps2Data
+from ..base import Cached, Ps2Data
 from ..census import Query
 from ..proxy import InstanceProxy, SequenceProxy
 from ..types import CensusData
-from ..utils import LocaleData, optional
 
 from .armour import ArmourInfo
 from .faction import Faction
@@ -62,7 +61,7 @@ class Profile(Cached, cache_size=200, cache_ttu=60.0):
         query.add_term(field=self.id_field, value=self.id)
         query.limit(20)
         join = query.create_join(ArmourInfo.collection)
-        join.parent_field = join.child_field = ArmourInfo.id_field
+        join.set_fields(ArmourInfo.id_field)
         return SequenceProxy(ArmourInfo, query, client=self._client)
 
     @staticmethod
@@ -79,7 +78,7 @@ class Profile(Cached, cache_size=200, cache_ttu=60.0):
         query.add_term(field=self.id_field, value=self.id)
         query.limit(500)
         join = query.create_join(ResistInfo.collection)
-        join.parent_field = join.child_field = ResistInfo.id_field
+        join.set_fields(ResistInfo.id_field)
         return SequenceProxy(ResistInfo, query, client=self._client)
 
 
@@ -133,7 +132,7 @@ class Loadout(Cached, cache_size=20, cache_ttu=3600.0):
         query.add_term(field=Profile.id_field, value=self.data.profile_id)
         query.limit(20)
         join = query.create_join(ArmourInfo.collection)
-        join.parent_field = join.child_field = ArmourInfo.id_field
+        join.set_fields(ArmourInfo.id_field)
         return SequenceProxy(ArmourInfo, query, client=self._client)
 
     def faction(self) -> InstanceProxy[Faction]:
@@ -164,5 +163,5 @@ class Loadout(Cached, cache_size=20, cache_ttu=3600.0):
         query.add_term(field=Profile.id_field, value=self.data.profile_id)
         query.limit(500)
         join = query.create_join(ResistInfo.collection)
-        join.parent_field = join.child_field = ResistInfo.id_field
+        join.set_fields(ResistInfo.id_field)
         return SequenceProxy(ResistInfo, query, client=self._client)
