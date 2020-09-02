@@ -162,28 +162,25 @@ class QueryBase:
             **kwargs: Any keyword arguments are passed on to the new
                 query's constructor.
 
+        Raises:
+            TypeError: Raised when attempting to copy into a
+                :class:`JoinedQuery` without a collection specified.
+
         Returns:
             An instance of the current class populated with information
             from the template query.
 
         """
-
-        def dummy_copy(obj: _T) -> _T:
-            """Dummy function that does not actually copy anything."""
-            return obj
-
-        # NOTE: This assignment will cause mypy errors if performed via a
-        # ternary operator.
-        copy_func: Callable[[_T], _T] = dummy_copy
-        if deep_copy:
-            copy_func = copy.deepcopy
+        copy_func: Callable[[_T], _T] = (
+            copy.deepcopy if deep_copy else _dummy_copy)
+        # Create a new querybase instance
         instance = cls(copy_func(template.data.collection), **kwargs)
-        instance.data.terms = copy_func(template.data.terms)
+        attrs = ['terms', 'hide', 'show']
+        for attr in attrs:
+            value = copy_func(getattr(template.data, attr))
+            setattr(instance.data, attr, value)
         if copy_joins:
             instance.joins = copy_func(template.joins)
-        instance.hide = copy_func(template.hide)
-        instance.show = copy_func(template.show)
-
         return instance
 
     def create_join(self, collection: str, *args: Any,
@@ -328,6 +325,85 @@ class Query(QueryBase):
         """
         self.data.case = value
         return self
+
+    @classmethod
+    def copy(cls, template: 'QueryBase', copy_joins: bool = False,
+             deep_copy: bool = False, **kwargs: Any) -> 'Query':
+        """Create a new query, copying most data from the template.
+
+        The new query will share the collection, terms and show/hide
+        markers of the template. If ``copy_joins`` is enabled, it will
+        also copy its list of joins.
+
+        Among other things, allows easy creation of joins from existing
+        queries, which is handy if you have complex existing joins or
+        hidden fields that would be tedious to recreate.
+
+        By default, this creates a shallow copy. Modifying the terms or
+        joined queries will cause mutations of the template. Set the
+        ``deep_copy`` flag to ensure complete independence.
+
+        Any keyword arguments are passed to the new query's
+        initialiser.
+
+        Example:
+
+            .. code-block:: python3
+
+                # This is an existing query that does what we need it
+                # to, assume it has some complex join or hidden field
+                # setup that would make it tedious to re-create.
+                old = Query('character')
+
+                # This is an unrelated, new query. We want its join to
+                # return the exact same data structure as the previous
+                # query.
+                new = Query('outfit_member', outfit_id=...).limit(1000)
+
+                # Create a join emulating the original query and add it
+                join = JoinedQuery.copy(old, copy_joins=True)
+                new.add_join(join)
+
+        Arguments:
+            template: The query to copy.
+            copy_joins (optional): Whether to recursively copy joined
+                queries. Defaults to ``False``.
+            deep_copy (optional): Whether to perform a deep copy. Use
+                this if you intend to modify the list of terms or other
+                mutable types to avoid changing the template. Defaults
+                to ``False``.
+            **kwargs: Any keyword arguments are passed on to the new
+                query's constructor.
+
+        Raises:
+            TypeError: Raised when attempting to copy into a
+                :class:`JoinedQuery` without a collection specified.
+
+        Returns:
+            An instance of the current class populated with information
+            from the template query.
+
+        """
+        copy_func: Callable[[_T], _T] = (
+            copy.deepcopy if deep_copy else _dummy_copy)
+        # Create a new Query instance
+        instance: 'Query' = super().copy(  # type: ignore
+            template, copy_joins=copy_joins, deep_copy=deep_copy, *kwargs)
+        if isinstance(template, Query):
+            # Additional attributes to include when copying a top-level query
+            attrs = ['case', 'distinct', 'exact_match_first', 'has',
+                     'include_null', 'lang', 'limit', 'limit_per_db',
+                     'namespace', 'resolve', 'retry', 'service_id', 'sort',
+                     'start', 'timing', 'tree']
+            for attr in attrs:
+                value = copy_func(getattr(template.data, attr))
+                setattr(instance.data, attr, value)
+        # Include an arbitrary limit when copying from a joined list
+        elif isinstance(template, JoinedQuery) and template.data.is_list:
+            # NOTE: Joined lists are infinite, so this might break for very
+            # long joins.
+            instance.limit(10000)  # pylint: disable=no-member
+        return instance
 
     def has(self, field: str, *args: str) -> 'Query':
         """Hide results with a ``NULL`` value at the given field.
@@ -748,13 +824,23 @@ class JoinedQuery(QueryBase):
         # A joined query cannot be created without a collection
         if template.data.collection is None:
             raise TypeError('JoinedQuery requires a collection')
-        # Run the original implementation as normal
+        copy_func: Callable[[_T], _T] = (
+            copy.deepcopy if deep_copy else _dummy_copy)
+        # Create a new JoinedQuery instance
         instance: JoinedQuery = super().copy(  # type: ignore
             template, copy_joins=copy_joins, deep_copy=deep_copy, **kwargs)
+        if isinstance(template, JoinedQuery):
+            # Additional attributes to include when copying another join
+            attrs = [
+                'inject_at', 'is_list', 'is_outer', 'field_on', 'field_to']
+            for attr in attrs:
+                value = copy_func(getattr(template.data, attr))
+                setattr(instance.data, attr, value)
         # If the original query had a non-default limit value, the join should
         # also return a list.
-        if isinstance(template, Query) and template.data.limit > 1:
-            instance.data.is_list = True
+        elif isinstance(template, Query):
+            if template.data.limit > 1 or template.data.limit_per_db > 1:
+                instance.data.is_list = True
         return instance
 
     def serialise(self) -> JoinedQueryData:
@@ -857,3 +943,8 @@ class JoinedQuery(QueryBase):
         """
         self.data.is_outer = is_outer
         return self
+
+
+def _dummy_copy(obj: _T) -> _T:
+    """Dummy function that does not actually copy anything."""
+    return obj
