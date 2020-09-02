@@ -10,14 +10,15 @@ import datetime
 import logging
 import sys
 from collections import OrderedDict
-from typing import Dict, Generic, Iterable, List, Optional, Tuple, TypeVar
+from typing import (Any, Dict, Generic, Hashable, Iterable, List, Optional,
+                    Tuple, TypeVar)
 
 __all__ = [
     'TLRUCache'
 ]
 
-K = TypeVar('K')  # pylint: disable=invalid-name
-V = TypeVar('V')  # pylint: disable=invalid-name
+K = TypeVar('K', bound=Hashable)  # pylint: disable=invalid-name
+V = TypeVar('V', bound=Any)  # pylint: disable=invalid-name
 log = logging.getLogger('auraxium.cache')
 
 
