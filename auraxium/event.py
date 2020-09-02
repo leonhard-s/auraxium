@@ -12,7 +12,7 @@ import enum
 import json
 import logging
 import warnings
-from typing import (Callable, Dict, Iterable, List, Optional, Set,
+from typing import (Awaitable, Callable, Dict, Iterable, List, Optional, Set,
                     TYPE_CHECKING, Union)
 
 from .types import CensusData
@@ -263,10 +263,11 @@ class Trigger:
                      Union[Iterable['Character'], Iterable[int]]] = None,
                  worlds: Optional[
                      Union[Iterable['World'], Iterable[int]]] = None,
-                 action: Optional[Callable[[Event], None]] = None,
+                 action: Optional[
+                     Callable[[Event], Union[None, Awaitable[None]]]] = None,
                  name: Optional[str] = None,
                  single_shot: bool = False) -> None:
-        self.action: Callable[[Event], None] = action
+        self.action = action
         self.characters: List[int] = (
             [] if characters is None else [c if isinstance(c, int) else c.id
                                            for c in characters])
@@ -331,17 +332,17 @@ class Trigger:
             if int(payload.get('world_id', 0)) not in self.worlds:
                 return False
         # Check custom trigger conditions
-        for cond in self.conditions:
-            if callable(cond):
-                if not cond(payload):
+        for condition in self.conditions:
+            if callable(condition):
+                if not condition(payload):
                     return False
-            elif not cond:
+            elif not condition:
                 return False
         return True
 
     def generate_subscription(self) -> str:
         """Generate the appropriate subscription for this trigger."""
-        json_data: Dict[str, str] = {
+        json_data: Dict[str, Union[str, List[str]]] = {
             'action': 'subscribe',
             'eventNames': [e.to_event_name() if isinstance(e, EventType) else e
                            for e in self.events],
@@ -368,6 +369,6 @@ class Trigger:
             warnings.warn(f'Trigger {self} run with no action specified')
             return
         if asyncio.iscoroutinefunction(self.action):
-            await self.action(event)
+            await self.action(event)  # type: ignore
         else:
             self.action(event)
