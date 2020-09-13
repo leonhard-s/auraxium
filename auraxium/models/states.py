@@ -51,14 +51,14 @@ class PlayerStateGroup(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'PlayerStateGroup':
         return cls(
-            int(data['player_state_group_id']),
-            int(data['player_state_id']),
-            bool(int(data['can_iron_sight'])),
+            int(data.pop('player_state_group_id')),
+            int(data.pop('player_state_id')),
+            bool(int(data.pop('can_iron_sight'))),
             optional(data, 'cof_grow_rate', float),
-            float(data['cof_max']),
-            float(data['cof_min']),
+            float(data.pop('cof_max')),
+            float(data.pop('cof_min')),
             optional(data, 'cof_recovery_delay_ms', int),
-            float(data['cof_recovery_rate']),
+            float(data.pop('cof_recovery_rate')),
             optional(data, 'cof_shots_before_penalty', int),
             optional(data, 'cof_recovery_delay_threshold', int),
             optional(data, 'cof_turn_penalty', int))

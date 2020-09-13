@@ -250,49 +250,48 @@ class FireModeData(Ps2Data):
     min_damage_ind_radius: Optional[float]
     min_damage_range: Optional[float]
     shield_bypass_pct: Optional[int]
-    description: Optional[LocaleData]
+    description: LocaleData
 
     @classmethod
     def from_census(cls, data: CensusData) -> 'FireModeData':
-        description = data['description']
-        if description['en'] != 'NULL':
-            description = LocaleData.from_census(description)
+        if 'description' in data:
+            description = LocaleData.from_census(data.pop('description'))
         else:
-            description = None
+            description = LocaleData.empty()
         return cls(
-            int(data['fire_mode_id']),
-            int(data['fire_mode_type_id']),
+            int(data.pop('fire_mode_id')),
+            int(data.pop('fire_mode_type_id')),
             optional(data, 'ability_id', int),
             optional(data, 'ammo_slot', int),
-            bool(int(data['automatic'])),
+            bool(int(data.pop('automatic'))),
             optional(data, 'grief_immune', bool),
             optional(data, 'iron_sights', bool),
             optional(data, 'laser_guided', bool),
-            float(data['move_modifier']),
+            float(data.pop('move_modifier')),
             optional(data, 'projectile_speed_override', int),
             optional(data, 'sprint_fire', bool),
-            float(data['turn_modifier']),
+            float(data.pop('turn_modifier')),
             optional(data, 'use_in_water', bool),
-            float(data['zoom_default']),
+            float(data.pop('zoom_default')),
             optional(data, 'cof_override', float),
             optional(data, 'cof_pellet_spread', float),
-            float(data['cof_range']),
+            float(data.pop('cof_range')),
             optional(data, 'cof_recoil', float),
-            float(data['cof_scalar']),
-            float(data['cof_scalar_moving']),
-            int(data['player_state_group_id']),
+            float(data.pop('cof_scalar')),
+            float(data.pop('cof_scalar_moving')),
+            int(data.pop('player_state_group_id')),
             optional(data, 'damage_direct_effect_id', int),
             optional(data, 'damage_head_multiplier', float),
             optional(data, 'damage_indirect_effect_id', int),
             optional(data, 'damage_legs_multiplier', float),
-            int(data['fire_ammo_per_shot']),
+            int(data.pop('fire_ammo_per_shot')),
             optional(data, 'fire_auto_fire_ms', int),
-            int(data['fire_burst_count']),
+            int(data.pop('fire_burst_count')),
             optional(data, 'fire_charge_up_ms', int),
             optional(data, 'fire_delay_ms', int),
-            float(data['fire_detect_range']),
+            float(data.pop('fire_detect_range')),
             optional(data, 'fire_duration_ms', int),
-            int(data['fire_refire_ms']),
+            int(data.pop('fire_refire_ms')),
             optional(data, 'fire_pellets_per_shot', int),
             optional(data, 'heat_per_shot', int),
             optional(data, 'heat_recovery_delay_ms', int),
@@ -310,7 +309,7 @@ class FireModeData(Ps2Data):
             optional(data, 'lockon_required', bool),
             optional(data, 'recoil_angle_max', float),
             optional(data, 'recoil_angle_min', float),
-            float(data['recoil_first_shot_modifier']),
+            float(data.pop('recoil_first_shot_modifier')),
             optional(data, 'recoil_horizontal_max', float),
             optional(data, 'recoil_horizontal_max_increase', float),
             optional(data, 'recoil_horizontal_min', float),
@@ -331,7 +330,7 @@ class FireModeData(Ps2Data):
             optional(data, 'reload_chamber_ms', int),
             optional(data, 'reload_loop_start_ms', int),
             optional(data, 'reload_loop_end_ms', int),
-            int(data['reload_time_ms']),
+            int(data.pop('reload_time_ms')),
             optional(data, 'sway_amplitude_x', float),
             optional(data, 'sway_amplitude_y', float),
             optional(data, 'sway_can_steady', bool),
@@ -383,7 +382,7 @@ class FireGroupData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'FireGroupData':
         return cls(
-            int(data['fire_group_id']),
+            int(data.pop('fire_group_id')),
             optional(data, 'chamber_duration_ms', int),
             optional(data, 'transition_duration_ms', int),
             optional(data, 'spool_up_ms', int),

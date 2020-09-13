@@ -50,15 +50,15 @@ class OutfitData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'OutfitData':
         return cls(
-            int(data['outfit_id']),
-            str(data['name']),
-            str(data['name_lower']),
-            str(data['alias']),
-            str(data['alias_lower']),
-            int(data['time_created']),
-            str(data['time_created_date']),
-            int(data['leader_character_id']),
-            int(data['member_count']))
+            int(data.pop('outfit_id')),
+            str(data.pop('name')),
+            str(data.pop('name_lower')),
+            str(data.pop('alias')),
+            str(data.pop('alias_lower')),
+            int(data.pop('time_created')),
+            str(data.pop('time_created_date')),
+            int(data.pop('leader_character_id')),
+            int(data.pop('member_count')))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -91,12 +91,12 @@ class OutfitMemberData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'OutfitMemberData':
         return cls(
-            int(data['outfit_id']),
-            int(data['character_id']),
-            int(data['member_since']),
-            str(data['member_since_date']),
-            str(data['rank']),
-            int(data['rank_ordinal']))
+            int(data.pop('outfit_id')),
+            int(data.pop('character_id')),
+            int(data.pop('member_since')),
+            str(data.pop('member_since_date')),
+            str(data.pop('rank')),
+            int(data.pop('rank_ordinal')))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -123,7 +123,7 @@ class OutfitRankData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'OutfitRankData':
         return cls(
-            int(data['outfit_id']),
-            int(data['ordinal']),
-            str(data['name']),
-            str(data['description']))
+            int(data.pop('outfit_id')),
+            int(data.pop('ordinal')),
+            str(data.pop('name')),
+            str(data.pop('description')))

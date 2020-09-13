@@ -52,13 +52,13 @@ class SkillData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'SkillData':
         return cls(
-            int(data['skill_id']),
-            int(data['skill_line_id']),
-            int(data['skill_line_index']),
-            int(data['skill_points']),
+            int(data.pop('skill_id')),
+            int(data.pop('skill_line_id')),
+            int(data.pop('skill_line_index')),
+            int(data.pop('skill_points')),
             optional(data, 'grant_item_id', int),
-            LocaleData.from_census(data['name']),
-            LocaleData.from_census(data['description']),
+            LocaleData.from_census(data.pop('name')),
+            LocaleData.from_census(data.pop('description')),
             optional(data, 'image_set_id', int),
             optional(data, 'image_id', int),
             optional(data, 'image_path', str))
@@ -100,19 +100,19 @@ class SkillCategoryData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'SkillCategoryData':
         if 'description' in data:
-            description = LocaleData.from_census(data['description'])
+            description = LocaleData.from_census(data.pop('description'))
         else:
             description = LocaleData.empty()
         return cls(
-            int(data['skill_category_id']),
-            int(data['skill_set_id']),
-            int(data['skill_set_index']),
-            int(data['skill_points']),
-            LocaleData.from_census(data['name']),
+            int(data.pop('skill_category_id')),
+            int(data.pop('skill_set_id')),
+            int(data.pop('skill_set_index')),
+            int(data.pop('skill_points')),
+            LocaleData.from_census(data.pop('name')),
             description,
-            int(data['image_set_id']),
-            int(data['image_id']),
-            str(data['image_path']))
+            int(data.pop('image_set_id')),
+            int(data.pop('image_id')),
+            str(data.pop('image_path')))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -151,15 +151,15 @@ class SkillLineData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'SkillLineData':
         return cls(
-            int(data['skill_line_id']),
-            int(data['skill_points']),
+            int(data.pop('skill_line_id')),
+            int(data.pop('skill_points')),
             optional(data, 'skill_category_id', int),
             optional(data, 'skill_category_index', int),
-            LocaleData.from_census(data['name']),
-            LocaleData.from_census(data['description']),
-            int(data['image_set_id']),
-            int(data['image_id']),
-            str(data['image_path']))
+            LocaleData.from_census(data.pop('name')),
+            LocaleData.from_census(data.pop('description')),
+            int(data.pop('image_set_id')),
+            int(data.pop('image_id')),
+            str(data.pop('image_path')))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -196,14 +196,14 @@ class SkillSetData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'SkillSetData':
         if 'description' in data:
-            description = LocaleData.from_census(data['description'])
+            description = LocaleData.from_census(data.pop('description'))
         else:
             description = LocaleData.empty()
         return cls(
-            int(data['skill_set_id']),
+            int(data.pop('skill_set_id')),
             optional(data, 'skill_points', int),
             optional(data, 'required_item_id', int),
-            LocaleData.from_census(data['name']),
+            LocaleData.from_census(data.pop('name')),
             description,
             optional(data, 'image_set_id', int),
             optional(data, 'image_id', int),

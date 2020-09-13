@@ -39,8 +39,8 @@ class MetagameEventData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'MetagameEventData':
         return cls(
-            int(data['metagame_event_id']),
-            LocaleData.from_census(data['name']),
-            LocaleData.from_census(data['description']),
-            int(data['type']),
-            int(data['experience_bonus']))
+            int(data.pop('metagame_event_id')),
+            LocaleData.from_census(data.pop('name')),
+            LocaleData.from_census(data.pop('description')),
+            int(data.pop('type')),
+            int(data.pop('experience_bonus')))

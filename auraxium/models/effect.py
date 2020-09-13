@@ -62,11 +62,11 @@ class EffectData(Ps2Data):
         params: List[Optional[str]] = [
             optional(data, f'param{i+1}', str) for i in range(13)]
         return cls(
-            int(data['effect_id']),
-            int(data['effect_type_id']),
+            int(data.pop('effect_id')),
+            int(data.pop('effect_type_id')),
             optional(data, 'ability_id', int),
             optional(data, 'target_type_id', int),
-            int(data['resist_type_id']),
+            int(data.pop('resist_type_id')),
             optional(data, 'is_drain', bool),
             optional(data, 'duration_seconds', float),
             *params)
@@ -109,6 +109,6 @@ class EffectTypeData(Ps2Data):
         params: List[Optional[str]] = [
             optional(data, f'param{i+1}', str) for i in range(13)]
         return cls(
-            int(data['effect_type_id']),
-            str(data['description']),
+            int(data.pop('effect_type_id')),
+            str(data.pop('description')),
             *params)

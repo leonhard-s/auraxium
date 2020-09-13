@@ -79,8 +79,8 @@ class AbilityData(Ps2Data):
         strings: List[Optional[str]] = [
             optional(data, f'string{i+1}', str) for i in range(4)]
         return cls(
-            int(data['ability_id']),
-            int(data['ability_type_id']),
+            int(data.pop('ability_id')),
+            int(data.pop('ability_type_id')),
             optional(data, 'expire_msec', int),
             optional(data, 'first_use_delay_msec', int),
             optional(data, 'next_use_delay_msec', int),
@@ -141,7 +141,7 @@ class AbilityTypeData(Ps2Data):
         strings: List[Optional[str]] = [
             optional(data, f'string{i+1}', str) for i in range(4)]
         return cls(
-            int(data['ability_type_id']),
+            int(data.pop('ability_type_id')),
             optional(data, 'description', str),
             *params,
             *strings)
@@ -167,5 +167,5 @@ class ResourceTypeData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'ResourceTypeData':
         return cls(
-            int(data['resource_type_id']),
-            str(data['description']))
+            int(data.pop('resource_type_id')),
+            str(data.pop('description')))

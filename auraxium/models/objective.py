@@ -50,9 +50,9 @@ class ObjectiveData(Ps2Data):
         params: List[Optional[str]] = [
             optional(data, f'param{i+1}', str) for i in range(9)]
         return cls(
-            int(data['objective_id']),
-            int(data['objective_type_id']),
-            int(data['objective_group_id']),
+            int(data.pop('objective_id')),
+            int(data.pop('objective_type_id')),
+            int(data.pop('objective_group_id')),
             *params)
 
 
@@ -89,6 +89,6 @@ class ObjectiveTypeData(Ps2Data):
         params: List[Optional[str]] = [
             optional(data, f'param{i+1}', str) for i in range(9)]
         return cls(
-            int(data['objective_type_id']),
-            str(data['description']),
+            int(data.pop('objective_type_id')),
+            str(data.pop('description')),
             *params)

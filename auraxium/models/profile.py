@@ -10,6 +10,7 @@ __all__ = [
     'ProfileData'
 ]
 
+
 @dataclasses.dataclass(frozen=True)
 class LoadoutData(Ps2Data):
     """Data class for :class:`auraxium.ps2.ability.Loadout`.
@@ -33,10 +34,10 @@ class LoadoutData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'LoadoutData':
         return cls(
-            int(data['loadout_id']),
-            int(data['profile_id']),
-            int(data['faction_id']),
-            str(data['code_name']))
+            int(data.pop('loadout_id')),
+            int(data.pop('profile_id')),
+            int(data.pop('faction_id')),
+            str(data.pop('code_name')))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -58,5 +59,5 @@ class ProfileData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'ProfileData':
         return cls(
-            int(data['profile_id']),
-            str(data['description']))
+            int(data.pop('profile_id')),
+            str(data.pop('description')))

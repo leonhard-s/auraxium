@@ -42,12 +42,12 @@ class ResistInfoData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'ResistInfoData':
         return cls(
-            int(data['resist_info_id']),
-            int(data['resist_type_id']),
+            int(data.pop('resist_info_id')),
+            int(data.pop('resist_type_id')),
             optional(data, 'resist_percent', int),
             optional(data, 'resist_amount', int),
             optional(data, 'multiplier_when_headshot', float),
-            str(data['description']))
+            str(data.pop('description')))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -70,5 +70,5 @@ class ResistTypeData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'ResistTypeData':
         return cls(
-            int(data['resist_type_id']),
-            str(data['description']))
+            int(data.pop('resist_type_id')),
+            str(data.pop('description')))

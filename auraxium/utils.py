@@ -41,6 +41,8 @@ class LocaleData(NamedTuple):
         es_ = optional(data, 'es', str) or 'Missing String'
         fr_ = optional(data, 'fr', str) or 'Missing String'
         it_ = optional(data, 'it', str) or 'Missing String'
+        # The TR locale is unfinished and deliberately discarded if found
+        _ = optional(data, 'tr', str)
         return cls(
             de_,
             en_,
@@ -98,7 +100,7 @@ def optional(data: CensusData, key: str,
 
     """
     raw: Optional[AnyT]
-    if (raw := data.get(key)) is not None:
+    if (raw := data.pop(key, None)) is not None:
         if raw == 'NULL':
             raw = None
         else:

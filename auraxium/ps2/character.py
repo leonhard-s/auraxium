@@ -176,18 +176,17 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     async def get_by_id(cls, id_: int, *, client: Client
                         ) -> Optional['Character']:
         """Retrieve a character by their unique ID."""
-        collection: Final[str] = 'single_character_by_id'
         log.debug('<%s:%d> requested', cls.__name__, id_)
         if (instance := cls._cache.get(id_)) is not None:
             log.debug('%r restored from cache', instance)
             return instance
         log.debug('<%s:%d> not cached, generating API query...',
                   cls.__name__, id_)
-        query = Query(collection, service_id=client.service_id,
+        query = Query(cls.collection, service_id=client.service_id,
                       character_id=id_).limit(1)
         data = await client.request(query)
         try:
-            payload = extract_single(data, collection)
+            payload = extract_single(data, cls.collection)
         except NotFoundError:
             return None
         return cls(payload, client=client)

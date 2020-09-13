@@ -53,16 +53,16 @@ class DirectiveData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'DirectiveData':
         return cls(
-            int(data['directive_id']),
-            int(data['directive_tree_id']),
-            int(data['directive_tier_id']),
-            int(data['objective_set_id']),
+            int(data.pop('directive_id')),
+            int(data.pop('directive_tree_id')),
+            int(data.pop('directive_tier_id')),
+            int(data.pop('objective_set_id')),
             optional(data, 'qualify_requirement_id', int),
-            LocaleData.from_census(data['name']),
-            LocaleData.from_census(data['description']),
-            int(data['image_set_id']),
-            int(data['image_id']),
-            str(data['image_path']))
+            LocaleData.from_census(data.pop('name')),
+            LocaleData.from_census(data.pop('description')),
+            int(data.pop('image_set_id')),
+            int(data.pop('image_id')),
+            str(data.pop('image_path')))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -103,15 +103,15 @@ class DirectiveTierData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'DirectiveTierData':
         return cls(
-            int(data['directive_tier_id']),
-            int(data['directive_tree_id']),
+            int(data.pop('directive_tier_id')),
+            int(data.pop('directive_tree_id')),
             optional(data, 'reward_set_id', int),
-            int(data['directive_points']),
-            int(data['completion_count']),
-            LocaleData.from_census(data['name']),
-            int(data['image_set_id']),
-            int(data['image_id']),
-            str(data['image_path']))
+            int(data.pop('directive_points')),
+            int(data.pop('completion_count')),
+            LocaleData.from_census(data.pop('name')),
+            int(data.pop('image_set_id')),
+            int(data.pop('image_id')),
+            str(data.pop('image_path')))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -136,23 +136,25 @@ class DirectiveTreeData(Ps2Data):
     directive_tree_id: int
     directive_tree_category_id: int
     name: LocaleData
-    description: Optional[LocaleData]
+    description: LocaleData
     image_set_id: int
     image_id: int
     image_path: str
 
     @classmethod
     def from_census(cls, data: CensusData) -> 'DirectiveTreeData':
-        if (description := data.get('description')) is not None:
-            description = LocaleData.from_census(description)
+        if 'description' in data:
+            description = LocaleData.from_census(data.pop('description'))
+        else:
+            description = LocaleData.empty()
         return cls(
-            int(data['directive_tree_id']),
-            int(data['directive_tree_category_id']),
-            LocaleData.from_census(data['name']),
+            int(data.pop('directive_tree_id')),
+            int(data.pop('directive_tree_category_id')),
+            LocaleData.from_census(data.pop('name')),
             description,
-            int(data['image_set_id']),
-            int(data['image_id']),
-            str(data['image_path']))
+            int(data.pop('image_set_id')),
+            int(data.pop('image_id')),
+            str(data.pop('image_path')))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -175,5 +177,5 @@ class DirectiveTreeCategoryData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'DirectiveTreeCategoryData':
         return cls(
-            int(data['directive_tree_category_id']),
-            LocaleData.from_census(data['name']))
+            int(data.pop('directive_tree_category_id')),
+            LocaleData.from_census(data.pop('name')))

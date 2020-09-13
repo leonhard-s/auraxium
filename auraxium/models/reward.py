@@ -12,6 +12,7 @@ __all__ = [
     'RewardTypeData'
 ]
 
+
 @dataclasses.dataclass(frozen=True)
 class RewardData(Ps2Data):
     """Data class for :class:`auraxium.ps2.ability.Reward`.
@@ -44,11 +45,11 @@ class RewardData(Ps2Data):
         params: List[Optional[str]] = [
             optional(data, f'param{i+1}', str) for i in range(1, 5)]
         return cls(
-            int(data['reward_id']),
-            int(data['reward_type_id']),
-            int(data['count_min']),
-            int(data['count_max']),
-            str(data['param1']),
+            int(data.pop('reward_id')),
+            int(data.pop('reward_type_id')),
+            int(data.pop('count_min')),
+            int(data.pop('count_max')),
+            str(data.pop('param1')),
             *params)
 
 
@@ -85,9 +86,9 @@ class RewardTypeData(Ps2Data):
         params: List[Optional[str]] = [
             optional(data, f'param{i+1}', str) for i in range(1, 5)]
         return cls(
-            int(data['reward_type_id']),
-            str(data['description']),
+            int(data.pop('reward_type_id')),
+            str(data.pop('description')),
             optional(data, 'count_min', str),
             optional(data, 'count_max', str),
-            str(data['param1']),
+            str(data.pop('param1')),
             *params)

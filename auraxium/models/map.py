@@ -34,8 +34,8 @@ class FacilityTypeData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'FacilityTypeData':
         return cls(
-            int(data['facility_type_id']),
-            str(data['description']))
+            int(data.pop('facility_type_id')),
+            str(data.pop('description')))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -69,12 +69,12 @@ class MapHexData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'MapHexData':
         return cls(
-            int(data['zone_id']),
-            int(data['map_region_id']),
-            int(data['x']),
-            int(data['y']),
-            int(data['hex_type']),
-            str(data['type_name']))
+            int(data.pop('zone_id')),
+            int(data.pop('map_region_id')),
+            int(data.pop('x')),
+            int(data.pop('y')),
+            int(data.pop('hex_type')),
+            str(data.pop('type_name')))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -114,17 +114,17 @@ class MapRegionData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'MapRegionData':
         return cls(
-            int(data['map_region_id']),
-            int(data['zone_id']),
-            int(data['facility_id']),
-            str(data['facility_name']),
-            int(data['facility_type_id']),
-            str(data['facility_type']),
+            int(data.pop('map_region_id')),
+            int(data.pop('zone_id')),
+            int(data.pop('facility_id')),
+            str(data.pop('facility_name')),
+            int(data.pop('facility_type_id')),
+            str(data.pop('facility_type')),
             optional(data, 'location_x', float),
             optional(data, 'location_y', float),
             optional(data, 'location_z', float),
             optional(data, 'reward_amount', int),
-            optional(data, 'reward_currency_di', int))
+            optional(data, 'reward_currency_id', int))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -150,7 +150,7 @@ class RegionData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'RegionData':
         return cls(
-            int(data['region_id']),
-            int(data['zone_id']),
-            int(data['initial_faction_id']),
-            LocaleData.from_census(data['name']))
+            int(data.pop('region_id')),
+            int(data.pop('zone_id')),
+            int(data.pop('initial_faction_id')),
+            LocaleData.from_census(data.pop('name')))

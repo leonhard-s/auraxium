@@ -45,10 +45,10 @@ class WeaponAmmoSlot(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'WeaponAmmoSlot':
         return cls(
-            int(data['weapon_id']),
-            int(data['weapon_slot_index']),
-            int(data['clip_size']),
-            int(data['capacity']),
+            int(data.pop('weapon_id')),
+            int(data.pop('weapon_slot_index')),
+            int(data.pop('clip_size')),
+            int(data.pop('capacity')),
             optional(data, 'refill_ammo_rate', int),
             optional(data, 'refill_ammo_delay_ms', int))
 
@@ -105,10 +105,10 @@ class WeaponData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'WeaponData':
         return cls(
-            int(data['weapon_id']),
+            int(data.pop('weapon_id')),
             optional(data, 'weapon_group_id', int),
-            float(data['turn_modifier']),
-            float(data['move_modifier']),
+            float(data.pop('turn_modifier')),
+            float(data.pop('move_modifier')),
             optional(data, 'sprint_recovery_ms', int),
             optional(data, 'equip_ms', int),
             optional(data, 'unequip_ms', int),
@@ -191,24 +191,25 @@ class WeaponDatasheet(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'WeaponDatasheet':
         return cls(
-            int(data['item_id']),
+            int(data.pop('item_id')),
             optional(data, 'direct_damage', int),
             optional(data, 'indirect_damage', int),
-            int(data['damage']),
-            int(data['damage_min']),
-            int(data['damage_max']),
-            float(data['fire_cone']),
-            float(data['fire_cone_min']),
-            float(data['fire_cone_max']),
-            int(data['fire_rate_ms']),
-            int(data['fire_rate_ms_min']),
-            int(data['fire_rate_mx_max']),  # The "mx" is not a typo - not mine
-            int(data['reload_ms']),
-            int(data['reload_ms_min']),
-            int(data['reload_ms_max']),
-            int(data['clip_size']),
-            int(data['capacity']),
-            LocaleData.from_census(data['range']),
-            bool(int(data['show_clip_size'])),
-            bool(int(data['show_fire_modes'])),
-            bool(int(data['show_range'])))
+            int(data.pop('damage')),
+            int(data.pop('damage_min')),
+            int(data.pop('damage_max')),
+            float(data.pop('fire_cone')),
+            float(data.pop('fire_cone_min')),
+            float(data.pop('fire_cone_max')),
+            int(data.pop('fire_rate_ms')),
+            int(data.pop('fire_rate_ms_min')),
+            # The "mx" is not a typo - not mine
+            int(data.pop('fire_rate_mx_max')),
+            int(data.pop('reload_ms')),
+            int(data.pop('reload_ms_min')),
+            int(data.pop('reload_ms_max')),
+            int(data.pop('clip_size')),
+            int(data.pop('capacity')),
+            LocaleData.from_census(data.pop('range')),
+            bool(int(data.pop('show_clip_size'))),
+            bool(int(data.pop('show_fire_modes'))),
+            bool(int(data.pop('show_range'))))

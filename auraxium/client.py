@@ -353,7 +353,7 @@ class Client:
             query.timing(True)
         data = await run_query(query, verb=verb, session=self.session)
         if self.profiling and verb == 'get':
-            timing = data['timing']
+            timing = data.pop('timing')
             if log.level <= logging.DEBUG:
                 url = query.url()
                 log.debug('Query times for "%s?%s": %s',

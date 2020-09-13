@@ -53,15 +53,15 @@ class CharacterAchievement(Ps2Data):
         This parses the API response and casts the appropriate types.
         """
         return cls(
-            int(data['character_id']),
-            int(data['achievement_id']),
-            int(data['earned_count']),
-            int(data['start']),
-            str(data['start_date']),
-            int(data['finish']),
-            str(data['finish_date']),
-            int(data['last_save']),
-            str(data['last_save_date']))
+            int(data.pop('character_id')),
+            int(data.pop('achievement_id')),
+            int(data.pop('earned_count')),
+            int(data.pop('start')),
+            str(data.pop('start_date')),
+            int(data.pop('finish')),
+            str(data.pop('finish_date')),
+            int(data.pop('last_save')),
+            str(data.pop('last_save_date')))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -108,8 +108,8 @@ class CharacterData(Ps2Data):
             types.
             """
             return cls(
-                int(data['value']),
-                float(data['percent_to_next']))
+                int(data.pop('value')),
+                float(data.pop('percent_to_next')))
 
     @dataclasses.dataclass(frozen=True)
     class Certs(Ps2Data):
@@ -142,11 +142,11 @@ class CharacterData(Ps2Data):
             types.
             """
             return cls(
-                int(data['earned_points']),
-                int(data['gifted_points']),
-                int(data['spent_points']),
-                int(data['available_points']),
-                float(data['percent_to_next']))
+                int(data.pop('earned_points')),
+                int(data.pop('gifted_points')),
+                int(data.pop('spent_points')),
+                int(data.pop('available_points')),
+                float(data.pop('percent_to_next')))
 
     @dataclasses.dataclass(frozen=True)
     class DailyRibbon(Ps2Data):
@@ -171,7 +171,7 @@ class CharacterData(Ps2Data):
             types.
             """
             return cls(
-                int(data['count']),
+                int(data.pop('count')),
                 optional(data, 'time', int),
                 optional(data, 'date', str))
 
@@ -196,8 +196,8 @@ class CharacterData(Ps2Data):
             types.
             """
             return cls(
-                data['first'],
-                data['first_lower'])
+                data.pop('first'),
+                data.pop('first_lower'))
 
     @dataclasses.dataclass(frozen=True)
     class Times(Ps2Data):
@@ -237,14 +237,14 @@ class CharacterData(Ps2Data):
             types.
             """
             return cls(
-                int(data['creation']),
-                str(data['creation_date']),
-                int(data['last_save']),
-                str(data['last_save_date']),
-                int(data['last_login']),
-                str(data['last_login_date']),
-                int(data['login_count']),
-                int(data['minutes_played']))
+                int(data.pop('creation')),
+                str(data.pop('creation_date')),
+                int(data.pop('last_save')),
+                str(data.pop('last_save_date')),
+                int(data.pop('last_login')),
+                str(data.pop('last_login_date')),
+                int(data.pop('login_count')),
+                int(data.pop('minutes_played')))
 
     character_id: int
     name: Name
@@ -261,17 +261,17 @@ class CharacterData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'CharacterData':
         return cls(
-            int(data['character_id']),
-            cls.Name.from_census(data['name']),
-            int(data['faction_id']),
-            int(data['head_id']),
-            int(data['title_id']),
-            cls.Times.from_census(data['times']),
-            cls.Certs.from_census(data['certs']),
-            cls.BattleRank.from_census(data['battle_rank']),
-            int(data['profile_id']),
-            cls.DailyRibbon.from_census(data['daily_ribbon']),
-            int(data['prestige_level']))
+            int(data.pop('character_id')),
+            cls.Name.from_census(data.pop('name')),
+            int(data.pop('faction_id')),
+            int(data.pop('head_id')),
+            int(data.pop('title_id')),
+            cls.Times.from_census(data.pop('times')),
+            cls.Certs.from_census(data.pop('certs')),
+            cls.BattleRank.from_census(data.pop('battle_rank')),
+            int(data.pop('profile_id')),
+            cls.DailyRibbon.from_census(data.pop('daily_ribbon')),
+            int(data.pop('prestige_level')))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -302,11 +302,11 @@ class CharacterDirective(Ps2Data):
         This parses the API response and casts the appropriate types.
         """
         return cls(
-            int(data['character_id']),
-            int(data['directive_tree_id']),
-            int(data['directive_id']),
-            int(data['completion_time']),
-            str(data['completion_time_date']))
+            int(data.pop('character_id')),
+            int(data.pop('directive_tree_id')),
+            int(data.pop('directive_id')),
+            int(data.pop('completion_time')),
+            str(data.pop('completion_time_date')))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -335,5 +335,5 @@ class TitleData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'TitleData':
         return cls(
-            int(data['title_id']),
-            LocaleData.from_census(data['name']))
+            int(data.pop('title_id')),
+            LocaleData.from_census(data.pop('name')))

@@ -39,8 +39,8 @@ class ArmourInfoData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'ArmourInfoData':
         return cls(
-            int(data['armor_info_id']),
-            int(data['armor_facing_id']),
-            int(data['armor_percent']),
+            int(data.pop('armor_info_id')),
+            int(data.pop('armor_facing_id')),
+            int(data.pop('armor_percent')),
             optional(data, 'armor_amount', int),
-            str(data['description']))
+            str(data.pop('description')))

@@ -33,8 +33,8 @@ class ItemCategoryData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'ItemCategoryData':
         return cls(
-            int(data['item_category_id']),
-            LocaleData.from_census(data['name']))
+            int(data.pop('item_category_id')),
+            LocaleData.from_census(data.pop('name')))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -89,25 +89,25 @@ class ItemData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'ItemData':
         if 'description' in data:
-            description = LocaleData.from_census(data['description'])
+            description = LocaleData.from_census(data.pop('description'))
         else:
             description = LocaleData.empty()
         return cls(
-            int(data['item_id']),
+            int(data.pop('item_id')),
             optional(data, 'item_type_id', int),
             optional(data, 'item_category_id', int),
             optional(data, 'activatable_ability_id', int),
             optional(data, 'passive_ability_id', int),
-            bool(int(data['is_vehicle_weapon'])),
-            LocaleData.from_census(data['name']),
+            bool(int(data.pop('is_vehicle_weapon'))),
+            LocaleData.from_census(data.pop('name')),
             description,
             optional(data, 'faction_id', int),
-            int(data['max_stack_size']),
+            int(data.pop('max_stack_size')),
             optional(data, 'image_set_id', int),
             optional(data, 'image_id', int),
             optional(data, 'image_path', str),
             optional(data, 'skill_set_id', int),
-            bool(int(data['is_default_attachment'])))
+            bool(int(data.pop('is_default_attachment'))))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -131,6 +131,6 @@ class ItemTypeData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'ItemTypeData':
         return cls(
-            int(data['item_type_id']),
-            str(data['name']),
-            str(data['code']))
+            int(data.pop('item_type_id')),
+            str(data.pop('name')),
+            str(data.pop('code')))

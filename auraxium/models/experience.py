@@ -34,9 +34,9 @@ class ExperienceData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'ExperienceData':
         return cls(
-            int(data['experience_id']),
-            str(data['description']),
-            int(data['xp']))
+            int(data.pop('experience_id')),
+            str(data.pop('description')),
+            int(data.pop('xp')))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -82,9 +82,9 @@ class ExperienceRankData(Ps2Data):
             types.
             """
             return cls(
-                LocaleData.from_census(data['title']),
-                int(data['image_set_id']),
-                int(data['image_id']))
+                LocaleData.from_census(data.pop('title')),
+                int(data.pop('image_set_id')),
+                int(data.pop('image_id')))
 
     rank: int
     xp_max: int
@@ -98,11 +98,11 @@ class ExperienceRankData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'ExperienceRankData':
         return cls(
-            int(data['rank']),
-            int(data['xp_max']),
-            cls.EmpireData.from_census(data['vs']),
-            str(data['vs_image_path']),
-            cls.EmpireData.from_census(data['nc']),
-            str(data['nc_image_path']),
-            cls.EmpireData.from_census(data['tr']),
-            str(data['tr_image_path']))
+            int(data.pop('rank')),
+            int(data.pop('xp_max')),
+            cls.EmpireData.from_census(data.pop('vs')),
+            str(data.pop('vs_image_path')),
+            cls.EmpireData.from_census(data.pop('nc')),
+            str(data.pop('nc_image_path')),
+            cls.EmpireData.from_census(data.pop('tr')),
+            str(data.pop('tr_image_path')))

@@ -36,7 +36,7 @@ class CurrencyData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'CurrencyData':
         return cls(
-            int(data['currency_id']),
-            LocaleData.from_census(data['name']),
-            int(data['icon_id']),
-            int(data['inventory_cap']))
+            int(data.pop('currency_id')),
+            LocaleData.from_census(data.pop('name')),
+            int(data.pop('icon_id')),
+            int(data.pop('inventory_cap')))

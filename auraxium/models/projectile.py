@@ -79,9 +79,9 @@ class ProjectileData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'ProjectileData':
         return cls(
-            int(data['projectile_id']),
-            int(data['projectile_flight_type_id']),
-            int(data['speed']),
+            int(data.pop('projectile_id')),
+            int(data.pop('projectile_flight_type_id')),
+            int(data.pop('speed')),
             optional(data, 'speed_max', int),
             optional(data, 'acceleration', int),
             optional(data, 'turn_rate', int),

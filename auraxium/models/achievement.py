@@ -50,13 +50,13 @@ class AchievementData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'AchievementData':
         return cls(
-            int(data['achievement_id']),
-            int(data['item_id']),
-            int(data['objective_group_id']),
-            int(data['reward_id']),
-            bool(int(data['repeatable'])),
-            LocaleData.from_census(data['name']),
-            LocaleData.from_census(data['description']),
-            int(data['image_set_id']),
-            int(data['image_id']),
-            str(data['image_path']))
+            int(data.pop('achievement_id')),
+            int(data.pop('item_id')),
+            int(data.pop('objective_group_id')),
+            int(data.pop('reward_id')),
+            bool(int(data.pop('repeatable'))),
+            LocaleData.from_census(data.pop('name')),
+            LocaleData.from_census(data.pop('description')),
+            int(data.pop('image_set_id')),
+            int(data.pop('image_id')),
+            str(data.pop('image_path')))

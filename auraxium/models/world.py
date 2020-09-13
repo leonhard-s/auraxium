@@ -22,16 +22,23 @@ class WorldData(Ps2Data):
         world_id: The unique ID of the world.
         state: The current state (i.e. online status) of the world.
         name: The localised name of the world.
+        description: A description of the world's server region.
 
     """
 
     world_id: int
     state: str
     name: LocaleData
+    description: LocaleData
 
     @classmethod
     def from_census(cls, data: CensusData) -> 'WorldData':
+        if 'description' in data:
+            description = LocaleData.from_census(data.pop('description'))
+        else:
+            description = LocaleData.empty()
         return cls(
-            int(data['world_id']),
-            str(data['state']),
-            LocaleData.from_census(data['name']))
+            int(data.pop('world_id')),
+            str(data.pop('state')),
+            LocaleData.from_census(data.pop('name')),
+            description)

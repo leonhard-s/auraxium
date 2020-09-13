@@ -46,9 +46,9 @@ class ZoneEffectData(Ps2Data):
         params: List[Optional[str]] = [
             optional(data, f'param{i+1}', str) for i in range(6)]
         return cls(
-            int(data['zone_effect_id']),
-            int(data['zone_effect_type_id']),
-            int(data['ability_id']),
+            int(data.pop('zone_effect_id')),
+            int(data.pop('zone_effect_type_id')),
+            int(data.pop('ability_id')),
             *params)
 
 
@@ -81,6 +81,6 @@ class ZoneEffectTypeData(Ps2Data):
     def from_census(cls, data: CensusData) -> 'ZoneEffectTypeData':
         params: List[str] = [str(data[f'param{i+1}']) for i in range(6)]
         return cls(
-            int(data['zone_effect_type_id']),
-            str(data['description']),
+            int(data.pop('zone_effect_type_id')),
+            str(data.pop('description')),
             *params)

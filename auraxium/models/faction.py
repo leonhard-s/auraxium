@@ -41,10 +41,10 @@ class FactionData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'FactionData':
         return cls(
-            int(data['faction_id']),
-            LocaleData.from_census(data['name']),
-            str(data['code_tag']),
-            bool(int(data['user_selectable'])),
+            int(data.pop('faction_id')),
+            LocaleData.from_census(data.pop('name')),
+            str(data.pop('code_tag')),
+            bool(int(data.pop('user_selectable'))),
             optional(data, 'image_set_id', int),
             optional(data, 'image_id', int),
             optional(data, 'image_path', str))

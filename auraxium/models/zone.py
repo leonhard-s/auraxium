@@ -36,8 +36,8 @@ class ZoneData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'ZoneData':
         return cls(
-            int(data['zone_id']),
-            str(data['code']),
-            int(data['hex_size']),
-            LocaleData.from_census(data['name']),
-            LocaleData.from_census(data['description']))
+            int(data.pop('zone_id')),
+            str(data.pop('code')),
+            int(data.pop('hex_size')),
+            LocaleData.from_census(data.pop('name')),
+            LocaleData.from_census(data.pop('description')))

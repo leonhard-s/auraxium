@@ -38,11 +38,11 @@ class VehicleAttachmentData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'VehicleAttachmentData':
         return cls(
-            int(data['item_id']),
-            int(data['vehicle_id']),
-            int(data['faction_id']),
-            str(data['description']),
-            int(data['slot_id']))
+            int(data.pop('item_id')),
+            int(data.pop('vehicle_id')),
+            int(data.pop('faction_id')),
+            str(data.pop('description')),
+            int(data.pop('slot_id')))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -81,19 +81,19 @@ class VehicleData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'VehicleData':
         if 'name' in data:
-            name = LocaleData.from_census(data['name'])
+            name = LocaleData.from_census(data.pop('name'))
         else:
             name = LocaleData.empty()
         if 'description' in data:
-            description = LocaleData.from_census(data['description'])
+            description = LocaleData.from_census(data.pop('description'))
         else:
             description = LocaleData.empty()
         return cls(
-            int(data['vehicle_id']),
+            int(data.pop('vehicle_id')),
             name,
             description,
-            int(data['type_id']),
-            str(data['type_name']),
+            int(data.pop('type_id')),
+            str(data.pop('type_name')),
             optional(data, 'cost', int),
             optional(data, 'cost_resource_id', int),
             optional(data, 'image_set_id', int),

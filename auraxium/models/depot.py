@@ -44,13 +44,13 @@ class MarketingBundleData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'MarketingBundleData':
         return cls(
-            int(data['marketing_bundle_id']),
-            LocaleData.from_census(data['name']),
-            LocaleData.from_census(data['description']),
-            int(data['image_id']),
+            int(data.pop('marketing_bundle_id')),
+            LocaleData.from_census(data.pop('name')),
+            LocaleData.from_census(data.pop('description')),
+            int(data.pop('image_id')),
             optional(data, 'cert_price', int),
-            int(data['station_cash_price']),
-            int(data['release_time']))
+            int(data.pop('station_cash_price')),
+            int(data.pop('release_time')))
 
 
 @dataclasses.dataclass(frozen=True)
@@ -84,9 +84,9 @@ class MarketingBundleSingleData(Ps2Data):
     @classmethod
     def from_census(cls, data: CensusData) -> 'MarketingBundleSingleData':
         return cls(
-            int(data['marketing_bundle_id']),
-            int(data['item_id']),
-            int(data['item_quantity']),
-            int(data['station_cash_price']),
+            int(data.pop('marketing_bundle_id')),
+            int(data.pop('item_id')),
+            int(data.pop('item_quantity')),
+            int(data.pop('station_cash_price')),
             optional(data, 'cert_price', int),
-            int(data['release_time']))
+            int(data.pop('release_time')))
