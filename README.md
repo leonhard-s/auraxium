@@ -1,7 +1,13 @@
 # <img src="assets/icon_256.png" align="left" height="140"/>Auraxium
 
-Auraxium is an object-oriented, pure-Python wrapper for the [PlanetSide 2](https://www.planetside2.com/) API.\
+Auraxium is an object-oriented, pure-Python wrapper for the [PlanetSide 2](https://www.planetside2.com/) API.  
 It provides a simple object model that can be used by players and outfits without requiring deep knowledge of the API and its idiosyncrasies.
+
+![PyPI - License](https://img.shields.io/pypi/l/auraxium?style=flat-square)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/leonhard-s/auraxium/Run%20Python%20unit%20tests?label=tests&style=flat-square)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/leonhard-s/auraxium/Upload%20Python%20Package?style=flat-square)
+![PyPI](https://img.shields.io/pypi/v/auraxium?style=flat-square)
+![Read the Docs](https://img.shields.io/readthedocs/auraxium?style=flat-square)
 
 ***
 
@@ -79,7 +85,7 @@ With that, the stage is set for some actual code.
 
 ## Usage
 
-The game-specific object representations for PlanetSide 2 can be found in the `auraxium.ps2` submodule. Common ones include `ps2.Character`, `ps2.Outfit`, or `ps2.Item`.
+The game-specific object representations for PlanetSide 2 can be found in the `auraxium.ps2` sub module. Common ones include `ps2.Character`, `ps2.Outfit`, or `ps2.Item`.
 
 > **Note:** The original data used to build a given object representation is always available via that object's `.data` attribute, which will be a type-hinted, [named tuple](https://docs.python.org/3/library/collections.html#collections.namedtuple).
 
@@ -114,7 +120,7 @@ async def main():
         print(await char.faction())
 
         # The outfit data type is only cached for a few seconds before being
-        # requeried as it might change.
+        # required as it might change.
         outfit = await char.outfit()
         print(outfit.name())
 
@@ -224,7 +230,7 @@ See the [Caching](#caching) section for details on the caching system.
 
 Named objects are based off the `Named` class and always cached. This base class adds the [`.name(locale='en')`](https://auraxium.readthedocs.io/en/latest/ps2.html#auraxium.Cached.name) method and adds the [`.get_by_name()`](https://auraxium.readthedocs.io/en/latest/ps2.html#auraxium.) method, which is also cached.
 
-This caching strategy is almost identical to the one used for IDs, except that it uses a string constructed of the lowercase name and locale identifier to store objects (e.g. `'en_sunderer'`).
+This caching strategy is almost identical to the one used for IDs, except that it uses a string constructed of the lower-case name and locale identifier to store objects (e.g. `'en_sunderer'`).
 
 ### Caching
 
