@@ -1,38 +1,14 @@
 """Facility and map class definitions."""
 
-import dataclasses
-from typing import Final, Optional, Set
+from typing import Final, Set
 
-from ..base import Cached, Named, Ps2Data
+from ..base import Cached, Named
 from ..census import Query
+from ..models import FacilityTypeData, MapHexData, MapRegionData, RegionData
 from ..proxy import InstanceProxy, SequenceProxy
 from ..types import CensusData
-from ..utils import LocaleData, optional
 
 from .zone import Zone
-
-
-@dataclasses.dataclass(frozen=True)
-class FacilityTypeData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.map.FacilityType`.
-
-    This class mirrors the payload data returned by the API, you may
-    use its attributes as keys in filters or queries.
-
-    Attributes:
-        facility_type_id: The unique ID of this facility type.
-        description: The description of this facility type.
-
-    """
-
-    facility_type_id: int
-    description: str
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'FacilityTypeData':
-        return cls(
-            int(data['facility_type_id']),
-            str(data['description']))
 
 
 class FacilityType(Cached, cache_size=10, cache_ttu=3600.0):
@@ -45,45 +21,6 @@ class FacilityType(Cached, cache_size=10, cache_ttu=3600.0):
     @staticmethod
     def _build_dataclass(data: CensusData) -> FacilityTypeData:
         return FacilityTypeData.from_census(data)
-
-
-@dataclasses.dataclass(frozen=True)
-class MapHexData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.map.MapHex`.
-
-    This class mirrors the payload data returned by the API, you may
-    use its attributes as keys in filters or queries.
-
-    Attributes:
-        zone_id: The ID of the zone (or continent) containing this hex.
-        map_region_id: The ID of the map region associated with this
-            hex.
-        x: The X map position of the hex.
-        y: The Y map position of the hex.
-        hex_type: The type of map hex. Refer to :attr:`type_name` for
-            details.
-        type_name: The name of the hex' type.
-
-    """
-
-    # pylint: disable=invalid-name
-
-    zone_id: int
-    map_region_id: int
-    x: int
-    y: int
-    hex_type: int
-    type_name: str
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'MapHexData':
-        return cls(
-            int(data['zone_id']),
-            int(data['map_region_id']),
-            int(data['x']),
-            int(data['y']),
-            int(data['hex_type']),
-            str(data['type_name']))
 
 
 class MapHex(Cached, cache_size=100, cache_ttu=60.0):
@@ -102,56 +39,6 @@ class MapHex(Cached, cache_size=100, cache_ttu=60.0):
         query = Query(MapRegion.collection, service_id=self._client.service_id)
         query.add_term(field=MapRegion.id_field, value=self.data.map_region_id)
         return InstanceProxy(MapRegion, query, client=self._client)
-
-
-@dataclasses.dataclass(frozen=True)
-class MapRegionData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.map.MapHex`.
-
-    This class mirrors the payload data returned by the API, you may
-    use its attributes as keys in filters or queries.
-
-    Attributes:
-        map_region_id: The unique ID of this map region.
-        zone_id: The ID of the zone (i.e. continent) this region is in.
-        facility_id: The ID of the associated facility.
-        facility_name: The name of the associated facility.
-        facility_type_id: The type ID of the associated facility.
-        facility_type: The type name of the associated facility.
-        location_x: The X world position of the facility.
-        location_y: The Y world position of the facility.
-        location_z: The Z world position of the facility.
-        reward_amount: (Unused)
-        reward_currency_id: (Unused)
-
-    """
-
-    map_region_id: int
-    zone_id: int
-    facility_id: int
-    facility_name: str
-    facility_type_id: int
-    facility_type: str
-    location_x: Optional[float]
-    location_y: Optional[float]
-    location_z: Optional[float]
-    reward_amount: Optional[int]
-    reward_currency_id: Optional[int]
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'MapRegionData':
-        return cls(
-            int(data['map_region_id']),
-            int(data['zone_id']),
-            int(data['facility_id']),
-            str(data['facility_name']),
-            int(data['facility_type_id']),
-            str(data['facility_type']),
-            optional(data, 'location_x', float),
-            optional(data, 'location_y', float),
-            optional(data, 'location_z', float),
-            optional(data, 'reward_amount', int),
-            optional(data, 'reward_currency_di', int))
 
 
 class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
@@ -180,12 +67,14 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
         join.set_fields('facility_id_b', 'facility_id')
         # Modified query A
         query.add_term(field='facility_id_a', value=self.data.facility_id)
-        proxy = SequenceProxy(MapRegion, query, client=self._client)
+        proxy: SequenceProxy[MapRegion] = SequenceProxy(
+            MapRegion, query, client=self._client)
         connected.update(await proxy.flatten())
         # Modified query B
         query.data.terms = []
         query.add_term(field='facility_id_b', value=self.data.facility_id)
-        proxy = SequenceProxy(MapRegion, query, client=self._client)
+        proxy: SequenceProxy[MapRegion] = SequenceProxy(
+            MapRegion, query, client=self._client)
         connected.update(await proxy.flatten())
         return connected
 
@@ -197,35 +86,6 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
         query = Query(Zone.collection, service_id=self._client.service_id)
         query.add_term(field=Zone.id_field, value=self.data.zone_id)
         return InstanceProxy(Zone, query, client=self._client)
-
-
-@dataclasses.dataclass(frozen=True)
-class RegionData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.map.Region`.
-
-    This class mirrors the payload data returned by the API, you may
-    use its attributes as keys in filters or queries.
-
-    Attributes:
-        region_id: The unique ID of the map region.
-        zone_id: The ID of the zone (i.e. continent) the region is in.
-        initial_faction_id: (Unused)
-        name: The localised name of the map region.
-
-    """
-
-    region_id: int
-    zone_id: int
-    initial_faction_id: int
-    name: LocaleData
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'RegionData':
-        return cls(
-            int(data['region_id']),
-            int(data['zone_id']),
-            int(data['initial_faction_id']),
-            LocaleData.from_census(data['name']))
 
 
 class Region(Named, cache_size=100, cache_ttu=60.0):

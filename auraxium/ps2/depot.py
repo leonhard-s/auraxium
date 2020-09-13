@@ -1,55 +1,15 @@
 """Bundles and special offer class definitions."""
 
-import dataclasses
-from typing import Final, List, Optional, Tuple
+from typing import Final, List, Tuple
 
-from ..base import Named, Cached, Ps2Data
+from ..base import Named, Cached
 from ..census import Query
+from ..models import MarketingBundleData, MarketingBundleSingleData
 from ..proxy import InstanceProxy
 from ..request import extract_payload
 from ..types import CensusData
-from ..utils import LocaleData, optional
 
 from .item import Item
-
-
-@dataclasses.dataclass(frozen=True)
-class MarketingBundleData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.depot.MarketingBundle`.
-
-    This class mirrors the payload data returned by the API, you may
-    use its attributes as keys in filters or queries.
-
-    Attributes:
-        marketing_bundle_id: The unique ID of this bundle.
-        name: The localised name of the bundle.
-        description: The description text for this bundle.
-        image_id: The image asset ID for this bundle.
-        cert_price: The unlock price in certification points, if any.
-        station_cash_price: The unlock price in daybreak cash, if any.
-        release_time: The time at which this bundle was first released
-            as a UTC timestamp.
-
-    """
-
-    marketing_bundle_id: int
-    name: LocaleData
-    description: LocaleData
-    image_id: int
-    cert_price: Optional[int]
-    station_cash_price: int
-    release_time: int
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'MarketingBundleData':
-        return cls(
-            int(data['marketing_bundle_id']),
-            LocaleData.from_census(data['name']),
-            LocaleData.from_census(data['description']),
-            int(data['image_id']),
-            optional(data, 'cert_price', int),
-            int(data['station_cash_price']),
-            int(data['release_time']))
 
 
 class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
@@ -88,45 +48,6 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
             count = int(item_data['quantity'])
             items.append((item, count))
         return items
-
-
-@dataclasses.dataclass(frozen=True)
-class MarketingBundleSingleData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.depot.MarketingBundleSingle`.
-
-    This is generally used for the single-item "bundles" in the depot,
-    i.e. any single weapon or cosmetic purchasable on its own.
-
-    This class mirrors the payload data returned by the API, you may
-    use its attributes as keys in filters or queries.
-
-    Attributes:
-        marketing_bundle_id: The unique ID of this bundle.
-        item_id: The item unlocked by this bundle.
-        item_quantity: The number of items received.
-        station_cash_price: The daybreak cash price of the item.
-        cert_price: The certification point price of the item.
-        release_time: The time at which this item was first released
-            as a UTC timestamp.
-
-    """
-
-    marketing_bundle_id: int
-    item_id: int
-    item_quantity: int
-    station_cash_price: int
-    cert_price: Optional[int]
-    release_time: int
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'MarketingBundleSingleData':
-        return cls(
-            int(data['marketing_bundle_id']),
-            int(data['item_id']),
-            int(data['item_quantity']),
-            int(data['station_cash_price']),
-            optional(data, 'cert_price', int),
-            int(data['release_time']))
 
 
 class MarketingBundleSingle(Cached, cache_size=100, cache_ttu=60.0):
