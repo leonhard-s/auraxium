@@ -3,11 +3,12 @@
 Auraxium is an object-oriented, pure-Python wrapper for the [PlanetSide 2](https://www.planetside2.com/) API.  
 It provides a simple object model that can be used by players and outfits without requiring deep knowledge of the API and its idiosyncrasies.
 
-![PyPI - License](https://img.shields.io/pypi/l/auraxium?style=flat-square)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/leonhard-s/auraxium/Run%20Python%20unit%20tests?label=tests&style=flat-square)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/leonhard-s/auraxium/Upload%20Python%20Package?style=flat-square)
-![PyPI](https://img.shields.io/pypi/v/auraxium?style=flat-square)
-![Read the Docs](https://img.shields.io/readthedocs/auraxium?style=flat-square)
+![PyPI - License](https://img.shields.io/pypi/l/auraxium)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/leonhard-s/auraxium/Run%20Python%20unit%20tests?label=tests)
+![Coveralls github branch](https://img.shields.io/coveralls/github/leonhard-s/auraxium/master)
+![GitHub Workflow Status](https://img.shields.io/github/workflow/status/leonhard-s/auraxium/Upload%20Python%20Package)
+![PyPI](https://img.shields.io/pypi/v/auraxiumquare)
+![Read the Docs](https://img.shields.io/readthedocs/auraxium)
 
 ***
 
