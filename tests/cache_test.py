@@ -60,7 +60,7 @@ class TestCache(unittest.TestCase):
         time.sleep(0.1)
         self.assertIsNone(cache.get(0))
 
-    def rest_lru(self) -> None:
+    def test_lru(self) -> None:
         """Test the LRU discarding feature."""
         cache: TLRUCache[int, str] = TLRUCache(10, -1)
         cache.add(0, 'Apple')

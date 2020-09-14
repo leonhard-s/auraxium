@@ -23,7 +23,7 @@ jobs:
           pip install aiohttp backoff coverage coveralls websockets yarl
       - name: Run tests
         run: |
-          python -m coverage run -m unittest discover -p *_test.py tests/
+          python -m coverage run --source auraxium/ -m unittest discover -p *_test.py tests/
       - name: Upload code coverage analysis
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
