@@ -6,12 +6,13 @@ like character name resolution.
 
 """
 
+import dataclasses
 import datetime
 import logging
 import sys
 from collections import OrderedDict
-from typing import (Any, Dict, Generic, Hashable, Iterable, List, Optional,
-                    Tuple, TypeVar)
+from typing import (Any, Dict, Generic, Hashable, Iterable, Iterator, List,
+                    Optional, Tuple, TypeVar)
 
 __all__ = [
     'TLRUCache'
@@ -20,6 +21,30 @@ __all__ = [
 K = TypeVar('K', bound=Hashable)  # pylint: disable=invalid-name
 V = TypeVar('V', bound=Any)  # pylint: disable=invalid-name
 log = logging.getLogger('auraxium.cache')
+
+
+@dataclasses.dataclass()
+class CacheItem(Generic[V]):
+    """Small dataclass for cache items.
+
+    This can be thought of as a mutable named tuple.
+
+    Attributes:
+        value: The instance being cached
+        access_counter: The number of times the item has been retrieved
+            from the cache.
+        first_added: The time the object was added. Used to calculate
+            the age of the entry with respect to a :class:`TLRUCache`'s
+            :attr`~TLRUCache.ttu` attribute.
+        last_accessed: The last time the object was added. Used for the
+            least-recently-used component of the cache.
+
+    """
+
+    value: V
+    access_counter: int
+    first_added: datetime.datetime
+    last_accessed: datetime.datetime
 
 
 class TLRUCache(Generic[K, V]):
@@ -56,12 +81,26 @@ class TLRUCache(Generic[K, V]):
         """
         # NOTE: Mypy currently does not support type hinting the OrderedDict
         # object in-code, hence the string literal type.
-        self._data: (
-            'OrderedDict[K, Tuple[V, datetime.datetime, datetime.datetime]]')
-        self._data = OrderedDict()
+        self._data: 'OrderedDict[K, CacheItem[V]]' = OrderedDict()
         self.name = name or 'TLRUCache'
         self.size = size
         self.ttu = ttu
+
+    def __contains__(self, key: str) -> bool:
+        """Return whether the given key exists in the cache."""
+        return key in self._data.keys()
+
+    def __iter__(self) -> Iterator[K]:
+        """Return an iterator over the cache keys."""
+        return iter(self._data)
+
+    def __len__(self) -> int:
+        """Return the number of elements in the cache.
+
+        This will remove any expired keys before calculation.
+        """
+        self.remove_expired()
+        return len(self._data)
 
     def add(self, key: K, item: V) -> None:
         """Add a new item to the cache.
@@ -79,7 +118,7 @@ class TLRUCache(Generic[K, V]):
         log.debug('%s: Adding %s instance under key %d',
                   self.name, item.__class__.__name__, key)
         self.free(count=1)
-        self._data[key] = item, now, now
+        self._data[key] = CacheItem(item, 0, now, now)
 
     def add_many(self, items: Iterable[Tuple[K, V]]) -> None:
         """Add multiple items to the cache.
@@ -99,15 +138,15 @@ class TLRUCache(Generic[K, V]):
 
         """
         now = datetime.datetime.now()
-        data = {k: (v, now, now) for k, v in items}
+        data = {k: CacheItem(v, 0, now, now) for k, v in items}
         if not data:
-            log.warning('%s: add_many called with empty iterable', self.name)
+            log.debug('%s: add_many called with empty iterable', self.name)
             return
         count = len(data)
         if log.isEnabledFor(logging.DEBUG):
-            item, _, _ = next(iter(data.values()))
+            item = next(iter(data.values()))
             log.debug('%s: Adding %d %s instances',
-                      self.name, count, item.__class__.__name__)
+                      self.name, count, item.value.__class__.__name__)
         self.free(count=count)
         self._data.update(data)
 
@@ -182,15 +221,16 @@ class TLRUCache(Generic[K, V]):
         """
         now = datetime.datetime.now()
         try:
-            item, added, _ = self._data[key]
+            item = self._data[key]
         except KeyError:
             log.debug('%s: Key %s not found', self.name, key)
             return None
+        item.access_counter += 1
         if self.ttu > 0:
-            age = now - added
+            age = now - item.first_added
             if age.total_seconds() > self.ttu:
                 log.info('%s: Key %d expired, age: %.1f sec. (max: %.1f sec.)',
-                         self.name, key, age, self.ttu)
+                         self.name, key, age.total_seconds(), self.ttu)
                 del self._data[key]
                 return None
         else:
@@ -198,8 +238,9 @@ class TLRUCache(Generic[K, V]):
                       self.name, self.ttu)
         log.debug('%s: Key %d found, moving to top', self.name, key)
         self._data.move_to_end(key, last=True)
-        self._data[key] = item, added, now
-        return item
+        item.last_accessed = now
+        self._data[key] = item
+        return item.value
 
     def items(self) -> Dict[K, V]:
         """Return a mapping of all key/value pairs in the cache.
@@ -208,12 +249,16 @@ class TLRUCache(Generic[K, V]):
         troubleshooting, you should only use :meth:`TLRUCache.get()` to
         retrieve items from the cache.
 
+        This method will not update the items'
+        :attr:`CacheItem.last_accessed` value or increment their
+        :attr:`CacheItem.access_counter`.
+
         Returns:
             A dictionary containing all items in the cache, with more
             recently accessed items first.
 
         """
-        return {k: v[0] for k, v in self._data.items()}
+        return {k: v.value for k, v in self._data.items()}
 
     def last_accessed(self, key: K) -> datetime.datetime:
         """Return the time the given item was last accessed.
@@ -236,10 +281,10 @@ class TLRUCache(Generic[K, V]):
 
         """
         try:
-            _, _, accessed = self._data[key]
+            item = self._data[key]
         except KeyError as err:
             raise ValueError(f'Key not found: {key}') from err
-        return accessed
+        return item.last_accessed
 
     def remove_expired(self) -> int:
         """Remove any expired items from the cache.
@@ -255,8 +300,7 @@ class TLRUCache(Generic[K, V]):
         now = datetime.datetime.now()
         keys_to_remove: List[K] = []
         for key, data in self._data.items():
-            _, added, _ = data
-            age = now - added
+            age = now - data.first_added
             if age.total_seconds() > self.ttu:
                 keys_to_remove.append(key)
         _ = [self._data.pop(k) for k in keys_to_remove]
@@ -301,4 +345,4 @@ class TLRUCache(Generic[K, V]):
             A list of all items in the cache.
 
         """
-        return [v for v, _, _ in self._data.values()]
+        return [v.value for v in self._data.values()]
