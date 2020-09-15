@@ -24,8 +24,8 @@ import yarl
 from .census import Query
 from .errors import (BadPayloadError, BadRequestSyntaxError, CensusError,
                      InvalidSearchTermError, InvalidServiceIDError,
-                     MissingServiceIDError, NotFoundError, ResponseError,
-                     ServerError, ServiceUnavailableError,
+                     MaintenanceError, MissingServiceIDError, NotFoundError,
+                     ResponseError, ServerError, ServiceUnavailableError,
                      UnknownCollectionError)
 from .types import CensusData
 
@@ -76,10 +76,12 @@ async def response_to_dict(response: aiohttp.ClientResponse) -> CensusData:
         except json.JSONDecodeError:
             # There really is something wrong with this data; let the original
             # content type error propagate.
+            log.error(
+                'Erroneous response object:\n  Status: %d, URL: %s',
+                response.status, response.request_info.real_url.human_repr())
             raise ResponseError(f'Received a non-JSON response: {text}')
-        log.info('Received a plain text response containing JSON data: %s',
-                 text)
-        print(f'Received a plain text response containing JSON data: {text}')
+        log.info(
+            'Received a plain text response containing JSON data: %s', text)
         return data
     return data
 
@@ -177,7 +179,7 @@ def raise_for_dict(data: CensusData, url: yarl.URL) -> None:
         if msg == 'No data found.':
             # NOTE: This error is returned if either the namespace or
             # collection are unknown
-            components = url.path.split('/')[2:]
+            components = url.path.split('/')[3:]
             # Namespace only
             if len(components) == 1:
                 raise UnknownCollectionError(
@@ -247,7 +249,6 @@ def _process_invalid_search_term(msg: str, url: yarl.URL) -> None:
     *_, namespace, collection = url.parts
     # Shorter version of the message, with "INVALID_SEARCH_TERM: " chopped off
     chopped = msg[21:].strip()
-    print(chopped)
     # Invalid field name
     if chopped.startswith('Invalid search term. Valid search terms:'):
         # Retrieve the list of valid field names from the error message
@@ -338,7 +339,9 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
         assert exc_value is not None
         raise exc_value
 
-    @backoff.on_exception(backoff.expo, aiohttp.ClientResponseError,
+    backoff_errors = aiohttp.ClientResponseError, aiohttp.ClientConnectionError
+
+    @backoff.on_exception(backoff.expo, backoff_errors,  # type: ignore
                           on_backoff=on_backoff, on_giveup=on_giveup,
                           on_success=on_success, max_time=10.0, max_tries=5)
     async def retry_query() -> aiohttp.ClientResponse:
@@ -346,17 +349,26 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
         return await session.get(
             url, allow_redirects=False, raise_for_status=True)
 
-    # As of July 2020, any redirect is a sign that the API is down due to
-    # maintenance.
-    # TODO: Add redirect checks -> MaintenanceError
-
     # Check for HTTP errors
     try:
         response = await retry_query()
     except aiohttp.ClientResponseError as err:
-        # The response was not valid or the status code malformed.
         raise ResponseError(
             f'An HTTP exception occurred: {err.args[0]}') from err
+    except aiohttp.ClientConnectionError as err:
+        # The connection had issues.
+        raise ResponseError(
+            f'A network exception occurred: {err.args[0]}') from err
+
+    # As of July 2020, any redirect is a sign that the API is undergoing
+    # maintenance, generally with a 302 "Found" status code. Under normal API
+    # operation, no redirects occur.
+    # These redirect generally lead to outdated pages like
+    # www.station.sony.com, which would result in further network errors.
+    if response.status >= 300:
+        raise MaintenanceError(
+            'API redirection detected, API maintenance inferred', url)
+
     # Convert the HTTP response into a dictionary
     data = await response_to_dict(response)
     # Check the received dictionary for error codes
