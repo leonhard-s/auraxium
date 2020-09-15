@@ -96,6 +96,7 @@ class Client:
         self.triggers: List[Trigger] = []
         self.websocket: Optional[websockets.WebSocketClientProtocol] = None
         self._ws_connected: bool = False
+        self._ws_lock = asyncio.Lock()
         self._ws_send_queue: List[str] = []
 
     async def __aenter__(self) -> 'Client':
@@ -396,7 +397,7 @@ class Client:
                 trigger.name = func.__name__
             # Ensure the trigger name is unique before adding the trigger
             if any(t.name == trigger.name for t in self.triggers):
-                raise KeyError(f'The trigger "{name}" already exists')
+                raise KeyError(f'The trigger "{trigger.name}" already exists')
             # If the name is unique, register the trigger to the client
             self.add_trigger(trigger)
 
@@ -512,15 +513,16 @@ class Client:
         :meth:`Client._ws_dispatch()` for filtering and event dispatch.
 
         """
+        await self._ws_lock.acquire()
         if self.websocket is not None:
-            log.warning('A websocket connection is already open, closing...')
-            await self.websocket.close()
+            return
         log.info('Connecting to websocket endpoint...')
         url = f'{ESS_ENDPOINT}?environment=ps2&service-id={self.service_id}'
         async with websockets.connect(url) as websocket:
             log.info(
                 'Connected to %s?environment=ps2&service-id=XXX', ESS_ENDPOINT)
             self.websocket = websocket
+            self._ws_lock.release()
             # This loop will go on until this flag is unset, which is done by
             # the _ws_close() method.
             self._ws_connected = True
@@ -540,9 +542,7 @@ class Client:
                         pass
                     else:
                         log.debug('Received response: %s', response)
-                        event = Event(json.loads(response))
-                        log.debug('Event created: %s', event)
-                        self._ws_dispatch(event)
+                        self._ws_process(response)
                     finally:
                         if self._ws_send_queue:
                             msg = self._ws_send_queue.pop(0)
@@ -579,7 +579,7 @@ class Client:
         for trigger in self.triggers:
             log.debug('Checking trigger %s', trigger)
             if trigger.check(event):
-                log.info('Scheduling trigger %s', trigger)
+                log.debug('Scheduling trigger %s', trigger)
                 self.loop.create_task(trigger.run(event))
                 # Single-shot triggers self-unload as soon as their call-back
                 # is scheduled
