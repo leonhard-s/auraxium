@@ -384,8 +384,7 @@ class Query(QueryBase):
             from the template query.
 
         """
-        copy_func: Callable[[_T], _T] = (
-            copy.deepcopy if deep_copy else _dummy_copy)
+        copy_func = copy.deepcopy if deep_copy else _dummy_copy
         # Create a new Query instance
         instance: 'Query' = super().copy(  # type: ignore
             template, copy_joins=copy_joins, deep_copy=deep_copy, *kwargs)
@@ -400,8 +399,8 @@ class Query(QueryBase):
                 setattr(instance.data, attr, value)
         # Include an arbitrary limit when copying from a joined list
         elif isinstance(template, JoinedQuery) and template.data.is_list:
-            # NOTE: Joined lists are infinite, so this might break for very
-            # long joins.
+            # NOTE: Joined lists have no set length, so this might break for
+            # very long or complex joins.
             instance.limit(10000)  # pylint: disable=no-member
         return instance
 
@@ -638,7 +637,7 @@ class Query(QueryBase):
         """
         if start < 0:
             raise ValueError('start may not be negative')
-        if start > 0:
+        if start >= 0:
             self.data.start = start
         return self
 
@@ -861,6 +860,8 @@ class JoinedQuery(QueryBase):
         the given values may be ``None`` to use the default naming
         system.
 
+        Specifying only the parent's name will apply it to both fields.
+
         Arguments:
             parent: The field name on the parent collection.
             child (optional): The field name on the child collection.
@@ -871,29 +872,10 @@ class JoinedQuery(QueryBase):
         """
         if parent is not None:
             self.data.field_on = parent
+            if child is None:
+                self.data.field_to = parent
         if child is not None:
             self.data.field_to = child
-        return self
-
-    def set_inject_at(self, name: str) -> 'JoinedQuery':
-        """Set the field name to inject the join's results at.
-
-        A joined query must inject its own results into the top-level
-        query. By default, this is done via the following field name:::
-
-            <parent-field>_join_<child-collection>
-
-        This method allows you to specify a more human-friendly name to
-        be used instead. Be wary of name collisions.
-
-        Arguments:
-            name: A custom field name to inject the joins results at.
-
-        Returns:
-            The query instance; this allows for chaining of operations.
-
-        """
-        self.data.inject_at = name
         return self
 
     def set_list(self, is_list: bool) -> 'JoinedQuery':
