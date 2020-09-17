@@ -229,8 +229,9 @@ class TLRUCache(Generic[K, V]):
         if self.ttu > 0:
             age = now - item.first_added
             if age.total_seconds() > self.ttu:
-                log.info('%s: Key %d expired, age: %.1f sec. (max: %.1f sec.)',
-                         self.name, key, age.total_seconds(), self.ttu)
+                log.debug(
+                    '%s: Key %d expired, age: %.1f sec. (max: %.1f sec.)',
+                    self.name, key, age.total_seconds(), self.ttu)
                 del self._data[key]
                 return None
         else:
