@@ -363,11 +363,10 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
     # As of July 2020, any redirect is a sign that the API is undergoing
     # maintenance, generally with a 302 "Found" status code. Under normal API
     # operation, no redirects occur.
-    # These redirect generally lead to outdated pages like
-    # www.station.sony.com, which would result in further network errors.
     if response.status >= 300:
         raise MaintenanceError(
-            'API redirection detected, API maintenance inferred', url)
+            'API redirection detected, API maintenance inferred',
+            url, response)
 
     # Convert the HTTP response into a dictionary
     data = await response_to_dict(response)
