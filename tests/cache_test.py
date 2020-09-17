@@ -1,5 +1,6 @@
 """Unit tests for the auraxium.cache sub module."""
 
+import datetime
 import logging
 import time
 import unittest
@@ -12,7 +13,14 @@ log.setLevel(logging.DEBUG)
 
 
 class TestCacheInterface(unittest.TestCase):
-    """Test the class interface of the TLRUCache."""
+    """Test the class interface of the TLRUCache class."""
+
+    def test_iter(self) -> None:
+        """Test TLRUCache.__iter__()"""
+        cache: TLRUCache[int, str] = TLRUCache(10, -1)
+        cache.add(0, 'Bogus')
+        keys = list(cache)
+        self.assertListEqual(keys, [0])
 
     def test_add(self) -> None:
         """Test TLRUCache.add()"""
@@ -96,8 +104,22 @@ class TestCacheInterface(unittest.TestCase):
         time.sleep(0.01)
         self.assertIsNone(cache.get(0))
 
+    def test_last_accessed(self) -> None:
+        """Test TLRUCache.last_accessed()"""
+        cache: TLRUCache[int, str] = TLRUCache(10, -1)
+        cache.add(0, 'Bogus')
+        start = datetime.datetime.now()
+        time.sleep(0.01)
+        _ = cache.get(0)
+        time.sleep(0.01)
+        end = datetime.datetime.now()
+        self.assertTrue(start < cache.last_accessed(0) < end)
+        # Test ValueError
+        with self.assertRaises(ValueError):
+            _ = cache.last_accessed(1)
+
     def test_lru(self) -> None:
-        """Test TLRUCache.lru()"""
+        """Test TLRUCache.get"""
         cache: TLRUCache[int, str] = TLRUCache(10, -1)
         cache.add(0, 'Apple')
         cache.add(1, 'Banana')
@@ -105,6 +127,34 @@ class TestCacheInterface(unittest.TestCase):
         cache.remove_lru(count=1)
         self.assertIsNone(cache.get(0))
         self.assertEqual(cache.get(1), 'Banana')
+
+    def test_remove_expired(self) -> None:
+        """Test TLRUCache.remove_expired()"""
+        # Test the auto-discard feature for outdated items
+        cache: TLRUCache[int, str] = TLRUCache(10, 0.015)
+        cache.add(0, 'Apple')
+        time.sleep(0.01)
+        self.assertEqual(cache.remove_expired(), 0)
+        cache.add(1, 'Banana')
+        time.sleep(0.01)
+        self.assertEqual(cache.remove_expired(), 1)
+        time.sleep(0.01)
+        self.assertEqual(cache.remove_expired(), 1)
+
+    def test_remove_lru(self) -> None:
+        """Test TLRUCache.remove_lru()"""
+        cache: TLRUCache[int, str] = TLRUCache(10, -1)
+        cache.add(0, 'Apple')
+        cache.add(1, 'Banana')
+        _ = cache.get(0)
+        cache.remove_lru(count=1)
+        self.assertIsNone(cache.get(0))
+        self.assertEqual(cache.get(1), 'Banana')
+        # Check errors
+        with self.assertRaises(ValueError):
+            cache.remove_lru(-1)
+        with self.assertRaises(ValueError):
+            cache.remove_lru(cache.size+1)
 
     def test_size(self) -> None:
         """Test TLRUCache.size()"""

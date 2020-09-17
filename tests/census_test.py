@@ -267,6 +267,10 @@ class TestJoinedQueryInterface(unittest.TestCase):
         self.assertEqual(
             copy_join_list.data.collection, template_join.data.collection)
         self.assertEqual(copy_join_list.data, template_join.data)
+        # Try copying a collection-less query
+        template_empty_query = census.Query()
+        with self.assertRaises(TypeError):
+            _ = census.JoinedQuery.copy(template_empty_query)
 
     def serialise(self) -> None:
         """Test JoinedQuery.serialise()"""
