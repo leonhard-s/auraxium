@@ -100,7 +100,7 @@ def process_join(data: JoinedQueryData, verbose: bool) -> str:
     elif hide := data.hide:
         string += '^hide:' + '\''.join(str(s) for s in hide)
     # Inject at name
-    if name := data.inject_at is not None:
+    if (name := data.inject_at) is not None:
         string += f'^inject_at:{name}'
     # QueryBase terms
     if terms := data.terms:

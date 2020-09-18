@@ -5,6 +5,8 @@ to be performed as part of this module.
 """
 
 import unittest
+import warnings
+from typing import List
 
 import yarl
 
@@ -456,6 +458,28 @@ class TestURLs(unittest.TestCase):
                 dict(url.query), {'field': f'{prefix}value'},
                 f'Incorrect search modifier prefix; expected {prefix}')
 
+    def test_warnings_empty_url(self) -> None:
+        """Test warnings when using terms with empty collections."""
+        query_empty = census.Query(service_id='s:dummy')
+        query_empty_terms = census.Query(service_id='s:dummy', field='name')
+        query_empty_joins = census.Query(service_id='s:dummy')
+        query_empty_joins.create_join('other')
+        with warnings.catch_warnings(record=True) as caught:
+            assert caught is not None
+            _ = query_empty.url()
+            print(caught)
+            self.assertFalse(find_warning(caught, 'No collection specified'))
+        with warnings.catch_warnings(record=True) as caught:
+            assert caught is not None
+            _ = query_empty_terms.url()
+            self.assertTrue(find_warning(
+                caught, 'No collection specified, but 1 query terms provided'))
+        with warnings.catch_warnings(record=True) as caught:
+            assert caught is not None
+            _ = query_empty_joins.url()
+            self.assertTrue(find_warning(
+                caught, 'No collection specified, but 1 joined queries'))
+
 
 class TestURLsQueryCommands(unittest.TestCase):
     """Tests for the generation of query commands."""
@@ -488,6 +512,13 @@ class TestURLsQueryCommands(unittest.TestCase):
         self.assertDictEqual(
             dict(url.query), {'c:show': 'name.first,battle_rank.value'},
             'Incorrect query command: c:show')
+        # Test both hide and show being added
+        query.data.hide.append('faction_id')
+        with warnings.catch_warnings(record=True) as caught:
+            assert caught is not None
+            query.url()
+            self.assertTrue(find_warning(
+                caught, 'Query.show and Query.hide are mutually'))
 
     def test_hide(self) -> None:
         """Test the c:hide query command."""
@@ -504,6 +535,10 @@ class TestURLsQueryCommands(unittest.TestCase):
         self.assertDictEqual(
             dict(url.query), {'c:sort': 'faction_id,item_id:-1'},
             'Incorrect query command: c:sort')
+        # Test invalid argument
+        with self.assertRaises(ValueError):
+            query.sort(('field',))  # type: ignore
+            _ = query.url()
 
     def test_has(self) -> None:
         """Test the c:has query command."""
@@ -538,6 +573,13 @@ class TestURLsQueryCommands(unittest.TestCase):
         self.assertDictEqual(
             dict(url.query), {'c:limit': '5'},
             'Incorrect query command: c:limit')
+        # Test both limit and limit_per_idea being added
+        query.data.limit_per_db = 10
+        with warnings.catch_warnings(record=True) as caught:
+            assert caught is not None
+            _ = query.url()
+            self.assertTrue(find_warning(
+                caught, 'Query.limit and Query.limit_per_db are mutually'))
 
     def test_limit_per_db(self) -> None:
         """Test the c:limit_per_db query command."""
@@ -578,17 +620,67 @@ class TestURLsQueryCommands(unittest.TestCase):
 
     def test_join(self) -> None:
         """Test the c:join query command."""
+        # Basic join
         query = census.Query('character')
         query.create_join('characters_world')
         url = query.url()
         self.assertDictEqual(
             dict(url.query), {'c:join': 'characters_world'},
-            'Incorrect query command: c:join')
+            'Incorrect query command: c:join (test #1)')
+        # Join with fields and show
+        query = census.Query('outfit')
+        join = query.create_join('character')
+        join.set_fields('leader_character_id', 'character_id')
+        join.show('name.first')
+        url = query.url()
+        self.assertDictEqual(
+            dict(url.query), {'c:join': 'character^on:leader_character_id'
+                              '^to:character_id^show:name.first'},
+            'Incorrect query command: c:join (test #2)')
+        # Join with hide, list, and inject_at
+        query.joins.clear()
+        join = query.create_join('outfit_member')
+        join.hide('outfit_id')
+        join.set_list(True)
+        join.set_inject_at('members')
+        url = query.url()
+        self.assertDictEqual(
+            dict(url.query), {'c:join': 'outfit_member^list:1'
+                              '^hide:outfit_id^inject_at:members'},
+            'Incorrect query command: c:join (test #3)')
+        # Nested inner joins with list
+        query = census.Query('character')
+        join = query.create_join('characters_item')
+        join.set_outer(False)
+        nested = join.create_join('item', faction_id=0, max_stack_size='>1')
+        nested.set_outer(False)
+        nested.set_list(True)
+        url = query.url()
+        self.assertDictEqual(
+            dict(url.query), {'c:join': 'characters_item^outer:0('
+                              'item^list:1^outer:0^terms:faction_id=0'
+                              '\'max_stack_size=>1)'},
+            'Incorrect query command: c:join (test #4)')
+        # Multiple nested joins with siblings
+        query.joins.clear()
+        join = query.create_join('parent')
+        child_1 = join.create_join('child_1')
+        child_2 = join.create_join('child_2')
+        grandchild_1 = child_1.create_join('grandchild_1')
+        grandchild_1.create_join('great_grandchild_1')
+        child_2.create_join('grandchild_2_a')
+        child_2.create_join('grandchild_2_b')
+        url = query.url()
+        self.assertDictEqual(
+            dict(url.query), {'c:join': 'parent('
+                              'child_1(grandchild_1(great_grandchild_1)),'
+                              'child_2(grandchild_2_a,grandchild_2_b))'},
+            'Incorrect query command: c:join (test #5)')
 
     def test_tree(self) -> None:
         """Test the c:tree query command."""
         query = census.Query('vehicle').limit(40)
-        url = query.tree('type_id', True, 'type_').url()
+        url = query.tree('type_id', True, 'type_', 'start_').url()
         self.assertIn('c:tree', dict(url.query),
                       'Missing query key: c:tree')
         tree_pairs = url.query['c:tree'].split('^')
@@ -601,7 +693,8 @@ class TestURLsQueryCommands(unittest.TestCase):
                 value = pair
             tree_dict[key] = value
         self.assertDictEqual(
-            tree_dict, {'field': 'type_id', 'prefix': 'type_', 'list': '1'},
+            tree_dict, {'field': 'type_id', 'prefix': 'type_',
+                        'list': '1', 'start': 'start_'},
             'Invalid key/value pairs for query command: c:tree')
 
     def test_timing(self) -> None:
@@ -631,3 +724,23 @@ class TestURLsQueryCommands(unittest.TestCase):
         self.assertDictEqual(
             dict(url.query), {'c:retry': '0'},
             'Incorrect query command: c:retry')
+
+
+def find_warning(caught: List[warnings.WarningMessage], msg: str) -> bool:
+    """Return whether exactly one matching warning was caught.
+
+    This only works for UserWarning subclasses.
+
+    Arguments:
+        caught: The messages to check.
+        msg: The warning message string to scan for.
+
+    Returns:
+        Whether the given warning matches the requirements.
+
+    """
+    matches = 0
+    for warning in caught:
+        if issubclass(warning.category, UserWarning) and msg in str(warning):
+            matches += 1
+    return matches == 1
