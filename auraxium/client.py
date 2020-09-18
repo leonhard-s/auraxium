@@ -499,6 +499,7 @@ class Client:
             self._ws_connected = False
             if self.websocket is not None and self.websocket.open:
                 await self.websocket.close()
+                self.websocket = None
 
     async def _ws_connect(self) -> None:
         """Connect to the websocket endpoint and process responses.
@@ -551,7 +552,7 @@ class Client:
                 except websockets.exceptions.ConnectionClosed as err:
                     log.warning('Connection was closed, reconnecting: %s', err)
                     await self._ws_close()
-                    await self._ws_connect()
+                    self.loop.create_task(self._ws_connect())
                     return
 
     def _ws_dispatch(self, event: Event) -> None:
