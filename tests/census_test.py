@@ -10,7 +10,7 @@ from typing import List
 
 import yarl
 
-from auraxium import census
+from auraxium import census  # pylint: disable=import-error
 
 ENDPOINT = 'https://census.daybreakgames.com/'
 
@@ -634,8 +634,9 @@ class TestURLsQueryCommands(unittest.TestCase):
         join.show('name.first')
         url = query.url()
         self.assertDictEqual(
-            dict(url.query), {'c:join': 'character^on:leader_character_id'
-                              '^to:character_id^show:name.first'},
+            dict(url.query),
+            {'c:join': 'character^on:leader_character_id'
+                       '^to:character_id^show:name.first'},
             'Incorrect query command: c:join (test #2)')
         # Join with hide, list, and inject_at
         query.joins.clear()
@@ -645,8 +646,9 @@ class TestURLsQueryCommands(unittest.TestCase):
         join.set_inject_at('members')
         url = query.url()
         self.assertDictEqual(
-            dict(url.query), {'c:join': 'outfit_member^list:1'
-                              '^hide:outfit_id^inject_at:members'},
+            dict(url.query),
+            {'c:join': 'outfit_member^list:1'
+                       '^hide:outfit_id^inject_at:members'},
             'Incorrect query command: c:join (test #3)')
         # Nested inner joins with list
         query = census.Query('character')
@@ -657,9 +659,9 @@ class TestURLsQueryCommands(unittest.TestCase):
         nested.set_list(True)
         url = query.url()
         self.assertDictEqual(
-            dict(url.query), {'c:join': 'characters_item^outer:0('
-                              'item^list:1^outer:0^terms:faction_id=0'
-                              '\'max_stack_size=>1)'},
+            dict(url.query),
+            {'c:join': 'characters_item^outer:0(item^list:1^outer:0'
+                       '^terms:faction_id=0\'max_stack_size=>1)'},
             'Incorrect query command: c:join (test #4)')
         # Multiple nested joins with siblings
         query.joins.clear()
@@ -672,9 +674,9 @@ class TestURLsQueryCommands(unittest.TestCase):
         child_2.create_join('grandchild_2_b')
         url = query.url()
         self.assertDictEqual(
-            dict(url.query), {'c:join': 'parent('
-                              'child_1(grandchild_1(great_grandchild_1)),'
-                              'child_2(grandchild_2_a,grandchild_2_b))'},
+            dict(url.query),
+            {'c:join': 'parent(child_1(grandchild_1(great_grandchild_1)),'
+                       'child_2(grandchild_2_a,grandchild_2_b))'},
             'Incorrect query command: c:join (test #5)')
 
     def test_tree(self) -> None:
