@@ -5,7 +5,7 @@ import logging
 import time
 import unittest
 
-from auraxium.cache import TLRUCache
+from auraxium.cache import TLRUCache  # pylint: disable=import-error
 
 # Logger added with no handlers to trigger debug clauses in the code
 log = logging.getLogger('auraxium.cache')

@@ -5,7 +5,7 @@ inner, nested queries respectively.
 """
 
 import copy
-from typing import Any, Callable, List, Optional, Tuple, Type, TypeVar, Union
+from typing import Any, List, Optional, Tuple, Type, TypeVar, Union
 
 import yarl
 
@@ -170,8 +170,7 @@ class QueryBase:
             from the template query.
 
         """
-        copy_func: Callable[[_T], _T] = (
-            copy.deepcopy if deep_copy else _dummy_copy)
+        copy_func = copy.deepcopy if deep_copy else _dummy_copy
         # Create a new querybase instance
         instance = cls(copy_func(template.data.collection), **kwargs)
         attrs = ['terms', 'hide', 'show']
@@ -815,8 +814,7 @@ class JoinedQuery(QueryBase):
         # A joined query cannot be created without a collection
         if template.data.collection is None:
             raise TypeError('JoinedQuery requires a collection')
-        copy_func: Callable[[_T], _T] = (
-            copy.deepcopy if deep_copy else _dummy_copy)
+        copy_func = copy.deepcopy if deep_copy else _dummy_copy
         # Create a new JoinedQuery instance
         instance: JoinedQuery = super().copy(  # type: ignore
             template, copy_joins=copy_joins, deep_copy=deep_copy, **kwargs)
@@ -880,7 +878,7 @@ class JoinedQuery(QueryBase):
             character_id_join_characters_online_status
 
         This method allows overriding the name of this insertion key.
-        
+
         This will overwrite existing keys. If the existing key is a
         JSON object/Python dict, the added keys will be merged. When
         updating this dictionary, any colliding keys will be appended

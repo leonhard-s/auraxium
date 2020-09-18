@@ -144,9 +144,10 @@ class MaintenanceError(CensusError):
     """Raised if the API is down or undergoing maintenance."""
 
     def __init__(self, message: str, url: yarl.URL,
-                  response: Optional[aiohttp.ClientResponse]) -> None:
+                 response: Optional[aiohttp.ClientResponse]) -> None:
         super().__init__(message, url)
         self.response = response
+
 
 class ResponseError(AuraxiumException):
     """Raised for unexpected or invalid API responses.

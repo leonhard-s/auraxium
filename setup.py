@@ -1,3 +1,4 @@
+# type: ignore
 """Package deployment script."""
 
 import setuptools

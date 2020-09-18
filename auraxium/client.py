@@ -11,8 +11,8 @@ import contextlib
 import copy
 import json
 import logging
-from typing import (Any, Callable, List, Literal, Optional, Type,
-                    TYPE_CHECKING, TypeVar, Union)
+from typing import (Any, Callable, Coroutine, List, Literal, Optional,
+                    Type, TYPE_CHECKING, TypeVar, Union)
 from types import TracebackType
 
 import aiohttp
@@ -32,6 +32,8 @@ __all__ = [
     'Client'
 ]
 
+# Pylance is more strict regarding typing of synchronous vs. asynchronous code
+Callback = Callable[[Event], Union[Coroutine[Any, Any, None], None]]
 NamedT = TypeVar('NamedT', bound='Named')
 Ps2ObjectT = TypeVar('Ps2ObjectT', bound='Ps2Object')
 log = logging.getLogger('auraxium.client')
@@ -365,7 +367,7 @@ class Client:
 
     def trigger(self, event: Union[str, EventType],
                 *args: Union[str, EventType], name: Optional[str] = None,
-                **kwargs: Any) -> Callable[[Callable[[Event], None]], None]:
+                **kwargs: Any) -> Callable[[Callback], None]:
         """Create and add a trigger for the given action.
 
         If no name is specified, the call-back function's name will be
@@ -389,7 +391,7 @@ class Client:
         """
         trigger = Trigger(event, *args, name=name, **kwargs)
 
-        def wrapper(func: Callable[[Event], None]) -> None:
+        def wrapper(func: Callback) -> None:
             trigger.action = func
             # If the trigger name has not been specified, use the call-back
             # function's name instead

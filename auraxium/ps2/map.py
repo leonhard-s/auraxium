@@ -180,6 +180,7 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
         join.set_fields('facility_id_b', 'facility_id')
         # Modified query A
         query.add_term(field='facility_id_a', value=self.data.facility_id)
+        proxy: SequenceProxy[MapRegion]
         proxy = SequenceProxy(MapRegion, query, client=self._client)
         connected.update(await proxy.flatten())
         # Modified query B
