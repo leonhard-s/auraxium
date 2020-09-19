@@ -6,7 +6,6 @@ trigger system.
 """
 
 import asyncio
-import dataclasses
 import datetime
 import enum
 import json
@@ -197,7 +196,6 @@ class EventType(enum.IntEnum):
                 'Cannot convert EventType.UNKNOWN to event name') from err
 
 
-@dataclasses.dataclass(frozen=True)
 class Event:
     """An event returned via the ESS websocket connection.
 

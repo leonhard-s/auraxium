@@ -15,7 +15,7 @@ import json
 import logging
 import sys
 import warnings
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 import aiohttp
 import backoff
@@ -24,8 +24,8 @@ import yarl
 from .census import Query
 from .errors import (BadPayloadError, BadRequestSyntaxError, CensusError,
                      InvalidSearchTermError, InvalidServiceIDError,
-                     MissingServiceIDError, NotFoundError, ResponseError,
-                     ServerError, ServiceUnavailableError,
+                     MaintenanceError, MissingServiceIDError, NotFoundError,
+                     ResponseError, ServerError, ServiceUnavailableError,
                      UnknownCollectionError)
 from .types import CensusData
 
@@ -76,10 +76,12 @@ async def response_to_dict(response: aiohttp.ClientResponse) -> CensusData:
         except json.JSONDecodeError:
             # There really is something wrong with this data; let the original
             # content type error propagate.
+            log.error(
+                'Erroneous response object:\n  Status: %d, URL: %s',
+                response.status, response.request_info.real_url.human_repr())
             raise ResponseError(f'Received a non-JSON response: {text}')
-        log.info('Received a plain text response containing JSON data: %s',
-                 text)
-        print(f'Received a plain text response containing JSON data: {text}')
+        log.info(
+            'Received a plain text response containing JSON data: %s', text)
         return data
     return data
 
@@ -177,7 +179,7 @@ def raise_for_dict(data: CensusData, url: yarl.URL) -> None:
         if msg == 'No data found.':
             # NOTE: This error is returned if either the namespace or
             # collection are unknown
-            components = url.path.split('/')[2:]
+            components = url.path.split('/')[3:]
             # Namespace only
             if len(components) == 1:
                 raise UnknownCollectionError(
@@ -247,7 +249,6 @@ def _process_invalid_search_term(msg: str, url: yarl.URL) -> None:
     *_, namespace, collection = url.parts
     # Shorter version of the message, with "INVALID_SEARCH_TERM: " chopped off
     chopped = msg[21:].strip()
-    print(chopped)
     # Invalid field name
     if chopped.startswith('Invalid search term. Valid search terms:'):
         # Retrieve the list of valid field names from the error message
@@ -318,45 +319,69 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
     def on_success(details: Dict[str, Any]) -> None:
         """Called when a query is successful."""
         if (tries := details['tries']) > 1:
-            log.info('Query successful after %d tries: %s',
-                     tries, url)
+            log.debug('Query successful after %d tries: %s',
+                      tries, url)
 
     def on_backoff(details: Dict[str, Any]) -> None:
         """Called when a query failed and is backed off."""
         wait = details['wait']
         tries = details['tries']
-        log.info('Backing off %.2f seconds after %d attempts: %s',
-                 wait, tries, url)
+        log.debug('Backing off %.2f seconds after %d attempts: %s',
+                  wait, tries, url)
 
     def on_giveup(details: Dict[str, Any]) -> None:
         """Called when giving up on a query."""
         elapsed = details['elapsed']
         tries = details['tries']
-        log.info('Giving up on query and re-raising exception after %.2f '
-                 'seconds and %d attempts: %s', elapsed, tries, url)
+        log.warning('Giving up on query and re-raising exception after %.2f '
+                    'seconds and %d attempts: %s', elapsed, tries, url)
         _, exc_value, _ = sys.exc_info()
         assert exc_value is not None
         raise exc_value
 
-    @backoff.on_exception(backoff.expo, aiohttp.ClientResponseError,
+    # The following exceptions will be retried if occurring during the request
+    backoff_errors = (
+        aiohttp.ClientResponseError,
+        aiohttp.ClientConnectionError,
+        MaintenanceError)
+
+    def expo_scaled() -> Iterator[float]:
+        """A scaled, version backoff.expo that doesn't wait as long."""
+        gen: Iterator[float] = backoff.expo(2, 0.1)  # type: ignore
+        while True:
+            try:
+                yield next(gen) * 0.1  # Scaling factor
+            except StopIteration:
+                return
+
+    @backoff.on_exception(expo_scaled, backoff_errors,  # type: ignore
                           on_backoff=on_backoff, on_giveup=on_giveup,
-                          on_success=on_success, max_time=10.0, max_tries=5)
+                          on_success=on_success, max_time=5.0, max_tries=10,
+                          jitter=None)
     async def retry_query() -> aiohttp.ClientResponse:
         """Request handling wrapper."""
-        return await session.get(
+        response = await session.get(
             url, allow_redirects=False, raise_for_status=True)
-
-    # As of July 2020, any redirect is a sign that the API is down due to
-    # maintenance.
-    # TODO: Add redirect checks -> MaintenanceError
+        # Trigger MaintenanceErrors from redirect response. This will also be
+        # caught by the backoff decorator and will only reach the user if the
+        # logic in the on_backoff callback re-raises it.
+        if 300 <= response.status < 400:
+            raise MaintenanceError(
+                'API redirection detected, API maintenance inferred',
+                url, response)
+        return response
 
     # Check for HTTP errors
     try:
         response = await retry_query()
     except aiohttp.ClientResponseError as err:
-        # The response was not valid or the status code malformed.
         raise ResponseError(
             f'An HTTP exception occurred: {err.args[0]}') from err
+    except aiohttp.ClientConnectionError as err:
+        # The connection had issues.
+        raise ResponseError(
+            f'A network exception occurred: {err.args[0]}') from err
+
     # Convert the HTTP response into a dictionary
     data = await response_to_dict(response)
     # Check the received dictionary for error codes

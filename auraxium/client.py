@@ -11,8 +11,8 @@ import contextlib
 import copy
 import json
 import logging
-from typing import (Any, Callable, List, Literal, Optional, Type,
-                    TYPE_CHECKING, TypeVar, Union)
+from typing import (Any, Callable, Coroutine, List, Literal, Optional,
+                    Type, TYPE_CHECKING, TypeVar, Union)
 from types import TracebackType
 
 import aiohttp
@@ -32,6 +32,8 @@ __all__ = [
     'Client'
 ]
 
+# Pylance is more strict regarding typing of synchronous vs. asynchronous code
+Callback = Callable[[Event], Union[Coroutine[Any, Any, None], None]]
 NamedT = TypeVar('NamedT', bound='Named')
 Ps2ObjectT = TypeVar('Ps2ObjectT', bound='Ps2Object')
 log = logging.getLogger('auraxium.client')
@@ -96,6 +98,7 @@ class Client:
         self.triggers: List[Trigger] = []
         self.websocket: Optional[websockets.WebSocketClientProtocol] = None
         self._ws_connected: bool = False
+        self._ws_lock = asyncio.Lock()
         self._ws_send_queue: List[str] = []
 
     async def __aenter__(self) -> 'Client':
@@ -364,7 +367,7 @@ class Client:
 
     def trigger(self, event: Union[str, EventType],
                 *args: Union[str, EventType], name: Optional[str] = None,
-                **kwargs: Any) -> Callable[[Callable[[Event], None]], None]:
+                **kwargs: Any) -> Callable[[Callback], None]:
         """Create and add a trigger for the given action.
 
         If no name is specified, the call-back function's name will be
@@ -388,7 +391,7 @@ class Client:
         """
         trigger = Trigger(event, *args, name=name, **kwargs)
 
-        def wrapper(func: Callable[[Event], None]) -> None:
+        def wrapper(func: Callback) -> None:
             trigger.action = func
             # If the trigger name has not been specified, use the call-back
             # function's name instead
@@ -396,7 +399,7 @@ class Client:
                 trigger.name = func.__name__
             # Ensure the trigger name is unique before adding the trigger
             if any(t.name == trigger.name for t in self.triggers):
-                raise KeyError(f'The trigger "{name}" already exists')
+                raise KeyError(f'The trigger "{trigger.name}" already exists')
             # If the name is unique, register the trigger to the client
             self.add_trigger(trigger)
 
@@ -498,6 +501,7 @@ class Client:
             self._ws_connected = False
             if self.websocket is not None and self.websocket.open:
                 await self.websocket.close()
+                self.websocket = None
 
     async def _ws_connect(self) -> None:
         """Connect to the websocket endpoint and process responses.
@@ -512,15 +516,16 @@ class Client:
         :meth:`Client._ws_dispatch()` for filtering and event dispatch.
 
         """
+        await self._ws_lock.acquire()
         if self.websocket is not None:
-            log.warning('A websocket connection is already open, closing...')
-            await self.websocket.close()
+            return
         log.info('Connecting to websocket endpoint...')
         url = f'{ESS_ENDPOINT}?environment=ps2&service-id={self.service_id}'
         async with websockets.connect(url) as websocket:
             log.info(
                 'Connected to %s?environment=ps2&service-id=XXX', ESS_ENDPOINT)
             self.websocket = websocket
+            self._ws_lock.release()
             # This loop will go on until this flag is unset, which is done by
             # the _ws_close() method.
             self._ws_connected = True
@@ -540,9 +545,7 @@ class Client:
                         pass
                     else:
                         log.debug('Received response: %s', response)
-                        event = Event(json.loads(response))
-                        log.debug('Event created: %s', event)
-                        self._ws_dispatch(event)
+                        self._ws_process(response)
                     finally:
                         if self._ws_send_queue:
                             msg = self._ws_send_queue.pop(0)
@@ -551,7 +554,7 @@ class Client:
                 except websockets.exceptions.ConnectionClosed as err:
                     log.warning('Connection was closed, reconnecting: %s', err)
                     await self._ws_close()
-                    await self._ws_connect()
+                    self.loop.create_task(self._ws_connect())
                     return
 
     def _ws_dispatch(self, event: Event) -> None:
@@ -579,7 +582,7 @@ class Client:
         for trigger in self.triggers:
             log.debug('Checking trigger %s', trigger)
             if trigger.check(event):
-                log.info('Scheduling trigger %s', trigger)
+                log.debug('Scheduling trigger %s', trigger)
                 self.loop.create_task(trigger.run(event))
                 # Single-shot triggers self-unload as soon as their call-back
                 # is scheduled

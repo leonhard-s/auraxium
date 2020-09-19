@@ -5,7 +5,7 @@ inner, nested queries respectively.
 """
 
 import copy
-from typing import Any, Callable, List, Optional, Tuple, Type, TypeVar, Union
+from typing import Any, List, Optional, Tuple, Type, TypeVar, Union
 
 import yarl
 
@@ -35,9 +35,8 @@ class QueryBase:
     details.
 
     Attributes:
-        collection: The API collection to access.
+        data: Provides low-level access to the represented query
         joins: A list of inner queries that were attached to this one.
-        terms: Filter terms used to reduce the number of results.
 
     """
 
@@ -171,8 +170,7 @@ class QueryBase:
             from the template query.
 
         """
-        copy_func: Callable[[_T], _T] = (
-            copy.deepcopy if deep_copy else _dummy_copy)
+        copy_func = copy.deepcopy if deep_copy else _dummy_copy
         # Create a new querybase instance
         instance = cls(copy_func(template.data.collection), **kwargs)
         attrs = ['terms', 'hide', 'show']
@@ -266,9 +264,7 @@ class Query(QueryBase):
     respective setter methods.
 
     Attributes:
-        namespace: The API namespace to access.
-        service_id: A unique ID used to identify your API client. Note
-            that the default service ID is heavily rate limited.
+        data: Provides low-level access to the represented query
 
     """
 
@@ -384,8 +380,7 @@ class Query(QueryBase):
             from the template query.
 
         """
-        copy_func: Callable[[_T], _T] = (
-            copy.deepcopy if deep_copy else _dummy_copy)
+        copy_func = copy.deepcopy if deep_copy else _dummy_copy
         # Create a new Query instance
         instance: 'Query' = super().copy(  # type: ignore
             template, copy_joins=copy_joins, deep_copy=deep_copy, *kwargs)
@@ -400,8 +395,8 @@ class Query(QueryBase):
                 setattr(instance.data, attr, value)
         # Include an arbitrary limit when copying from a joined list
         elif isinstance(template, JoinedQuery) and template.data.is_list:
-            # NOTE: Joined lists are infinite, so this might break for very
-            # long joins.
+            # NOTE: Joined lists have no set length, so this might break for
+            # very long or complex joins.
             instance.limit(10000)  # pylint: disable=no-member
         return instance
 
@@ -638,7 +633,7 @@ class Query(QueryBase):
         """
         if start < 0:
             raise ValueError('start may not be negative')
-        if start > 0:
+        if start >= 0:
             self.data.start = start
         return self
 
@@ -749,12 +744,7 @@ class JoinedQuery(QueryBase):
     respective setter methods.
 
     Attributes:
-        inject_at: The name of the field to inject the results at.
-        is_list: Whether the join should return a list.
-        is_outer: Whether non-matches will be included in the results.
-        child_field: The field on the child collection to join to.
-        parent_field: The field on the parent collection onto which the
-            child will be joined.
+        data: Provides low-level access to the represented joined query
 
     """
 
@@ -824,8 +814,7 @@ class JoinedQuery(QueryBase):
         # A joined query cannot be created without a collection
         if template.data.collection is None:
             raise TypeError('JoinedQuery requires a collection')
-        copy_func: Callable[[_T], _T] = (
-            copy.deepcopy if deep_copy else _dummy_copy)
+        copy_func = copy.deepcopy if deep_copy else _dummy_copy
         # Create a new JoinedQuery instance
         instance: JoinedQuery = super().copy(  # type: ignore
             template, copy_joins=copy_joins, deep_copy=deep_copy, **kwargs)
@@ -861,6 +850,8 @@ class JoinedQuery(QueryBase):
         the given values may be ``None`` to use the default naming
         system.
 
+        Specifying only the parent's name will apply it to both fields.
+
         Arguments:
             parent: The field name on the parent collection.
             child (optional): The field name on the child collection.
@@ -871,29 +862,39 @@ class JoinedQuery(QueryBase):
         """
         if parent is not None:
             self.data.field_on = parent
+            if child is None:
+                self.data.field_to = parent
         if child is not None:
             self.data.field_to = child
         return self
 
-    def set_inject_at(self, name: str) -> 'JoinedQuery':
-        """Set the field name to inject the join's results at.
+    def set_inject_at(self, key: Optional[str]) -> 'JoinedQuery':
+        """Set the name of the field to insert the joined data at.
 
-        A joined query must inject its own results into the top-level
-        query. By default, this is done via the following field name:::
+        By default, the inserted is added to a dynamically generated
+        key following the pattern
+        ``<parent_field>_join_<joined_collection>``. Example:::
 
-            <parent-field>_join_<child-collection>
+            character_id_join_characters_online_status
 
-        This method allows you to specify a more human-friendly name to
-        be used instead. Be wary of name collisions.
+        This method allows overriding the name of this insertion key.
+
+        This will overwrite existing keys. If the existing key is a
+        JSON object/Python dict, the added keys will be merged. When
+        updating this dictionary, any colliding keys will be appended
+        with ``_merged``.
+        Non-dict keys will simply be overwritten by the joined data.
 
         Arguments:
-            name: A custom field name to inject the joins results at.
+            key (optional): The name of the key to inject the joined
+                data at. If ``None``, the autogenerated name is used.
+                Defaults to ``None``.
 
         Returns:
             The query instance; this allows for chaining of operations.
 
         """
-        self.data.inject_at = name
+        self.data.inject_at = key
         return self
 
     def set_list(self, is_list: bool) -> 'JoinedQuery':
