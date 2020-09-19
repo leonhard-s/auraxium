@@ -15,7 +15,7 @@ import json
 import logging
 import sys
 import warnings
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 import aiohttp
 import backoff
@@ -319,35 +319,57 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
     def on_success(details: Dict[str, Any]) -> None:
         """Called when a query is successful."""
         if (tries := details['tries']) > 1:
-            log.info('Query successful after %d tries: %s',
-                     tries, url)
+            log.debug('Query successful after %d tries: %s',
+                      tries, url)
 
     def on_backoff(details: Dict[str, Any]) -> None:
         """Called when a query failed and is backed off."""
         wait = details['wait']
         tries = details['tries']
-        log.info('Backing off %.2f seconds after %d attempts: %s',
-                 wait, tries, url)
+        log.debug('Backing off %.2f seconds after %d attempts: %s',
+                  wait, tries, url)
 
     def on_giveup(details: Dict[str, Any]) -> None:
         """Called when giving up on a query."""
         elapsed = details['elapsed']
         tries = details['tries']
-        log.info('Giving up on query and re-raising exception after %.2f '
-                 'seconds and %d attempts: %s', elapsed, tries, url)
+        log.warning('Giving up on query and re-raising exception after %.2f '
+                    'seconds and %d attempts: %s', elapsed, tries, url)
         _, exc_value, _ = sys.exc_info()
         assert exc_value is not None
         raise exc_value
 
-    backoff_errors = aiohttp.ClientResponseError, aiohttp.ClientConnectionError
+    # The following exceptions will be retried if occurring during the request
+    backoff_errors = (
+        aiohttp.ClientResponseError,
+        aiohttp.ClientConnectionError,
+        MaintenanceError)
 
-    @backoff.on_exception(backoff.expo, backoff_errors,  # type: ignore
+    def expo_scaled() -> Iterator[float]:
+        """A scaled, version backoff.expo that doesn't wait as long."""
+        gen: Iterator[float] = backoff.expo(2, 0.1)  # type: ignore
+        while True:
+            try:
+                yield next(gen) * 0.1  # Scaling factor
+            except StopIteration:
+                return
+
+    @backoff.on_exception(expo_scaled, backoff_errors,  # type: ignore
                           on_backoff=on_backoff, on_giveup=on_giveup,
-                          on_success=on_success, max_time=10.0, max_tries=5)
+                          on_success=on_success, max_time=5.0, max_tries=10,
+                          jitter=None)
     async def retry_query() -> aiohttp.ClientResponse:
         """Request handling wrapper."""
-        return await session.get(
+        response = await session.get(
             url, allow_redirects=False, raise_for_status=True)
+        # Trigger MaintenanceErrors from redirect response. This will also be
+        # caught by the backoff decorator and will only reach the user if the
+        # logic in the on_backoff callback re-raises it.
+        if 300 <= response.status < 400:
+            raise MaintenanceError(
+                'API redirection detected, API maintenance inferred',
+                url, response)
+        return response
 
     # Check for HTTP errors
     try:
@@ -359,14 +381,6 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
         # The connection had issues.
         raise ResponseError(
             f'A network exception occurred: {err.args[0]}') from err
-
-    # As of July 2020, any redirect is a sign that the API is undergoing
-    # maintenance, generally with a 302 "Found" status code. Under normal API
-    # operation, no redirects occur.
-    if response.status >= 300:
-        raise MaintenanceError(
-            'API redirection detected, API maintenance inferred',
-            url, response)
 
     # Convert the HTTP response into a dictionary
     data = await response_to_dict(response)
