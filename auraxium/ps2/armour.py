@@ -20,7 +20,7 @@ class ArmourFacing(enum.IntEnum):
     REAR = 3
     LEFT = 4
     BOTTOM = 5
-    ALL = 5
+    ALL = 6
 
 
 class ArmourInfo(Cached, cache_size=100, cache_ttu=60.0):

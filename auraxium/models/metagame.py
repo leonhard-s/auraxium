@@ -1,10 +1,11 @@
 """Data classes for :mod:`auraxium.ps2.metagame`."""
 
 import dataclasses
+from typing import Optional
 
 from ..base import Ps2Data
 from ..types import CensusData
-from ..utils import LocaleData
+from ..utils import LocaleData, optional
 
 __all__ = [
     'MetagameEventData'
@@ -34,7 +35,7 @@ class MetagameEventData(Ps2Data):
     name: LocaleData
     description: LocaleData
     type: int
-    experience_bonus: int
+    experience_bonus: Optional[int]
 
     @classmethod
     def from_census(cls, data: CensusData) -> 'MetagameEventData':
@@ -43,4 +44,4 @@ class MetagameEventData(Ps2Data):
             LocaleData.from_census(data.pop('name')),
             LocaleData.from_census(data.pop('description')),
             int(data.pop('type')),
-            int(data.pop('experience_bonus')))
+            optional(data, 'experience_bonus', int))
