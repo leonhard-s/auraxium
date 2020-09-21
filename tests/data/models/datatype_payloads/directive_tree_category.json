@@ -1,0 +1,82 @@
+{
+    "directive_tree_category_list": [
+        {
+            "directive_tree_category_id": "3",
+            "name": {
+                "de": "Infanterie",
+                "en": "Infantry",
+                "es": "Infanter\u00eda",
+                "fr": "Infanterie",
+                "it": "Fanteria",
+                "tr": "Piyade"
+            }
+        },
+        {
+            "directive_tree_category_id": "4",
+            "name": {
+                "de": "Fahrzeuge",
+                "en": "Vehicles",
+                "es": "Veh\u00edculos",
+                "fr": "V\u00e9hicules",
+                "it": "Veicoli",
+                "tr": "Ara\u00e7lar"
+            }
+        },
+        {
+            "directive_tree_category_id": "5",
+            "name": {
+                "de": "Strategisch",
+                "en": "Strategic",
+                "es": "Estrat\u00e9gico",
+                "fr": "Strat\u00e9gique",
+                "it": "Strategico",
+                "tr": "Strategic"
+            }
+        },
+        {
+            "directive_tree_category_id": "7",
+            "name": {
+                "de": "Waffen",
+                "en": "Weapons",
+                "es": "Armas",
+                "fr": "Armes",
+                "it": "Armi",
+                "tr": "Silahlar"
+            }
+        },
+        {
+            "directive_tree_category_id": "8",
+            "name": {
+                "de": "Events",
+                "en": "Events",
+                "es": "Eventos",
+                "fr": "\u00c9v\u00e9nements",
+                "it": "Eventi",
+                "tr": "NULL"
+            }
+        },
+        {
+            "directive_tree_category_id": "9",
+            "name": {
+                "de": "Grundausbildung",
+                "en": "Basic Training",
+                "es": "Entrenamiento b\u00e1sico",
+                "fr": "Entra\u00eenement de base",
+                "it": "Addestramento reclute",
+                "tr": "Basic"
+            }
+        },
+        {
+            "directive_tree_category_id": "11",
+            "name": {
+                "de": "Spezialisierung",
+                "en": "Specialty",
+                "es": "Especiales",
+                "fr": "Sp\u00e9cialit\u00e9",
+                "it": "Specialit\u00e0",
+                "tr": "NULL"
+            }
+        }
+    ],
+    "returned": 7
+}

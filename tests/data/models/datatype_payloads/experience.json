@@ -1,0 +1,105 @@
+{
+    "experience_list": [
+        {
+            "experience_id": "1",
+            "description": "Kill Player",
+            "xp": "100"
+        },
+        {
+            "experience_id": "2",
+            "description": "Kill Player Assist",
+            "xp": "100"
+        },
+        {
+            "experience_id": "3",
+            "description": "Kill Player Spawn Assist",
+            "xp": "0"
+        },
+        {
+            "experience_id": "4",
+            "description": "Heal Player",
+            "xp": "10"
+        },
+        {
+            "experience_id": "5",
+            "description": "Heal Assist",
+            "xp": "5"
+        },
+        {
+            "experience_id": "6",
+            "description": "MAX Repair",
+            "xp": "5"
+        },
+        {
+            "experience_id": "7",
+            "description": "Revive",
+            "xp": "75"
+        },
+        {
+            "experience_id": "8",
+            "description": "Kill Streak",
+            "xp": "10"
+        },
+        {
+            "experience_id": "10",
+            "description": "Domination Kill",
+            "xp": "25"
+        },
+        {
+            "experience_id": "11",
+            "description": "Revenge Kill",
+            "xp": "50"
+        },
+        {
+            "experience_id": "15",
+            "description": "Control Point - Defend",
+            "xp": "100"
+        },
+        {
+            "experience_id": "16",
+            "description": "Control Point - Attack",
+            "xp": "100"
+        },
+        {
+            "experience_id": "19",
+            "description": "Facility Captured (Not Used)",
+            "xp": "250"
+        },
+        {
+            "experience_id": "21",
+            "description": "Destroy Secondary Objective",
+            "xp": "500"
+        },
+        {
+            "experience_id": "22",
+            "description": "Destroy SecondaryObjectiveAssist",
+            "xp": "75"
+        },
+        {
+            "experience_id": "24",
+            "description": "Vehicle Destruction - Flash",
+            "xp": "100"
+        },
+        {
+            "experience_id": "25",
+            "description": "Multiple Kill",
+            "xp": "25"
+        },
+        {
+            "experience_id": "26",
+            "description": "Vehicle RoadKill",
+            "xp": "25"
+        },
+        {
+            "experience_id": "28",
+            "description": "Squad Repair - Flash",
+            "xp": "10"
+        },
+        {
+            "experience_id": "29",
+            "description": "Kill Player Class MAX",
+            "xp": "200"
+        }
+    ],
+    "returned": 20
+}

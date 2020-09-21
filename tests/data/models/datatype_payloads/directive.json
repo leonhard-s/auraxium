@@ -1,0 +1,525 @@
+{
+    "directive_list": [
+        {
+            "directive_id": "112",
+            "directive_tree_id": "28",
+            "directive_tier_id": "1",
+            "objective_set_id": "4113",
+            "qualify_requirement_id": "NULL",
+            "name": {
+                "de": "Kills",
+                "en": "Kills",
+                "es": "V\u00edctimas",
+                "fr": "Victimes",
+                "it": "Uccisioni",
+                "tr": "Earn kills as a Combat Medic."
+            },
+            "description": {
+                "de": "T\u00f6te Feinde als Sanit\u00e4ter.",
+                "en": "Kill enemies as a Combat Medic.",
+                "es": "Elimina enemigos usando un m\u00e9dico de combate.",
+                "fr": "Tuez des ennemis en tant que M\u00e9decin de combat.",
+                "it": "Uccidi i nemici come Medico da campo.",
+                "tr": "NULL"
+            },
+            "image_set_id": "13518",
+            "image_id": "77759",
+            "image_path": "/files/ps2/images/static/77759.png"
+        },
+        {
+            "directive_id": "113",
+            "directive_tree_id": "28",
+            "directive_tier_id": "2",
+            "objective_set_id": "4114",
+            "qualify_requirement_id": "NULL",
+            "name": {
+                "de": "Kills",
+                "en": "Kills",
+                "es": "V\u00edctimas",
+                "fr": "Victimes",
+                "it": "Uccisioni",
+                "tr": "Earn kills as a Combat Medic."
+            },
+            "description": {
+                "de": "T\u00f6te Feinde als Sanit\u00e4ter.",
+                "en": "Kill enemies as a Combat Medic.",
+                "es": "Elimina enemigos usando un m\u00e9dico de combate.",
+                "fr": "Tuez des ennemis en tant que M\u00e9decin de combat.",
+                "it": "Uccidi i nemici come Medico da campo.",
+                "tr": "NULL"
+            },
+            "image_set_id": "13518",
+            "image_id": "77759",
+            "image_path": "/files/ps2/images/static/77759.png"
+        },
+        {
+            "directive_id": "115",
+            "directive_tree_id": "28",
+            "directive_tier_id": "3",
+            "objective_set_id": "4116",
+            "qualify_requirement_id": "NULL",
+            "name": {
+                "de": "Kills",
+                "en": "Kills",
+                "es": "V\u00edctimas",
+                "fr": "Victimes",
+                "it": "Uccisioni",
+                "tr": "Earn kills as a Combat Medic."
+            },
+            "description": {
+                "de": "T\u00f6te Feinde als Sanit\u00e4ter.",
+                "en": "Kill enemies as a Combat Medic.",
+                "es": "Elimina enemigos usando un m\u00e9dico de combate.",
+                "fr": "Tuez des ennemis en tant que M\u00e9decin de combat.",
+                "it": "Uccidi i nemici come Medico da campo.",
+                "tr": "NULL"
+            },
+            "image_set_id": "13518",
+            "image_id": "77759",
+            "image_path": "/files/ps2/images/static/77759.png"
+        },
+        {
+            "directive_id": "117",
+            "directive_tree_id": "28",
+            "directive_tier_id": "4",
+            "objective_set_id": "4118",
+            "qualify_requirement_id": "NULL",
+            "name": {
+                "de": "Kills",
+                "en": "Kills",
+                "es": "V\u00edctimas",
+                "fr": "Victimes",
+                "it": "Uccisioni",
+                "tr": "Earn kills as a Combat Medic."
+            },
+            "description": {
+                "de": "T\u00f6te Feinde als Sanit\u00e4ter.",
+                "en": "Kill enemies as a Combat Medic.",
+                "es": "Elimina enemigos usando un m\u00e9dico de combate.",
+                "fr": "Tuez des ennemis en tant que M\u00e9decin de combat.",
+                "it": "Uccidi i nemici come Medico da campo.",
+                "tr": "NULL"
+            },
+            "image_set_id": "13518",
+            "image_id": "77759",
+            "image_path": "/files/ps2/images/static/77759.png"
+        },
+        {
+            "directive_id": "144",
+            "directive_tree_id": "28",
+            "directive_tier_id": "4",
+            "objective_set_id": "4145",
+            "qualify_requirement_id": "NULL",
+            "name": {
+                "de": "Heilungsauszeichnungen",
+                "en": "Healing Ribbons",
+                "es": "Galones de sanador",
+                "fr": "D\u00e9coration pour gu\u00e9rison",
+                "it": "Coccarde di Salute",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "Verdiene dieses Verdienstabzeichen, indem du deine Verb\u00fcnderen mit der medizinischen Infusionspistole, der Naniten-Heilungsgranate oder dem Nano-Regenerationsger\u00e4t heilst.",
+                "en": "Earn this service ribbon by healing your allies with the Medical Applicator, Nanite Healing Grenade, or Nano-Regen Device ability.",
+                "es": "Este gal\u00f3n se otorga por curar a tus aliados con el aplicador m\u00e9dico, la granada de curaci\u00f3n nan\u00edtica o el nanoregenerador.",
+                "fr": "Gagnez cette d\u00e9coration pour service rendu en gu\u00e9rissant des alli\u00e9s avec l'applicateur m\u00e9dical, une grenade vivifiante Nanite ou la capacit\u00e9 de l'appareil de nanor\u00e9g\u00e9n\u00e9ration.",
+                "it": "Ottieni questa coccarda di servizio curando i tuoi alleati con l'Applicatore medico, la Granata curativa a naniti o il Dispositivo di nano-rigenerazione.",
+                "tr": "NULL"
+            },
+            "image_set_id": "14061",
+            "image_id": "79484",
+            "image_path": "/files/ps2/images/static/79484.png"
+        },
+        {
+            "directive_id": "153",
+            "directive_tree_id": "28",
+            "directive_tier_id": "1",
+            "objective_set_id": "4154",
+            "qualify_requirement_id": "NULL",
+            "name": {
+                "de": "Rettungskills",
+                "en": "Savior Kills",
+                "es": "V\u00edctimas: salvadores",
+                "fr": "Victimes Sauveur",
+                "it": "Uccisioni come Salvatore",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "Rette Verb\u00fcndete vor dem Tod, indem du Feinde t\u00f6test, die dabei sind, sie zu t\u00f6ten.",
+                "en": "Save allies from death by killing enemies who are about to kill them.",
+                "es": "Salva de la muerte a tus aliados acabando con los enemigos que est\u00e9n a punto de matarlos.",
+                "fr": "Sauver des alli\u00e9s de la mort en tuant des ennemis sur le point de les tuer.",
+                "it": "Salva gli alleati dalla morte uccidendo i nemici che stanno per ucciderli.",
+                "tr": "NULL"
+            },
+            "image_set_id": "13518",
+            "image_id": "77759",
+            "image_path": "/files/ps2/images/static/77759.png"
+        },
+        {
+            "directive_id": "154",
+            "directive_tree_id": "28",
+            "directive_tier_id": "2",
+            "objective_set_id": "4155",
+            "qualify_requirement_id": "NULL",
+            "name": {
+                "de": "Rettungskills",
+                "en": "Savior Kills",
+                "es": "V\u00edctimas: salvadores",
+                "fr": "Victimes Sauveur",
+                "it": "Uccisioni come Salvatore",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "Rette Verb\u00fcndete vor dem Tod, indem du Feinde t\u00f6test, die dabei sind, sie zu t\u00f6ten.",
+                "en": "Save allies from death by killing enemies who are about to kill them.",
+                "es": "Salva de la muerte a tus aliados acabando con los enemigos que est\u00e9n a punto de matarlos.",
+                "fr": "Sauver des alli\u00e9s de la mort en tuant des ennemis sur le point de les tuer.",
+                "it": "Salva gli alleati dalla morte uccidendo i nemici che stanno per ucciderli.",
+                "tr": "NULL"
+            },
+            "image_set_id": "13518",
+            "image_id": "77759",
+            "image_path": "/files/ps2/images/static/77759.png"
+        },
+        {
+            "directive_id": "155",
+            "directive_tree_id": "28",
+            "directive_tier_id": "3",
+            "objective_set_id": "4156",
+            "qualify_requirement_id": "NULL",
+            "name": {
+                "de": "Rettungskills",
+                "en": "Savior Kills",
+                "es": "V\u00edctimas: salvadores",
+                "fr": "Victimes Sauveur",
+                "it": "Uccisioni come Salvatore",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "Rette Verb\u00fcndete vor dem Tod, indem du Feinde t\u00f6test, die dabei sind, sie zu t\u00f6ten.",
+                "en": "Save allies from death by killing enemies who are about to kill them.",
+                "es": "Salva de la muerte a tus aliados acabando con los enemigos que est\u00e9n a punto de matarlos.",
+                "fr": "Sauver des alli\u00e9s de la mort en tuant des ennemis sur le point de les tuer.",
+                "it": "Salva gli alleati dalla morte uccidendo i nemici che stanno per ucciderli.",
+                "tr": "NULL"
+            },
+            "image_set_id": "13518",
+            "image_id": "77759",
+            "image_path": "/files/ps2/images/static/77759.png"
+        },
+        {
+            "directive_id": "156",
+            "directive_tree_id": "28",
+            "directive_tier_id": "4",
+            "objective_set_id": "4157",
+            "qualify_requirement_id": "NULL",
+            "name": {
+                "de": "Rettungskills",
+                "en": "Savior Kills",
+                "es": "V\u00edctimas: salvadores",
+                "fr": "Victimes Sauveur",
+                "it": "Uccisioni come Salvatore",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "Rette Verb\u00fcndete vor dem Tod, indem du Feinde t\u00f6test, die dabei sind, sie zu t\u00f6ten.",
+                "en": "Save allies from death by killing enemies who are about to kill them.",
+                "es": "Salva de la muerte a tus aliados acabando con los enemigos que est\u00e9n a punto de matarlos.",
+                "fr": "Sauver des alli\u00e9s de la mort en tuant des ennemis sur le point de les tuer.",
+                "it": "Salva gli alleati dalla morte uccidendo i nemici che stanno per ucciderli.",
+                "tr": "NULL"
+            },
+            "image_set_id": "13518",
+            "image_id": "77759",
+            "image_path": "/files/ps2/images/static/77759.png"
+        },
+        {
+            "directive_id": "157",
+            "directive_tree_id": "28",
+            "directive_tier_id": "1",
+            "objective_set_id": "4158",
+            "qualify_requirement_id": "NULL",
+            "name": {
+                "de": "Feindliche Sanit\u00e4ter-Kills",
+                "en": "Enemy Medic Kills",
+                "es": "M\u00e9dicos enemigos abatidos",
+                "fr": "Victimes M\u00e9decins ennemis",
+                "it": "Uccisioni medici nemici",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "T\u00f6te als Sanit\u00e4ter andere feindliche Sanit\u00e4ter.",
+                "en": "Kill enemy Combat Medics as a Combat Medic.",
+                "es": "Acaba con m\u00e9dicos de combate enemigos usando un m\u00e9dico de combate.",
+                "fr": "Tuez des M\u00e9decins de combat ennemis en tant que M\u00e9decin de combat.",
+                "it": "Uccidi i medici da campo nemici come medico da campo.",
+                "tr": "NULL"
+            },
+            "image_set_id": "13518",
+            "image_id": "77759",
+            "image_path": "/files/ps2/images/static/77759.png"
+        },
+        {
+            "directive_id": "158",
+            "directive_tree_id": "28",
+            "directive_tier_id": "2",
+            "objective_set_id": "4159",
+            "qualify_requirement_id": "NULL",
+            "name": {
+                "de": "Feindliche Sanit\u00e4ter-Kills",
+                "en": "Enemy Medic Kills",
+                "es": "M\u00e9dicos enemigos abatidos",
+                "fr": "Victimes M\u00e9decins ennemis",
+                "it": "Uccisioni medici nemici",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "T\u00f6te als Sanit\u00e4ter andere feindliche Sanit\u00e4ter.",
+                "en": "Kill enemy Combat Medics as a Combat Medic.",
+                "es": "Acaba con m\u00e9dicos de combate enemigos usando un m\u00e9dico de combate.",
+                "fr": "Tuez des M\u00e9decins de combat ennemis en tant que M\u00e9decin de combat.",
+                "it": "Uccidi i medici da campo nemici come medico da campo.",
+                "tr": "NULL"
+            },
+            "image_set_id": "13518",
+            "image_id": "77759",
+            "image_path": "/files/ps2/images/static/77759.png"
+        },
+        {
+            "directive_id": "159",
+            "directive_tree_id": "28",
+            "directive_tier_id": "3",
+            "objective_set_id": "4160",
+            "qualify_requirement_id": "NULL",
+            "name": {
+                "de": "Feindliche Sanit\u00e4ter-Kills",
+                "en": "Enemy Medic Kills",
+                "es": "M\u00e9dicos enemigos abatidos",
+                "fr": "Victimes M\u00e9decins ennemis",
+                "it": "Uccisioni medici nemici",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "T\u00f6te als Sanit\u00e4ter andere feindliche Sanit\u00e4ter.",
+                "en": "Kill enemy Combat Medics as a Combat Medic.",
+                "es": "Acaba con m\u00e9dicos de combate enemigos usando un m\u00e9dico de combate.",
+                "fr": "Tuez des M\u00e9decins de combat ennemis en tant que M\u00e9decin de combat.",
+                "it": "Uccidi i medici da campo nemici come medico da campo.",
+                "tr": "NULL"
+            },
+            "image_set_id": "13518",
+            "image_id": "77759",
+            "image_path": "/files/ps2/images/static/77759.png"
+        },
+        {
+            "directive_id": "160",
+            "directive_tree_id": "28",
+            "directive_tier_id": "4",
+            "objective_set_id": "4161",
+            "qualify_requirement_id": "NULL",
+            "name": {
+                "de": "Feindliche Sanit\u00e4ter-Kills",
+                "en": "Enemy Medic Kills",
+                "es": "M\u00e9dicos enemigos abatidos",
+                "fr": "Victimes M\u00e9decins ennemis",
+                "it": "Uccisioni medici nemici",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "T\u00f6te als Sanit\u00e4ter andere feindliche Sanit\u00e4ter.",
+                "en": "Kill enemy Combat Medics as a Combat Medic.",
+                "es": "Acaba con m\u00e9dicos de combate enemigos usando un m\u00e9dico de combate.",
+                "fr": "Tuez des M\u00e9decins de combat ennemis en tant que M\u00e9decin de combat.",
+                "it": "Uccidi i medici da campo nemici come medico da campo.",
+                "tr": "NULL"
+            },
+            "image_set_id": "13518",
+            "image_id": "77759",
+            "image_path": "/files/ps2/images/static/77759.png"
+        },
+        {
+            "directive_id": "1512",
+            "directive_tree_id": "34",
+            "directive_tier_id": "1",
+            "objective_set_id": "5513",
+            "qualify_requirement_id": "NULL",
+            "name": {
+                "de": "Roadkills",
+                "en": "Roadkills",
+                "es": "Atropellos",
+                "fr": "Victimes de la route",
+                "it": "Vittime investite",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "T\u00f6te Feinde, indem du sie \u00fcberf\u00e4hrst oder erhalte Ramm-Boni, w\u00e4hrend du einen Flash steuerst.",
+                "en": "Kill enemies by running over them or earn ram bonuses while in a Flash.",
+                "es": "Elimina enemigos atropell\u00e1ndolos o embisti\u00e9ndolos con un Flash.",
+                "fr": "Tuer des ennemis en leur roulant dessus ou gagner des bonus de b\u00e9lier alors que vous \u00eates dans le Flash.",
+                "it": "Uccidi i nemici investendoli e ottieni bonus ram se sei su un Flash.",
+                "tr": "NULL"
+            },
+            "image_set_id": "14124",
+            "image_id": "79547",
+            "image_path": "/files/ps2/images/static/79547.png"
+        },
+        {
+            "directive_id": "1404",
+            "directive_tree_id": "33",
+            "directive_tier_id": "1",
+            "objective_set_id": "5405",
+            "qualify_requirement_id": "3311",
+            "name": {
+                "de": "P2-120-R HEAT",
+                "en": "P2-120-R HEAT",
+                "es": "P2-120-R HEAT",
+                "fr": "P2-120-R HEAT",
+                "it": "P2-120-R HEAT",
+                "tr": "P2-120-R HEAT"
+            },
+            "description": {
+                "de": "10 Feinde get\u00f6tet",
+                "en": "10 Enemies Killed",
+                "es": "10 enemigos muertos",
+                "fr": "10 ennemis tu\u00e9s",
+                "it": "10 nemici uccisi",
+                "tr": "10 D\u00fc\u015fman \u00d6ld\u00fcr\u00fcld\u00fc"
+            },
+            "image_set_id": "1564",
+            "image_id": "3072",
+            "image_path": "/files/ps2/images/static/3072.png"
+        },
+        {
+            "directive_id": "1513",
+            "directive_tree_id": "34",
+            "directive_tier_id": "2",
+            "objective_set_id": "5514",
+            "qualify_requirement_id": "NULL",
+            "name": {
+                "de": "Roadkills",
+                "en": "Roadkills",
+                "es": "Atropellos",
+                "fr": "Victimes de la route",
+                "it": "Vittime investite",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "T\u00f6te Feinde, indem du sie \u00fcberf\u00e4hrst oder erhalte Ramm-Boni, w\u00e4hrend du einen Flash steuerst.",
+                "en": "Kill enemies by running over them or earn ram bonuses while in a Flash.",
+                "es": "Elimina enemigos atropell\u00e1ndolos o embisti\u00e9ndolos con un Flash.",
+                "fr": "Tuer des ennemis en leur roulant dessus ou gagner des bonus de b\u00e9lier alors que vous \u00eates dans le Flash.",
+                "it": "Uccidi i nemici investendoli e ottieni bonus ram se sei su un Flash.",
+                "tr": "NULL"
+            },
+            "image_set_id": "14124",
+            "image_id": "79547",
+            "image_path": "/files/ps2/images/static/79547.png"
+        },
+        {
+            "directive_id": "1514",
+            "directive_tree_id": "34",
+            "directive_tier_id": "3",
+            "objective_set_id": "5515",
+            "qualify_requirement_id": "NULL",
+            "name": {
+                "de": "Roadkills",
+                "en": "Roadkills",
+                "es": "Atropellos",
+                "fr": "Victimes de la route",
+                "it": "Vittime investite",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "T\u00f6te Feinde, indem du sie \u00fcberf\u00e4hrst oder erhalte Ramm-Boni, w\u00e4hrend du einen Flash steuerst.",
+                "en": "Kill enemies by running over them or earn ram bonuses while in a Flash.",
+                "es": "Elimina enemigos atropell\u00e1ndolos o embisti\u00e9ndolos con un Flash.",
+                "fr": "Tuer des ennemis en leur roulant dessus ou gagner des bonus de b\u00e9lier alors que vous \u00eates dans le Flash.",
+                "it": "Uccidi i nemici investendoli e ottieni bonus ram se sei su un Flash.",
+                "tr": "NULL"
+            },
+            "image_set_id": "14124",
+            "image_id": "79547",
+            "image_path": "/files/ps2/images/static/79547.png"
+        },
+        {
+            "directive_id": "1515",
+            "directive_tree_id": "34",
+            "directive_tier_id": "4",
+            "objective_set_id": "5516",
+            "qualify_requirement_id": "NULL",
+            "name": {
+                "de": "Roadkills",
+                "en": "Roadkills",
+                "es": "Atropellos",
+                "fr": "Victimes de la route",
+                "it": "Vittime investite",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "T\u00f6te Feinde, indem du sie \u00fcberf\u00e4hrst oder erhalte Ramm-Boni, w\u00e4hrend du einen Flash steuerst.",
+                "en": "Kill enemies by running over them or earn ram bonuses while in a Flash.",
+                "es": "Elimina enemigos atropell\u00e1ndolos o embisti\u00e9ndolos con un Flash.",
+                "fr": "Tuer des ennemis en leur roulant dessus ou gagner des bonus de b\u00e9lier alors que vous \u00eates dans le Flash.",
+                "it": "Uccidi i nemici investendoli e ottieni bonus ram se sei su un Flash.",
+                "tr": "NULL"
+            },
+            "image_set_id": "14124",
+            "image_id": "79547",
+            "image_path": "/files/ps2/images/static/79547.png"
+        },
+        {
+            "directive_id": "1516",
+            "directive_tree_id": "35",
+            "directive_tier_id": "1",
+            "objective_set_id": "5517",
+            "qualify_requirement_id": "NULL",
+            "name": {
+                "de": "Roadkills",
+                "en": "Roadkills",
+                "es": "Atropellos",
+                "fr": "Victimes de la route",
+                "it": "Vittime investite",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "T\u00f6te Feinde, indem du sie \u00fcberf\u00e4hrst oder erhalte Ramm-Boni, w\u00e4hrend du einen Harasser steuerst.",
+                "en": "Kill enemies by running over them or earn ram bonuses while in a Harasser.",
+                "es": "Elimina enemigos atropell\u00e1ndolos o embisti\u00e9ndolos con un Harasser.",
+                "fr": "Tuer des ennemis en leur roulant dessus ou gagner des bonus de b\u00e9lier alors que vous \u00eates dans l'Offenseur.",
+                "it": "Uccidi i nemici investendoli e ottieni bonus ram se sei su un Harasser.",
+                "tr": "NULL"
+            },
+            "image_set_id": "14124",
+            "image_id": "79547",
+            "image_path": "/files/ps2/images/static/79547.png"
+        },
+        {
+            "directive_id": "1517",
+            "directive_tree_id": "35",
+            "directive_tier_id": "2",
+            "objective_set_id": "5518",
+            "qualify_requirement_id": "NULL",
+            "name": {
+                "de": "Roadkills",
+                "en": "Roadkills",
+                "es": "Atropellos",
+                "fr": "Victimes de la route",
+                "it": "Vittime investite",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "T\u00f6te Feinde, indem du sie \u00fcberf\u00e4hrst oder erhalte Ramm-Boni, w\u00e4hrend du einen Harasser steuerst.",
+                "en": "Kill enemies by running over them or earn ram bonuses while in a Harasser.",
+                "es": "Elimina enemigos atropell\u00e1ndolos o embisti\u00e9ndolos con un Harasser.",
+                "fr": "Tuer des ennemis en leur roulant dessus ou gagner des bonus de b\u00e9lier alors que vous \u00eates dans l'Offenseur.",
+                "it": "Uccidi i nemici investendoli e ottieni bonus ram se sei su un Harasser.",
+                "tr": "NULL"
+            },
+            "image_set_id": "14124",
+            "image_id": "79547",
+            "image_path": "/files/ps2/images/static/79547.png"
+        }
+    ],
+    "returned": 20
+}

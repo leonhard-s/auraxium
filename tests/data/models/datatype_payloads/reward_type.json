@@ -1,0 +1,27 @@
+{
+    "reward_type_list": [
+        {
+            "reward_type_id": "1",
+            "description": "Item",
+            "count_min": "# of items to give",
+            "count_max": "NULL",
+            "param1": "Item ID",
+            "param2": "currency_type (-1 for coin)",
+            "param3": "Flag Goto Claim",
+            "param4": "Required Scalar Percent",
+            "param5": "NULL"
+        },
+        {
+            "reward_type_id": "3",
+            "description": "XP",
+            "count_min": "NULL",
+            "count_max": "NULL",
+            "param1": "# of exp",
+            "param2": "Profile (0 = current)",
+            "param3": "award type",
+            "param4": "NULL",
+            "param5": "NULL"
+        }
+    ],
+    "returned": 2
+}

@@ -1,0 +1,465 @@
+{
+    "marketing_bundle_list": [
+        {
+            "marketing_bundle_id": "38",
+            "name": {
+                "de": "Emblem \"PlanetSide Veteran\"",
+                "en": "PlanetSide Veteran Decal",
+                "es": "Emblema Veterano de PlanetSide",
+                "fr": "D\u00e9calco de V\u00e9t\u00e9ran de PlanetSide",
+                "it": "Adesivo da veterano PlanetSide",
+                "tr": "PlanetSide Emektar \u00c7\u0131kartmas\u0131"
+            },
+            "description": {
+                "de": "Emblem \"PlanetSide Veteran\"",
+                "en": "PlanetSide Veteran Decal",
+                "es": "Emblema Veterano de PlanetSide",
+                "fr": "D\u00e9calco de V\u00e9t\u00e9ran de PlanetSide",
+                "it": "Adesivo da veterano PlanetSide",
+                "tr": "PlanetSide Emektar \u00c7\u0131kartmas\u0131"
+            },
+            "image_id": "2720",
+            "station_cash_price": "1000",
+            "cert_price": "NULL",
+            "release_time": "1334016000"
+        },
+        {
+            "marketing_bundle_id": "40",
+            "name": {
+                "de": "Rekrutenzentrum - Belohnung: Goldene Pistole",
+                "en": "Recruit Center - Gold Pistol Reward",
+                "es": "Centro de reclutamiento: Recompensa de escopeta dorada",
+                "fr": "Centre de recrutement - R\u00e9compense pistolet or",
+                "it": "Centro reclute: premio Pistola d'oro",
+                "tr": "Asker Yeti\u015ftirme Merkezi - Alt\u0131n Tabanca \u00d6d\u00fcl\u00fc"
+            },
+            "description": {
+                "de": "Veteranen-Helm",
+                "en": "Veteran Helmet",
+                "es": "Casco Veterano",
+                "fr": "Casque de V\u00e9t\u00e9ran",
+                "it": "Casco Veterano",
+                "tr": "Muharip"
+            },
+            "image_id": "35",
+            "station_cash_price": "700",
+            "cert_price": "NULL",
+            "release_time": "1334016000"
+        },
+        {
+            "marketing_bundle_id": "41",
+            "name": {
+                "de": "NS-11 Platin-Gewehr",
+                "en": "NS-11 Platinum Rifle",
+                "es": "Rifle NS-11 Platinum",
+                "fr": "Fusil NS-11 Platine",
+                "it": "Fucile NS-11 Platinum",
+                "tr": "NS-11 Platin T\u00fcfek"
+            },
+            "description": {
+                "de": "NS-11 Platin-Gewehr",
+                "en": "NS-11 Platinum Rifle",
+                "es": "Rifle NS-11 Platinum",
+                "fr": "Fusil NS-11 Platine",
+                "it": "Fucile NS-11 Platinum",
+                "tr": "NS-11 Platin T\u00fcfek"
+            },
+            "image_id": "35",
+            "station_cash_price": "1500",
+            "cert_price": "NULL",
+            "release_time": "1334016000"
+        },
+        {
+            "marketing_bundle_id": "78",
+            "name": {
+                "de": "Rekrutenzentrum - Belohnung: ZERT-Punkte + K\u00fchlerfigur",
+                "en": "Recruit Center - Cert Point + Hood Ornament Reward",
+                "es": "Centro de reclutamiento: Recompensa de puntos de cert. + Adorno de cap\u00f3",
+                "fr": "Centre de recrutement - Points d'accr\u00e9ditation + R\u00e9compense ornement de capot",
+                "it": "Centro reclute: Premio punto certificazione + decorazione veicolo",
+                "tr": "Asker Yeti\u015ftirme Merkezi - Sertifika Puan\u0131 + Kaput S\u00fcs\u00fc \u00d6d\u00fcl\u00fc"
+            },
+            "description": {
+                "de": "Rekrutenzentrum - Belohnung: ZERT-Punkte + K\u00fchlerfigur",
+                "en": "Recruit Center - Cert Point + Hood Ornament Reward",
+                "es": "Centro de reclutamiento: Recompensa de puntos de cert. + Adorno de cap\u00f3",
+                "fr": "Centre de recrutement - Points d'accr\u00e9ditation + R\u00e9compense ornement de capot",
+                "it": "Centro reclute: Premio punto certificazione + decorazione veicolo",
+                "tr": "Asker Yeti\u015ftirme Merkezi - Sertifika Puan\u0131 + Kaput S\u00fcs\u00fc \u00d6d\u00fcl\u00fc"
+            },
+            "image_id": "135",
+            "station_cash_price": "700",
+            "cert_price": "NULL",
+            "release_time": "1334016000"
+        },
+        {
+            "marketing_bundle_id": "79",
+            "name": {
+                "de": "5 ZERT-Punkte",
+                "en": "5 Cert Points",
+                "es": "5 puntos de cert.",
+                "fr": "5 points d'accr\u00e9ditation",
+                "it": "5 punti certificazione",
+                "tr": "5 Sertifika Puan\u0131"
+            },
+            "description": {
+                "de": "Tausche Auraxium gegen Zertifizierungspunkte",
+                "en": "Trade auraxium for cert points",
+                "es": "Cambiar auraxium por puntos de cert.",
+                "fr": "\u00c9changer de l'Auraxium contre des points d'accr\u00e9ditation",
+                "it": "Acquista punti certificazione usando auraxium",
+                "tr": "Sertifika puanlar\u0131 i\u00e7in auraksiyum takas et"
+            },
+            "image_id": "2208",
+            "station_cash_price": "0",
+            "cert_price": "NULL",
+            "release_time": "1334016000"
+        },
+        {
+            "marketing_bundle_id": "80",
+            "name": {
+                "de": "100 ZERT-Punkte",
+                "en": "100 Cert Points",
+                "es": "100 puntos de cert.",
+                "fr": "100 points d'accr\u00e9ditation",
+                "it": "100 punti certificazione",
+                "tr": "100 Sertifika Puan\u0131"
+            },
+            "description": {
+                "de": "Tausche Auraxium gegen Zertifizierungspunkte",
+                "en": "Trade auraxium for cert points",
+                "es": "Cambiar auraxium por puntos de cert.",
+                "fr": "\u00c9changer de l'Auraxium contre des points d'accr\u00e9ditation",
+                "it": "Acquista punti certificazione usando auraxium",
+                "tr": "Sertifika puanlar\u0131 i\u00e7in auraksiyum takas et"
+            },
+            "image_id": "2208",
+            "station_cash_price": "0",
+            "cert_price": "NULL",
+            "release_time": "1334016000"
+        },
+        {
+            "marketing_bundle_id": "81",
+            "name": {
+                "de": "1 ZERT-Punkt",
+                "en": "1 Cert Point",
+                "es": "1 punto de cert.",
+                "fr": "1 point d'accr\u00e9ditation",
+                "it": "1 punto certificazione",
+                "tr": "1 Sertifika Puan\u0131"
+            },
+            "description": {
+                "de": "Tausche Auraxium gegen Zertifizierungspunkte",
+                "en": "Trade auraxium for cert points",
+                "es": "Cambiar auraxium por puntos de cert.",
+                "fr": "\u00c9changer de l'Auraxium contre des points d'accr\u00e9ditation",
+                "it": "Acquista punti certificazione usando auraxium",
+                "tr": "Sertifika puanlar\u0131 i\u00e7in auraksiyum takas et"
+            },
+            "image_id": "2208",
+            "station_cash_price": "0",
+            "cert_price": "NULL",
+            "release_time": "1334016000"
+        },
+        {
+            "marketing_bundle_id": "85",
+            "name": {
+                "de": "Mag-Cutter",
+                "en": "Mag-Cutter",
+                "es": "Mag-Cutter",
+                "fr": "Mag-Cutter",
+                "it": "Mag-Cutter",
+                "tr": "Mag-Kesici"
+            },
+            "description": {
+                "de": "Der Mag-Cutter des Neuen Konglomerats ist durch einen leistungsstarken Elektromagneten gekennzeichnet, der in der Lage ist, durch feindliche Panzerung zu schneiden.",
+                "en": "The New Conglomerate's Mag-Cutter features a powerful electromagnet capable of cutting through enemy body armor.",
+                "es": "El Mag-Cutter del Nuevo Conglomerado contiene un poderoso electroim\u00e1n que puede atravesar las armaduras de los enemigos.",
+                "fr": "Le Mag-Cutter du Nouveau Conglom\u00e9rat comporte un \u00e9lectroaimant puissant capable de percer n'importe quelle armure ennemie.",
+                "it": "Il Mag-Cutter del Nuovo Conglomerato dispone di un potente elettromagnete che riesce a tagliare l'armatura del nemico.",
+                "tr": "Yeni Birle\u015fim'in Mag-Kesici'si d\u00fc\u015fman v\u00fccut z\u0131rh\u0131n\u0131 delebilen g\u00fc\u00e7l\u00fc bir elektrom\u0131knat\u0131s \u00f6zelli\u011fini ta\u015f\u0131maktad\u0131r."
+            },
+            "image_id": "322",
+            "station_cash_price": "100",
+            "cert_price": "NULL",
+            "release_time": "1325721600"
+        },
+        {
+            "marketing_bundle_id": "86",
+            "name": {
+                "de": "NC4 Mag-Shot",
+                "en": "NC4 Mag-Shot",
+                "es": "NC4 Mag-Shot",
+                "fr": "NC4 Mag-Shot",
+                "it": "NC4 Mag-Shot",
+                "tr": "NC4 Mag-Shot"
+            },
+            "description": {
+                "de": "Die vielseitige Standardwaffe NC4 MAG-Shot war die erste Pistole, die die Gau\u00df-Technologie nutzte. Nur f\u00fcr NK.",
+                "en": "The versatile standard-issue NC4 Mag-Shot was the first pistol to utilize Gauss technology. NC use only.",
+                "es": "La vers\u00e1til NC4 Mag-Shot est\u00e1ndar fue la primera pistola que utiliz\u00f3 tecnolog\u00eda Gauss. Solo para NC",
+                "fr": "Le mod\u00e8le de base polyvalent du NC4 Mag-Shot a \u00e9t\u00e9 le premier pistolet \u00e0 utiliser la technologie Gauss. NC uniquement.",
+                "it": "La versatile Mag-Shot NC4 standard \u00e8 stata la prima pistola a tecnologia Gauss. Esclusivo NC.",
+                "tr": "\u00c7ok ama\u00e7l\u0131 standart \u00fcretim NC4 Mag-Shot, Gauss teknolojisini kullanan ilk tabancad\u0131r. Yaln\u0131zca Yeni Birle\u015fim kullan\u0131m\u0131 i\u00e7in."
+            },
+            "image_id": "202",
+            "station_cash_price": "100",
+            "cert_price": "NULL",
+            "release_time": "1325721600"
+        },
+        {
+            "marketing_bundle_id": "87",
+            "name": {
+                "de": "AF-19 Mercenary",
+                "en": "AF-19 Mercenary",
+                "es": "AF-19 Mercenary",
+                "fr": "AF-19 Mercenary",
+                "it": "AF-19 Mercenary",
+                "tr": "AF-19 Paral\u0131 Asker"
+            },
+            "description": {
+                "de": "Der AF-19 Mercenary wurde wegen seiner niedrigen Produktionskosten zum Standard-Karabiner des NKs. Er hat einen kontrollierbaren R\u00fccksto\u00df, was ihn bei kurzer bis mittlerer Distanz effektiv macht. Nur f\u00fcr NK.",
+                "en": "The AF-19 Mercenary became the standard issue carbine for the NC due to its low production costs. It features controllable recoil that makes it effective at close to medium ranges. NC use only.",
+                "es": "La AF-19 Mercenary se convirti\u00f3 en la carabina est\u00e1ndar del NC por su bajo coste de producci\u00f3n. Se caracteriza por su controlable retroceso, lo que la hace eficaz frente a objetivos a corta o media distancia. Solo para NC",
+                "fr": "L'AF-19 Mercenary est devenu la carabine de base du NC gr\u00e2ce \u00e0 son faible co\u00fbt de production. Son recul est contr\u00f4lable, ce qui le rend efficace \u00e0 courte ou moyenne port\u00e9e. NC uniquement.",
+                "it": "La Mercenary AF-19 \u00e8 diventata la carabina standard dell'NC grazie al suo basso costo di produzione. Dispone di un rinculo controllabile che la rende molto efficace nelle brevi o medie distanze. Esclusivo NC.",
+                "tr": "AF-19 Paral\u0131 Asker, d\u00fc\u015f\u00fck \u00fcretim maliyetinden dolayi standart piyade t\u00fcfe\u011fidir. Geri tepmesi kontrol edilebilen, k\u0131sa ve orta menzilde etkili bir silahtir. Yaln\u0131zca Yeni Birle\u015fim kullan\u0131m\u0131 i\u00e7in."
+            },
+            "image_id": "2751",
+            "station_cash_price": "100",
+            "cert_price": "NULL",
+            "release_time": "1325721600"
+        },
+        {
+            "marketing_bundle_id": "88",
+            "name": {
+                "de": "NC1 Gau\u00dfgewehr",
+                "en": "NC1 Gauss Rifle",
+                "es": "Rifle Gauss NC1",
+                "fr": "Fusil Gauss NC1",
+                "it": "Fucile Gauss NC1",
+                "tr": "NC1 Gauss T\u00fcfe\u011fi"
+            },
+            "description": {
+                "de": "Das Standard-Gau\u00dfgewehr NC1 war die erste erfolgreiche Einf\u00fchrung der Gau\u00dfgewehr-Technologie in kleinen Waffen. Nur f\u00fcr NK.",
+                "en": "The standard issue NC1 Gauss Rifle was the first successful implementation of coilgun technology in small arms. NC use only.",
+                "es": "El rifle NC1 Gauss est\u00e1ndar represent\u00f3 la primera implementaci\u00f3n de tecnolog\u00eda coilgun en armas peque\u00f1as. Solo para NC",
+                "fr": "Le fusil Gauss NC1 standard repr\u00e9sente la premi\u00e8re application r\u00e9ussie de la technologie de canon magn\u00e9tique aux armes de petit calibre. NC uniquement.",
+                "it": "Il fucile Gauss NC1 standard rappresenta la prima applicazione riuscita della tecnologia di accelerazione magnetica nelle armi di piccole dimensioni. Esclusivo NC.",
+                "tr": "Standart \u00fcretim NC1 Gauss T\u00fcfe\u011fi, bobinsilah\u0131 teknolojisininin hafif silahlara ilk ba\u015far\u0131l\u0131 uygulanmas\u0131d\u0131r. Yaln\u0131zca Yeni Birle\u015fim kullan\u0131m\u0131 i\u00e7in."
+            },
+            "image_id": "2745",
+            "station_cash_price": "100",
+            "cert_price": "NULL",
+            "release_time": "1325721600"
+        },
+        {
+            "marketing_bundle_id": "90",
+            "name": {
+                "de": "Kettenmesser",
+                "en": "Chainblade",
+                "es": "Chainblade",
+                "fr": "Lame-tron\u00e7onneuse",
+                "it": "Chainblade",
+                "tr": "Testerek\u0131l\u0131\u00e7"
+            },
+            "description": {
+                "de": "Die rasiermesser-scharfen Z\u00e4hne des Kettenmessers haben sich als \u00e4u\u00dfertst effektiv im Nahkampf bewiesen.",
+                "en": "The Chainblade knife's razor sharp teeth have proven extremely effective in close quarters combat.",
+                "es": "Los afilados dientes del cuchillo Chainblade han demostrado ser extremadamente eficaces en combates de corto alcance.",
+                "fr": "Les dents coupantes comme un rasoir de la lame de la tron\u00e7onneuse se sont r\u00e9v\u00e9l\u00e9es tr\u00e8s efficaces en combat rapproch\u00e9. ",
+                "it": "I denti super affilati della Chainblade si sono rivelati estremamente efficaci nei combattimenti a distanza ravvicinata.",
+                "tr": "Testere K\u0131l\u0131c'\u0131n jilet gibi keskin di\u015flerinin yak\u0131n muharebede a\u015f\u0131r\u0131 etkili oldu\u011fu kan\u0131tlanm\u0131\u015ft\u0131r."
+            },
+            "image_id": "354",
+            "station_cash_price": "420000",
+            "cert_price": "NULL",
+            "release_time": "1325721600"
+        },
+        {
+            "marketing_bundle_id": "91",
+            "name": {
+                "de": "T1 Cycler",
+                "en": "T1 Cycler",
+                "es": "T1 Cycler",
+                "fr": "S\u00e9cateur T1",
+                "it": "T1 Cycler",
+                "tr": "T1 D\u00f6ng\u00fcl\u00fc"
+            },
+            "description": {
+                "de": "Das Standard-Sturmgewehr der Terranischen Republik, das T1 Cycler, bietet ein 40-Schuss Magazin und eine schnelle Feuerrate, was die effektive Nutzung des Gewehrs in den meisten Situationen erm\u00f6glicht. Nur f\u00fcr TR.",
+                "en": "The standard assault rifle of the Terran Republic, the T1 Cycler features a 40-round magazine and a fast rate of fire, allowing it to remain effective in most situations. TR use only.",
+                "es": "El rifle de asalto est\u00e1ndar de la Rep\u00fablica Terran, el T1 Cycler, tiene un cargador de 40 proyectiles y una r\u00e1pida cadencia de tiro, lo que hace que sea eficaz en la mayor\u00eda de situaciones. Solo para RT",
+                "fr": "Le S\u00e9cateur T1, fusil d'assaut standard de la R\u00e9publique Terrane, offre un chargeur de 40 projectiles et une cadence de tir rapide, ce qui le rend efficace dans la plupart des situations. RT uniquement.",
+                "it": "Il T1 Cycler \u00e8 il fucile d'assalto per eccellenza della Repubblica Terrestre. Dispone di un caricatore da 40 colpi e un'elevata frequenza di fuoco che gli permettono di rimanere efficace in quasi tutte le situazioni. Esclusivo RT.",
+                "tr": "Terran Cumhuriyeti'nin standart taarruz t\u00fcfe\u011fi olan T1 D\u00f6ng\u00fcl\u00fc 40 mermilik \u015farj\u00f6r\u00fc ve h\u0131zl\u0131 ate\u015f \u00f6zelli\u011fi ile onun bir \u00e7ok durumda etkili olmas\u0131na olanak tan\u0131r. Yaln\u0131zca Terran Cumhuriyeti kullan\u0131m\u0131 i\u00e7in."
+            },
+            "image_id": "2844",
+            "station_cash_price": "100",
+            "cert_price": "NULL",
+            "release_time": "1325721600"
+        },
+        {
+            "marketing_bundle_id": "92",
+            "name": {
+                "de": "TX1 Repeater",
+                "en": "TX1 Repeater",
+                "es": "TX1 Repeater",
+                "fr": "TX1 Repeater",
+                "it": "TX1 Repeater",
+                "tr": "TX1 Repeater"
+            },
+            "description": {
+                "de": "Der verl\u00e4ssliche TX1 Repeater ist die j\u00fcngste Auflage eines Waffendesigns, das seit 300 Jahren verwendet wird. Sein Drei-Schuss-Feuersto\u00df bietet eine beachtliche Mannstoppwirkung bei kurzen Entfernungen. Nur f\u00fcr TR.",
+                "en": "The reliable TX1 Repeater is the latest iteration of a firearm design stretching back 300 years. Its 3-round burst fire mode provides considerable stopping power at close range. TR use only.",
+                "es": "La fiable pistola TX1 Repeater ha sido el arma de fuego m\u00e1s utilizada por la humanidad durante los \u00faltimos 300 a\u00f1os. Dispara r\u00e1fagas de 3 disparos que proporcionan una potencia de impacto considerable a corto alcance. Solo para RT",
+                "fr": "Le tr\u00e8s fiable TX1 Repeater est la derni\u00e8re version d'une arme \u00e0 feu dont la conception remonte \u00e0 300 ans. Son mode de tir en rafale de 3 projectiles procure une puissance d'arr\u00eat consid\u00e9rable \u00e0 courte distance. RT uniquement.",
+                "it": "L'affidabile TX1 Repeater \u00e8 la versione pi\u00f9 recente di un'arma usata per 300 anni. Spara raffiche controllate di 3 colpi che permettono un potere d'interdizione considerevole a distanza ravvicinata. Esclusivo RT.",
+                "tr": "The reliable TX1 Repeater is the latest iteration of a firearm design stretching back 300 years. Its 3-round burst fire mode provides considerable stopping power at close range. TR use only."
+            },
+            "image_id": "164",
+            "station_cash_price": "100",
+            "cert_price": "NULL",
+            "release_time": "1325721600"
+        },
+        {
+            "marketing_bundle_id": "93",
+            "name": {
+                "de": "Pulsar VS1",
+                "en": "Pulsar VS1",
+                "es": "Pulsar VS1",
+                "fr": "Pulsar VS1",
+                "it": "Pulsar VS1",
+                "tr": "Pulsar VS1"
+            },
+            "description": {
+                "de": "Das Pulsar VS1 ist das Standard-Sturmgewehr der Vanu-Souver\u00e4nit\u00e4t. Sein niedriger R\u00fccksto\u00df, erm\u00f6glicht in den meisten Situationen die Beibehaltung der Effektivit\u00e4t. Nur f\u00fcr VS.",
+                "en": "The Pulsar VS1 is the standard issue assault rifle for the Vanu Sovereignty. Its low recoil design allows it to remain effective in most situations. VS use only.",
+                "es": "El Pulsar VS1 es el rifle de asalto est\u00e1ndar de la Soberan\u00eda Vanu. Su bajo retroceso hace que sea eficaz en la mayor\u00eda de situaciones. Solo para SV",
+                "fr": "Le Pulsar VS1 est le fusil d'assaut standard de la Souverainet\u00e9 Vanu. Sa conception \u00e0 faible recul lui permet de rester efficace dans la plupart des situations. SV uniquement.",
+                "it": "Il Pulsar VS1 \u00e8 il fucile d'assalto standard della Sovranit\u00e0 Vanu. Il suo design a basso rinculo gli consente di rimanere efficace nella maggior parte delle situazioni. Esclusivo SV.",
+                "tr": "Pulsar VS1, Vanu H\u00fck\u00fcmdarl\u0131\u011f\u0131'n\u0131n standart taarruz t\u00fcfe\u011fidir. D\u00fc\u015f\u00fck geri tepmeyle tasarlanm\u0131\u015f olmas\u0131 onun bir \u00e7ok durumda etkili olmas\u0131na olanak tan\u0131r. Yaln\u0131zca Vanu H\u00fck\u00fcmdarl\u0131\u011f\u0131 kullan\u0131m\u0131 i\u00e7in."
+            },
+            "image_id": "2811",
+            "station_cash_price": "100",
+            "cert_price": "NULL",
+            "release_time": "1325721600"
+        },
+        {
+            "marketing_bundle_id": "94",
+            "name": {
+                "de": "Beamer VS3",
+                "en": "Beamer VS3",
+                "es": "Beamer SV3",
+                "fr": "Beamer VS3",
+                "it": "Beamer VS3",
+                "tr": "I\u015f\u0131natar VS3"
+            },
+            "description": {
+                "de": "Der Beamer VS3 ist die Standard-Seitenwaffe der Vanu-Souver\u00e4nit\u00e4t. Ihre hohe Feuerrate erm\u00f6glicht dem Nutzer, Ziele in der N\u00e4he schnell zu eliminieren. Nur f\u00fcr VS.",
+                "en": "The Beamer VS3 is the standard sidearm for the Vanu Sovereignty. Its high rate of fire allows the user to eliminate nearby targets quickly. VS use only.",
+                "es": "El Beamer SV3 es el arma auxiliar de la Soberan\u00eda Vanu. Su alta cadencia de tiro permite al portador acabar con los objetivos cercanos r\u00e1pidamente. Solo para SV",
+                "fr": "Le Beamer VS3 est l'arme de poing standard de la Souverainet\u00e9 Vanu. Sa haute cadence de tir permet \u00e0 son utilisateur d'\u00e9liminer rapidement les cibles \u00e0 proximit\u00e9. SV uniquement.",
+                "it": "La Beamer VS3 \u00e8 l'arma secondaria standard della Sovranit\u00e0 Vanu. La sua alta frequenza di fuoco consente all'utente di eliminare rapidamente gli obiettivi nelle vicinanze. Esclusivo SV.",
+                "tr": "I\u015f\u0131natar VS3 Vanu H\u00fck\u00fcmdarl\u0131\u011f\u0131'n\u0131n standart yan silah\u0131d\u0131r. Y\u00fcksek at\u0131\u015f say\u0131s\u0131 kullan\u0131c\u0131s\u0131n\u0131n yak\u0131ndaki hedefleri \u00e7abucak ortadan kald\u0131rabilmesini sa\u011flar. Yaln\u0131zca Vanu H\u00fck\u00fcmdarl\u0131\u011f\u0131 kullan\u0131m\u0131 i\u00e7in."
+            },
+            "image_id": "172",
+            "station_cash_price": "100",
+            "cert_price": "NULL",
+            "release_time": "1325721600"
+        },
+        {
+            "marketing_bundle_id": "96",
+            "name": {
+                "de": "Magrider Proton II PPA [Sch\u00fctze]",
+                "en": "Magrider Proton II PPA [Gunner]",
+                "es": "Magrider: Proton II PPA [artillero]",
+                "fr": "Proton II PPA A\u00e9rochar [Canonnier]",
+                "it": "Magrider: Proton II PPA [artigliere]",
+                "tr": "S\u00fcvari Proton II PPA [\u0130kincil]"
+            },
+            "description": {
+                "de": "Die Proton II PPA feuert gro\u00dfe Kugeln explosiven Plasmas, die bei Einschlag detonieren. Die PPA erweist sich effektiv gegen Infanterie und leichter Panzerung. Nur f\u00fcr VS.",
+                "en": "The Proton II PPA fires large orbs of volatile plasma that explode on impact.  The PPA is effective against infantry and light armor. VS use only.",
+                "es": "El Proton II PPA dispara grandes orbes de plasma vol\u00e1til que explotan al impactar. Es eficaz contra infanter\u00eda y blindaje ligero. Solo para SV.",
+                "fr": "Le Proton II PPA tire de large orbes de plasma volatile qui explosent \u00e0 l'impact. Le PPA est efficace contre l'infanterie et les blindages l\u00e9gers. SV uniquement.",
+                "it": "Il Proton II PPA spara grandi sfere di plasma volatile che esplodono al contatto. Il PPA \u00e8 efficace contro la fanteria e le corazzature leggere. Esclusivo SV.",
+                "tr": "The Proton II PPA fires large orbs of volatile plasma that explode on impact.  The PPA is effective against infantry and light armor. VS use only."
+            },
+            "image_id": "7129",
+            "station_cash_price": "500",
+            "cert_price": "875",
+            "release_time": "1334016000"
+        },
+        {
+            "marketing_bundle_id": "97",
+            "name": {
+                "de": "L100 Python HEAT",
+                "en": "L100 Python HEAT",
+                "es": "L100 Python HEAT",
+                "fr": "Python L100 HEAT",
+                "it": "L100 Python HEAT",
+                "tr": "Y\u0131ld\u0131r\u0131m L100 Piton HEAT [Birincil]"
+            },
+            "description": {
+                "de": "Die Python HEAT ist geladen mit einem hochexplosiven Panzerabwehr-Geschoss, das gleicherma\u00dfen wirksam gegen Panzer und Personen ist. F\u00fcr alle Fraktionen.",
+                "en": "The Python HEAT carries quick-reloading high-explosive anti-tank rounds that have balanced effectiveness against armor and infantry. All factions can use this weapon.",
+                "es": "El Python HEAT dispara proyectiles antitanque altamente explosivos con buena velocidad de recarga que resultan eficaces contra blindados e infanter\u00eda por igual. Todas las facciones pueden usar esta arma.",
+                "fr": "Le Python HEAT est charg\u00e9 avec des projectiles antichars hautement explosifs qui sont efficaces contre les armures et l'infanterie. RT uniquement.",
+                "it": "Il Python HEAT monta proiettili anticarro altamente esplosivi a carica rapida che hanno un'efficacia bilanciata contro i corazzati e la fanteria nemici. Quest'arma pu\u00f2 essere usata da tutte le fazioni.",
+                "tr": "The Python HEAT is loaded with high explosive anti-tank rounds that are effective against armor and produce an explosion harmful to personnel.  All factions can use this weapon."
+            },
+            "image_id": "1454",
+            "station_cash_price": "500",
+            "cert_price": "250",
+            "release_time": "1334016000"
+        },
+        {
+            "marketing_bundle_id": "98",
+            "name": {
+                "de": "L100 Python HEAT",
+                "en": "L100 Python HEAT",
+                "es": "L100 Python HEAT",
+                "fr": "Python L100 HEAT",
+                "it": "L100 Python HEAT",
+                "tr": "Y\u0131ld\u0131r\u0131m L100 Piton HEAT [Birincil]"
+            },
+            "description": {
+                "de": "Die Python HEAT ist geladen mit einem hochexplosiven Panzerabwehr-Geschoss, das gleicherma\u00dfen wirksam gegen Panzer und Personen ist. F\u00fcr alle Fraktionen.",
+                "en": "The Python HEAT carries quick-reloading high-explosive anti-tank rounds that have balanced effectiveness against armor and infantry. All factions can use this weapon.",
+                "es": "El Python HEAT dispara proyectiles antitanque altamente explosivos con buena velocidad de recarga que resultan eficaces contra blindados e infanter\u00eda por igual. Todas las facciones pueden usar esta arma.",
+                "fr": "Le Python HEAT est charg\u00e9 avec des projectiles antichars hautement explosifs qui sont efficaces contre les armures et l'infanterie. RT uniquement.",
+                "it": "Il Python HEAT monta proiettili anticarro altamente esplosivi a carica rapida che hanno un'efficacia bilanciata contro i corazzati e la fanteria nemici. Quest'arma pu\u00f2 essere usata da tutte le fazioni.",
+                "tr": "The Python HEAT is loaded with high explosive anti-tank rounds that are effective against armor and produce an explosion harmful to personnel.  All factions can use this weapon."
+            },
+            "image_id": "1454",
+            "station_cash_price": "500",
+            "cert_price": "250",
+            "release_time": "1334016000"
+        },
+        {
+            "marketing_bundle_id": "99",
+            "name": {
+                "de": "Vanguard Enforcer ML85 [Sch\u00fctze]",
+                "en": "Vanguard Enforcer ML85 [Gunner]",
+                "es": "Vanguard: Enforcer ML85 [artillero]",
+                "fr": "Enforcer ML85 d'\u00c9claireur [Canonnier]",
+                "it": "Vanguard: Enforcer ML85 [artigliere]",
+                "tr": "\u00d6nc\u00fc \u0130nfazc\u0131 ML85 [\u0130kincil]"
+            },
+            "description": {
+                "de": "Der Enforcer ML85 verschie\u00dft magnetisch angetriebene HEAT-Pfeile, die auf mittlere Reichweite betr\u00e4chtlichen Schaden anrichten. Nur f\u00fcr NK.",
+                "en": "The Enforcer ML85 fires magnetically propelled HEAT darts, suited for sustained damage in mid-range combat scenarios. NC use only.",
+                "es": "El Enforcer ML85 dispara dardos HEAT propulsados magn\u00e9ticamente, perfectos para causar da\u00f1o consistente en situaciones de combate a media distancia. Solo para NC.",
+                "fr": "L'Enforcer ML85 tire des fl\u00e9chettes HEAT \u00e0 propulsion magn\u00e9tique con\u00e7ues pour infliger des d\u00e9g\u00e2ts soutenus dans les sc\u00e9narios de combat \u00e0 moyenne port\u00e9e. NC uniquement.",
+                "it": "L'Enforcer ML85 spara dardi HEAT a espulsione magnetica, adatti a infliggere danni pesanti negli scenari di combattimento a medio raggio. Esclusivo NC.",
+                "tr": "\u0130nfazc\u0131 ML85, manyetik olarak \u00e7al\u0131\u015fan HEAT dartlar\u0131 f\u0131rlat\u0131r. Manyetik f\u0131rlat\u0131c\u0131 daha ufak mermilerin kullan\u0131m\u0131na izin verir, b\u00f6ylelikle bir kerede daha \u00e7ok mermi doldurulur ve yeniden doldurma ihtiyac\u0131 daha az olur. Bu, ML85\u2019e g\u00fc\u00e7l\u00fc ve s\u00fcrekli bir hasar verme imkan\u0131 sunar. Yaln\u0131zca Yeni Birle\u015fim kullan\u0131m\u0131 i\u00e7in."
+            },
+            "image_id": "8270",
+            "station_cash_price": "700",
+            "cert_price": "875",
+            "release_time": "1334016000"
+        }
+    ],
+    "returned": 20
+}

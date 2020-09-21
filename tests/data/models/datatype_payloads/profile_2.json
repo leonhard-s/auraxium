@@ -1,0 +1,85 @@
+{
+    "profile_2_list": [
+        {
+            "profile_id": "1",
+            "description": "Basic Combatant"
+        },
+        {
+            "profile_id": "2",
+            "description": "NC Infiltrator"
+        },
+        {
+            "profile_id": "4",
+            "description": "NC Light Assault"
+        },
+        {
+            "profile_id": "5",
+            "description": "NC Combat Medic"
+        },
+        {
+            "profile_id": "6",
+            "description": "NC Engineer"
+        },
+        {
+            "profile_id": "7",
+            "description": "NC Heavy Assault"
+        },
+        {
+            "profile_id": "8",
+            "description": "NC MAX"
+        },
+        {
+            "profile_id": "9",
+            "description": "Facility Object NPC"
+        },
+        {
+            "profile_id": "10",
+            "description": "TR Infiltrator"
+        },
+        {
+            "profile_id": "12",
+            "description": "TR Light Assault"
+        },
+        {
+            "profile_id": "13",
+            "description": "TR Combat Medic"
+        },
+        {
+            "profile_id": "14",
+            "description": "TR Engineer"
+        },
+        {
+            "profile_id": "15",
+            "description": "TR Heavy Assault"
+        },
+        {
+            "profile_id": "16",
+            "description": "TR MAX"
+        },
+        {
+            "profile_id": "17",
+            "description": "VS Infiltrator"
+        },
+        {
+            "profile_id": "19",
+            "description": "VS Light Assault"
+        },
+        {
+            "profile_id": "20",
+            "description": "VS Combat Medic"
+        },
+        {
+            "profile_id": "21",
+            "description": "VS Engineer"
+        },
+        {
+            "profile_id": "22",
+            "description": "VS Heavy Assault"
+        },
+        {
+            "profile_id": "23",
+            "description": "VS MAX"
+        }
+    ],
+    "returned": 20
+}

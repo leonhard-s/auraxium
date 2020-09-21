@@ -1,0 +1,485 @@
+{
+    "skill_set_list": [
+        {
+            "skill_set_id": "1",
+            "skill_points": "NULL",
+            "required_item_id": "NULL",
+            "name": {
+                "de": "Sturmgewehr",
+                "en": "Assault Rifle",
+                "es": "Rifle de asalto",
+                "fr": "Fusil d'assaut",
+                "it": "Fucile d'assalto",
+                "tr": "Taarruz T\u00fcfe\u011fi"
+            },
+            "description": {
+                "de": "F\u00e4higkeiten-Set-Zeile f\u00fcr das Sturmgewehr",
+                "en": "Skill set line for the assault rifle",
+                "es": "L\u00ednea de habilidades de rifle de asalto",
+                "fr": "Ensemble de comp\u00e9tences pour fusil d'assaut",
+                "it": "Linea di abilit\u00e0 per fucile d'assalto",
+                "tr": "Taarruz T\u00fcfe\u011fi i\u00e7in yetenek seti kolu"
+            },
+            "image_set_id": "12",
+            "image_id": "103",
+            "image_path": "/files/ps2/images/static/103.png"
+        },
+        {
+            "skill_set_id": "2",
+            "skill_points": "NULL",
+            "required_item_id": "NULL",
+            "name": {
+                "de": "Sturmgewehr",
+                "en": "Assault Rifle",
+                "es": "Rifle de asalto",
+                "fr": "Fusil d'assaut",
+                "it": "Fucile d'assalto",
+                "tr": "Taarruz T\u00fcfe\u011fi"
+            },
+            "description": {
+                "de": "F\u00e4higkeiten-Set-Zeile f\u00fcr das Sturmgewehr",
+                "en": "Skill set line for the assault rifle",
+                "es": "L\u00ednea de habilidades de rifle de asalto",
+                "fr": "Ensemble de comp\u00e9tences pour fusil d'assaut",
+                "it": "Linea di abilit\u00e0 per fucile d'assalto",
+                "tr": "Taarruz T\u00fcfe\u011fi i\u00e7in yetenek seti kolu"
+            },
+            "image_set_id": "195",
+            "image_id": "2414",
+            "image_path": "/files/ps2/images/static/2414.png"
+        },
+        {
+            "skill_set_id": "3",
+            "skill_points": "NULL",
+            "required_item_id": "NULL",
+            "name": {
+                "de": "Sturmgewehr",
+                "en": "Assault Rifle",
+                "es": "Rifle de asalto",
+                "fr": "Fusil d'assaut",
+                "it": "Fucile d'assalto",
+                "tr": "Taarruz T\u00fcfe\u011fi"
+            },
+            "description": {
+                "de": "F\u00e4higkeiten-Set-Zeile f\u00fcr das Sturmgewehr",
+                "en": "Skill set line for the assault rifle",
+                "es": "L\u00ednea de habilidades de rifle de asalto",
+                "fr": "Ensemble de comp\u00e9tences pour fusil d'assaut",
+                "it": "Linea di abilit\u00e0 per fucile d'assalto",
+                "tr": "Taarruz T\u00fcfe\u011fi i\u00e7in yetenek seti kolu"
+            },
+            "image_set_id": "170",
+            "image_id": "1602",
+            "image_path": "/files/ps2/images/static/1602.png"
+        },
+        {
+            "skill_set_id": "4",
+            "skill_points": "NULL",
+            "required_item_id": "NULL",
+            "name": {
+                "de": "Pistole",
+                "en": "Pistol",
+                "es": "Pistola",
+                "fr": "Pistolet",
+                "it": "Pistola",
+                "tr": "Tabanca"
+            },
+            "description": {
+                "de": "F\u00e4higkeiten-Set-Zeile f\u00fcr die Pistole",
+                "en": "Skill set line for the pistol",
+                "es": "L\u00ednea de habilidades de pistola",
+                "fr": "Ensemble de comp\u00e9tences pour pistolet",
+                "it": "Linea di abilit\u00e0 per pistola",
+                "tr": "Tabanca i\u00e7in yetenek seti kolu"
+            },
+            "image_set_id": "202",
+            "image_id": "2432",
+            "image_path": "/files/ps2/images/static/2432.png"
+        },
+        {
+            "skill_set_id": "5",
+            "skill_points": "NULL",
+            "required_item_id": "NULL",
+            "name": {
+                "de": "Pistole",
+                "en": "Pistol",
+                "es": "Pistola",
+                "fr": "Pistolet",
+                "it": "Pistola",
+                "tr": "Tabanca"
+            },
+            "description": {
+                "de": "F\u00e4higkeiten-Set-Zeile f\u00fcr die Pistole",
+                "en": "Skill set line for the pistol",
+                "es": "L\u00ednea de habilidades de pistola",
+                "fr": "Ensemble de comp\u00e9tences pour pistolet",
+                "it": "Linea di abilit\u00e0 per pistola",
+                "tr": "Tabanca i\u00e7in yetenek seti kolu"
+            },
+            "image_set_id": "164",
+            "image_id": "809",
+            "image_path": "/files/ps2/images/static/809.png"
+        },
+        {
+            "skill_set_id": "6",
+            "skill_points": "NULL",
+            "required_item_id": "NULL",
+            "name": {
+                "de": "Pistole",
+                "en": "Pistol",
+                "es": "Pistola",
+                "fr": "Pistolet",
+                "it": "Pistola",
+                "tr": "Tabanca"
+            },
+            "description": {
+                "de": "F\u00e4higkeiten-Set-Zeile f\u00fcr die Pistole",
+                "en": "Skill set line for the pistol",
+                "es": "L\u00ednea de habilidades de pistola",
+                "fr": "Ensemble de comp\u00e9tences pour pistolet",
+                "it": "Linea di abilit\u00e0 per pistola",
+                "tr": "Tabanca i\u00e7in yetenek seti kolu"
+            },
+            "image_set_id": "172",
+            "image_id": "1614",
+            "image_path": "/files/ps2/images/static/1614.png"
+        },
+        {
+            "skill_set_id": "7",
+            "skill_points": "NULL",
+            "required_item_id": "NULL",
+            "name": {
+                "de": "Jetpacks",
+                "en": "Jump Jet",
+                "es": "Mochila propulsora",
+                "fr": "A\u00e9ropulseur",
+                "it": "Jet pack",
+                "tr": "Z\u0131plama Jeti"
+            },
+            "description": {
+                "de": "Fertigkeitenreihe f\u00fcr Jetpacks",
+                "en": "Jump jet skill line",
+                "es": "L\u00ednea de habilidades de mochila propulsora",
+                "fr": "Ligne de comp\u00e9tence a\u00e9ropulseurs",
+                "it": "Abilit\u00e0 Jet pack",
+                "tr": "Z\u0131plama jeti skill line"
+            },
+            "image_set_id": "346",
+            "image_id": "1014",
+            "image_path": "/files/ps2/images/static/1014.png"
+        },
+        {
+            "skill_set_id": "8",
+            "skill_points": "NULL",
+            "required_item_id": "NULL",
+            "name": {
+                "de": "Jetpacks",
+                "en": "Jump Jet",
+                "es": "Mochila propulsora",
+                "fr": "A\u00e9ropulseur",
+                "it": "Jet pack",
+                "tr": "Z\u0131plama Jeti"
+            },
+            "description": {
+                "de": "Fertigkeitenreihe f\u00fcr Jetpacks",
+                "en": "Jump jet skill line",
+                "es": "L\u00ednea de habilidades de mochila propulsora",
+                "fr": "Ligne de comp\u00e9tence a\u00e9ropulseurs",
+                "it": "Abilit\u00e0 Jet pack",
+                "tr": "Z\u0131plama jeti skill line"
+            },
+            "image_set_id": "347",
+            "image_id": "1017",
+            "image_path": "/files/ps2/images/static/1017.png"
+        },
+        {
+            "skill_set_id": "9",
+            "skill_points": "NULL",
+            "required_item_id": "NULL",
+            "name": {
+                "de": "Jetpacks",
+                "en": "Jump Jet",
+                "es": "Mochila propulsora",
+                "fr": "A\u00e9ropulseur",
+                "it": "Jet pack",
+                "tr": "Z\u0131plama Jeti"
+            },
+            "description": {
+                "de": "Fertigkeitenreihe f\u00fcr Jetpacks",
+                "en": "Jump jet skill line",
+                "es": "L\u00ednea de habilidades de mochila propulsora",
+                "fr": "Ligne de comp\u00e9tence a\u00e9ropulseurs",
+                "it": "Abilit\u00e0 Jet pack",
+                "tr": "Z\u0131plama jeti skill line"
+            },
+            "image_set_id": "348",
+            "image_id": "1020",
+            "image_path": "/files/ps2/images/static/1020.png"
+        },
+        {
+            "skill_set_id": "10",
+            "skill_points": "NULL",
+            "required_item_id": "NULL",
+            "name": {
+                "de": "Magrider: Passive Systeme",
+                "en": "Magrider:  Passive Systems",
+                "es": "Magrider: sistemas pasivos",
+                "fr": "A\u00e9rochar: Syst\u00e8mes passifs",
+                "it": "Magrider: sistemi passivi",
+                "tr": "S\u00fcvari: Pasif Sistemler"
+            },
+            "description": {
+                "de": "Schaltet passive, permanente Zertifizierungen f\u00fcr den Magrider frei.",
+                "en": "Unlock passive, always-on Certifications for the Magrider.",
+                "es": "Desbloquea certificaciones pasivas permanentes para el Magrider.",
+                "fr": "D\u00e9verrouille les certifications passives et activ\u00e9es en permanence pour l'A\u00e9rochar.",
+                "it": "Sblocca le certificazioni passive, sempre attive del Magrider.",
+                "tr": "S\u00fcvari i\u00e7in pasif, her zaman a\u00e7\u0131k Sertifikalar\u0131 a\u00e7."
+            },
+            "image_set_id": "2174",
+            "image_id": "4025",
+            "image_path": "/files/ps2/images/static/4025.png"
+        },
+        {
+            "skill_set_id": "11",
+            "skill_points": "NULL",
+            "required_item_id": "NULL",
+            "name": {
+                "de": "Sunderer: Peripherieplatz",
+                "en": "Sunderer:  Utility Slot",
+                "es": "Sunderer: ranura multifunci\u00f3n",
+                "fr": "Disperseur: Case d'utilitaire",
+                "it": "Sunderer: slot multiuso",
+                "tr": "Yar\u0131c\u0131: Alet Yuvas\u0131"
+            },
+            "description": {
+                "de": "Schaltet verschiedene Ger\u00e4te f\u00fcr den Ausr\u00fcstungsplatz des Sunderers frei. Gegenst\u00e4nde f\u00fcr den Ausr\u00fcstungsplatz k\u00f6nnen im Bildschirm \"Bewaffnung\" ausger\u00fcstet werden.",
+                "en": "Unlock various gadgets for the Sunderer's Utility slot. Utility slot items can be equipped on the loadout screen.",
+                "es": "Desbloquea varios artefactos para la ranura de utilidad del Sunderer. Los objetos de utilidad se pueden equipar en la pantalla de arsenal.",
+                "fr": "D\u00e9verrouille divers gadgets pour la case d'utilitaire du Disperseur. Vous pouvez vous munir des objets de case utilitaire sur l'\u00e9cran d'\u00e9quipement.",
+                "it": "Sblocca diversi gadget per lo slot multiuso del Sunderer. Gli articoli dello slot di utilit\u00e0 possono essere equipaggiati nella schermata della dotazione.",
+                "tr": "Yar\u0131c\u0131'n\u0131n Alet Yuvas\u0131 i\u00e7in \u00e7e\u015fitli cihazlar\u0131 a\u00e7. Alet yuvas\u0131 e\u015fyalar\u0131, te\u00e7hizat ekran\u0131nda donat\u0131labilir."
+            },
+            "image_set_id": "2176",
+            "image_id": "4027",
+            "image_path": "/files/ps2/images/static/4027.png"
+        },
+        {
+            "skill_set_id": "12",
+            "skill_points": "NULL",
+            "required_item_id": "NULL",
+            "name": {
+                "de": "Sunderer: Passive Systeme",
+                "en": "Sunderer:  Passive Systems",
+                "es": "Sunderer: sistemas pasivos",
+                "fr": "Disperseur: Syst\u00e8mes passifs",
+                "it": "Sunderer: sistemi passivi",
+                "tr": "Yar\u0131c\u0131: Pasif Sistemler"
+            },
+            "description": {
+                "de": "Schaltet passive, permanente Zertifizierungen f\u00fcr den Sunderer frei.",
+                "en": "Unlock passive, always-on Certifications for the Sunderer.",
+                "es": "Desbloquea certificaciones pasivas permanentes para el Sunderer.",
+                "fr": "D\u00e9verrouille les certifications passives et activ\u00e9es en permanence pour le Disperseur.",
+                "it": "Sblocca le certificazioni passive, sempre attive del Sunderer.",
+                "tr": "Yar\u0131c\u0131 i\u00e7in pasif, her zaman a\u00e7\u0131k Sertifikalar\u0131 a\u00e7."
+            },
+            "image_set_id": "2174",
+            "image_id": "4025",
+            "image_path": "/files/ps2/images/static/4025.png"
+        },
+        {
+            "skill_set_id": "13",
+            "skill_points": "NULL",
+            "required_item_id": "NULL",
+            "name": {
+                "de": "Lightning: Passive Systeme",
+                "en": "Lightning:  Passive Systems",
+                "es": "Lightning: sistemas pasivos",
+                "fr": "Foudre: Syst\u00e8mes passifs",
+                "it": "Lightning: sistemi passivi",
+                "tr": "Y\u0131ld\u0131r\u0131m: Pasif Sistemler"
+            },
+            "description": {
+                "de": "Schaltet passive, permanente Zertifizierungen f\u00fcr den Lightning frei.",
+                "en": "Unlock passive, always-on Certifications for the Lightning.",
+                "es": "Desbloquea certificaciones pasivas permanentes para el Lightning.",
+                "fr": "D\u00e9verrouille les certifications passives et activ\u00e9es en permanence pour le Foudre.",
+                "it": "Sblocca le certificazioni passive, sempre attive del Lightning.",
+                "tr": "Y\u0131ld\u0131r\u0131m i\u00e7in pasif, her zaman a\u00e7\u0131k Sertifikalar\u0131 a\u00e7."
+            },
+            "image_set_id": "2174",
+            "image_id": "4025",
+            "image_path": "/files/ps2/images/static/4025.png"
+        },
+        {
+            "skill_set_id": "14",
+            "skill_points": "NULL",
+            "required_item_id": "NULL",
+            "name": {
+                "de": "Sturmgewehr",
+                "en": "Assault Rifle",
+                "es": "Rifle de asalto",
+                "fr": "Fusil d'assaut",
+                "it": "Fucile d'assalto",
+                "tr": "Taarruz T\u00fcfe\u011fi"
+            },
+            "description": {
+                "de": "F\u00e4higkeiten-Set-Zeile f\u00fcr das Sturmgewehr",
+                "en": "Skill set line for the assault rifle",
+                "es": "L\u00ednea de habilidades de rifle de asalto",
+                "fr": "Ensemble de comp\u00e9tences pour fusil d'assaut",
+                "it": "Linea di abilit\u00e0 per fucile d'assalto",
+                "tr": "Taarruz T\u00fcfe\u011fi i\u00e7in yetenek seti kolu"
+            },
+            "image_set_id": "12",
+            "image_id": "103",
+            "image_path": "/files/ps2/images/static/103.png"
+        },
+        {
+            "skill_set_id": "15",
+            "skill_points": "NULL",
+            "required_item_id": "NULL",
+            "name": {
+                "de": "Sturmgewehr",
+                "en": "Assault Rifle",
+                "es": "Rifle de asalto",
+                "fr": "Fusil d'assaut",
+                "it": "Fucile d'assalto",
+                "tr": "Taarruz T\u00fcfe\u011fi"
+            },
+            "description": {
+                "de": "F\u00e4higkeiten-Set-Zeile f\u00fcr das Sturmgewehr",
+                "en": "Skill set line for the assault rifle",
+                "es": "L\u00ednea de habilidades de rifle de asalto",
+                "fr": "Ensemble de comp\u00e9tences pour fusil d'assaut",
+                "it": "Linea di abilit\u00e0 per fucile d'assalto",
+                "tr": "Taarruz T\u00fcfe\u011fi i\u00e7in yetenek seti kolu"
+            },
+            "image_set_id": "12",
+            "image_id": "103",
+            "image_path": "/files/ps2/images/static/103.png"
+        },
+        {
+            "skill_set_id": "16",
+            "skill_points": "NULL",
+            "required_item_id": "NULL",
+            "name": {
+                "de": "Sturmgewehr",
+                "en": "Assault Rifle",
+                "es": "Rifle de asalto",
+                "fr": "Fusil d'assaut",
+                "it": "Fucile d'assalto",
+                "tr": "Taarruz T\u00fcfe\u011fi"
+            },
+            "description": {
+                "de": "F\u00e4higkeiten-Set-Zeile f\u00fcr das Sturmgewehr",
+                "en": "Skill set line for the assault rifle",
+                "es": "L\u00ednea de habilidades de rifle de asalto",
+                "fr": "Ensemble de comp\u00e9tences pour fusil d'assaut",
+                "it": "Linea di abilit\u00e0 per fucile d'assalto",
+                "tr": "Taarruz T\u00fcfe\u011fi i\u00e7in yetenek seti kolu"
+            },
+            "image_set_id": "12",
+            "image_id": "103",
+            "image_path": "/files/ps2/images/static/103.png"
+        },
+        {
+            "skill_set_id": "17",
+            "skill_points": "NULL",
+            "required_item_id": "NULL",
+            "name": {
+                "de": "Sturmgewehr",
+                "en": "Assault Rifle",
+                "es": "Rifle de asalto",
+                "fr": "Fusil d'assaut",
+                "it": "Fucile d'assalto",
+                "tr": "Taarruz T\u00fcfe\u011fi"
+            },
+            "description": {
+                "de": "F\u00e4higkeiten-Set-Zeile f\u00fcr das Sturmgewehr",
+                "en": "Skill set line for the assault rifle",
+                "es": "L\u00ednea de habilidades de rifle de asalto",
+                "fr": "Ensemble de comp\u00e9tences pour fusil d'assaut",
+                "it": "Linea di abilit\u00e0 per fucile d'assalto",
+                "tr": "Taarruz T\u00fcfe\u011fi i\u00e7in yetenek seti kolu"
+            },
+            "image_set_id": "12",
+            "image_id": "103",
+            "image_path": "/files/ps2/images/static/103.png"
+        },
+        {
+            "skill_set_id": "18",
+            "skill_points": "NULL",
+            "required_item_id": "NULL",
+            "name": {
+                "de": "Sturmgewehr",
+                "en": "Assault Rifle",
+                "es": "Rifle de asalto",
+                "fr": "Fusil d'assaut",
+                "it": "Fucile d'assalto",
+                "tr": "Taarruz T\u00fcfe\u011fi"
+            },
+            "description": {
+                "de": "F\u00e4higkeiten-Set-Zeile f\u00fcr das Sturmgewehr",
+                "en": "Skill set line for the assault rifle",
+                "es": "L\u00ednea de habilidades de rifle de asalto",
+                "fr": "Ensemble de comp\u00e9tences pour fusil d'assaut",
+                "it": "Linea di abilit\u00e0 per fucile d'assalto",
+                "tr": "Taarruz T\u00fcfe\u011fi i\u00e7in yetenek seti kolu"
+            },
+            "image_set_id": "12",
+            "image_id": "103",
+            "image_path": "/files/ps2/images/static/103.png"
+        },
+        {
+            "skill_set_id": "19",
+            "skill_points": "NULL",
+            "required_item_id": "NULL",
+            "name": {
+                "de": "Sturmgewehr",
+                "en": "Assault Rifle",
+                "es": "Rifle de asalto",
+                "fr": "Fusil d'assaut",
+                "it": "Fucile d'assalto",
+                "tr": "Taarruz T\u00fcfe\u011fi"
+            },
+            "description": {
+                "de": "F\u00e4higkeiten-Set-Zeile f\u00fcr das Sturmgewehr",
+                "en": "Skill set line for the assault rifle",
+                "es": "L\u00ednea de habilidades de rifle de asalto",
+                "fr": "Ensemble de comp\u00e9tences pour fusil d'assaut",
+                "it": "Linea di abilit\u00e0 per fucile d'assalto",
+                "tr": "Taarruz T\u00fcfe\u011fi i\u00e7in yetenek seti kolu"
+            },
+            "image_set_id": "12",
+            "image_id": "103",
+            "image_path": "/files/ps2/images/static/103.png"
+        },
+        {
+            "skill_set_id": "20",
+            "skill_points": "NULL",
+            "required_item_id": "NULL",
+            "name": {
+                "de": "Sturmgewehr",
+                "en": "Assault Rifle",
+                "es": "Rifle de asalto",
+                "fr": "Fusil d'assaut",
+                "it": "Fucile d'assalto",
+                "tr": "Taarruz T\u00fcfe\u011fi"
+            },
+            "description": {
+                "de": "F\u00e4higkeiten-Set-Zeile f\u00fcr das Sturmgewehr",
+                "en": "Skill set line for the assault rifle",
+                "es": "L\u00ednea de habilidades de rifle de asalto",
+                "fr": "Ensemble de comp\u00e9tences pour fusil d'assaut",
+                "it": "Linea di abilit\u00e0 per fucile d'assalto",
+                "tr": "Taarruz T\u00fcfe\u011fi i\u00e7in yetenek seti kolu"
+            },
+            "image_set_id": "12",
+            "image_id": "103",
+            "image_path": "/files/ps2/images/static/103.png"
+        }
+    ],
+    "returned": 20
+}

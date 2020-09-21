@@ -1,0 +1,465 @@
+{
+    "directive_tree_list": [
+        {
+            "directive_tree_id": "4",
+            "directive_tree_category_id": "7",
+            "name": {
+                "de": "Karabiner",
+                "en": "Carbines",
+                "es": "Carabinas",
+                "fr": "Carabines",
+                "it": "Carabine",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "image_set_id": "14164",
+            "image_id": "79587",
+            "image_path": "/files/ps2/images/static/79587.png"
+        },
+        {
+            "directive_tree_id": "6",
+            "directive_tree_category_id": "7",
+            "name": {
+                "de": "Scharfsch\u00fctzengewehre",
+                "en": "Sniper Rifles",
+                "es": "Rifles de francotirador",
+                "fr": "Fusils de pr\u00e9cision",
+                "it": "Fucili di precisione",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "image_set_id": "14222",
+            "image_id": "79645",
+            "image_path": "/files/ps2/images/static/79645.png"
+        },
+        {
+            "directive_tree_id": "8",
+            "directive_tree_category_id": "7",
+            "name": {
+                "de": "Leichte Maschinengewehre",
+                "en": "Light Machine Guns",
+                "es": "Ametralladoras ligeras",
+                "fr": "Mitrailleuses l\u00e9g\u00e8res",
+                "it": "Mitragliatrici leggere",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "image_set_id": "14193",
+            "image_id": "79616",
+            "image_path": "/files/ps2/images/static/79616.png"
+        },
+        {
+            "directive_tree_id": "10",
+            "directive_tree_category_id": "7",
+            "name": {
+                "de": "Angriffsgewehre",
+                "en": "Assault Rifles",
+                "es": "Rifles de asalto",
+                "fr": "Fusils d'assaut",
+                "it": "Fucili d'assalto",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "image_set_id": "14160",
+            "image_id": "79583",
+            "image_path": "/files/ps2/images/static/79583.png"
+        },
+        {
+            "directive_tree_id": "13",
+            "directive_tree_category_id": "7",
+            "name": {
+                "de": "Schrotflinten",
+                "en": "Shotguns",
+                "es": "Escopetas",
+                "fr": "Fusils",
+                "it": "Fucili",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "image_set_id": "14233",
+            "image_id": "79656",
+            "image_path": "/files/ps2/images/static/79656.png"
+        },
+        {
+            "directive_tree_id": "15",
+            "directive_tree_category_id": "7",
+            "name": {
+                "de": "Maschinenpistolen",
+                "en": "Submachine Guns",
+                "es": "Subfusiles",
+                "fr": "Mitraillettes",
+                "it": "Mitra",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "image_set_id": "14238",
+            "image_id": "79661",
+            "image_path": "/files/ps2/images/static/79661.png"
+        },
+        {
+            "directive_tree_id": "17",
+            "directive_tree_category_id": "7",
+            "name": {
+                "de": "Seitenwaffen",
+                "en": "Sidearms",
+                "es": "Armas auxiliares",
+                "fr": "Armes de poing",
+                "it": "Armi secondarie",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "image_set_id": "14235",
+            "image_id": "79658",
+            "image_path": "/files/ps2/images/static/79658.png"
+        },
+        {
+            "directive_tree_id": "21",
+            "directive_tree_category_id": "3",
+            "name": {
+                "de": "Sprengstoff",
+                "en": "Explosives",
+                "es": "Explosivos",
+                "fr": "Explosifs",
+                "it": "Esplosivi",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "image_set_id": "14170",
+            "image_id": "79593",
+            "image_path": "/files/ps2/images/static/79593.png"
+        },
+        {
+            "directive_tree_id": "23",
+            "directive_tree_category_id": "4",
+            "name": {
+                "de": "Liberator",
+                "en": "Liberator",
+                "es": "Liberator",
+                "fr": "Lib\u00e9rateur",
+                "it": "Liberator",
+                "tr": "KURTARICI"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "image_set_id": "14184",
+            "image_id": "79607",
+            "image_path": "/files/ps2/images/static/79607.png"
+        },
+        {
+            "directive_tree_id": "24",
+            "directive_tree_category_id": "3",
+            "name": {
+                "de": "Leichte Angriffseinheit",
+                "en": "Light Assault",
+                "es": "Asalto ligero",
+                "fr": "Assaut l\u00e9ger",
+                "it": "Assalto Leggero",
+                "tr": "Hafif Taarruz"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "image_set_id": "13589",
+            "image_id": "77993",
+            "image_path": "/files/ps2/images/static/77993.png"
+        },
+        {
+            "directive_tree_id": "25",
+            "directive_tree_category_id": "3",
+            "name": {
+                "de": "Spion",
+                "en": "Infiltrator",
+                "es": "Infiltrado",
+                "fr": "Infiltr\u00e9",
+                "it": "Infiltrato",
+                "tr": "Casus"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "image_set_id": "13587",
+            "image_id": "77991",
+            "image_path": "/files/ps2/images/static/77991.png"
+        },
+        {
+            "directive_tree_id": "26",
+            "directive_tree_category_id": "3",
+            "name": {
+                "de": "Ingenieur",
+                "en": "Engineer",
+                "es": "Ingeniero",
+                "fr": "Ing\u00e9nieur",
+                "it": "Geniere",
+                "tr": "M\u00fchendis"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "image_set_id": "13585",
+            "image_id": "77989",
+            "image_path": "/files/ps2/images/static/77989.png"
+        },
+        {
+            "directive_tree_id": "27",
+            "directive_tree_category_id": "3",
+            "name": {
+                "de": "Schwere Angriffseinheit",
+                "en": "Heavy Assault",
+                "es": "Asalto pesado",
+                "fr": "Assaut lourd",
+                "it": "Assalto Pesante",
+                "tr": "A\u011f\u0131r Taarruz"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "image_set_id": "13586",
+            "image_id": "77990",
+            "image_path": "/files/ps2/images/static/77990.png"
+        },
+        {
+            "directive_tree_id": "28",
+            "directive_tree_category_id": "3",
+            "name": {
+                "de": "Sanit\u00e4ter",
+                "en": "Combat Medic",
+                "es": "M\u00e9dico de combate",
+                "fr": "M\u00e9decin de combat",
+                "it": "Medico da campo",
+                "tr": "S\u0131hh\u0131yeci"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "image_set_id": "13583",
+            "image_id": "77987",
+            "image_path": "/files/ps2/images/static/77987.png"
+        },
+        {
+            "directive_tree_id": "29",
+            "directive_tree_category_id": "3",
+            "name": {
+                "de": "MAX-Einheit",
+                "en": "MAX",
+                "es": "MAX",
+                "fr": "XAM",
+                "it": "MAX",
+                "tr": "MAX"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "image_set_id": "13590",
+            "image_id": "77994",
+            "image_path": "/files/ps2/images/static/77994.png"
+        },
+        {
+            "directive_tree_id": "31",
+            "directive_tree_category_id": "3",
+            "name": {
+                "de": "Machtaufkl\u00e4rer",
+                "en": "Force Recon",
+                "es": "Reconocimiento de fuerza",
+                "fr": "Force de Reconnaissance",
+                "it": "Ricognizione della forza",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "image_set_id": "13588",
+            "image_id": "77992",
+            "image_path": "/files/ps2/images/static/77992.png"
+        },
+        {
+            "directive_tree_id": "33",
+            "directive_tree_category_id": "11",
+            "name": {
+                "de": "Au\u00dfergew\u00f6hnlich",
+                "en": "Exceptional",
+                "es": "Excepcional",
+                "fr": "Exceptionnel",
+                "it": "Eccezionale",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "Promo- und Saison-Waffen, welche eventuell nicht f\u00fcr den sofortigen Gebrauch verf\u00fcgbar sind. ",
+                "en": "Promotional and seasonal weapons which may not be available for immediate acquistion.",
+                "es": "Armas de temporada o promocionales que pueden no estar disponibles inmediatamente.",
+                "fr": "Les offres promotionnelles et saisonni\u00e8res sur les armes peuvent ne pas \u00eatre disponibles pour une acquisition imm\u00e9diate.",
+                "it": "Armi promozionali e stagionali che potrebbero non essere disponibili per l'acquisizione immediata.",
+                "tr": "NULL"
+            },
+            "image_set_id": "14396",
+            "image_id": "79737",
+            "image_path": "/files/ps2/images/static/79737.png"
+        },
+        {
+            "directive_tree_id": "34",
+            "directive_tree_category_id": "4",
+            "name": {
+                "de": "Flash",
+                "en": "Flash",
+                "es": "Flash",
+                "fr": "Flash",
+                "it": "Flash",
+                "tr": "\u015e\u0130M\u015eEK"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "image_set_id": "14214",
+            "image_id": "79637",
+            "image_path": "/files/ps2/images/static/79637.png"
+        },
+        {
+            "directive_tree_id": "35",
+            "directive_tree_category_id": "4",
+            "name": {
+                "de": "Harasser",
+                "en": "Harasser",
+                "es": "Harasser",
+                "fr": "Offenseur",
+                "it": "Harasser",
+                "tr": "Tacizci"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "image_set_id": "14175",
+            "image_id": "79598",
+            "image_path": "/files/ps2/images/static/79598.png"
+        },
+        {
+            "directive_tree_id": "36",
+            "directive_tree_category_id": "4",
+            "name": {
+                "de": "Lightning",
+                "en": "Lightning",
+                "es": "Lightning",
+                "fr": "Foudre",
+                "it": "Lightning",
+                "tr": "YILDIRIM"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "image_set_id": "14188",
+            "image_id": "79611",
+            "image_path": "/files/ps2/images/static/79611.png"
+        }
+    ],
+    "returned": 20
+}

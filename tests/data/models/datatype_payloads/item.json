@@ -1,0 +1,625 @@
+{
+    "item_list": [
+        {
+            "item_id": "1",
+            "item_type_id": "26",
+            "item_category_id": "2",
+            "activatable_ability_id": "NULL",
+            "passive_ability_id": "NULL",
+            "is_vehicle_weapon": "0",
+            "name": {
+                "de": "Mag-Cutter",
+                "en": "Mag-Cutter",
+                "es": "Mag-Cutter",
+                "fr": "Mag-Cutter",
+                "it": "Mag-Cutter",
+                "tr": "Mag-Kesici"
+            },
+            "description": {
+                "de": "Der Mag-Cutter des Neuen Konglomerats ist durch einen leistungsstarken Elektromagneten gekennzeichnet, der in der Lage ist, durch feindliche Panzerung zu schneiden.",
+                "en": "The New Conglomerate's Mag-Cutter features a powerful electromagnet capable of cutting through enemy body armor.",
+                "es": "El Mag-Cutter del Nuevo Conglomerado contiene un poderoso electroim\u00e1n que puede atravesar las armaduras de los enemigos.",
+                "fr": "Le Mag-Cutter du Nouveau Conglom\u00e9rat comporte un \u00e9lectroaimant puissant capable de percer n'importe quelle armure ennemie.",
+                "it": "Il Mag-Cutter del Nuovo Conglomerato dispone di un potente elettromagnete che riesce a tagliare l'armatura del nemico.",
+                "tr": "Yeni Birle\u015fim'in Mag-Kesici'si d\u00fc\u015fman v\u00fccut z\u0131rh\u0131n\u0131 delebilen g\u00fc\u00e7l\u00fc bir elektrom\u0131knat\u0131s \u00f6zelli\u011fini ta\u015f\u0131maktad\u0131r."
+            },
+            "faction_id": "2",
+            "max_stack_size": "1",
+            "image_set_id": "322",
+            "image_id": "963",
+            "image_path": "/files/ps2/images/static/963.png",
+            "skill_set_id": "NULL",
+            "is_default_attachment": "0"
+        },
+        {
+            "item_id": "2",
+            "item_type_id": "26",
+            "item_category_id": "3",
+            "activatable_ability_id": "NULL",
+            "passive_ability_id": "NULL",
+            "is_vehicle_weapon": "0",
+            "name": {
+                "de": "NC4 Mag-Shot",
+                "en": "NC4 Mag-Shot",
+                "es": "NC4 Mag-Shot",
+                "fr": "NC4 Mag-Shot",
+                "it": "NC4 Mag-Shot",
+                "tr": "NC4 Mag-Shot"
+            },
+            "description": {
+                "de": "Die vielseitige Standardwaffe NC4 MAG-Shot war die erste Pistole, die die Gau\u00df-Technologie nutzte. Nur f\u00fcr NK.",
+                "en": "The versatile standard-issue NC4 Mag-Shot was the first pistol to utilize Gauss technology. NC use only.",
+                "es": "La vers\u00e1til NC4 Mag-Shot est\u00e1ndar fue la primera pistola que utiliz\u00f3 tecnolog\u00eda Gauss. Solo para NC",
+                "fr": "Le mod\u00e8le de base polyvalent du NC4 Mag-Shot a \u00e9t\u00e9 le premier pistolet \u00e0 utiliser la technologie Gauss. NC uniquement.",
+                "it": "La versatile Mag-Shot NC4 standard \u00e8 stata la prima pistola a tecnologia Gauss. Esclusivo NC.",
+                "tr": "\u00c7ok ama\u00e7l\u0131 standart \u00fcretim NC4 Mag-Shot, Gauss teknolojisini kullanan ilk tabancad\u0131r. Yaln\u0131zca Yeni Birle\u015fim kullan\u0131m\u0131 i\u00e7in."
+            },
+            "faction_id": "2",
+            "max_stack_size": "1",
+            "image_set_id": "202",
+            "image_id": "2432",
+            "image_path": "/files/ps2/images/static/2432.png",
+            "skill_set_id": "105",
+            "is_default_attachment": "0"
+        },
+        {
+            "item_id": "3",
+            "item_type_id": "26",
+            "item_category_id": "8",
+            "activatable_ability_id": "NULL",
+            "passive_ability_id": "NULL",
+            "is_vehicle_weapon": "0",
+            "name": {
+                "de": "AF-19 Mercenary",
+                "en": "AF-19 Mercenary",
+                "es": "AF-19 Mercenary",
+                "fr": "AF-19 Mercenary",
+                "it": "AF-19 Mercenary",
+                "tr": "AF-19 Paral\u0131 Asker"
+            },
+            "description": {
+                "de": "Der AF-19 Mercenary wurde wegen seiner niedrigen Produktionskosten zum Standard-Karabiner des NKs. Er hat einen kontrollierbaren R\u00fccksto\u00df, was ihn bei kurzer bis mittlerer Distanz effektiv macht. Nur f\u00fcr NK.",
+                "en": "The AF-19 Mercenary became the standard issue carbine for the NC due to its low production costs. It features controllable recoil that makes it effective at close to medium ranges. NC use only.",
+                "es": "La AF-19 Mercenary se convirti\u00f3 en la carabina est\u00e1ndar del NC por su bajo coste de producci\u00f3n. Se caracteriza por su controlable retroceso, lo que la hace eficaz frente a objetivos a corta o media distancia. Solo para NC",
+                "fr": "L'AF-19 Mercenary est devenu la carabine de base du NC gr\u00e2ce \u00e0 son faible co\u00fbt de production. Son recul est contr\u00f4lable, ce qui le rend efficace \u00e0 courte ou moyenne port\u00e9e. NC uniquement.",
+                "it": "La Mercenary AF-19 \u00e8 diventata la carabina standard dell'NC grazie al suo basso costo di produzione. Dispone di un rinculo controllabile che la rende molto efficace nelle brevi o medie distanze. Esclusivo NC.",
+                "tr": "AF-19 Paral\u0131 Asker, d\u00fc\u015f\u00fck \u00fcretim maliyetinden dolayi standart piyade t\u00fcfe\u011fidir. Geri tepmesi kontrol edilebilen, k\u0131sa ve orta menzilde etkili bir silahtir. Yaln\u0131zca Yeni Birle\u015fim kullan\u0131m\u0131 i\u00e7in."
+            },
+            "faction_id": "2",
+            "max_stack_size": "1",
+            "image_set_id": "2751",
+            "image_id": "5322",
+            "image_path": "/files/ps2/images/static/5322.png",
+            "skill_set_id": "123",
+            "is_default_attachment": "0"
+        },
+        {
+            "item_id": "4",
+            "item_type_id": "26",
+            "item_category_id": "7",
+            "activatable_ability_id": "NULL",
+            "passive_ability_id": "NULL",
+            "is_vehicle_weapon": "0",
+            "name": {
+                "de": "NC1 Gau\u00dfgewehr",
+                "en": "NC1 Gauss Rifle",
+                "es": "Rifle Gauss NC1",
+                "fr": "Fusil Gauss NC1",
+                "it": "Fucile Gauss NC1",
+                "tr": "NC1 Gauss T\u00fcfe\u011fi"
+            },
+            "description": {
+                "de": "Das Standard-Gau\u00dfgewehr NC1 war die erste erfolgreiche Einf\u00fchrung der Gau\u00dfgewehr-Technologie in kleinen Waffen. Nur f\u00fcr NK.",
+                "en": "The standard issue NC1 Gauss Rifle was the first successful implementation of coilgun technology in small arms. NC use only.",
+                "es": "El rifle NC1 Gauss est\u00e1ndar represent\u00f3 la primera implementaci\u00f3n de tecnolog\u00eda coilgun en armas peque\u00f1as. Solo para NC",
+                "fr": "Le fusil Gauss NC1 standard repr\u00e9sente la premi\u00e8re application r\u00e9ussie de la technologie de canon magn\u00e9tique aux armes de petit calibre. NC uniquement.",
+                "it": "Il fucile Gauss NC1 standard rappresenta la prima applicazione riuscita della tecnologia di accelerazione magnetica nelle armi di piccole dimensioni. Esclusivo NC.",
+                "tr": "Standart \u00fcretim NC1 Gauss T\u00fcfe\u011fi, bobinsilah\u0131 teknolojisininin hafif silahlara ilk ba\u015far\u0131l\u0131 uygulanmas\u0131d\u0131r. Yaln\u0131zca Yeni Birle\u015fim kullan\u0131m\u0131 i\u00e7in."
+            },
+            "faction_id": "2",
+            "max_stack_size": "1",
+            "image_set_id": "2745",
+            "image_id": "5310",
+            "image_path": "/files/ps2/images/static/5310.png",
+            "skill_set_id": "132",
+            "is_default_attachment": "0"
+        },
+        {
+            "item_id": "6",
+            "item_type_id": "4",
+            "item_category_id": "NULL",
+            "activatable_ability_id": "NULL",
+            "passive_ability_id": "NULL",
+            "is_vehicle_weapon": "0",
+            "name": {
+                "de": "Paket \"Neuer Rekrut\"",
+                "en": "New Recruit Pack",
+                "es": "Pack de nuevo recluta",
+                "fr": "Pack de nouvelle recrue",
+                "it": "Pacchetto nuova recluta",
+                "tr": "Yeni Asker Paketi"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "faction_id": "NULL",
+            "max_stack_size": "1",
+            "image_set_id": "135",
+            "image_id": "322",
+            "image_path": "/files/ps2/images/static/322.png",
+            "skill_set_id": "NULL",
+            "is_default_attachment": "0"
+        },
+        {
+            "item_id": "7",
+            "item_type_id": "26",
+            "item_category_id": "139",
+            "activatable_ability_id": "NULL",
+            "passive_ability_id": "NULL",
+            "is_vehicle_weapon": "0",
+            "name": {
+                "de": "Spawn-Leuchte",
+                "en": "Spawn Beacon",
+                "es": "Baliza de apariciones",
+                "fr": "Balise de r\u00e9apparition",
+                "it": "Faro di rigenerazione",
+                "tr": "Canland\u0131rma Kontrol \u0130\u015fareti"
+            },
+            "description": {
+                "de": "Eine Signalleuchte zum schnellen Absetzen von Truppmitgliedern in einen Bereich aus geringer H\u00f6he.",
+                "en": "A signal-emitting beacon that allows squad members to drop pod into an area from low orbit.",
+                "es": "Una baliza que emite una se\u00f1al y permite a los miembros del escuadr\u00f3n aterrizar con c\u00e1psula dentro de una zona desde una \u00f3rbita baja.",
+                "fr": "Une balise \u00e9mettrice de signaux qui permet aux membres de l'escouade de lancer un module de d\u00e9ploiement \u00e0 partir d'une orbite basse.",
+                "it": "Faro emettitore di segnali che permette ai membri della squadra di inserirsi a caldo nell'area.",
+                "tr": "Manga \u00fcyelerinin al\u00e7ak y\u00f6r\u00fcngeden anl\u0131k alana gelebilmelerine olanak tan\u0131yan sinyal sa\u00e7\u0131c\u0131 bir kontrol i\u015faretidir."
+            },
+            "faction_id": "0",
+            "max_stack_size": "1",
+            "image_set_id": "1568",
+            "image_id": "3056",
+            "image_path": "/files/ps2/images/static/3056.png",
+            "skill_set_id": "NULL",
+            "is_default_attachment": "0"
+        },
+        {
+            "item_id": "8",
+            "item_type_id": "1",
+            "item_category_id": "NULL",
+            "activatable_ability_id": "80",
+            "passive_ability_id": "NULL",
+            "is_vehicle_weapon": "0",
+            "name": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "faction_id": "NULL",
+            "max_stack_size": "1",
+            "image_set_id": "135",
+            "image_id": "322",
+            "image_path": "/files/ps2/images/static/322.png",
+            "skill_set_id": "NULL",
+            "is_default_attachment": "0"
+        },
+        {
+            "item_id": "9",
+            "item_type_id": "39",
+            "item_category_id": "103",
+            "activatable_ability_id": "NULL",
+            "passive_ability_id": "NULL",
+            "is_vehicle_weapon": "0",
+            "name": {
+                "de": "Stachelpanzer",
+                "en": "Spike Armor",
+                "es": "Armadura de p\u00faas",
+                "fr": "Armure \u00e0 pointes",
+                "it": "Corazza chiodata",
+                "tr": "\u00c7ivili Z\u0131rh"
+            },
+            "description": {
+                "de": "Schulterstacheln",
+                "en": "Spikes of the shoulder",
+                "es": "Hombreras con pinchos",
+                "fr": "Pointes sur l'\u00e9paulette",
+                "it": "Puntali della spalla",
+                "tr": "Omuz \u00e7ivileri"
+            },
+            "faction_id": "3",
+            "max_stack_size": "1",
+            "image_set_id": "344",
+            "image_id": "1008",
+            "image_path": "/files/ps2/images/static/1008.png",
+            "skill_set_id": "NULL",
+            "is_default_attachment": "0"
+        },
+        {
+            "item_id": "10",
+            "item_type_id": "4",
+            "item_category_id": "NULL",
+            "activatable_ability_id": "NULL",
+            "passive_ability_id": "NULL",
+            "is_vehicle_weapon": "0",
+            "name": {
+                "de": "\"Boot Camp\"-Paket",
+                "en": "Boot Camp Pack",
+                "es": "Paquete Campamento de reclutas",
+                "fr": "Pack Camp d'entra\u00eenement",
+                "it": "Pacchetto Boot camp",
+                "tr": "Boot Camp Pack"
+            },
+            "description": {
+                "de": "NULL",
+                "en": "NULL",
+                "es": "NULL",
+                "fr": "NULL",
+                "it": "NULL",
+                "tr": "NULL"
+            },
+            "faction_id": "NULL",
+            "max_stack_size": "1",
+            "image_set_id": "35",
+            "image_id": "142",
+            "image_path": "/files/ps2/images/static/142.png",
+            "skill_set_id": "NULL",
+            "is_default_attachment": "0"
+        },
+        {
+            "item_id": "13",
+            "item_type_id": "26",
+            "item_category_id": "2",
+            "activatable_ability_id": "NULL",
+            "passive_ability_id": "NULL",
+            "is_vehicle_weapon": "0",
+            "name": {
+                "de": "Kettenmesser",
+                "en": "Chainblade",
+                "es": "Chainblade",
+                "fr": "Lame-tron\u00e7onneuse",
+                "it": "Chainblade",
+                "tr": "Testerek\u0131l\u0131\u00e7"
+            },
+            "description": {
+                "de": "Die rasiermesser-scharfen Z\u00e4hne des Kettenmessers haben sich als \u00e4u\u00dfertst effektiv im Nahkampf bewiesen.",
+                "en": "The Chainblade knife's razor sharp teeth have proven extremely effective in close quarters combat.",
+                "es": "Los afilados dientes del cuchillo Chainblade han demostrado ser extremadamente eficaces en combates de corto alcance.",
+                "fr": "Les dents coupantes comme un rasoir de la lame de la tron\u00e7onneuse se sont r\u00e9v\u00e9l\u00e9es tr\u00e8s efficaces en combat rapproch\u00e9. ",
+                "it": "I denti super affilati della Chainblade si sono rivelati estremamente efficaci nei combattimenti a distanza ravvicinata.",
+                "tr": "Testere K\u0131l\u0131c'\u0131n jilet gibi keskin di\u015flerinin yak\u0131n muharebede a\u015f\u0131r\u0131 etkili oldu\u011fu kan\u0131tlanm\u0131\u015ft\u0131r."
+            },
+            "faction_id": "3",
+            "max_stack_size": "1",
+            "image_set_id": "354",
+            "image_id": "1038",
+            "image_path": "/files/ps2/images/static/1038.png",
+            "skill_set_id": "NULL",
+            "is_default_attachment": "0"
+        },
+        {
+            "item_id": "14",
+            "item_type_id": "26",
+            "item_category_id": "7",
+            "activatable_ability_id": "NULL",
+            "passive_ability_id": "NULL",
+            "is_vehicle_weapon": "0",
+            "name": {
+                "de": "T1 Cycler",
+                "en": "T1 Cycler",
+                "es": "T1 Cycler",
+                "fr": "S\u00e9cateur T1",
+                "it": "T1 Cycler",
+                "tr": "T1 D\u00f6ng\u00fcl\u00fc"
+            },
+            "description": {
+                "de": "Das Standard-Sturmgewehr der Terranischen Republik, das T1 Cycler, bietet ein 40-Schuss Magazin und eine schnelle Feuerrate, was die effektive Nutzung des Gewehrs in den meisten Situationen erm\u00f6glicht. Nur f\u00fcr TR.",
+                "en": "The standard assault rifle of the Terran Republic, the T1 Cycler features a 40-round magazine and a fast rate of fire, allowing it to remain effective in most situations. TR use only.",
+                "es": "El rifle de asalto est\u00e1ndar de la Rep\u00fablica Terran, el T1 Cycler, tiene un cargador de 40 proyectiles y una r\u00e1pida cadencia de tiro, lo que hace que sea eficaz en la mayor\u00eda de situaciones. Solo para RT",
+                "fr": "Le S\u00e9cateur T1, fusil d'assaut standard de la R\u00e9publique Terrane, offre un chargeur de 40 projectiles et une cadence de tir rapide, ce qui le rend efficace dans la plupart des situations. RT uniquement.",
+                "it": "Il T1 Cycler \u00e8 il fucile d'assalto per eccellenza della Repubblica Terrestre. Dispone di un caricatore da 40 colpi e un'elevata frequenza di fuoco che gli permettono di rimanere efficace in quasi tutte le situazioni. Esclusivo RT.",
+                "tr": "Terran Cumhuriyeti'nin standart taarruz t\u00fcfe\u011fi olan T1 D\u00f6ng\u00fcl\u00fc 40 mermilik \u015farj\u00f6r\u00fc ve h\u0131zl\u0131 ate\u015f \u00f6zelli\u011fi ile onun bir \u00e7ok durumda etkili olmas\u0131na olanak tan\u0131r. Yaln\u0131zca Terran Cumhuriyeti kullan\u0131m\u0131 i\u00e7in."
+            },
+            "faction_id": "3",
+            "max_stack_size": "1",
+            "image_set_id": "2844",
+            "image_id": "5349",
+            "image_path": "/files/ps2/images/static/5349.png",
+            "skill_set_id": "135",
+            "is_default_attachment": "0"
+        },
+        {
+            "item_id": "15",
+            "item_type_id": "26",
+            "item_category_id": "3",
+            "activatable_ability_id": "NULL",
+            "passive_ability_id": "NULL",
+            "is_vehicle_weapon": "0",
+            "name": {
+                "de": "TX1 Repeater",
+                "en": "TX1 Repeater",
+                "es": "TX1 Repeater",
+                "fr": "TX1 Repeater",
+                "it": "TX1 Repeater",
+                "tr": "TX1 Repeater"
+            },
+            "description": {
+                "de": "Der verl\u00e4ssliche TX1 Repeater ist die j\u00fcngste Auflage eines Waffendesigns, das seit 300 Jahren verwendet wird. Sein Drei-Schuss-Feuersto\u00df bietet eine beachtliche Mannstoppwirkung bei kurzen Entfernungen. Nur f\u00fcr TR.",
+                "en": "The reliable TX1 Repeater is the latest iteration of a firearm design stretching back 300 years. Its 3-round burst fire mode provides considerable stopping power at close range. TR use only.",
+                "es": "La fiable pistola TX1 Repeater ha sido el arma de fuego m\u00e1s utilizada por la humanidad durante los \u00faltimos 300 a\u00f1os. Dispara r\u00e1fagas de 3 disparos que proporcionan una potencia de impacto considerable a corto alcance. Solo para RT",
+                "fr": "Le tr\u00e8s fiable TX1 Repeater est la derni\u00e8re version d'une arme \u00e0 feu dont la conception remonte \u00e0 300 ans. Son mode de tir en rafale de 3 projectiles procure une puissance d'arr\u00eat consid\u00e9rable \u00e0 courte distance. RT uniquement.",
+                "it": "L'affidabile TX1 Repeater \u00e8 la versione pi\u00f9 recente di un'arma usata per 300 anni. Spara raffiche controllate di 3 colpi che permettono un potere d'interdizione considerevole a distanza ravvicinata. Esclusivo RT.",
+                "tr": "The reliable TX1 Repeater is the latest iteration of a firearm design stretching back 300 years. Its 3-round burst fire mode provides considerable stopping power at close range. TR use only."
+            },
+            "faction_id": "3",
+            "max_stack_size": "1",
+            "image_set_id": "164",
+            "image_id": "809",
+            "image_path": "/files/ps2/images/static/809.png",
+            "skill_set_id": "108",
+            "is_default_attachment": "0"
+        },
+        {
+            "item_id": "16",
+            "item_type_id": "36",
+            "item_category_id": "139",
+            "activatable_ability_id": "28",
+            "passive_ability_id": "NULL",
+            "is_vehicle_weapon": "0",
+            "name": {
+                "de": "St\u00fcrmen 1",
+                "en": "Charge 1",
+                "es": "Carga 1",
+                "fr": "Charger 1",
+                "it": "Carica 1",
+                "tr": "\u015earj 1"
+            },
+            "description": {
+                "de": "Verst\u00e4rkt die Bewegungsservokraft, was der MAX-Einheit einen Sprint durch das feindliche Feuer erm\u00f6glicht.",
+                "en": "Boosts movement servo power, allowing the MAX to sprint through enemy fire.",
+                "es": "Mejora la potencia del servo de movimiento, permitiendo que el MAX corra a toda velocidad entre el fuego enemigo.",
+                "fr": "Booste la puissance des servos de mouvement, permettant au XAM de sprinter \u00e0 travers les tirs ennemis.",
+                "it": "Potenzia il servomotore di movimento, permettendo al MAX di sfrecciare attraverso il fuoco nemico.",
+                "tr": "Boosts movement servo power, allowing the MAX to sprint through enemy fire."
+            },
+            "faction_id": "2",
+            "max_stack_size": "1",
+            "image_set_id": "2209",
+            "image_id": "2702",
+            "image_path": "/files/ps2/images/static/2702.png",
+            "skill_set_id": "NULL",
+            "is_default_attachment": "0"
+        },
+        {
+            "item_id": "17",
+            "item_type_id": "36",
+            "item_category_id": "139",
+            "activatable_ability_id": "29",
+            "passive_ability_id": "NULL",
+            "is_vehicle_weapon": "0",
+            "name": {
+                "de": "St\u00fcrmen 1",
+                "en": "Charge 1",
+                "es": "Carga 1",
+                "fr": "Charger 1",
+                "it": "Carica 1",
+                "tr": "\u015earj 1"
+            },
+            "description": {
+                "de": "Verst\u00e4rkt die Bewegungsservokraft, was der MAX-Einheit einen Sprint durch das feindliche Feuer erm\u00f6glicht.",
+                "en": "Boosts movement servo power, allowing the MAX to sprint through enemy fire.",
+                "es": "Mejora la potencia del servo de movimiento, permitiendo que el MAX corra a toda velocidad entre el fuego enemigo.",
+                "fr": "Booste la puissance des servos de mouvement, permettant au XAM de sprinter \u00e0 travers les tirs ennemis.",
+                "it": "Potenzia il servomotore di movimento, permettendo al MAX di sfrecciare attraverso il fuoco nemico.",
+                "tr": "Boosts movement servo power, allowing the MAX to sprint through enemy fire."
+            },
+            "faction_id": "3",
+            "max_stack_size": "1",
+            "image_set_id": "2209",
+            "image_id": "2702",
+            "image_path": "/files/ps2/images/static/2702.png",
+            "skill_set_id": "NULL",
+            "is_default_attachment": "0"
+        },
+        {
+            "item_id": "18",
+            "item_type_id": "36",
+            "item_category_id": "139",
+            "activatable_ability_id": "30",
+            "passive_ability_id": "NULL",
+            "is_vehicle_weapon": "0",
+            "name": {
+                "de": "St\u00fcrmen 1",
+                "en": "Charge 1",
+                "es": "Carga 1",
+                "fr": "Charger 1",
+                "it": "Carica 1",
+                "tr": "\u015earj 1"
+            },
+            "description": {
+                "de": "Verst\u00e4rkt die Bewegungsservokraft, was der MAX-Einheit einen Sprint durch das feindliche Feuer erm\u00f6glicht.",
+                "en": "Boosts movement servo power, allowing the MAX to sprint through enemy fire.",
+                "es": "Mejora la potencia del servo de movimiento, permitiendo que el MAX corra a toda velocidad entre el fuego enemigo.",
+                "fr": "Booste la puissance des servos de mouvement, permettant au XAM de sprinter \u00e0 travers les tirs ennemis.",
+                "it": "Potenzia il servomotore di movimento, permettendo al MAX di sfrecciare attraverso il fuoco nemico.",
+                "tr": "Boosts movement servo power, allowing the MAX to sprint through enemy fire."
+            },
+            "faction_id": "1",
+            "max_stack_size": "1",
+            "image_set_id": "2209",
+            "image_id": "2702",
+            "image_path": "/files/ps2/images/static/2702.png",
+            "skill_set_id": "NULL",
+            "is_default_attachment": "0"
+        },
+        {
+            "item_id": "19",
+            "item_type_id": "26",
+            "item_category_id": "2",
+            "activatable_ability_id": "NULL",
+            "passive_ability_id": "NULL",
+            "is_vehicle_weapon": "0",
+            "name": {
+                "de": "Energieklinge",
+                "en": "Force-Blade",
+                "es": "Cuchillo Force-Blade",
+                "fr": "Lame de force",
+                "it": "Force-blade",
+                "tr": "G\u00fc\u00e7 B\u0131\u00e7a\u011f\u0131"
+            },
+            "description": {
+                "de": "Die Energieklinge der Vanu-Souver\u00e4nit\u00e4t gibt hochgeladene Partikel von seiner scharfen Kante ab, die \u00e4u\u00dferst zerst\u00f6rerisch auf organisches Gewebe wirken.",
+                "en": "The Vanu Sovereignty's Force Blade emits highly charged particles from its cutting edge which are extremely destructive to organic tissue.",
+                "es": "El cuchillo Force-Blade de la Soberan\u00eda Vanu emite part\u00edculas altamente cargadas por el filo, lo que lo hace extremadamente destructivo para el tejido org\u00e1nico.",
+                "fr": "Le fil de la Lame de Force de la Souverainet\u00e9 Vanu \u00e9met des particules hautement charg\u00e9es qui sont extr\u00eamement destructrices pour les tissus organiques.",
+                "it": "La Force Blade della Sovranit\u00e0 Vanu emette dalla sua lama affilata, particelle cariche estremamente distruttive per i tessuti organici.",
+                "tr": "Vanu H\u00fck\u00fcmdarl\u0131\u011f\u0131'n\u0131n G\u00fc\u00e7 B\u0131\u00e7a\u011f\u0131, keskin u\u00e7lar\u0131ndan organik dokuya kar\u015f\u0131 a\u015f\u0131r\u0131 tahripkar olan y\u00fcksek y\u00fckl\u00fc partik\u00fcller \u00e7\u0131kart\u0131r."
+            },
+            "faction_id": "1",
+            "max_stack_size": "1",
+            "image_set_id": "506",
+            "image_id": "1649",
+            "image_path": "/files/ps2/images/static/1649.png",
+            "skill_set_id": "NULL",
+            "is_default_attachment": "0"
+        },
+        {
+            "item_id": "20",
+            "item_type_id": "26",
+            "item_category_id": "7",
+            "activatable_ability_id": "NULL",
+            "passive_ability_id": "NULL",
+            "is_vehicle_weapon": "0",
+            "name": {
+                "de": "Pulsar VS1",
+                "en": "Pulsar VS1",
+                "es": "Pulsar VS1",
+                "fr": "Pulsar VS1",
+                "it": "Pulsar VS1",
+                "tr": "Pulsar VS1"
+            },
+            "description": {
+                "de": "Das Pulsar VS1 ist das Standard-Sturmgewehr der Vanu-Souver\u00e4nit\u00e4t. Sein niedriger R\u00fccksto\u00df, erm\u00f6glicht in den meisten Situationen die Beibehaltung der Effektivit\u00e4t. Nur f\u00fcr VS.",
+                "en": "The Pulsar VS1 is the standard issue assault rifle for the Vanu Sovereignty. Its low recoil design allows it to remain effective in most situations. VS use only.",
+                "es": "El Pulsar VS1 es el rifle de asalto est\u00e1ndar de la Soberan\u00eda Vanu. Su bajo retroceso hace que sea eficaz en la mayor\u00eda de situaciones. Solo para SV",
+                "fr": "Le Pulsar VS1 est le fusil d'assaut standard de la Souverainet\u00e9 Vanu. Sa conception \u00e0 faible recul lui permet de rester efficace dans la plupart des situations. SV uniquement.",
+                "it": "Il Pulsar VS1 \u00e8 il fucile d'assalto standard della Sovranit\u00e0 Vanu. Il suo design a basso rinculo gli consente di rimanere efficace nella maggior parte delle situazioni. Esclusivo SV.",
+                "tr": "Pulsar VS1, Vanu H\u00fck\u00fcmdarl\u0131\u011f\u0131'n\u0131n standart taarruz t\u00fcfe\u011fidir. D\u00fc\u015f\u00fck geri tepmeyle tasarlanm\u0131\u015f olmas\u0131 onun bir \u00e7ok durumda etkili olmas\u0131na olanak tan\u0131r. Yaln\u0131zca Vanu H\u00fck\u00fcmdarl\u0131\u011f\u0131 kullan\u0131m\u0131 i\u00e7in."
+            },
+            "faction_id": "1",
+            "max_stack_size": "1",
+            "image_set_id": "2811",
+            "image_id": "5991",
+            "image_path": "/files/ps2/images/static/5991.png",
+            "skill_set_id": "129",
+            "is_default_attachment": "0"
+        },
+        {
+            "item_id": "21",
+            "item_type_id": "26",
+            "item_category_id": "3",
+            "activatable_ability_id": "NULL",
+            "passive_ability_id": "NULL",
+            "is_vehicle_weapon": "0",
+            "name": {
+                "de": "Beamer VS3",
+                "en": "Beamer VS3",
+                "es": "Beamer SV3",
+                "fr": "Beamer VS3",
+                "it": "Beamer VS3",
+                "tr": "I\u015f\u0131natar VS3"
+            },
+            "description": {
+                "de": "Der Beamer VS3 ist die Standard-Seitenwaffe der Vanu-Souver\u00e4nit\u00e4t. Ihre hohe Feuerrate erm\u00f6glicht dem Nutzer, Ziele in der N\u00e4he schnell zu eliminieren. Nur f\u00fcr VS.",
+                "en": "The Beamer VS3 is the standard sidearm for the Vanu Sovereignty. Its high rate of fire allows the user to eliminate nearby targets quickly. VS use only.",
+                "es": "El Beamer SV3 es el arma auxiliar de la Soberan\u00eda Vanu. Su alta cadencia de tiro permite al portador acabar con los objetivos cercanos r\u00e1pidamente. Solo para SV",
+                "fr": "Le Beamer VS3 est l'arme de poing standard de la Souverainet\u00e9 Vanu. Sa haute cadence de tir permet \u00e0 son utilisateur d'\u00e9liminer rapidement les cibles \u00e0 proximit\u00e9. SV uniquement.",
+                "it": "La Beamer VS3 \u00e8 l'arma secondaria standard della Sovranit\u00e0 Vanu. La sua alta frequenza di fuoco consente all'utente di eliminare rapidamente gli obiettivi nelle vicinanze. Esclusivo SV.",
+                "tr": "I\u015f\u0131natar VS3 Vanu H\u00fck\u00fcmdarl\u0131\u011f\u0131'n\u0131n standart yan silah\u0131d\u0131r. Y\u00fcksek at\u0131\u015f say\u0131s\u0131 kullan\u0131c\u0131s\u0131n\u0131n yak\u0131ndaki hedefleri \u00e7abucak ortadan kald\u0131rabilmesini sa\u011flar. Yaln\u0131zca Vanu H\u00fck\u00fcmdarl\u0131\u011f\u0131 kullan\u0131m\u0131 i\u00e7in."
+            },
+            "faction_id": "1",
+            "max_stack_size": "1",
+            "image_set_id": "172",
+            "image_id": "1614",
+            "image_path": "/files/ps2/images/static/1614.png",
+            "skill_set_id": "102",
+            "is_default_attachment": "0"
+        },
+        {
+            "item_id": "23",
+            "item_type_id": "36",
+            "item_category_id": "139",
+            "activatable_ability_id": "108",
+            "passive_ability_id": "259",
+            "is_vehicle_weapon": "0",
+            "name": {
+                "de": "Pl\u00e4nkler-Jetpacks 1",
+                "en": "Skirmisher Jump Jets 1",
+                "es": "Mochila propulsora Hostigador 1",
+                "fr": "A\u00e9ropulseurs d'Escarmoucheur 1",
+                "it": "Jet pack dello schermagliatore 1",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "Pl\u00e4nkler-Jetpacks bieten einen ausgeglichenen Auftrieb, Mobilit\u00e4t, Kraftstoffkapazit\u00e4t und Ladegeschwindigkeit, wodurch sie sich an die meisten Situationen anpassen k\u00f6nnen.",
+                "en": "Skirmisher Jump Jets provide balanced thrust, mobility, fuel capacity, and recharge rate, allowing them to adapt to most situations.",
+                "es": "La mochila propulsora Hostigador proporciona impulso equilibrado, movilidad, capacidad de combustible y velocidad de recarga que le permiten adaptarse a la mayor\u00eda de las situaciones.",
+                "fr": "Les A\u00e9ropulseurs Escarmoucheurs fournissent une pouss\u00e9e, une mobilit\u00e9, une capacit\u00e9 en carburant, et une vitesse de rechargement \u00e9quilibr\u00e9es, leur permettant de s'adapter \u00e0 la plupart des situations.",
+                "it": "Il jet pack dello schermagliatore offre propulsione, mobilit\u00e0, capacit\u00e0 di carburante e velocit\u00e0 di ricarica bilanciate in modo da potersi adattare alla maggior parte delle situazioni.",
+                "tr": "H\u0131zl\u0131  bir \u015fekilde \u015farj olan F\u0131rlatma Jetleri, kullan\u0131c\u0131n\u0131n atlama menzilinin uza\u011f\u0131nda bir yere ula\u015fmas\u0131na olanak tan\u0131r"
+            },
+            "faction_id": "2",
+            "max_stack_size": "1",
+            "image_set_id": "2202",
+            "image_id": "4031",
+            "image_path": "/files/ps2/images/static/4031.png",
+            "skill_set_id": "NULL",
+            "is_default_attachment": "0"
+        },
+        {
+            "item_id": "24",
+            "item_type_id": "36",
+            "item_category_id": "139",
+            "activatable_ability_id": "109",
+            "passive_ability_id": "259",
+            "is_vehicle_weapon": "0",
+            "name": {
+                "de": "Pl\u00e4nkler-Jetpacks 1",
+                "en": "Skirmisher Jump Jets 1",
+                "es": "Mochila propulsora Hostigador 1",
+                "fr": "A\u00e9ropulseurs d'Escarmoucheur 1",
+                "it": "Jet pack dello schermagliatore 1",
+                "tr": "NULL"
+            },
+            "description": {
+                "de": "Pl\u00e4nkler-Jetpacks bieten einen ausgeglichenen Auftrieb, Mobilit\u00e4t, Kraftstoffkapazit\u00e4t und Ladegeschwindigkeit, wodurch sie sich an die meisten Situationen anpassen k\u00f6nnen.",
+                "en": "Skirmisher Jump Jets provide balanced thrust, mobility, fuel capacity, and recharge rate, allowing them to adapt to most situations.",
+                "es": "La mochila propulsora Hostigador proporciona impulso equilibrado, movilidad, capacidad de combustible y velocidad de recarga que le permiten adaptarse a la mayor\u00eda de las situaciones.",
+                "fr": "Les A\u00e9ropulseurs Escarmoucheurs fournissent une pouss\u00e9e, une mobilit\u00e9, une capacit\u00e9 en carburant, et une vitesse de rechargement \u00e9quilibr\u00e9es, leur permettant de s'adapter \u00e0 la plupart des situations.",
+                "it": "Il jet pack dello schermagliatore offre propulsione, mobilit\u00e0, capacit\u00e0 di carburante e velocit\u00e0 di ricarica bilanciate in modo da potersi adattare alla maggior parte delle situazioni.",
+                "tr": "H\u0131zl\u0131  bir \u015fekilde \u015farj olan F\u0131rlatma Jetleri, kullan\u0131c\u0131n\u0131n atlama menzilinin uza\u011f\u0131nda bir yere ula\u015fmas\u0131na olanak tan\u0131r"
+            },
+            "faction_id": "3",
+            "max_stack_size": "1",
+            "image_set_id": "2202",
+            "image_id": "4031",
+            "image_path": "/files/ps2/images/static/4031.png",
+            "skill_set_id": "NULL",
+            "is_default_attachment": "0"
+        }
+    ],
+    "returned": 20
+}
