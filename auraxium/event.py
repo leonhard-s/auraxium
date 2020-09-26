@@ -408,9 +408,9 @@ class EventClient(Client):
         super().__init__(*args, **kwargs)
         self.triggers: List[Trigger] = []
         self.websocket: Optional[websockets.WebSocketClientProtocol] = None
-        self._ws_connected: bool = False
-        self._ws_lock = asyncio.Lock()
-        self._ws_send_queue: List[str] = []
+        self._connected: bool = False
+        self._lock = asyncio.Lock()
+        self._send_queue: List[str] = []
 
     def add_trigger(self, trigger: Trigger) -> None:
         """Add a new event trigger to the client.
@@ -429,10 +429,10 @@ class EventClient(Client):
         log.debug('Adding trigger %s', trigger)
         self.triggers.append(trigger)
         subscription = trigger.generate_subscription()
-        self._ws_send_queue.append(subscription)
+        self._send_queue.append(subscription)
         if self.websocket is None:
             log.debug('Websocket not connected, scheduling connection')
-            self.loop.create_task(self._ws_connect())
+            self.loop.create_task(self._connect())
 
     def find_trigger(self, name: str) -> Trigger:
         """Retrieve a registered event trigger by name.
@@ -487,7 +487,7 @@ class EventClient(Client):
         # If this was the only trigger registered, close the websocket
         if not keep_websocket_alive and not self.triggers:
             log.info('All triggers have been removed, closing websocket')
-            self.loop.create_task(self._ws_close())
+            self.loop.create_task(self.close())
 
     async def close(self) -> None:
         """Shut down the client.
@@ -498,9 +498,109 @@ class EventClient(Client):
         Call this to clean up before the client object is destroyed.
 
         """
-        log.info('Closing websocket connection')
-        await self._ws_close()
+        await self.disconnect()
         await super().close()
+
+    async def _connect(self) -> None:
+        """Connect to the websocket endpoint and process responses.
+
+        This will continuously loop until :meth:`Client.close()` is
+        called.
+
+        Add payloads to :attr`Client._send_queue` to schedule their
+        transmission.
+
+        Any payloads received will be passed to
+        :meth:`Client.dispatch()` for filtering and event dispatch.
+
+        """
+        await self._lock.acquire()
+        if self.websocket is not None:
+            return
+        log.info('Connecting to websocket endpoint...')
+        url = f'{ESS_ENDPOINT}?environment=ps2&service-id={self.service_id}'
+        async with websockets.connect(url) as websocket:
+            log.info(
+                'Connected to %s?environment=ps2&service-id=XXX', ESS_ENDPOINT)
+            self.websocket = websocket
+            self._lock.release()
+            # This loop will go on until this flag is unset, which is done by
+            # the close() method.
+            self._connected = True
+            while self._connected:
+                try:
+                    try:
+                        response = str(await asyncio.wait_for(
+                            self.websocket.recv(), timeout=0.25))
+                    except asyncio.TimeoutError:
+                        # NOTE: This inner timeout try block is used to ensure
+                        # the websocket will regularly check for messages in
+                        # the client's _send_queue even when no messages are
+                        # being received.
+                        # Without this, awaiting self.websocket.recv() would
+                        # block events from being sent if no responses are
+                        # received.
+                        pass
+                    else:
+                        log.debug('Received response: %s', response)
+                        self._process_payload(response)
+                    finally:
+                        if self._send_queue:
+                            msg = self._send_queue.pop(0)
+                            log.info('Sending message: %s', msg)
+                            await self.websocket.send(msg)
+                except websockets.exceptions.ConnectionClosed as err:
+                    log.warning('Connection was closed, reconnecting: %s', err)
+                    await self.disconnect()
+                    self.loop.create_task(self._connect())
+                    return
+
+    async def disconnect(self) -> None:
+        """Disconnect the websocket.
+
+        Unlike :meth:`EventClient.close()`, this does not affect the
+        HTTP session used by regular REST requests.
+
+        """
+        log.info('Closing websocket connection')
+        if self._connected:
+            self._connected = False
+            if self.websocket is not None and self.websocket.open:
+                await self.websocket.close()
+                self.websocket = None
+
+    def dispatch(self, event: Event) -> None:
+        """Dispatch an event to the appropriate event triggers.
+
+        This goes through the list of triggers registered for this
+        client and checks if the passed event matches the trigger's
+        requirements using :meth:`Trigger.check()`.
+
+        The call-backs for the matching triggers will be scheduled for
+        execution in the current event loop using
+        :meth:`asyncio.AbstractEventLoop.create_task()`.
+
+        If a trigger's :attr:`Trigger.single_shot` attribute is set to
+        True, the trigger will be removed from the client as soon as
+        its call-back has been scheduled for execution. This means that
+        when the action associated with a single-shot trigger runs, the
+        associated trigger will no longer be registered for the client.
+
+        Arguments:
+            event: An event received through the event stream.
+
+        """
+        # Check for appropriate triggers
+        for trigger in self.triggers:
+            log.debug('Checking trigger %s', trigger)
+            if trigger.check(event):
+                log.debug('Scheduling trigger %s', trigger)
+                self.loop.create_task(trigger.run(event))
+                # Single-shot triggers self-unload as soon as their call-back
+                # is scheduled
+                if trigger.single_shot:
+                    log.info('Removing single-shot trigger %s', trigger)
+                    self.remove_trigger(trigger)
 
     def trigger(self, event: Union[str, EventType],
                 *args: Union[str, EventType], name: Optional[str] = None,
@@ -541,6 +641,43 @@ class EventClient(Client):
             self.add_trigger(trigger)
 
         return wrapper
+
+    def _process_payload(self, response: str) -> None:
+        """Process a response payload received through the websocket.
+
+        This method filters out any non-event messages (such as service
+        messages, connection heartbeats or subscription echoes) before
+        passing any event payloads on to :meth:`Client.dispatch()`.
+
+        Arguments:
+            response: The plain text response received through the ESS.
+
+        """
+        data: CensusData = json.loads(response)
+        service = data.get('service')
+        # Event messages
+        if service == 'event':
+            if data['type'] == 'serviceMessage':
+                event = Event(data['payload'])
+                log.debug('%s event received, dispatching...', event.type)
+                self.dispatch(event)
+            elif data['type'] == 'heartbeat':
+                log.debug('Heartbeat received: %s', data)
+        # Subscription echo
+        elif 'subscription' in data:
+            log.debug('Subscription echo: %s', data)
+        # Service state
+        elif data.get('type') == 'serviceStateChange':
+            log.info('Service state change: %s', data)
+        # Push service
+        elif service == 'push':
+            log.debug('Ignoring push message: %s', data)
+        # Help message
+        elif 'send this for help' in data:
+            log.info('ESS welcome message: %s', data)
+        # Other
+        else:
+            log.warning('Unhandled message: %s', data)
 
     async def wait_for(self, trigger: Trigger, *args: Trigger,
                        timeout: Optional[float] = None) -> Event:
@@ -583,15 +720,15 @@ class EventClient(Client):
             # Remove the triggers. This suppresses any ValueErrors raised if
             # the trigger that fired was set to single shot mode.
             for trig in triggers:
-                # NOTE: Due to Client._ws_dispatch method being a normal method
-                # and not a coroutine, it will always remove the trigger
-                # itself before this call-back has any chance to fire (even
-                # through the call-back itself is synchronous, it is wrapped in
-                # the asynchronous Trigger.run() method, causing this delay).
+                # NOTE: Due to Client.dispatch method being a normal method and
+                # not a coroutine, it will always remove the trigger itself
+                # before this call-back has any chance to fire (even through
+                # the call-back itself is synchronous, it is wrapped in the
+                # asynchronous Trigger.run method, causing this delay).
                 #
                 # This means that by the time this code is executed, the
                 # trigger will already be removed, meaning that the ValueError
-                # will always be raised here and not in Client._ws_dispatch.
+                # will always be raised here and not in Client.dispatch.
                 with contextlib.suppress(ValueError):
                     self.remove_trigger(trig)
             # Set the flag to resume execution of the wait_for_event method
@@ -627,139 +764,7 @@ class EventClient(Client):
                 websocket connection's status. Defaults to ``0.05``.
 
         """
-        if self._ws_connected:
+        if self._connected:
             return
-        while not self._ws_connected:
+        while not self._connected:
             await asyncio.sleep(interval)
-
-    async def _ws_close(self) -> None:
-        """Close the websocket connection."""
-        if self._ws_connected:
-            self._ws_connected = False
-            if self.websocket is not None and self.websocket.open:
-                await self.websocket.close()
-                self.websocket = None
-
-    async def _ws_connect(self) -> None:
-        """Connect to the websocket endpoint and process responses.
-
-        This will continuously loop until :meth:`Client.close()` is
-        called.
-
-        Add payloads to :attr`Client._ws_send_queue` to schedule their
-        transmission.
-
-        Any payloads received will be passed to
-        :meth:`Client._ws_dispatch()` for filtering and event dispatch.
-
-        """
-        await self._ws_lock.acquire()
-        if self.websocket is not None:
-            return
-        log.info('Connecting to websocket endpoint...')
-        url = f'{ESS_ENDPOINT}?environment=ps2&service-id={self.service_id}'
-        async with websockets.connect(url) as websocket:
-            log.info(
-                'Connected to %s?environment=ps2&service-id=XXX', ESS_ENDPOINT)
-            self.websocket = websocket
-            self._ws_lock.release()
-            # This loop will go on until this flag is unset, which is done by
-            # the _ws_close() method.
-            self._ws_connected = True
-            while self._ws_connected:
-                try:
-                    try:
-                        response = str(await asyncio.wait_for(
-                            self.websocket.recv(), timeout=0.25))
-                    except asyncio.TimeoutError:
-                        # NOTE: This inner timeout try block is used to ensure
-                        # the websocket will regularly check for messages in
-                        # the client's _ws_send_queue even when no messages are
-                        # being received.
-                        # Without this, awaiting self.websocket.recv() would
-                        # block events from being sent if no responses are
-                        # received.
-                        pass
-                    else:
-                        log.debug('Received response: %s', response)
-                        self._ws_process(response)
-                    finally:
-                        if self._ws_send_queue:
-                            msg = self._ws_send_queue.pop(0)
-                            log.info('Sending message: %s', msg)
-                            await self.websocket.send(msg)
-                except websockets.exceptions.ConnectionClosed as err:
-                    log.warning('Connection was closed, reconnecting: %s', err)
-                    await self._ws_close()
-                    self.loop.create_task(self._ws_connect())
-                    return
-
-    def _ws_dispatch(self, event: Event) -> None:
-        """Dispatch an event to the appropriate event triggers.
-
-        This goes through the list of triggers registered for this
-        client and checks if the passed event matches the trigger's
-        requirements using :meth:`Trigger.check()`.
-
-        The call-backs for the matching triggers will be scheduled for
-        execution in the current event loop using
-        :meth:`asyncio.AbstractEventLoop.create_task()`.
-
-        If a trigger's :attr:`Trigger.single_shot` attribute is set to
-        True, the trigger will be removed from the client as soon as
-        its call-back has been scheduled for execution. This means that
-        when the action associated with a single-shot trigger runs, the
-        associated trigger will no longer be registered for the client.
-
-        Arguments:
-            event: An event received through the event stream.
-
-        """
-        # Check for appropriate triggers
-        for trigger in self.triggers:
-            log.debug('Checking trigger %s', trigger)
-            if trigger.check(event):
-                log.debug('Scheduling trigger %s', trigger)
-                self.loop.create_task(trigger.run(event))
-                # Single-shot triggers self-unload as soon as their call-back
-                # is scheduled
-                if trigger.single_shot:
-                    log.info('Removing single-shot trigger %s', trigger)
-                    self.remove_trigger(trigger)
-
-    def _ws_process(self, response: str) -> None:
-        """Process a response payload received through the websocket.
-
-        This method filters out any non-event messages (such as service
-        messages, connection heartbeats or subscription echoes) before
-        passing any event payloads on to :meth:`Client._ws_dispatch()`.
-
-        Arguments:
-            response: The plain text response received through the ESS.
-
-        """
-        data: CensusData = json.loads(response)
-        service = data.get('service')
-        # Event messages
-        if service == 'event':
-            if data['type'] == 'serviceMessage':
-                event = Event(data['payload'])
-                log.debug('%s event received, dispatching...', event.type)
-                self._ws_dispatch(event)
-            elif data['type'] == 'heartbeat':
-                log.debug('Heartbeat received: %s', data)
-        # Subscription echo
-        elif 'subscription' in data:
-            log.debug('Subscription echo: %s', data)
-        # Service state
-        elif data.get('type') == 'serviceStateChange':
-            log.info('Service state change: %s', data)
-        # Push service
-        elif service == 'push':
-            log.debug('Ignoring push message: %s', data)
-        # Help message
-        elif 'send this for help' in data:
-            log.info('ESS welcome message: %s', data)
-        # Other
-        else:
-            log.warning('Unhandled message: %s', data)
