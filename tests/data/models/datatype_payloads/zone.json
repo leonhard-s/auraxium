@@ -1,0 +1,152 @@
+{
+    "zone_list": [
+        {
+            "zone_id": "2",
+            "code": "Indar",
+            "hex_size": "200",
+            "name": {
+                "de": "Indar",
+                "en": "Indar",
+                "es": "Indar",
+                "fr": "Indar",
+                "it": "Indar",
+                "tr": "Indar"
+            },
+            "description": {
+                "de": "Der ausged\u00f6rrte Kontinent von Indar beheimatet mehrere Biome, die jeweils einzigartige Herausforderungen f\u00fcr ihre Kombattanten bieten.",
+                "en": "The arid continent of Indar is home to multiple biomes, providing unique challenges for its combatants.",
+                "es": "El \u00e1rido continente de Indar alberga una diversidad de biomas que suponen todo un reto para los soldados.",
+                "fr": "Le continent aride d'Indar regroupe de multiples biomes, proposant des d\u00e9fis uniques \u00e0 ses combattants.",
+                "it": "L'arido continente Indar ospita una variet\u00e0 di biomi e mette a disposizione dei soldati sfide davvero uniche.",
+                "tr": "Kurak Indar k\u0131tas\u0131 \u00e7ok \u00e7e\u015fitli bir co\u011frafyaya sahiptir. Otlu ovalar, kayal\u0131k kanyonlar ve deniz yata\u011f\u0131n\u0131n geni\u015f d\u00fczl\u00fckleri askerler i\u00e7in farkl\u0131 zorluklar\u0131 da beraberinde getirir."
+            }
+        },
+        {
+            "zone_id": "4",
+            "code": "Hossin",
+            "hex_size": "200",
+            "name": {
+                "de": "Hossin",
+                "en": "Hossin",
+                "es": "Hossin",
+                "fr": "Hossin",
+                "it": "Hossin",
+                "tr": "Hossin"
+            },
+            "description": {
+                "de": "Hossins dichte Mangroven- und Weidenw\u00e4lder bieten Schutz vor Luftangriffen zwischen ihren vielen S\u00fcmpfen und Hochl\u00e4ndern.",
+                "en": "Hossin's dense mangrove and willow forests provide air cover along its many swamps and highlands.",
+                "es": "El denso mangle y los bosques de sauce de Hossin proporcionan una protecci\u00f3n a\u00e9rea a lo largo de sus muchos pantanos y altiplanicies.",
+                "fr": "La dense mangrove et les for\u00eats de saule de Hossin offrent une couverture a\u00e9rienne le long de ses nombreux mar\u00e9cages et montagnes.",
+                "it": "Le fitte foreste di mangrovie e di salici a Hossin forniscono copertura aerea lungo le numerose paludi e altipiani.",
+                "tr": "Hossin's dense mangrove and willow forests provide air cover along its many swamps and highlands."
+            }
+        },
+        {
+            "zone_id": "6",
+            "code": "Amerish",
+            "hex_size": "200",
+            "name": {
+                "de": "Amerish",
+                "en": "Amerish",
+                "es": "Amerish",
+                "fr": "Amerish",
+                "it": "Amerish",
+                "tr": "Amerish"
+            },
+            "description": {
+                "de": "Die unz\u00e4hligen W\u00e4lder und felsigen Landschaften des \u00fcppigen Kontinents Amerish bieten ausreichend Deckung zwischen ihrem h\u00fcgeligen Terrain und den Gebirgsp\u00e4ssen.",
+                "en": "Amerish's lush groves and rocky outcroppings provide ample cover between its rolling plains and mountain passes.",
+                "es": "Las abundantes arboledas y los rocosos afloramientos de Amerish proporcionan una amplia cobertura entre sus ondulados valles y sus desfiladeros de monta\u00f1a.",
+                "fr": "Les bosquets touffus et les affleurements rocheux d'Amerish offrent une abondance d'abris entre ses plaines immenses et ses cols montagneux.",
+                "it": "I verdi boschi e gli affioramenti rocciosi di Amerish offrono ampie possibilit\u00e0 di rifugio tra pianure collinose e passi montani.",
+                "tr": "Amerish's lush groves and rocky outcroppings provide ample cover between its rolling plains and mountain passes."
+            }
+        },
+        {
+            "zone_id": "8",
+            "code": "Esamir",
+            "hex_size": "200",
+            "name": {
+                "de": "Esamir",
+                "en": "Esamir",
+                "es": "Esamir",
+                "fr": "Esamir",
+                "it": "Esamir",
+                "tr": "Esamir"
+            },
+            "description": {
+                "de": "Esamirs ausgedehnte, eisige W\u00fcste und die felsigen Berge bieten wenig Schutz vor Bedrohung aus der Luft.",
+                "en": "Esamir's expanses of frigid tundra and craggy mountains provide little cover from airborne threats.",
+                "es": "Las extensiones de tundra glacial y las escarpadas monta\u00f1as de Esamir cubren poco frente a las amenazas a\u00e9reas.",
+                "fr": "Les \u00e9tendues de tundra froide et les montagnes escarp\u00e9es d'Esamir offrent peu de protection contre les menaces a\u00e9riennes.",
+                "it": "Le distese di tundra ghiacciata e le montagne rocciose di Esamir forniscono ben poca protezione contro le minacce aeree.",
+                "tr": "Esamir's expanses of frigid tundra and craggy mountains provide little cover from airborne threats."
+            }
+        },
+        {
+            "zone_id": "96",
+            "code": "VR training zone (NC)",
+            "hex_size": "335",
+            "name": {
+                "de": "VR-Training",
+                "en": "VR Training",
+                "es": "Entrenamiento de RV",
+                "fr": "Entra\u00eenement en RV",
+                "it": "Addestramento RV",
+                "tr": "VR E\u011fitimi"
+            },
+            "description": {
+                "de": "Ezperimentiere mit allen Waffen, Fahrzeugen und Aufs\u00e4tzen in dem VR-Trainingssimulator deines Imperiums.",
+                "en": "Experiment with all weapons, vehicles and attachments in your empire's own VR Training simulator.",
+                "es": "Experimenta con todas las armas, veh\u00edculos y complementos en el simulador de RV de tu propio imperio.",
+                "fr": "Testez toutes les armes, tous les v\u00e9hicules et tous les accessoires dans le simulateur d'entra\u00eenement en RV de votre empire.",
+                "it": "Sperimenta con tutte le armi, veicoli e accessori usando il simulatore nell'addestramento virtuale del tuo impero.",
+                "tr": "Experiment with all weapons, vehicles and attachments in your empire's own VR Training simulator."
+            }
+        },
+        {
+            "zone_id": "97",
+            "code": "VR training zone (TR)",
+            "hex_size": "335",
+            "name": {
+                "de": "VR-Training",
+                "en": "VR Training",
+                "es": "Entrenamiento de RV",
+                "fr": "Entra\u00eenement en RV",
+                "it": "Addestramento RV",
+                "tr": "VR E\u011fitimi"
+            },
+            "description": {
+                "de": "Ezperimentiere mit allen Waffen, Fahrzeugen und Aufs\u00e4tzen in dem VR-Trainingssimulator deines Imperiums.",
+                "en": "Experiment with all weapons, vehicles and attachments in your empire's own VR Training simulator.",
+                "es": "Experimenta con todas las armas, veh\u00edculos y complementos en el simulador de RV de tu propio imperio.",
+                "fr": "Testez toutes les armes, tous les v\u00e9hicules et tous les accessoires dans le simulateur d'entra\u00eenement en RV de votre empire.",
+                "it": "Sperimenta con tutte le armi, veicoli e accessori usando il simulatore nell'addestramento virtuale del tuo impero.",
+                "tr": "Experiment with all weapons, vehicles and attachments in your empire's own VR Training simulator."
+            }
+        },
+        {
+            "zone_id": "98",
+            "code": "VR training zone (VS)",
+            "hex_size": "335",
+            "name": {
+                "de": "VR-Training",
+                "en": "VR Training",
+                "es": "Entrenamiento de RV",
+                "fr": "Entra\u00eenement en RV",
+                "it": "Addestramento RV",
+                "tr": "VR E\u011fitimi"
+            },
+            "description": {
+                "de": "Ezperimentiere mit allen Waffen, Fahrzeugen und Aufs\u00e4tzen in dem VR-Trainingssimulator deines Imperiums.",
+                "en": "Experiment with all weapons, vehicles and attachments in your empire's own VR Training simulator.",
+                "es": "Experimenta con todas las armas, veh\u00edculos y complementos en el simulador de RV de tu propio imperio.",
+                "fr": "Testez toutes les armes, tous les v\u00e9hicules et tous les accessoires dans le simulateur d'entra\u00eenement en RV de votre empire.",
+                "it": "Sperimenta con tutte le armi, veicoli e accessori usando il simulatore nell'addestramento virtuale del tuo impero.",
+                "tr": "Experiment with all weapons, vehicles and attachments in your empire's own VR Training simulator."
+            }
+        }
+    ],
+    "returned": 7
+}

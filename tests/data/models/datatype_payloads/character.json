@@ -1,0 +1,765 @@
+{
+    "character_list": [
+        {
+            "character_id": "5428010618013876561",
+            "name": {
+                "first": "bjacksonqa1",
+                "first_lower": "bjacksonqa1"
+            },
+            "faction_id": "2",
+            "head_id": "1",
+            "title_id": "0",
+            "times": {
+                "creation": "1353430582",
+                "creation_date": "2012-11-20 16:56:22.0",
+                "last_save": "1353430584",
+                "last_save_date": "2012-11-20 16:56:24.0",
+                "last_login": "1353430583",
+                "last_login_date": "2012-11-20 16:56:23.0",
+                "login_count": "1",
+                "minutes_played": "2"
+            },
+            "certs": {
+                "earned_points": "1000",
+                "gifted_points": "200",
+                "spent_points": "0",
+                "available_points": "1200",
+                "percent_to_next": "0.0"
+            },
+            "battle_rank": {
+                "percent_to_next": "0",
+                "value": "0"
+            },
+            "profile_id": "4",
+            "daily_ribbon": {
+                "count": "0",
+                "time": "NULL",
+                "date": "NULL"
+            },
+            "prestige_level": "0"
+        },
+        {
+            "character_id": "5428010618013876865",
+            "name": {
+                "first": "Scrote",
+                "first_lower": "scrote"
+            },
+            "faction_id": "3",
+            "head_id": "1",
+            "title_id": "0",
+            "times": {
+                "creation": "1353435610",
+                "creation_date": "2012-11-20 18:20:10.0",
+                "last_save": "1353435918",
+                "last_save_date": "2012-11-20 18:25:18.0",
+                "last_login": "1353435611",
+                "last_login_date": "2012-11-20 18:20:11.0",
+                "login_count": "1",
+                "minutes_played": "26"
+            },
+            "certs": {
+                "earned_points": "0",
+                "gifted_points": "0",
+                "spent_points": "0",
+                "available_points": "0",
+                "percent_to_next": "0.0"
+            },
+            "battle_rank": {
+                "percent_to_next": "0",
+                "value": "0"
+            },
+            "profile_id": "12",
+            "daily_ribbon": {
+                "count": "0",
+                "time": "NULL",
+                "date": "NULL"
+            },
+            "prestige_level": "0"
+        },
+        {
+            "character_id": "5428010618014007649",
+            "name": {
+                "first": "bjacksonqa2",
+                "first_lower": "bjacksonqa2"
+            },
+            "faction_id": "2",
+            "head_id": "1",
+            "title_id": "0",
+            "times": {
+                "creation": "1353430744",
+                "creation_date": "2012-11-20 16:59:04.0",
+                "last_save": "1353430746",
+                "last_save_date": "2012-11-20 16:59:06.0",
+                "last_login": "1353430745",
+                "last_login_date": "2012-11-20 16:59:05.0",
+                "login_count": "1",
+                "minutes_played": "2"
+            },
+            "certs": {
+                "earned_points": "1000",
+                "gifted_points": "200",
+                "spent_points": "0",
+                "available_points": "1200",
+                "percent_to_next": "0.0"
+            },
+            "battle_rank": {
+                "percent_to_next": "0",
+                "value": "0"
+            },
+            "profile_id": "4",
+            "daily_ribbon": {
+                "count": "0",
+                "time": "NULL",
+                "date": "NULL"
+            },
+            "prestige_level": "0"
+        },
+        {
+            "character_id": "5428010618014007953",
+            "name": {
+                "first": "cakessonTR",
+                "first_lower": "cakessontr"
+            },
+            "faction_id": "3",
+            "head_id": "1",
+            "title_id": "0",
+            "times": {
+                "creation": "1353435559",
+                "creation_date": "2012-11-20 18:19:19.0",
+                "last_save": "1353435561",
+                "last_save_date": "2012-11-20 18:19:21.0",
+                "last_login": "1353435560",
+                "last_login_date": "2012-11-20 18:19:20.0",
+                "login_count": "1",
+                "minutes_played": "1"
+            },
+            "certs": {
+                "earned_points": "0",
+                "gifted_points": "0",
+                "spent_points": "0",
+                "available_points": "0",
+                "percent_to_next": "0.0"
+            },
+            "battle_rank": {
+                "percent_to_next": "0",
+                "value": "0"
+            },
+            "profile_id": "12",
+            "daily_ribbon": {
+                "count": "0",
+                "time": "NULL",
+                "date": "NULL"
+            },
+            "prestige_level": "0"
+        },
+        {
+            "character_id": "5428010618014007985",
+            "name": {
+                "first": "sirGalahad78TR",
+                "first_lower": "sirgalahad78tr"
+            },
+            "faction_id": "3",
+            "head_id": "1",
+            "title_id": "0",
+            "times": {
+                "creation": "1353435571",
+                "creation_date": "2012-11-20 18:19:31.0",
+                "last_save": "1353435572",
+                "last_save_date": "2012-11-20 18:19:32.0",
+                "last_login": "1353435572",
+                "last_login_date": "2012-11-20 18:19:32.0",
+                "login_count": "1",
+                "minutes_played": "1"
+            },
+            "certs": {
+                "earned_points": "0",
+                "gifted_points": "0",
+                "spent_points": "0",
+                "available_points": "0",
+                "percent_to_next": "0.0"
+            },
+            "battle_rank": {
+                "percent_to_next": "0",
+                "value": "0"
+            },
+            "profile_id": "12",
+            "daily_ribbon": {
+                "count": "0",
+                "time": "NULL",
+                "date": "NULL"
+            },
+            "prestige_level": "0"
+        },
+        {
+            "character_id": "5428010618014008081",
+            "name": {
+                "first": "Zinn",
+                "first_lower": "zinn"
+            },
+            "faction_id": "1",
+            "head_id": "6",
+            "title_id": "0",
+            "times": {
+                "creation": "1353438286",
+                "creation_date": "2012-11-20 19:04:46.0",
+                "last_save": "1353440136",
+                "last_save_date": "2012-11-20 19:35:36.0",
+                "last_login": "1353440135",
+                "last_login_date": "2012-11-20 19:35:35.0",
+                "login_count": "2",
+                "minutes_played": "16"
+            },
+            "certs": {
+                "earned_points": "0",
+                "gifted_points": "0",
+                "spent_points": "0",
+                "available_points": "0",
+                "percent_to_next": "0.0"
+            },
+            "battle_rank": {
+                "percent_to_next": "0",
+                "value": "0"
+            },
+            "profile_id": "19",
+            "daily_ribbon": {
+                "count": "0",
+                "time": "NULL",
+                "date": "NULL"
+            },
+            "prestige_level": "0"
+        },
+        {
+            "character_id": "5428010618014138705",
+            "name": {
+                "first": "adw",
+                "first_lower": "adw"
+            },
+            "faction_id": "2",
+            "head_id": "2",
+            "title_id": "0",
+            "times": {
+                "creation": "1353429267",
+                "creation_date": "2012-11-20 16:34:27.0",
+                "last_save": "1353429269",
+                "last_save_date": "2012-11-20 16:34:29.0",
+                "last_login": "1353429268",
+                "last_login_date": "2012-11-20 16:34:28.0",
+                "login_count": "1",
+                "minutes_played": "1"
+            },
+            "certs": {
+                "earned_points": "0",
+                "gifted_points": "0",
+                "spent_points": "0",
+                "available_points": "0",
+                "percent_to_next": "0.0"
+            },
+            "battle_rank": {
+                "percent_to_next": "0",
+                "value": "0"
+            },
+            "profile_id": "4",
+            "daily_ribbon": {
+                "count": "0",
+                "time": "NULL",
+                "date": "NULL"
+            },
+            "prestige_level": "0"
+        },
+        {
+            "character_id": "5428010618014139233",
+            "name": {
+                "first": "Nadev",
+                "first_lower": "nadev"
+            },
+            "faction_id": "2",
+            "head_id": "1",
+            "title_id": "88",
+            "times": {
+                "creation": "1353434414",
+                "creation_date": "2012-11-20 18:00:14.0",
+                "last_save": "1555773748",
+                "last_save_date": "2019-04-20 15:22:28.0",
+                "last_login": "1555772819",
+                "last_login_date": "2019-04-20 15:06:59.0",
+                "login_count": "475",
+                "minutes_played": "30738"
+            },
+            "certs": {
+                "earned_points": "43559",
+                "gifted_points": "2766",
+                "spent_points": "45831",
+                "available_points": "494",
+                "percent_to_next": "0.846138888877"
+            },
+            "battle_rank": {
+                "percent_to_next": "41",
+                "value": "74"
+            },
+            "profile_id": "7",
+            "daily_ribbon": {
+                "count": "0",
+                "time": "1555736400",
+                "date": "2019-04-20 05:00:00.0"
+            },
+            "prestige_level": "0"
+        },
+        {
+            "character_id": "5428010618014139265",
+            "name": {
+                "first": "LevelCap",
+                "first_lower": "levelcap"
+            },
+            "faction_id": "1",
+            "head_id": "1",
+            "title_id": "0",
+            "times": {
+                "creation": "1353435474",
+                "creation_date": "2012-11-20 18:17:54.0",
+                "last_save": "1557101729",
+                "last_save_date": "2019-05-06 00:15:29.0",
+                "last_login": "1557085770",
+                "last_login_date": "2019-05-05 19:49:30.0",
+                "login_count": "170",
+                "minutes_played": "9713"
+            },
+            "certs": {
+                "earned_points": "14751",
+                "gifted_points": "516",
+                "spent_points": "13617",
+                "available_points": "1650",
+                "percent_to_next": "0.458055555556"
+            },
+            "battle_rank": {
+                "percent_to_next": "19",
+                "value": "52"
+            },
+            "profile_id": "19",
+            "daily_ribbon": {
+                "count": "5",
+                "time": "1557014400",
+                "date": "2019-05-05 00:00:00.0"
+            },
+            "prestige_level": "0"
+        },
+        {
+            "character_id": "5428010618014139329",
+            "name": {
+                "first": "Thronghoul",
+                "first_lower": "thronghoul"
+            },
+            "faction_id": "3",
+            "head_id": "1",
+            "title_id": "23",
+            "times": {
+                "creation": "1353435666",
+                "creation_date": "2012-11-20 18:21:06.0",
+                "last_save": "1381634903",
+                "last_save_date": "2013-10-13 03:28:23.0",
+                "last_login": "1381634779",
+                "last_login_date": "2013-10-13 03:26:19.0",
+                "login_count": "501",
+                "minutes_played": "40405"
+            },
+            "certs": {
+                "earned_points": "40601",
+                "gifted_points": "9846",
+                "spent_points": "49160",
+                "available_points": "1287",
+                "percent_to_next": "0.9021111111087"
+            },
+            "battle_rank": {
+                "percent_to_next": "60",
+                "value": "76"
+            },
+            "profile_id": "15",
+            "daily_ribbon": {
+                "count": "0",
+                "time": "1381561200",
+                "date": "2013-10-12 07:00:00.0"
+            },
+            "prestige_level": "0"
+        },
+        {
+            "character_id": "5428010618014139361",
+            "name": {
+                "first": "Bravetoaster",
+                "first_lower": "bravetoaster"
+            },
+            "faction_id": "2",
+            "head_id": "1",
+            "title_id": "89",
+            "times": {
+                "creation": "1353435816",
+                "creation_date": "2012-11-20 18:23:36.0",
+                "last_save": "1437191686",
+                "last_save_date": "2015-07-18 03:54:46.0",
+                "last_login": "1437190581",
+                "last_login_date": "2015-07-18 03:36:21.0",
+                "login_count": "86",
+                "minutes_played": "5489"
+            },
+            "certs": {
+                "earned_points": "2033",
+                "gifted_points": "220",
+                "spent_points": "2093",
+                "available_points": "160",
+                "percent_to_next": "0.0146388888891"
+            },
+            "battle_rank": {
+                "percent_to_next": "46",
+                "value": "24"
+            },
+            "profile_id": "7",
+            "daily_ribbon": {
+                "count": "3",
+                "time": "1437105600",
+                "date": "2015-07-17 04:00:00.0"
+            },
+            "prestige_level": "0"
+        },
+        {
+            "character_id": "5428010618014139393",
+            "name": {
+                "first": "EZero",
+                "first_lower": "ezero"
+            },
+            "faction_id": "1",
+            "head_id": "3",
+            "title_id": "52",
+            "times": {
+                "creation": "1353435872",
+                "creation_date": "2012-11-20 18:24:32.0",
+                "last_save": "1445681846",
+                "last_save_date": "2015-10-24 10:17:26.0",
+                "last_login": "1445672659",
+                "last_login_date": "2015-10-24 07:44:19.0",
+                "login_count": "500",
+                "minutes_played": "47461"
+            },
+            "certs": {
+                "earned_points": "78004",
+                "gifted_points": "2964",
+                "spent_points": "76619",
+                "available_points": "4349",
+                "percent_to_next": "0.9002500000001"
+            },
+            "battle_rank": {
+                "percent_to_next": "55",
+                "value": "99"
+            },
+            "profile_id": "19",
+            "daily_ribbon": {
+                "count": "5",
+                "time": "1445670000",
+                "date": "2015-10-24 07:00:00.0"
+            },
+            "prestige_level": "0"
+        },
+        {
+            "character_id": "5428010618014139489",
+            "name": {
+                "first": "irFunk",
+                "first_lower": "irfunk"
+            },
+            "faction_id": "1",
+            "head_id": "1",
+            "title_id": "0",
+            "times": {
+                "creation": "1353436164",
+                "creation_date": "2012-11-20 18:29:24.0",
+                "last_save": "1376535373",
+                "last_save_date": "2013-08-15 02:56:13.0",
+                "last_login": "1376534055",
+                "last_login_date": "2013-08-15 02:34:15.0",
+                "login_count": "86",
+                "minutes_played": "5772"
+            },
+            "certs": {
+                "earned_points": "3249",
+                "gifted_points": "200",
+                "spent_points": "3055",
+                "available_points": "394",
+                "percent_to_next": "0.002083333333333"
+            },
+            "battle_rank": {
+                "percent_to_next": "15",
+                "value": "29"
+            },
+            "profile_id": "20",
+            "daily_ribbon": {
+                "count": "0",
+                "time": "1376463600",
+                "date": "2013-08-14 07:00:00.0"
+            },
+            "prestige_level": "0"
+        },
+        {
+            "character_id": "5428010618014139553",
+            "name": {
+                "first": "AKA",
+                "first_lower": "aka"
+            },
+            "faction_id": "1",
+            "head_id": "1",
+            "title_id": "0",
+            "times": {
+                "creation": "1353436232",
+                "creation_date": "2012-11-20 18:30:32.0",
+                "last_save": "1353513228",
+                "last_save_date": "2012-11-21 15:53:48.0",
+                "last_login": "1353513228",
+                "last_login_date": "2012-11-21 15:53:48.0",
+                "login_count": "10",
+                "minutes_played": "105"
+            },
+            "certs": {
+                "earned_points": "45",
+                "gifted_points": "0",
+                "spent_points": "0",
+                "available_points": "45",
+                "percent_to_next": "0.0"
+            },
+            "battle_rank": {
+                "percent_to_next": "0",
+                "value": "0"
+            },
+            "profile_id": "22",
+            "daily_ribbon": {
+                "count": "0",
+                "time": "NULL",
+                "date": "NULL"
+            },
+            "prestige_level": "0"
+        },
+        {
+            "character_id": "5428010618014139585",
+            "name": {
+                "first": "StefanDefqon1",
+                "first_lower": "stefandefqon1"
+            },
+            "faction_id": "1",
+            "head_id": "1",
+            "title_id": "90",
+            "times": {
+                "creation": "1353436282",
+                "creation_date": "2012-11-20 18:31:22.0",
+                "last_save": "1590871059",
+                "last_save_date": "2020-05-30 20:37:39.0",
+                "last_login": "1590870005",
+                "last_login_date": "2020-05-30 20:20:05.0",
+                "login_count": "157",
+                "minutes_played": "17670"
+            },
+            "certs": {
+                "earned_points": "14874",
+                "gifted_points": "836",
+                "spent_points": "15691",
+                "available_points": "19",
+                "percent_to_next": "0.3093888888978"
+            },
+            "battle_rank": {
+                "percent_to_next": "10",
+                "value": "52"
+            },
+            "profile_id": "17",
+            "daily_ribbon": {
+                "count": "1",
+                "time": "1590796800",
+                "date": "2020-05-30 00:00:00.0"
+            },
+            "prestige_level": "0"
+        },
+        {
+            "character_id": "5428010618014139617",
+            "name": {
+                "first": "ScruffyHusky",
+                "first_lower": "scruffyhusky"
+            },
+            "faction_id": "1",
+            "head_id": "1",
+            "title_id": "89",
+            "times": {
+                "creation": "1353436404",
+                "creation_date": "2012-11-20 18:33:24.0",
+                "last_save": "1371205401",
+                "last_save_date": "2013-06-14 10:23:21.0",
+                "last_login": "1371201587",
+                "last_login_date": "2013-06-14 09:19:47.0",
+                "login_count": "10",
+                "minutes_played": "715"
+            },
+            "certs": {
+                "earned_points": "245",
+                "gifted_points": "0",
+                "spent_points": "170",
+                "available_points": "75",
+                "percent_to_next": "0.1751666666667"
+            },
+            "battle_rank": {
+                "percent_to_next": "34",
+                "value": "9"
+            },
+            "profile_id": "21",
+            "daily_ribbon": {
+                "count": "2",
+                "time": "1371193200",
+                "date": "2013-06-14 07:00:00.0"
+            },
+            "prestige_level": "0"
+        },
+        {
+            "character_id": "5428010618014139713",
+            "name": {
+                "first": "Ranylm",
+                "first_lower": "ranylm"
+            },
+            "faction_id": "1",
+            "head_id": "1",
+            "title_id": "0",
+            "times": {
+                "creation": "1353436481",
+                "creation_date": "2012-11-20 18:34:41.0",
+                "last_save": "1355527585",
+                "last_save_date": "2012-12-14 23:26:25.0",
+                "last_login": "1355527531",
+                "last_login_date": "2012-12-14 23:25:31.0",
+                "login_count": "12",
+                "minutes_played": "1155"
+            },
+            "certs": {
+                "earned_points": "619",
+                "gifted_points": "0",
+                "spent_points": "230",
+                "available_points": "389",
+                "percent_to_next": "0.0"
+            },
+            "battle_rank": {
+                "percent_to_next": "0",
+                "value": "0"
+            },
+            "profile_id": "21",
+            "daily_ribbon": {
+                "count": "0",
+                "time": "NULL",
+                "date": "NULL"
+            },
+            "prestige_level": "0"
+        },
+        {
+            "character_id": "5428010618014139745",
+            "name": {
+                "first": "Blackdeath",
+                "first_lower": "blackdeath"
+            },
+            "faction_id": "3",
+            "head_id": "1",
+            "title_id": "0",
+            "times": {
+                "creation": "1353436550",
+                "creation_date": "2012-11-20 18:35:50.0",
+                "last_save": "1518465535",
+                "last_save_date": "2018-02-12 19:58:55.0",
+                "last_login": "1518465361",
+                "last_login_date": "2018-02-12 19:56:01.0",
+                "login_count": "203",
+                "minutes_played": "2129"
+            },
+            "certs": {
+                "earned_points": "11794",
+                "gifted_points": "48",
+                "spent_points": "9659",
+                "available_points": "2183",
+                "percent_to_next": "0.7987777777755"
+            },
+            "battle_rank": {
+                "percent_to_next": "60",
+                "value": "30"
+            },
+            "profile_id": "12",
+            "daily_ribbon": {
+                "count": "0",
+                "time": "1518422400",
+                "date": "2018-02-12 08:00:00.0"
+            },
+            "prestige_level": "0"
+        },
+        {
+            "character_id": "5428010618014139793",
+            "name": {
+                "first": "Eliteice",
+                "first_lower": "eliteice"
+            },
+            "faction_id": "2",
+            "head_id": "2",
+            "title_id": "91",
+            "times": {
+                "creation": "1353436607",
+                "creation_date": "2012-11-20 18:36:47.0",
+                "last_save": "1599323573",
+                "last_save_date": "2020-09-05 16:32:53.0",
+                "last_login": "1599321479",
+                "last_login_date": "2020-09-05 15:57:59.0",
+                "login_count": "131",
+                "minutes_played": "5970"
+            },
+            "certs": {
+                "earned_points": "4083",
+                "gifted_points": "354",
+                "spent_points": "3321",
+                "available_points": "1116",
+                "percent_to_next": "0.7511388888904"
+            },
+            "battle_rank": {
+                "percent_to_next": "85",
+                "value": "29"
+            },
+            "profile_id": "7",
+            "daily_ribbon": {
+                "count": "5",
+                "time": "1599264000",
+                "date": "2020-09-05 00:00:00.0"
+            },
+            "prestige_level": "0"
+        },
+        {
+            "character_id": "5428010618014139825",
+            "name": {
+                "first": "MoonliteGenudine",
+                "first_lower": "moonlitegenudine"
+            },
+            "faction_id": "3",
+            "head_id": "5",
+            "title_id": "87",
+            "times": {
+                "creation": "1353436674",
+                "creation_date": "2012-11-20 18:37:54.0",
+                "last_save": "1353532643",
+                "last_save_date": "2012-11-21 21:17:23.0",
+                "last_login": "1353532642",
+                "last_login_date": "2012-11-21 21:17:22.0",
+                "login_count": "2",
+                "minutes_played": "5"
+            },
+            "certs": {
+                "earned_points": "13",
+                "gifted_points": "0",
+                "spent_points": "0",
+                "available_points": "13",
+                "percent_to_next": "0.0"
+            },
+            "battle_rank": {
+                "percent_to_next": "0",
+                "value": "0"
+            },
+            "profile_id": "12",
+            "daily_ribbon": {
+                "count": "0",
+                "time": "NULL",
+                "date": "NULL"
+            },
+            "prestige_level": "0"
+        }
+    ],
+    "returned": 20
+}

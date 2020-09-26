@@ -1,0 +1,225 @@
+{
+    "item_category_list": [
+        {
+            "item_category_id": "2",
+            "name": {
+                "de": "Messer",
+                "en": "Knife",
+                "es": "Cuchillo",
+                "fr": "Couteau",
+                "it": "Coltello",
+                "tr": "B\u0131\u00e7ak"
+            }
+        },
+        {
+            "item_category_id": "3",
+            "name": {
+                "de": "Pistole",
+                "en": "Pistol",
+                "es": "Pistola",
+                "fr": "Pistolet",
+                "it": "Pistola",
+                "tr": "Tabanca"
+            }
+        },
+        {
+            "item_category_id": "4",
+            "name": {
+                "de": "Schrotflinte",
+                "en": "Shotgun",
+                "es": "Escopeta",
+                "fr": "Fusil",
+                "it": "Fucile",
+                "tr": "Pompal\u0131 T\u00fcfek"
+            }
+        },
+        {
+            "item_category_id": "5",
+            "name": {
+                "de": "MP",
+                "en": "SMG",
+                "es": "Subfusil",
+                "fr": "Mitraillette",
+                "it": "Mitra",
+                "tr": "Makineli Tabanca"
+            }
+        },
+        {
+            "item_category_id": "6",
+            "name": {
+                "de": "LMG",
+                "en": "LMG",
+                "es": "Ametralladora ligera",
+                "fr": "Mitrailleuse l\u00e9g\u00e8re",
+                "it": "Mitragliatrice leggera",
+                "tr": "HMT"
+            }
+        },
+        {
+            "item_category_id": "7",
+            "name": {
+                "de": "Sturmgewehr",
+                "en": "Assault Rifle",
+                "es": "Rifle de asalto",
+                "fr": "Fusil d'assaut",
+                "it": "Fucile d'assalto",
+                "tr": "Taarruz T\u00fcfe\u011fi"
+            }
+        },
+        {
+            "item_category_id": "8",
+            "name": {
+                "de": "Karabiner",
+                "en": "Carbine",
+                "es": "Carabina",
+                "fr": "Carabine",
+                "it": "Carabina",
+                "tr": "Karabina"
+            }
+        },
+        {
+            "item_category_id": "9",
+            "name": {
+                "de": "PA MAX-Einheit (links)",
+                "en": "AV MAX (Left)",
+                "es": "MAX AV (izda.)",
+                "fr": "XAM AV (Gauche)",
+                "it": "AV MAX (sinistra)",
+                "tr": "AV MAX (Left)"
+            }
+        },
+        {
+            "item_category_id": "10",
+            "name": {
+                "de": "IA MAX-Einheit (links)",
+                "en": "AI MAX (Left)",
+                "es": "MAX antiinfanter\u00eda (izda.)",
+                "fr": "XAM IA (Gauche)",
+                "it": "IA MAX (sinistra)",
+                "tr": "AI MAX (Left)"
+            }
+        },
+        {
+            "item_category_id": "11",
+            "name": {
+                "de": "Scharfsch\u00fctzengewehr",
+                "en": "Sniper Rifle",
+                "es": "Rifle de francotirador",
+                "fr": "Fusil de pr\u00e9cision",
+                "it": "Fucile di precisione",
+                "tr": "Keskin Ni\u015fanc\u0131 T\u00fcfe\u011fi"
+            }
+        },
+        {
+            "item_category_id": "12",
+            "name": {
+                "de": "Scout-Gewehr",
+                "en": "Scout Rifle",
+                "es": "Rifle Scout",
+                "fr": "Fusil d'\u00e9claireur",
+                "it": "Fucile da ricognizione",
+                "tr": "G\u00f6zc\u00fc T\u00fcfe\u011fi"
+            }
+        },
+        {
+            "item_category_id": "13",
+            "name": {
+                "de": "Raketenwerfer",
+                "en": "Rocket Launcher",
+                "es": "Lanzacohetes",
+                "fr": "Lance-roquettes",
+                "it": "Lanciarazzi",
+                "tr": "Roketatar"
+            }
+        },
+        {
+            "item_category_id": "14",
+            "name": {
+                "de": "Schwere Waffe",
+                "en": "Heavy Weapon",
+                "es": "Arma pesada",
+                "fr": "Arme lourde",
+                "it": "Arma pesante",
+                "tr": "A\u011f\u0131r Silah"
+            }
+        },
+        {
+            "item_category_id": "15",
+            "name": {
+                "de": "MAX-Flammenwerfer",
+                "en": "Flamethrower MAX",
+                "es": "Lanzallamas MAX",
+                "fr": "MAX Lance-flammes",
+                "it": "Lanciafiamme MAX",
+                "tr": "MAX Alev Silah\u0131"
+            }
+        },
+        {
+            "item_category_id": "16",
+            "name": {
+                "de": "Flak MAX-Einheit",
+                "en": "Flak MAX",
+                "es": "Ca\u00f1\u00f3n antia\u00e9reo MAX",
+                "fr": "XAM de DCA",
+                "it": "Flak MAX",
+                "tr": "MAX U\u00e7aksavar"
+            }
+        },
+        {
+            "item_category_id": "17",
+            "name": {
+                "de": "Granate",
+                "en": "Grenade",
+                "es": "Granada",
+                "fr": "Grenade",
+                "it": "Granata",
+                "tr": "El Bombas\u0131"
+            }
+        },
+        {
+            "item_category_id": "18",
+            "name": {
+                "de": "Sprengstoff",
+                "en": "Explosive",
+                "es": "Explosivo",
+                "fr": "Explosif",
+                "it": "Esplosivo",
+                "tr": "Patlay\u0131c\u0131"
+            }
+        },
+        {
+            "item_category_id": "19",
+            "name": {
+                "de": "Kampfgewehr",
+                "en": "Battle Rifle",
+                "es": "Rifle de asalto",
+                "fr": "Fusil de combat",
+                "it": "Fucile da battaglia",
+                "tr": "Sava\u015f T\u00fcfe\u011fi"
+            }
+        },
+        {
+            "item_category_id": "20",
+            "name": {
+                "de": "FA MAX-Einheit (rechts)",
+                "en": "AA MAX (Right)",
+                "es": "AA MAX (dcha.)",
+                "fr": "XAM anti-a\u00e9rien (Droite)",
+                "it": "MAX AA (destra)",
+                "tr": "AA MAX (Right)"
+            }
+        },
+        {
+            "item_category_id": "21",
+            "name": {
+                "de": "PA MAX-Einheit (rechts)",
+                "en": "AV MAX (Right)",
+                "es": "MAX AV (dcha.)",
+                "fr": "XAM AV (Droite)",
+                "it": "AV MAX (destra)",
+                "tr": "AV MAX (Right)"
+            }
+        }
+    ],
+    "returned": 20
+}

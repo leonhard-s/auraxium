@@ -1,0 +1,265 @@
+{
+    "region_list": [
+        {
+            "region_id": "2101",
+            "zone_id": "2",
+            "initial_faction_id": "2",
+            "name": {
+                "de": "Hvar",
+                "en": "Hvar",
+                "es": "Hvar",
+                "fr": "Hvar",
+                "it": "Hvar",
+                "tr": "Hvar"
+            }
+        },
+        {
+            "region_id": "2102",
+            "zone_id": "2",
+            "initial_faction_id": "1",
+            "name": {
+                "de": "Mao",
+                "en": "Mao",
+                "es": "Mao",
+                "fr": "Mao",
+                "it": "Mao",
+                "tr": "Mao"
+            }
+        },
+        {
+            "region_id": "2103",
+            "zone_id": "2",
+            "initial_faction_id": "2",
+            "name": {
+                "de": "Allatum",
+                "en": "Allatum",
+                "es": "Allatum",
+                "fr": "Allatum",
+                "it": "Allatum",
+                "tr": "Allatum"
+            }
+        },
+        {
+            "region_id": "2104",
+            "zone_id": "2",
+            "initial_faction_id": "1",
+            "name": {
+                "de": "Saurva",
+                "en": "Saurva",
+                "es": "Saurva",
+                "fr": "Saurva",
+                "it": "Saurva",
+                "tr": "Saurva"
+            }
+        },
+        {
+            "region_id": "2105",
+            "zone_id": "2",
+            "initial_faction_id": "2",
+            "name": {
+                "de": "Peris",
+                "en": "Peris",
+                "es": "Peris",
+                "fr": "Peris",
+                "it": "Peris",
+                "tr": "Peris"
+            }
+        },
+        {
+            "region_id": "2106",
+            "zone_id": "2",
+            "initial_faction_id": "3",
+            "name": {
+                "de": "Rashnu",
+                "en": "Rashnu",
+                "es": "Rashnu",
+                "fr": "Rashnu",
+                "it": "Rashnu",
+                "tr": "Rashnu"
+            }
+        },
+        {
+            "region_id": "2107",
+            "zone_id": "2",
+            "initial_faction_id": "1",
+            "name": {
+                "de": "Dahaka",
+                "en": "Dahaka",
+                "es": "Dahaka",
+                "fr": "Dahaka",
+                "it": "Dahaka",
+                "tr": "Dahaka"
+            }
+        },
+        {
+            "region_id": "2108",
+            "zone_id": "2",
+            "initial_faction_id": "3",
+            "name": {
+                "de": "Tawrich",
+                "en": "Tawrich",
+                "es": "Tawrich",
+                "fr": "Tawrich",
+                "it": "Tawrich",
+                "tr": "Tawrich"
+            }
+        },
+        {
+            "region_id": "2109",
+            "zone_id": "2",
+            "initial_faction_id": "3",
+            "name": {
+                "de": "Zurvan",
+                "en": "Zurvan",
+                "es": "Zurvan",
+                "fr": "Zurvan",
+                "it": "Zurvan",
+                "tr": "Zurvan"
+            }
+        },
+        {
+            "region_id": "2201",
+            "zone_id": "2",
+            "initial_faction_id": "2",
+            "name": {
+                "de": "N\u00f6rdliches Warptor - Indar",
+                "en": "Indar Northern Warpgate",
+                "es": "Indar Northern Warpgate",
+                "fr": "Indar Northern Warpgate",
+                "it": "Indar Northern Warpgate",
+                "tr": "Indar Northern Warpgate"
+            }
+        },
+        {
+            "region_id": "2202",
+            "zone_id": "2",
+            "initial_faction_id": "3",
+            "name": {
+                "de": "Westliches Warptor - Indar",
+                "en": "Indar Western Warpgate",
+                "es": "Indar Western Warpgate",
+                "fr": "Indar Western Warpgate",
+                "it": "Indar Western Warpgate",
+                "tr": "Indar Western Warpgate"
+            }
+        },
+        {
+            "region_id": "2203",
+            "zone_id": "2",
+            "initial_faction_id": "1",
+            "name": {
+                "de": "\u00d6stliches Warptor - Indar",
+                "en": "Indar Eastern Warpgate",
+                "es": "Indar Eastern Warpgate",
+                "fr": "Indar Eastern Warpgate",
+                "it": "Indar Eastern Warpgate",
+                "tr": "Indar Eastern Warpgate"
+            }
+        },
+        {
+            "region_id": "2301",
+            "zone_id": "2",
+            "initial_faction_id": "1",
+            "name": {
+                "de": "Camp Connery",
+                "en": "Camp Connery",
+                "es": "Camp Connery",
+                "fr": "Camp Connery",
+                "it": "Camp Connery",
+                "tr": "Camp Connery"
+            }
+        },
+        {
+            "region_id": "2302",
+            "zone_id": "2",
+            "initial_faction_id": "1",
+            "name": {
+                "de": "Camp Waterson",
+                "en": "Camp Waterson",
+                "es": "Camp Waterson",
+                "fr": "Camp Waterson",
+                "it": "Camp Waterson",
+                "tr": "Camp Waterson"
+            }
+        },
+        {
+            "region_id": "2303",
+            "zone_id": "2",
+            "initial_faction_id": "1",
+            "name": {
+                "de": "Indar Excavation Site",
+                "en": "Indar Excavation Site",
+                "es": "Indar Excavation Site",
+                "fr": "Indar Excavation Site",
+                "it": "Indar Excavation Site",
+                "tr": "Indar Excavation Site"
+            }
+        },
+        {
+            "region_id": "2304",
+            "zone_id": "2",
+            "initial_faction_id": "1",
+            "name": {
+                "de": "J908 Impact Site",
+                "en": "J908 Impact Site",
+                "es": "J908 Impact Site",
+                "fr": "J908 Impact Site",
+                "it": "J908 Impact Site",
+                "tr": "J908 Impact Site"
+            }
+        },
+        {
+            "region_id": "2305",
+            "zone_id": "2",
+            "initial_faction_id": "3",
+            "name": {
+                "de": "Crimson Bluff Tower",
+                "en": "Crimson Bluff Tower",
+                "es": "Crimson Bluff Tower",
+                "fr": "Crimson Bluff Tower",
+                "it": "Crimson Bluff Tower",
+                "tr": "Crimson Bluff Tower"
+            }
+        },
+        {
+            "region_id": "2306",
+            "zone_id": "2",
+            "initial_faction_id": "2",
+            "name": {
+                "de": "The Crown",
+                "en": "The Crown",
+                "es": "The Crown",
+                "fr": "The Crown",
+                "it": "The Crown",
+                "tr": "Crown"
+            }
+        },
+        {
+            "region_id": "2307",
+            "zone_id": "2",
+            "initial_faction_id": "2",
+            "name": {
+                "de": "Crossroads Watchtower",
+                "en": "Crossroads Watchtower",
+                "es": "Crossroads Watchtower",
+                "fr": "Crossroads Watchtower",
+                "it": "Crossroads Watchtower",
+                "tr": "Crossroads Watchtower"
+            }
+        },
+        {
+            "region_id": "2308",
+            "zone_id": "2",
+            "initial_faction_id": "2",
+            "name": {
+                "de": "Indar Bay Point",
+                "en": "Indar Bay Point",
+                "es": "Indar Bay Point",
+                "fr": "Indar Bay Point",
+                "it": "Indar Bay Point",
+                "tr": "Indar Bay Point"
+            }
+        }
+    ],
+    "returned": 20
+}

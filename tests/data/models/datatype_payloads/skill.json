@@ -1,0 +1,525 @@
+{
+    "skill_list": [
+        {
+            "skill_id": "34",
+            "skill_line_id": "13",
+            "skill_line_index": "0",
+            "skill_points": "100",
+            "grant_item_id": "182",
+            "name": {
+                "de": "Schalld\u00e4mpfer",
+                "en": "Suppressor",
+                "es": "Silenciador",
+                "fr": "Silencieux",
+                "it": "Soppressore",
+                "tr": "Susturucu"
+            },
+            "description": {
+                "de": "Verringert M\u00fcndungsfeuer und Lautst\u00e4rke.",
+                "en": "Decreases muzzle flash and audio range.",
+                "es": "Disminuye el alcance del fogonazo y el sonido al disparar.",
+                "fr": "Diminue l'\u00e9clair du tir et le bruit.",
+                "it": "Riduce la fiammata e la gittata sonora dell'arma.",
+                "tr": "Namlu alevi ve sesinin duyulma mesafesini azalt\u0131r."
+            },
+            "image_set_id": "443",
+            "image_id": "1300",
+            "image_path": "/files/ps2/images/static/1300.png"
+        },
+        {
+            "skill_id": "35",
+            "skill_line_id": "13",
+            "skill_line_index": "1",
+            "skill_points": "100",
+            "grant_item_id": "187",
+            "name": {
+                "de": "Dunkellicht-Taschenlampe",
+                "en": "Darklight Flashlight",
+                "es": "Linterna de luz oscura",
+                "fr": "Lampe de poche Darklight",
+                "it": "Torcia Darklight",
+                "tr": "Darklight Flashlight"
+            },
+            "description": {
+                "de": "Eine an der Schiene montierte Dunkellicht-Taschenlampe, die dunkle Bereiche ausleuchten kann, aber auch deine Position verr\u00e4t. <font color=\"#dc9c36\"><br> <br>Das Licht kann mit \"Aufsatz ein-/ausschalten\" ein- und ausgeschaltet werden.</font>",
+                "en": "The rail mounted Darklight Flashlight can illuminate hostile cloaked infiltrators and dark areas but the light can give away your position. <font color=\"#dc9c36\"><br> <br>The light can be turned on and off with Toggle Attachment.</font>",
+                "es": "Una linterna de luz oscura montada sobre carril que permite iluminar a infiltrados invisibles y zonas oscuras, aunque tambi\u00e9n puede delatar tu posici\u00f3n.<font color=\"#dc9c36\"><br> <br>Se puede encender y apagar la luz en Activar/desactivar accesorio.</font>",
+                "fr": "La lampe de poche Darklight mont\u00e9e sur rail peut illuminer les Infiltr\u00e9s camoufl\u00e9s hostiles et les zones sombres mais d\u00e9voilera votre position \u00e0 l'ennemi. <font color=\"#dc9c36\"><br> <br>La lampe peut \u00eatre allum\u00e9e ou \u00e9teinte avec \"Accessoire On/Off\".</font> ",
+                "it": "La torcia elettrica Darklight montata su binario pu\u00f2 illuminare gli infiltrati ostili invisibili e le aree oscure ma la luce pu\u00f2 rivelare la tua presenza. <font color=\"#dc9c36\"><br> <br>La luce si pu\u00f2 accendere/spegnere con Attiva/disattiva accessorio.</font>",
+                "tr": "The rail mounted Darklight Flashlight can illuminate hostile cloaked infiltrators and dark areas but the light can give away your position. <font color=\"#dc9c36\"><br> <br>The light can be turned on and off with the Toggle Attachment hotkey.</font>"
+            },
+            "image_set_id": "428",
+            "image_id": "1213",
+            "image_path": "/files/ps2/images/static/1213.png"
+        },
+        {
+            "skill_id": "36",
+            "skill_line_id": "13",
+            "skill_line_index": "2",
+            "skill_points": "100",
+            "grant_item_id": "184",
+            "name": {
+                "de": "Laservisier",
+                "en": "Laser Sight",
+                "es": "Mira l\u00e1ser",
+                "fr": "Vis\u00e9e laser",
+                "it": "Mirino laser",
+                "tr": "Lazer Ni\u015fangah\u0131"
+            },
+            "description": {
+                "de": "Ein Laservisier erh\u00f6ht die Pr\u00e4zision, wenn aus der H\u00fcfte geschossen wird um 33 %.",
+                "en": "A laser sight increases the user's hipfire accuracy by 33%.",
+                "es": "La mira l\u00e1ser aumenta la precisi\u00f3n del disparo desde la cadera en un 33%.",
+                "fr": "La vis\u00e9e laser am\u00e9liore la pr\u00e9cision des tirs \u00e0 hauteur de hanche de 33%.",
+                "it": "Un mirino laser migliora del 33% la precisione quando si spara dall'anca.",
+                "tr": "Lazer Ni\u015fangah\u0131 ni\u015fan almadan ate\u015f edildi\u011finde isabet oran\u0131n\u0131 artt\u0131r\u0131r."
+            },
+            "image_set_id": "426",
+            "image_id": "1252",
+            "image_path": "/files/ps2/images/static/1252.png"
+        },
+        {
+            "skill_id": "37",
+            "skill_line_id": "14",
+            "skill_line_index": "0",
+            "skill_points": "100",
+            "grant_item_id": "60075",
+            "name": {
+                "de": "Mehr Reichweite",
+                "en": "Range Increase",
+                "es": "Aumento del alcance",
+                "fr": "Augmentation de port\u00e9e",
+                "it": "Aumento gittata",
+                "tr": "Menzil Art\u0131\u015f\u0131"
+            },
+            "description": {
+                "de": "Vergr\u00f6\u00dfert die Reichweite der Waffe.",
+                "en": "Increases the range of the weapon.",
+                "es": "Aumenta el alcance del arma.",
+                "fr": "Augmente la port\u00e9e de l'arme.",
+                "it": "Aumenta la gittata dell'arma.",
+                "tr": "Silah\u0131n menzilini art\u0131r\u0131r."
+            },
+            "image_set_id": "206",
+            "image_id": "1255",
+            "image_path": "/files/ps2/images/static/1255.png"
+        },
+        {
+            "skill_id": "38",
+            "skill_line_id": "14",
+            "skill_line_index": "1",
+            "skill_points": "100",
+            "grant_item_id": "60075",
+            "name": {
+                "de": "Mehr Reichweite",
+                "en": "Range Increase",
+                "es": "Aumento del alcance",
+                "fr": "Augmentation de port\u00e9e",
+                "it": "Aumento gittata",
+                "tr": "Menzil Art\u0131\u015f\u0131"
+            },
+            "description": {
+                "de": "Vergr\u00f6\u00dfert die Reichweite der Waffe.",
+                "en": "Increases the range of the weapon.",
+                "es": "Aumenta el alcance del arma.",
+                "fr": "Augmente la port\u00e9e de l'arme.",
+                "it": "Aumenta la gittata dell'arma.",
+                "tr": "Silah\u0131n menzilini art\u0131r\u0131r."
+            },
+            "image_set_id": "206",
+            "image_id": "1255",
+            "image_path": "/files/ps2/images/static/1255.png"
+        },
+        {
+            "skill_id": "39",
+            "skill_line_id": "14",
+            "skill_line_index": "2",
+            "skill_points": "100",
+            "grant_item_id": "60075",
+            "name": {
+                "de": "Mehr Reichweite",
+                "en": "Range Increase",
+                "es": "Aumento del alcance",
+                "fr": "Augmentation de port\u00e9e",
+                "it": "Aumento gittata",
+                "tr": "Menzil Art\u0131\u015f\u0131"
+            },
+            "description": {
+                "de": "Vergr\u00f6\u00dfert die Reichweite der Waffe.",
+                "en": "Increases the range of the weapon.",
+                "es": "Aumenta el alcance del arma.",
+                "fr": "Augmente la port\u00e9e de l'arme.",
+                "it": "Aumenta la gittata dell'arma.",
+                "tr": "Silah\u0131n menzilini art\u0131r\u0131r."
+            },
+            "image_set_id": "206",
+            "image_id": "1255",
+            "image_path": "/files/ps2/images/static/1255.png"
+        },
+        {
+            "skill_id": "40",
+            "skill_line_id": "14",
+            "skill_line_index": "3",
+            "skill_points": "100",
+            "grant_item_id": "60075",
+            "name": {
+                "de": "Mehr Reichweite",
+                "en": "Range Increase",
+                "es": "Aumento del alcance",
+                "fr": "Augmentation de port\u00e9e",
+                "it": "Aumento gittata",
+                "tr": "Menzil Art\u0131\u015f\u0131"
+            },
+            "description": {
+                "de": "Vergr\u00f6\u00dfert die Reichweite der Waffe.",
+                "en": "Increases the range of the weapon.",
+                "es": "Aumenta el alcance del arma.",
+                "fr": "Augmente la port\u00e9e de l'arme.",
+                "it": "Aumenta la gittata dell'arma.",
+                "tr": "Silah\u0131n menzilini art\u0131r\u0131r."
+            },
+            "image_set_id": "206",
+            "image_id": "1255",
+            "image_path": "/files/ps2/images/static/1255.png"
+        },
+        {
+            "skill_id": "41",
+            "skill_line_id": "15",
+            "skill_line_index": "0",
+            "skill_points": "100",
+            "grant_item_id": "60076",
+            "name": {
+                "de": "Mehr Stabilit\u00e4t",
+                "en": "Stability Increase",
+                "es": "Aumento de la estabilidad",
+                "fr": "Am\u00e9lioration de stabilit\u00e9",
+                "it": "Aumento di stabilit\u00e0",
+                "tr": "Stabilite Art\u0131\u015f\u0131"
+            },
+            "description": {
+                "de": "Pr\u00e4ziser wenn mit offenem Visier bewegt wird.",
+                "en": "More accurate when moving in iron sights.",
+                "es": "Mayor precisi\u00f3n al apuntar mientras te mueves.",
+                "fr": "Plus pr\u00e9cis en se d\u00e9pla\u00e7ant en vis\u00e9e \u00e9paul\u00e9e.",
+                "it": "Pi\u00f9 preciso durante il movimento in visuale mirino.",
+                "tr": "Hareket s\u0131ras\u0131nda ni\u015fan alm\u0131\u015fken isabetlili\u011fi art\u0131r\u0131r"
+            },
+            "image_set_id": "167",
+            "image_id": "973",
+            "image_path": "/files/ps2/images/static/973.png"
+        },
+        {
+            "skill_id": "42",
+            "skill_line_id": "15",
+            "skill_line_index": "1",
+            "skill_points": "100",
+            "grant_item_id": "60076",
+            "name": {
+                "de": "Mehr Stabilit\u00e4t",
+                "en": "Stability Increase",
+                "es": "Aumento de la estabilidad",
+                "fr": "Am\u00e9lioration de stabilit\u00e9",
+                "it": "Aumento di stabilit\u00e0",
+                "tr": "Stabilite Art\u0131\u015f\u0131"
+            },
+            "description": {
+                "de": "Pr\u00e4ziser wenn mit offenem Visier bewegt wird.",
+                "en": "More accurate when moving in iron sights.",
+                "es": "Mayor precisi\u00f3n al apuntar mientras te mueves.",
+                "fr": "Plus pr\u00e9cis en se d\u00e9pla\u00e7ant en vis\u00e9e \u00e9paul\u00e9e.",
+                "it": "Pi\u00f9 preciso durante il movimento in visuale mirino.",
+                "tr": "Hareket s\u0131ras\u0131nda ni\u015fan alm\u0131\u015fken isabetlili\u011fi art\u0131r\u0131r"
+            },
+            "image_set_id": "167",
+            "image_id": "973",
+            "image_path": "/files/ps2/images/static/973.png"
+        },
+        {
+            "skill_id": "43",
+            "skill_line_id": "15",
+            "skill_line_index": "2",
+            "skill_points": "100",
+            "grant_item_id": "60076",
+            "name": {
+                "de": "Mehr Stabilit\u00e4t",
+                "en": "Stability Increase",
+                "es": "Aumento de la estabilidad",
+                "fr": "Am\u00e9lioration de stabilit\u00e9",
+                "it": "Aumento di stabilit\u00e0",
+                "tr": "Stabilite Art\u0131\u015f\u0131"
+            },
+            "description": {
+                "de": "Pr\u00e4ziser wenn mit offenem Visier bewegt wird.",
+                "en": "More accurate when moving in iron sights.",
+                "es": "Mayor precisi\u00f3n al apuntar mientras te mueves.",
+                "fr": "Plus pr\u00e9cis en se d\u00e9pla\u00e7ant en vis\u00e9e \u00e9paul\u00e9e.",
+                "it": "Pi\u00f9 preciso durante il movimento in visuale mirino.",
+                "tr": "Hareket s\u0131ras\u0131nda ni\u015fan alm\u0131\u015fken isabetlili\u011fi art\u0131r\u0131r"
+            },
+            "image_set_id": "167",
+            "image_id": "973",
+            "image_path": "/files/ps2/images/static/973.png"
+        },
+        {
+            "skill_id": "44",
+            "skill_line_id": "15",
+            "skill_line_index": "3",
+            "skill_points": "100",
+            "grant_item_id": "60076",
+            "name": {
+                "de": "Mehr Stabilit\u00e4t",
+                "en": "Stability Increase",
+                "es": "Aumento de la estabilidad",
+                "fr": "Am\u00e9lioration de stabilit\u00e9",
+                "it": "Aumento di stabilit\u00e0",
+                "tr": "Stabilite Art\u0131\u015f\u0131"
+            },
+            "description": {
+                "de": "Pr\u00e4ziser wenn mit offenem Visier bewegt wird.",
+                "en": "More accurate when moving in iron sights.",
+                "es": "Mayor precisi\u00f3n al apuntar mientras te mueves.",
+                "fr": "Plus pr\u00e9cis en se d\u00e9pla\u00e7ant en vis\u00e9e \u00e9paul\u00e9e.",
+                "it": "Pi\u00f9 preciso durante il movimento in visuale mirino.",
+                "tr": "Hareket s\u0131ras\u0131nda ni\u015fan alm\u0131\u015fken isabetlili\u011fi art\u0131r\u0131r"
+            },
+            "image_set_id": "167",
+            "image_id": "973",
+            "image_path": "/files/ps2/images/static/973.png"
+        },
+        {
+            "skill_id": "45",
+            "skill_line_id": "16",
+            "skill_line_index": "0",
+            "skill_points": "100",
+            "grant_item_id": "64",
+            "name": {
+                "de": "Schalld\u00e4mpfer",
+                "en": "Suppressor",
+                "es": "Silenciador",
+                "fr": "Silencieux",
+                "it": "Soppressore",
+                "tr": "Susturucu"
+            },
+            "description": {
+                "de": "Verringert M\u00fcndungsfeuer und Lautst\u00e4rke.",
+                "en": "Decreases muzzle flash and audio range.",
+                "es": "Disminuye el alcance del fogonazo y el sonido al disparar.",
+                "fr": "Diminue l'\u00e9clair du tir et le bruit.",
+                "it": "Riduce la fiammata e la gittata sonora dell'arma.",
+                "tr": "Namlu alevini ve ses seviyesini azalt\u0131r."
+            },
+            "image_set_id": "464",
+            "image_id": "1408",
+            "image_path": "/files/ps2/images/static/1408.png"
+        },
+        {
+            "skill_id": "46",
+            "skill_line_id": "16",
+            "skill_line_index": "1",
+            "skill_points": "100",
+            "grant_item_id": "189",
+            "name": {
+                "de": "Dunkellicht-Taschenlampe",
+                "en": "Darklight Flashlight",
+                "es": "Linterna de luz oscura",
+                "fr": "Lampe de poche Darklight",
+                "it": "Torcia Darklight",
+                "tr": "Darklight Flashlight"
+            },
+            "description": {
+                "de": "Eine an der Schiene montierte Dunkellicht-Taschenlampe, die dunkle Bereiche ausleuchten kann, aber auch deine Position verr\u00e4t. <font color=\"#dc9c36\"><br> <br>Das Licht kann mit \"Aufsatz ein-/ausschalten\" ein- und ausgeschaltet werden.</font>",
+                "en": "The rail mounted Darklight Flashlight can illuminate hostile cloaked infiltrators and dark areas but the light can give away your position. <font color=\"#dc9c36\"><br> <br>The light can be turned on and off with Toggle Attachment.</font>",
+                "es": "Una linterna de luz oscura montada sobre carril que permite iluminar a infiltrados invisibles y zonas oscuras, aunque tambi\u00e9n puede delatar tu posici\u00f3n.<font color=\"#dc9c36\"><br> <br>Se puede encender y apagar la luz en Activar/desactivar accesorio.</font>",
+                "fr": "La lampe de poche Darklight mont\u00e9e sur rail peut illuminer les Infiltr\u00e9s camoufl\u00e9s hostiles et les zones sombres mais d\u00e9voilera votre position \u00e0 l'ennemi. <font color=\"#dc9c36\"><br> <br>La lampe peut \u00eatre allum\u00e9e ou \u00e9teinte avec \"Accessoire On/Off\".</font> ",
+                "it": "La torcia elettrica Darklight montata su binario pu\u00f2 illuminare gli infiltrati ostili invisibili e le aree oscure ma la luce pu\u00f2 rivelare la tua presenza. <font color=\"#dc9c36\"><br> <br>La luce si pu\u00f2 accendere/spegnere con Attiva/disattiva accessorio.</font>",
+                "tr": "The rail mounted Darklight Flashlight can illuminate hostile cloaked infiltrators and dark areas but the light can give away your position. <font color=\"#dc9c36\"><br> <br>The light can be turned on and off with the Toggle Attachment hotkey.</font>"
+            },
+            "image_set_id": "198",
+            "image_id": "1210",
+            "image_path": "/files/ps2/images/static/1210.png"
+        },
+        {
+            "skill_id": "47",
+            "skill_line_id": "16",
+            "skill_line_index": "2",
+            "skill_points": "100",
+            "grant_item_id": "186",
+            "name": {
+                "de": "Laservisier",
+                "en": "Laser Sight",
+                "es": "Mira l\u00e1ser",
+                "fr": "Vis\u00e9e laser",
+                "it": "Mirino laser",
+                "tr": "Lazer Ni\u015fangah\u0131"
+            },
+            "description": {
+                "de": "Ein Laservisier erh\u00f6ht die Pr\u00e4zision, wenn aus der H\u00fcfte geschossen wird um 33 %.",
+                "en": "A laser sight increases the user's hipfire accuracy by 33%.",
+                "es": "La mira l\u00e1ser aumenta la precisi\u00f3n del disparo desde la cadera en un 33%.",
+                "fr": "La vis\u00e9e laser am\u00e9liore la pr\u00e9cision des tirs \u00e0 hauteur de hanche de 33%.",
+                "it": "Un mirino laser migliora del 33% la precisione quando si spara dall'anca.",
+                "tr": "Lazer Ni\u015fangah\u0131 ni\u015fan almadan ate\u015f edildi\u011finde isabet oran\u0131n\u0131 artt\u0131r\u0131r."
+            },
+            "image_set_id": "447",
+            "image_id": "1348",
+            "image_path": "/files/ps2/images/static/1348.png"
+        },
+        {
+            "skill_id": "48",
+            "skill_line_id": "17",
+            "skill_line_index": "0",
+            "skill_points": "100",
+            "grant_item_id": "60080",
+            "name": {
+                "de": "Mehr Reichweite",
+                "en": "Range Increase",
+                "es": "Aumento del alcance",
+                "fr": "Augmentation de port\u00e9e",
+                "it": "Aumento gittata",
+                "tr": "Menzil Art\u0131\u015f\u0131"
+            },
+            "description": {
+                "de": "Vergr\u00f6\u00dfert die Reichweite der Waffe.",
+                "en": "Increases the range of the weapon.",
+                "es": "Aumenta el alcance del arma.",
+                "fr": "Augmente la port\u00e9e de l'arme.",
+                "it": "Aumenta la gittata dell'arma.",
+                "tr": "Silah\u0131n menzilini art\u0131r\u0131r."
+            },
+            "image_set_id": "206",
+            "image_id": "1255",
+            "image_path": "/files/ps2/images/static/1255.png"
+        },
+        {
+            "skill_id": "49",
+            "skill_line_id": "17",
+            "skill_line_index": "1",
+            "skill_points": "100",
+            "grant_item_id": "60080",
+            "name": {
+                "de": "Mehr Reichweite",
+                "en": "Range Increase",
+                "es": "Aumento del alcance",
+                "fr": "Augmentation de port\u00e9e",
+                "it": "Aumento gittata",
+                "tr": "Menzil Art\u0131\u015f\u0131"
+            },
+            "description": {
+                "de": "Vergr\u00f6\u00dfert die Reichweite der Waffe.",
+                "en": "Increases the range of the weapon.",
+                "es": "Aumenta el alcance del arma.",
+                "fr": "Augmente la port\u00e9e de l'arme.",
+                "it": "Aumenta la gittata dell'arma.",
+                "tr": "Silah\u0131n menzilini art\u0131r\u0131r."
+            },
+            "image_set_id": "206",
+            "image_id": "1255",
+            "image_path": "/files/ps2/images/static/1255.png"
+        },
+        {
+            "skill_id": "50",
+            "skill_line_id": "17",
+            "skill_line_index": "2",
+            "skill_points": "100",
+            "grant_item_id": "60080",
+            "name": {
+                "de": "Mehr Reichweite",
+                "en": "Range Increase",
+                "es": "Aumento del alcance",
+                "fr": "Augmentation de port\u00e9e",
+                "it": "Aumento gittata",
+                "tr": "Menzil Art\u0131\u015f\u0131"
+            },
+            "description": {
+                "de": "Vergr\u00f6\u00dfert die Reichweite der Waffe.",
+                "en": "Increases the range of the weapon.",
+                "es": "Aumenta el alcance del arma.",
+                "fr": "Augmente la port\u00e9e de l'arme.",
+                "it": "Aumenta la gittata dell'arma.",
+                "tr": "Silah\u0131n menzilini art\u0131r\u0131r."
+            },
+            "image_set_id": "206",
+            "image_id": "1255",
+            "image_path": "/files/ps2/images/static/1255.png"
+        },
+        {
+            "skill_id": "51",
+            "skill_line_id": "17",
+            "skill_line_index": "3",
+            "skill_points": "100",
+            "grant_item_id": "60080",
+            "name": {
+                "de": "Mehr Reichweite",
+                "en": "Range Increase",
+                "es": "Aumento del alcance",
+                "fr": "Augmentation de port\u00e9e",
+                "it": "Aumento gittata",
+                "tr": "Menzil Art\u0131\u015f\u0131"
+            },
+            "description": {
+                "de": "Vergr\u00f6\u00dfert die Reichweite der Waffe.",
+                "en": "Increases the range of the weapon.",
+                "es": "Aumenta el alcance del arma.",
+                "fr": "Augmente la port\u00e9e de l'arme.",
+                "it": "Aumenta la gittata dell'arma.",
+                "tr": "Silah\u0131n menzilini art\u0131r\u0131r."
+            },
+            "image_set_id": "206",
+            "image_id": "1255",
+            "image_path": "/files/ps2/images/static/1255.png"
+        },
+        {
+            "skill_id": "52",
+            "skill_line_id": "18",
+            "skill_line_index": "0",
+            "skill_points": "100",
+            "grant_item_id": "60081",
+            "name": {
+                "de": "Mehr Stabilit\u00e4t",
+                "en": "Stability Increase",
+                "es": "Aumento de la estabilidad",
+                "fr": "Am\u00e9lioration de stabilit\u00e9",
+                "it": "Aumento di stabilit\u00e0",
+                "tr": "Stabilite Art\u0131\u015f\u0131"
+            },
+            "description": {
+                "de": "Pr\u00e4ziser wenn mit offenem Visier bewegt wird.",
+                "en": "More accurate when moving in iron sights.",
+                "es": "Mayor precisi\u00f3n al apuntar mientras te mueves.",
+                "fr": "Plus pr\u00e9cis en se d\u00e9pla\u00e7ant en vis\u00e9e \u00e9paul\u00e9e.",
+                "it": "Pi\u00f9 preciso durante il movimento in visuale mirino.",
+                "tr": "Hareket s\u0131ras\u0131nda ni\u015fan alm\u0131\u015fken isabetlili\u011fi art\u0131r\u0131r"
+            },
+            "image_set_id": "167",
+            "image_id": "973",
+            "image_path": "/files/ps2/images/static/973.png"
+        },
+        {
+            "skill_id": "53",
+            "skill_line_id": "18",
+            "skill_line_index": "1",
+            "skill_points": "100",
+            "grant_item_id": "60081",
+            "name": {
+                "de": "Mehr Stabilit\u00e4t",
+                "en": "Stability Increase",
+                "es": "Aumento de la estabilidad",
+                "fr": "Am\u00e9lioration de stabilit\u00e9",
+                "it": "Aumento di stabilit\u00e0",
+                "tr": "Stabilite Art\u0131\u015f\u0131"
+            },
+            "description": {
+                "de": "Pr\u00e4ziser wenn mit offenem Visier bewegt wird.",
+                "en": "More accurate when moving in iron sights.",
+                "es": "Mayor precisi\u00f3n al apuntar mientras te mueves.",
+                "fr": "Plus pr\u00e9cis en se d\u00e9pla\u00e7ant en vis\u00e9e \u00e9paul\u00e9e.",
+                "it": "Pi\u00f9 preciso durante il movimento in visuale mirino.",
+                "tr": "Hareket s\u0131ras\u0131nda ni\u015fan alm\u0131\u015fken isabetlili\u011fi art\u0131r\u0131r"
+            },
+            "image_set_id": "167",
+            "image_id": "973",
+            "image_path": "/files/ps2/images/static/973.png"
+        }
+    ],
+    "returned": 20
+}

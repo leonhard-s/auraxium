@@ -1,0 +1,165 @@
+{
+    "outfit_member_list": [
+        {
+            "outfit_id": "0",
+            "character_id": "5428861139968859921",
+            "member_since": "1556219723",
+            "member_since_date": "2019-04-25 19:15:23.0",
+            "rank": "Officer",
+            "rank_ordinal": "2"
+        },
+        {
+            "outfit_id": "0",
+            "character_id": "5428861139969122801",
+            "member_since": "1556215084",
+            "member_since_date": "2019-04-25 17:58:04.0",
+            "rank": "Leader",
+            "rank_ordinal": "1"
+        },
+        {
+            "outfit_id": "0",
+            "character_id": "5428861139969127505",
+            "member_since": "1556219734",
+            "member_since_date": "2019-04-25 19:15:34.0",
+            "rank": "Officer",
+            "rank_ordinal": "2"
+        },
+        {
+            "outfit_id": "0",
+            "character_id": "5428861139969129921",
+            "member_since": "1556219483",
+            "member_since_date": "2019-04-25 19:11:23.0",
+            "rank": "Officer",
+            "rank_ordinal": "2"
+        },
+        {
+            "outfit_id": "0",
+            "character_id": "5428861139969130657",
+            "member_since": "1556218168",
+            "member_since_date": "2019-04-25 18:49:28.0",
+            "rank": "Leader",
+            "rank_ordinal": "1"
+        },
+        {
+            "outfit_id": "37509488620601374",
+            "character_id": "5428010618019978337",
+            "member_since": "1491726966",
+            "member_since_date": "2017-04-09 08:36:06.0",
+            "rank": "Trooper",
+            "rank_ordinal": "6"
+        },
+        {
+            "outfit_id": "37509488620601374",
+            "character_id": "5428010618020696081",
+            "member_since": "1353436735",
+            "member_since_date": "2012-11-20 18:38:55.0",
+            "rank": "Commanding Officer",
+            "rank_ordinal": "1"
+        },
+        {
+            "outfit_id": "37509488620601374",
+            "character_id": "5428010618020697217",
+            "member_since": "1489178732",
+            "member_since_date": "2017-03-10 20:45:32.0",
+            "rank": "Trooper",
+            "rank_ordinal": "6"
+        },
+        {
+            "outfit_id": "37509488620601374",
+            "character_id": "5428010618020703489",
+            "member_since": "1490091302",
+            "member_since_date": "2017-03-21 10:15:02.0",
+            "rank": "Trooper",
+            "rank_ordinal": "6"
+        },
+        {
+            "outfit_id": "37509488620601374",
+            "character_id": "5428010618020704401",
+            "member_since": "1489110967",
+            "member_since_date": "2017-03-10 01:56:07.0",
+            "rank": "Trooper",
+            "rank_ordinal": "6"
+        },
+        {
+            "outfit_id": "37509488620601374",
+            "character_id": "5428010618020712961",
+            "member_since": "1490745856",
+            "member_since_date": "2017-03-29 00:04:16.0",
+            "rank": "Trooper",
+            "rank_ordinal": "6"
+        },
+        {
+            "outfit_id": "37509488620601374",
+            "character_id": "5428010618020713569",
+            "member_since": "1489402013",
+            "member_since_date": "2017-03-13 10:46:53.0",
+            "rank": "Trooper",
+            "rank_ordinal": "6"
+        },
+        {
+            "outfit_id": "37509488620601374",
+            "character_id": "5428010618020719985",
+            "member_since": "1489525162",
+            "member_since_date": "2017-03-14 20:59:22.0",
+            "rank": "Trooper",
+            "rank_ordinal": "6"
+        },
+        {
+            "outfit_id": "37509488620601374",
+            "character_id": "5428010618020720113",
+            "member_since": "1353453154",
+            "member_since_date": "2012-11-20 23:12:34.0",
+            "rank": "Platoon Leader",
+            "rank_ordinal": "3"
+        },
+        {
+            "outfit_id": "37509488620601374",
+            "character_id": "5428010618020720865",
+            "member_since": "1491082540",
+            "member_since_date": "2017-04-01 21:35:40.0",
+            "rank": "Trooper",
+            "rank_ordinal": "6"
+        },
+        {
+            "outfit_id": "37509488620601374",
+            "character_id": "5428010618020726033",
+            "member_since": "1491343877",
+            "member_since_date": "2017-04-04 22:11:17.0",
+            "rank": "Trooper",
+            "rank_ordinal": "6"
+        },
+        {
+            "outfit_id": "37509488620601374",
+            "character_id": "5428010618020732257",
+            "member_since": "1489108694",
+            "member_since_date": "2017-03-10 01:18:14.0",
+            "rank": "Trooper",
+            "rank_ordinal": "6"
+        },
+        {
+            "outfit_id": "37509488620601374",
+            "character_id": "5428010618020734865",
+            "member_since": "1489452306",
+            "member_since_date": "2017-03-14 00:45:06.0",
+            "rank": "Trooper",
+            "rank_ordinal": "6"
+        },
+        {
+            "outfit_id": "37509488620601374",
+            "character_id": "5428010618020736129",
+            "member_since": "1489625991",
+            "member_since_date": "2017-03-16 00:59:51.0",
+            "rank": "Trooper",
+            "rank_ordinal": "6"
+        },
+        {
+            "outfit_id": "37509488620601374",
+            "character_id": "5428010618020741153",
+            "member_since": "1491356661",
+            "member_since_date": "2017-04-05 01:44:21.0",
+            "rank": "Trooper",
+            "rank_ordinal": "6"
+        }
+    ],
+    "returned": 20
+}

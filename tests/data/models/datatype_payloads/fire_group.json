@@ -1,0 +1,165 @@
+{
+    "fire_group_list": [
+        {
+            "fire_group_id": "1",
+            "chamber_duration_ms": "NULL",
+            "transition_duration_ms": "NULL",
+            "spool_up_ms": "NULL",
+            "spool_up_initial_refire_ms": "NULL",
+            "can_chamber_ironsights": "NULL"
+        },
+        {
+            "fire_group_id": "2",
+            "chamber_duration_ms": "NULL",
+            "transition_duration_ms": "NULL",
+            "spool_up_ms": "NULL",
+            "spool_up_initial_refire_ms": "NULL",
+            "can_chamber_ironsights": "NULL"
+        },
+        {
+            "fire_group_id": "3",
+            "chamber_duration_ms": "NULL",
+            "transition_duration_ms": "500",
+            "spool_up_ms": "NULL",
+            "spool_up_initial_refire_ms": "NULL",
+            "can_chamber_ironsights": "NULL"
+        },
+        {
+            "fire_group_id": "4",
+            "chamber_duration_ms": "NULL",
+            "transition_duration_ms": "500",
+            "spool_up_ms": "NULL",
+            "spool_up_initial_refire_ms": "NULL",
+            "can_chamber_ironsights": "NULL"
+        },
+        {
+            "fire_group_id": "6",
+            "chamber_duration_ms": "NULL",
+            "transition_duration_ms": "NULL",
+            "spool_up_ms": "NULL",
+            "spool_up_initial_refire_ms": "NULL",
+            "can_chamber_ironsights": "NULL"
+        },
+        {
+            "fire_group_id": "7",
+            "chamber_duration_ms": "NULL",
+            "transition_duration_ms": "NULL",
+            "spool_up_ms": "NULL",
+            "spool_up_initial_refire_ms": "NULL",
+            "can_chamber_ironsights": "NULL"
+        },
+        {
+            "fire_group_id": "8",
+            "chamber_duration_ms": "NULL",
+            "transition_duration_ms": "500",
+            "spool_up_ms": "NULL",
+            "spool_up_initial_refire_ms": "NULL",
+            "can_chamber_ironsights": "NULL"
+        },
+        {
+            "fire_group_id": "9",
+            "chamber_duration_ms": "NULL",
+            "transition_duration_ms": "500",
+            "spool_up_ms": "NULL",
+            "spool_up_initial_refire_ms": "NULL",
+            "can_chamber_ironsights": "NULL"
+        },
+        {
+            "fire_group_id": "10",
+            "chamber_duration_ms": "NULL",
+            "transition_duration_ms": "500",
+            "spool_up_ms": "NULL",
+            "spool_up_initial_refire_ms": "NULL",
+            "can_chamber_ironsights": "NULL"
+        },
+        {
+            "fire_group_id": "11",
+            "chamber_duration_ms": "NULL",
+            "transition_duration_ms": "NULL",
+            "spool_up_ms": "NULL",
+            "spool_up_initial_refire_ms": "NULL",
+            "can_chamber_ironsights": "NULL"
+        },
+        {
+            "fire_group_id": "13",
+            "chamber_duration_ms": "NULL",
+            "transition_duration_ms": "NULL",
+            "spool_up_ms": "NULL",
+            "spool_up_initial_refire_ms": "NULL",
+            "can_chamber_ironsights": "NULL"
+        },
+        {
+            "fire_group_id": "14",
+            "chamber_duration_ms": "NULL",
+            "transition_duration_ms": "500",
+            "spool_up_ms": "NULL",
+            "spool_up_initial_refire_ms": "NULL",
+            "can_chamber_ironsights": "NULL"
+        },
+        {
+            "fire_group_id": "15",
+            "chamber_duration_ms": "NULL",
+            "transition_duration_ms": "500",
+            "spool_up_ms": "NULL",
+            "spool_up_initial_refire_ms": "NULL",
+            "can_chamber_ironsights": "NULL"
+        },
+        {
+            "fire_group_id": "17",
+            "chamber_duration_ms": "NULL",
+            "transition_duration_ms": "NULL",
+            "spool_up_ms": "NULL",
+            "spool_up_initial_refire_ms": "NULL",
+            "can_chamber_ironsights": "NULL"
+        },
+        {
+            "fire_group_id": "18",
+            "chamber_duration_ms": "NULL",
+            "transition_duration_ms": "500",
+            "spool_up_ms": "NULL",
+            "spool_up_initial_refire_ms": "NULL",
+            "can_chamber_ironsights": "NULL"
+        },
+        {
+            "fire_group_id": "19",
+            "chamber_duration_ms": "NULL",
+            "transition_duration_ms": "500",
+            "spool_up_ms": "NULL",
+            "spool_up_initial_refire_ms": "NULL",
+            "can_chamber_ironsights": "NULL"
+        },
+        {
+            "fire_group_id": "20",
+            "chamber_duration_ms": "NULL",
+            "transition_duration_ms": "500",
+            "spool_up_ms": "NULL",
+            "spool_up_initial_refire_ms": "NULL",
+            "can_chamber_ironsights": "NULL"
+        },
+        {
+            "fire_group_id": "21",
+            "chamber_duration_ms": "NULL",
+            "transition_duration_ms": "500",
+            "spool_up_ms": "NULL",
+            "spool_up_initial_refire_ms": "NULL",
+            "can_chamber_ironsights": "NULL"
+        },
+        {
+            "fire_group_id": "25",
+            "chamber_duration_ms": "NULL",
+            "transition_duration_ms": "NULL",
+            "spool_up_ms": "NULL",
+            "spool_up_initial_refire_ms": "NULL",
+            "can_chamber_ironsights": "NULL"
+        },
+        {
+            "fire_group_id": "26",
+            "chamber_duration_ms": "NULL",
+            "transition_duration_ms": "NULL",
+            "spool_up_ms": "NULL",
+            "spool_up_initial_refire_ms": "NULL",
+            "can_chamber_ironsights": "NULL"
+        }
+    ],
+    "returned": 20
+}

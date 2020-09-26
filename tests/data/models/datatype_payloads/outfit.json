@@ -1,0 +1,225 @@
+{
+    "outfit_list": [
+        {
+            "outfit_id": "37524549151236150",
+            "name": "Deutsche einheit",
+            "name_lower": "deutsche einheit",
+            "alias": "",
+            "alias_lower": "",
+            "time_created": "1411132068",
+            "time_created_date": "2014-09-19 13:07:48.0",
+            "leader_character_id": "8251122389765212065",
+            "member_count": "3"
+        },
+        {
+            "outfit_id": "37524549151252121",
+            "name": "Trupp Delta 13",
+            "name_lower": "trupp delta 13",
+            "alias": "",
+            "alias_lower": "",
+            "time_created": "1411564321",
+            "time_created_date": "2014-09-24 13:12:01.0",
+            "leader_character_id": "8251447120430707169",
+            "member_count": "1"
+        },
+        {
+            "outfit_id": "37526022285730732",
+            "name": "Gramy",
+            "name_lower": "gramy",
+            "alias": "",
+            "alias_lower": "",
+            "time_created": "1417615912",
+            "time_created_date": "2014-12-03 14:11:52.0",
+            "leader_character_id": "5428204126946329761",
+            "member_count": "1"
+        },
+        {
+            "outfit_id": "37524390589238163",
+            "name": "TheAssassins",
+            "name_lower": "theassassins",
+            "alias": "",
+            "alias_lower": "",
+            "time_created": "1410355887",
+            "time_created_date": "2014-09-10 13:31:27.0",
+            "leader_character_id": "5428247616567581345",
+            "member_count": "1"
+        },
+        {
+            "outfit_id": "37524390589235581",
+            "name": "Puissance du Neant",
+            "name_lower": "puissance du neant",
+            "alias": "PdN",
+            "alias_lower": "pdn",
+            "time_created": "1410283514",
+            "time_created_date": "2014-09-09 17:25:14.0",
+            "leader_character_id": "5428011263289461681",
+            "member_count": "31"
+        },
+        {
+            "outfit_id": "37525568521011693",
+            "name": "TheActionGamer",
+            "name_lower": "theactiongamer",
+            "alias": "",
+            "alias_lower": "",
+            "time_created": "1415628454",
+            "time_created_date": "2014-11-10 14:07:34.0",
+            "leader_character_id": "8253534815450190081",
+            "member_count": "1"
+        },
+        {
+            "outfit_id": "37524549151247743",
+            "name": "PyccKiE cuda",
+            "name_lower": "pycckie cuda",
+            "alias": "",
+            "alias_lower": "",
+            "time_created": "1411394107",
+            "time_created_date": "2014-09-22 13:55:07.0",
+            "leader_character_id": "8251447120430862961",
+            "member_count": "1"
+        },
+        {
+            "outfit_id": "37524843656118281",
+            "name": "Nightmare",
+            "name_lower": "nightmare",
+            "alias": "",
+            "alias_lower": "",
+            "time_created": "1412000317",
+            "time_created_date": "2014-09-29 14:18:37.0",
+            "leader_character_id": "8251447120431927393",
+            "member_count": "2"
+        },
+        {
+            "outfit_id": "37516531404923769",
+            "name": "RSMG Clan",
+            "name_lower": "rsmg clan",
+            "alias": "TKME",
+            "alias_lower": "tkme",
+            "time_created": "1380844533",
+            "time_created_date": "2013-10-03 23:55:33.0",
+            "leader_character_id": "5428123302632433713",
+            "member_count": "2"
+        },
+        {
+            "outfit_id": "37524142189459878",
+            "name": "AWSOME",
+            "name_lower": "awsome",
+            "alias": "",
+            "alias_lower": "",
+            "time_created": "1409594864",
+            "time_created_date": "2014-09-01 18:07:44.0",
+            "leader_character_id": "7674152903415014769",
+            "member_count": "1"
+        },
+        {
+            "outfit_id": "37528581508473340",
+            "name": "Mythicals",
+            "name_lower": "mythicals",
+            "alias": "",
+            "alias_lower": "",
+            "time_created": "1427461902",
+            "time_created_date": "2015-03-27 13:11:42.0",
+            "leader_character_id": "8259705530255993313",
+            "member_count": "5"
+        },
+        {
+            "outfit_id": "37518435864364604",
+            "name": "Hartmut haut rein",
+            "name_lower": "hartmut haut rein",
+            "alias": "HOAT",
+            "alias_lower": "hoat",
+            "time_created": "1389018613",
+            "time_created_date": "2014-01-06 14:30:13.0",
+            "leader_character_id": "5428139972576896161",
+            "member_count": "1"
+        },
+        {
+            "outfit_id": "37524301022232946",
+            "name": "PISTOL WHIP",
+            "name_lower": "pistol whip",
+            "alias": "ITSA",
+            "alias_lower": "itsa",
+            "time_created": "1409937660",
+            "time_created_date": "2014-09-05 17:21:00.0",
+            "leader_character_id": "5428010618041596561",
+            "member_count": "1"
+        },
+        {
+            "outfit_id": "37544413450534685",
+            "name": "KAMAP5613",
+            "name_lower": "kamap5613",
+            "alias": "",
+            "alias_lower": "",
+            "time_created": "1489154856",
+            "time_created_date": "2017-03-10 14:07:36.0",
+            "leader_character_id": "5428569415112557729",
+            "member_count": "1"
+        },
+        {
+            "outfit_id": "37524549151247758",
+            "name": "DeCeRToReS",
+            "name_lower": "decertores",
+            "alias": "",
+            "alias_lower": "",
+            "time_created": "1411394683",
+            "time_created_date": "2014-09-22 14:04:43.0",
+            "leader_character_id": "5428066778507458305",
+            "member_count": "2"
+        },
+        {
+            "outfit_id": "37573720558849051",
+            "name": "sdfasdfsadf",
+            "name_lower": "sdfasdfsadf",
+            "alias": "",
+            "alias_lower": "",
+            "time_created": "1600263743",
+            "time_created_date": "2020-09-16 13:42:23.0",
+            "leader_character_id": "5429038329414065361",
+            "member_count": "1"
+        },
+        {
+            "outfit_id": "37530800324381265",
+            "name": "ostatni bastion",
+            "name_lower": "ostatni bastion",
+            "alias": "",
+            "alias_lower": "",
+            "time_created": "1435756556",
+            "time_created_date": "2015-07-01 13:15:56.0",
+            "leader_character_id": "8264730667221464449",
+            "member_count": "2"
+        },
+        {
+            "outfit_id": "37525568520978433",
+            "name": "Icelandic Aces",
+            "name_lower": "icelandic aces",
+            "alias": "",
+            "alias_lower": "",
+            "time_created": "1414764982",
+            "time_created_date": "2014-10-31 14:16:22.0",
+            "leader_character_id": "5428174054408600881",
+            "member_count": "3"
+        },
+        {
+            "outfit_id": "37524142189445607",
+            "name": "Learn to fly pls",
+            "name_lower": "learn to fly pls",
+            "alias": "L2F",
+            "alias_lower": "l2f",
+            "time_created": "1409332936",
+            "time_created_date": "2014-08-29 17:22:16.0",
+            "leader_character_id": "5428245075223129841",
+            "member_count": "1"
+        },
+        {
+            "outfit_id": "37546473546062973",
+            "name": "WARS OUTFIT",
+            "name_lower": "wars outfit",
+            "alias": "",
+            "alias_lower": "",
+            "time_created": "1494853975",
+            "time_created_date": "2017-05-15 13:12:55.0",
+            "leader_character_id": "5428602376674682305",
+            "member_count": "1"
+        }
+    ],
+    "returned": 20
+}

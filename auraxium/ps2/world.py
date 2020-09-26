@@ -1,42 +1,15 @@
 """World class definition."""
 
-import dataclasses
 from typing import Any, Final, List, Optional, Union
 
-from ..base import Named, Ps2Data
+from ..base import Named
 from ..census import Query
 from ..client import Client
+from ..models import WorldData
 from ..request import extract_payload
 from ..types import CensusData
-from ..utils import LocaleData
 
 from .zone import Zone
-
-
-@dataclasses.dataclass(frozen=True)
-class WorldData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.world.World`.
-
-    This class mirrors the payload data returned by the API, you may
-    use its attributes as keys in filters or queries.
-
-    Attributes:
-        world_id: The unique ID of the world.
-        state: The current state (i.e. online status) of the world.
-        name: The localised name of the world.
-
-    """
-
-    world_id: int
-    state: str
-    name: LocaleData
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'WorldData':
-        return cls(
-            int(data['world_id']),
-            str(data['state']),
-            LocaleData.from_census(data['name']))
 
 
 class World(Named, cache_size=20, cache_ttu=3600.0):

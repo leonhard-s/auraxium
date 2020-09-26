@@ -274,7 +274,7 @@ class TestJoinedQueryInterface(unittest.TestCase):
         with self.assertRaises(TypeError):
             _ = census.JoinedQuery.copy(template_empty_query)
 
-    def serialise(self) -> None:
+    def test_serialise(self) -> None:
         """Test JoinedQuery.serialise()"""
         join = census.JoinedQuery('collection')
         serialised_data = join.serialise()
@@ -283,7 +283,7 @@ class TestJoinedQueryInterface(unittest.TestCase):
         serialised_data = join.serialise()
         # NOTE: The values of the serialisation are not checked here as any
         # errors will become apparent as part of the URL generation.
-        self.assertNotEqual(join.data, serialised_data)
+        self.assertDictEqual(join.data.__dict__, serialised_data.__dict__)
 
     def test_set_fields(self) -> None:
         """Test JoinedQuery.set_fields()"""

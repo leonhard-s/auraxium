@@ -1,0 +1,165 @@
+{
+    "resist_info_list": [
+        {
+            "resist_info_id": "1",
+            "resist_type_id": "1",
+            "resist_percent": "80",
+            "resist_amount": "NULL",
+            "multiplier_when_headshot": "1",
+            "description": "MAX - Melee"
+        },
+        {
+            "resist_info_id": "2",
+            "resist_type_id": "2",
+            "resist_percent": "80",
+            "resist_amount": "NULL",
+            "multiplier_when_headshot": "1",
+            "description": "MAX - Personal Defense"
+        },
+        {
+            "resist_info_id": "3",
+            "resist_type_id": "3",
+            "resist_percent": "60",
+            "resist_amount": "NULL",
+            "multiplier_when_headshot": "1",
+            "description": "MAX - Tier 2 AV"
+        },
+        {
+            "resist_info_id": "4",
+            "resist_type_id": "4",
+            "resist_percent": "68",
+            "resist_amount": "NULL",
+            "multiplier_when_headshot": "1",
+            "description": "MAX - Tier 1 AV"
+        },
+        {
+            "resist_info_id": "5",
+            "resist_type_id": "5",
+            "resist_percent": "-25",
+            "resist_amount": "NULL",
+            "multiplier_when_headshot": "1",
+            "description": "MAX - Tier 3 AV"
+        },
+        {
+            "resist_info_id": "6",
+            "resist_type_id": "6",
+            "resist_percent": "50",
+            "resist_amount": "NULL",
+            "multiplier_when_headshot": "1",
+            "description": "MAX - Grenades"
+        },
+        {
+            "resist_info_id": "7",
+            "resist_type_id": "7",
+            "resist_percent": "0",
+            "resist_amount": "NULL",
+            "multiplier_when_headshot": "1",
+            "description": "MAX - Tank Shell"
+        },
+        {
+            "resist_info_id": "8",
+            "resist_type_id": "8",
+            "resist_percent": "70",
+            "resist_amount": "NULL",
+            "multiplier_when_headshot": "1",
+            "description": "MAX - Aircraft Machine Gun"
+        },
+        {
+            "resist_info_id": "9",
+            "resist_type_id": "24",
+            "resist_percent": "-50",
+            "resist_amount": "NULL",
+            "multiplier_when_headshot": "1",
+            "description": "MAX - Lancer AV"
+        },
+        {
+            "resist_info_id": "11",
+            "resist_type_id": "1",
+            "resist_percent": "100",
+            "resist_amount": "NULL",
+            "multiplier_when_headshot": "1",
+            "description": "Flash - Melee"
+        },
+        {
+            "resist_info_id": "12",
+            "resist_type_id": "2",
+            "resist_percent": "80",
+            "resist_amount": "NULL",
+            "multiplier_when_headshot": "1",
+            "description": "Flash - Personal Defense"
+        },
+        {
+            "resist_info_id": "13",
+            "resist_type_id": "3",
+            "resist_percent": "0",
+            "resist_amount": "NULL",
+            "multiplier_when_headshot": "1",
+            "description": "FODDER RESIST TYPE (For enabling zone effects and such.)"
+        },
+        {
+            "resist_info_id": "14",
+            "resist_type_id": "4",
+            "resist_percent": "30",
+            "resist_amount": "NULL",
+            "multiplier_when_headshot": "1",
+            "description": "Flash - Tier 1 AV"
+        },
+        {
+            "resist_info_id": "15",
+            "resist_type_id": "5",
+            "resist_percent": "-100",
+            "resist_amount": "NULL",
+            "multiplier_when_headshot": "1",
+            "description": "Flash - Tier 3 AV"
+        },
+        {
+            "resist_info_id": "16",
+            "resist_type_id": "6",
+            "resist_percent": "25",
+            "resist_amount": "NULL",
+            "multiplier_when_headshot": "1",
+            "description": "Flash - Grenades"
+        },
+        {
+            "resist_info_id": "17",
+            "resist_type_id": "7",
+            "resist_percent": "-100",
+            "resist_amount": "NULL",
+            "multiplier_when_headshot": "1",
+            "description": "Flash - Tank Shell"
+        },
+        {
+            "resist_info_id": "18",
+            "resist_type_id": "8",
+            "resist_percent": "50",
+            "resist_amount": "NULL",
+            "multiplier_when_headshot": "1",
+            "description": "Flash - Aircraft Machine Gun"
+        },
+        {
+            "resist_info_id": "19",
+            "resist_type_id": "24",
+            "resist_percent": "-100",
+            "resist_amount": "NULL",
+            "multiplier_when_headshot": "1",
+            "description": "Flash - Lancer AV"
+        },
+        {
+            "resist_info_id": "21",
+            "resist_type_id": "1",
+            "resist_percent": "100",
+            "resist_amount": "NULL",
+            "multiplier_when_headshot": "1",
+            "description": "Sunderer - Melee"
+        },
+        {
+            "resist_info_id": "22",
+            "resist_type_id": "2",
+            "resist_percent": "100",
+            "resist_amount": "NULL",
+            "multiplier_when_headshot": "1",
+            "description": "Sunderer - Personal Defense"
+        }
+    ],
+    "returned": 20
+}

@@ -22,7 +22,7 @@ __all__ = [
 ]
 
 
-class AuraxiumException(BaseException):
+class AuraxiumException(Exception):
     """Base exception class for auraxium.
 
     This mostly exists to allow blanket-catching any errors specific to

@@ -1,40 +1,8 @@
 """Currency class definition."""
 
-import dataclasses
-
-from ..base import Cached, Ps2Data
+from ..base import Cached
+from ..models import CurrencyData
 from ..types import CensusData
-from ..utils import LocaleData
-
-
-@dataclasses.dataclass(frozen=True)
-class CurrencyData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.currency.Currency`.
-
-    This class mirrors the payload data returned by the API, you may
-    use its attributes as keys in filters or queries.
-
-    Attributes:
-        currency_id: The unique ID of this currency entry.
-        name: The localised name of this currency.
-        icon_id: The image ID of the currency icon image asset.
-        inventory_cap: The maximum amount of this currency a character
-            may hold.
-
-    """
-
-    currency_id: int
-    name: LocaleData
-    icon_id: int
-    inventory_cap: int
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'CurrencyData':
-        return cls(
-            int(data['currency_id']),
-            LocaleData.from_census(data['name']),
-            int(data['icon_id']),
-            int(data['inventory_cap']))
 
 
 class Currency(Cached, cache_size=10, cache_ttu=3600.0):

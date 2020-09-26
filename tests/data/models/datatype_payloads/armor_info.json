@@ -1,0 +1,145 @@
+{
+    "armor_info_list": [
+        {
+            "armor_info_id": "20",
+            "armor_facing_id": "0",
+            "armor_percent": "0",
+            "armor_amount": "NULL",
+            "description": "Sunderer - Front"
+        },
+        {
+            "armor_info_id": "21",
+            "armor_facing_id": "1",
+            "armor_percent": "0",
+            "armor_amount": "NULL",
+            "description": "Sunderer - Right"
+        },
+        {
+            "armor_info_id": "22",
+            "armor_facing_id": "2",
+            "armor_percent": "0",
+            "armor_amount": "NULL",
+            "description": "Sunderer - Top"
+        },
+        {
+            "armor_info_id": "23",
+            "armor_facing_id": "3",
+            "armor_percent": "0",
+            "armor_amount": "NULL",
+            "description": "Sunderer - Rear"
+        },
+        {
+            "armor_info_id": "24",
+            "armor_facing_id": "4",
+            "armor_percent": "0",
+            "armor_amount": "NULL",
+            "description": "Sunderer - Left"
+        },
+        {
+            "armor_info_id": "25",
+            "armor_facing_id": "5",
+            "armor_percent": "0",
+            "armor_amount": "NULL",
+            "description": "Sunderer - Bottom"
+        },
+        {
+            "armor_info_id": "30",
+            "armor_facing_id": "0",
+            "armor_percent": "0",
+            "armor_amount": "NULL",
+            "description": "Lightning - Front"
+        },
+        {
+            "armor_info_id": "31",
+            "armor_facing_id": "1",
+            "armor_percent": "-15",
+            "armor_amount": "NULL",
+            "description": "Lightning - Right"
+        },
+        {
+            "armor_info_id": "32",
+            "armor_facing_id": "2",
+            "armor_percent": "0",
+            "armor_amount": "NULL",
+            "description": "Lightning - Top"
+        },
+        {
+            "armor_info_id": "33",
+            "armor_facing_id": "3",
+            "armor_percent": "-50",
+            "armor_amount": "NULL",
+            "description": "Lightning - Rear"
+        },
+        {
+            "armor_info_id": "34",
+            "armor_facing_id": "4",
+            "armor_percent": "-15",
+            "armor_amount": "NULL",
+            "description": "Lightning - Left"
+        },
+        {
+            "armor_info_id": "35",
+            "armor_facing_id": "5",
+            "armor_percent": "-100",
+            "armor_amount": "NULL",
+            "description": "Lightning - Bottom"
+        },
+        {
+            "armor_info_id": "40",
+            "armor_facing_id": "0",
+            "armor_percent": "0",
+            "armor_amount": "NULL",
+            "description": "Magrider - Front"
+        },
+        {
+            "armor_info_id": "41",
+            "armor_facing_id": "1",
+            "armor_percent": "-15",
+            "armor_amount": "NULL",
+            "description": "Magrider - Right"
+        },
+        {
+            "armor_info_id": "42",
+            "armor_facing_id": "2",
+            "armor_percent": "0",
+            "armor_amount": "NULL",
+            "description": "Magrider - Top"
+        },
+        {
+            "armor_info_id": "43",
+            "armor_facing_id": "3",
+            "armor_percent": "-50",
+            "armor_amount": "NULL",
+            "description": "Magrider - Rear"
+        },
+        {
+            "armor_info_id": "44",
+            "armor_facing_id": "4",
+            "armor_percent": "-15",
+            "armor_amount": "NULL",
+            "description": "Magrider - Left"
+        },
+        {
+            "armor_info_id": "45",
+            "armor_facing_id": "5",
+            "armor_percent": "-100",
+            "armor_amount": "NULL",
+            "description": "Magrider - Bottom"
+        },
+        {
+            "armor_info_id": "50",
+            "armor_facing_id": "0",
+            "armor_percent": "0",
+            "armor_amount": "NULL",
+            "description": "Vanguard - Front"
+        },
+        {
+            "armor_info_id": "51",
+            "armor_facing_id": "1",
+            "armor_percent": "-15",
+            "armor_amount": "NULL",
+            "description": "Vanguard - Right"
+        }
+    ],
+    "returned": 20
+}

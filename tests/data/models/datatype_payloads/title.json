@@ -1,0 +1,225 @@
+{
+    "title_list": [
+        {
+            "title_id": "1",
+            "name": {
+                "de": "Private",
+                "en": "Private",
+                "es": "Soldado raso",
+                "fr": "Soldat",
+                "it": "Soldato",
+                "tr": "Er"
+            }
+        },
+        {
+            "title_id": "2",
+            "name": {
+                "de": "PFC",
+                "en": "PFC",
+                "es": "Soldado de 1.\u00aa clase",
+                "fr": "Sdt 1cl",
+                "it": "PFC",
+                "tr": "Er"
+            }
+        },
+        {
+            "title_id": "3",
+            "name": {
+                "de": "Spezialist",
+                "en": "Specialist",
+                "es": "Especialista",
+                "fr": "Sp\u00e9cialiste",
+                "it": "Specialista",
+                "tr": "Uzman"
+            }
+        },
+        {
+            "title_id": "4",
+            "name": {
+                "de": "Lance Cpl.",
+                "en": "Lance Cpl.",
+                "es": "Cabo segundo",
+                "fr": "Soldat 1e classe",
+                "it": "Soldato scelto",
+                "tr": "Erba\u015f"
+            }
+        },
+        {
+            "title_id": "5",
+            "name": {
+                "de": "Corporal",
+                "en": "Corporal",
+                "es": "Cabo primero",
+                "fr": "Caporal",
+                "it": "Caporale",
+                "tr": "Onba\u015f\u0131"
+            }
+        },
+        {
+            "title_id": "6",
+            "name": {
+                "de": "Sergeant",
+                "en": "Sergeant",
+                "es": "Sargento",
+                "fr": "Sergent",
+                "it": "Sergente",
+                "tr": "\u00c7avu\u015f"
+            }
+        },
+        {
+            "title_id": "7",
+            "name": {
+                "de": "Staff Sgt.",
+                "en": "Staff Sgt.",
+                "es": "Sgto. segundo",
+                "fr": "Sgt-chef",
+                "it": "Serg.Magg.",
+                "tr": "\u00dcst\u00e7avu\u015f"
+            }
+        },
+        {
+            "title_id": "8",
+            "name": {
+                "de": "Tech Sgt.",
+                "en": "Tech Sgt.",
+                "es": "Sgto. t\u00e9cnico",
+                "fr": "Adjudant",
+                "it": "Serg.Magg.Tec.",
+                "tr": "Astsubay K\u0131demli \u00c7avu\u015f"
+            }
+        },
+        {
+            "title_id": "9",
+            "name": {
+                "de": "Sgt. 1st Class",
+                "en": "Sgt. 1st Class",
+                "es": "Sgto. de primera clase",
+                "fr": "Sgt 1e classe",
+                "it": "Serg.Magg.Ca.",
+                "tr": "Astsubay K\u0131demli \u00dcst\u00e7avu\u015f"
+            }
+        },
+        {
+            "title_id": "10",
+            "name": {
+                "de": "Master Sgt.",
+                "en": "Master Sgt.",
+                "es": "Sgto. maestre",
+                "fr": "Sgt ma\u00eetre",
+                "it": "Mar.",
+                "tr": "Ba\u015f\u00e7avu\u015f"
+            }
+        },
+        {
+            "title_id": "11",
+            "name": {
+                "de": "First Sgt.",
+                "en": "First Sgt.",
+                "es": "Sgto. primero",
+                "fr": "1er Sgt",
+                "it": "Mar.Ord.",
+                "tr": "K\u0131demli Ba\u015f\u00e7avu\u015f"
+            }
+        },
+        {
+            "title_id": "12",
+            "name": {
+                "de": "Sgt. Major",
+                "en": "Sgt. Major",
+                "es": "Sgto. mayor",
+                "fr": "Sgt-major",
+                "it": "Serg. Magg.",
+                "tr": "Ba\u015f\u00e7avu\u015f"
+            }
+        },
+        {
+            "title_id": "13",
+            "name": {
+                "de": "Comm. Sgt. Major",
+                "en": "Comm. Sgt. Major",
+                "es": "Sgto. mayor de comando",
+                "fr": "Commandant sergent-major",
+                "it": "Sergente maggiore capo",
+                "tr": "Astsubay K\u0131demli Ba\u015f\u00e7avu\u015f"
+            }
+        },
+        {
+            "title_id": "14",
+            "name": {
+                "de": "Warrant Officer",
+                "en": "Warrant Officer",
+                "es": "Oficial t\u00e9cnico",
+                "fr": "Adjudant-chef",
+                "it": "Sottufficiale",
+                "tr": "K\u0131demli Subay"
+            }
+        },
+        {
+            "title_id": "15",
+            "name": {
+                "de": "Second Lt.",
+                "en": "Second Lt.",
+                "es": "Tte. segundo",
+                "fr": "Second Ltn",
+                "it": "S.Ten.",
+                "tr": "Te\u011fmen"
+            }
+        },
+        {
+            "title_id": "16",
+            "name": {
+                "de": "First Lt.",
+                "en": "First Lt.",
+                "es": "Tte. primero",
+                "fr": "1er Ltn",
+                "it": "Tenente",
+                "tr": "\u00dcste\u011fmen"
+            }
+        },
+        {
+            "title_id": "17",
+            "name": {
+                "de": "Lt. Commander",
+                "en": "Lt. Commander",
+                "es": "Cap. de corbeta",
+                "fr": "Ltn en chef",
+                "it": "Ten.Com.",
+                "tr": "K\u0131demli Y\u00fczba\u015f\u0131"
+            }
+        },
+        {
+            "title_id": "18",
+            "name": {
+                "de": "Commander",
+                "en": "Commander",
+                "es": "Comandante",
+                "fr": "Commandant",
+                "it": "Comandante",
+                "tr": "Kumandan"
+            }
+        },
+        {
+            "title_id": "19",
+            "name": {
+                "de": "Captain",
+                "en": "Captain",
+                "es": "Capit\u00e1n",
+                "fr": "Capitaine",
+                "it": "Capitano",
+                "tr": "Y\u00fczba\u015f\u0131"
+            }
+        },
+        {
+            "title_id": "20",
+            "name": {
+                "de": "Major",
+                "en": "Major",
+                "es": "Mayor",
+                "fr": "Commandant",
+                "it": "Maggiore",
+                "tr": "Binba\u015f\u0131"
+            }
+        }
+    ],
+    "returned": 20
+}
