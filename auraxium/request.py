@@ -15,7 +15,7 @@ import json
 import logging
 import sys
 import warnings
-from typing import Any, Dict, Iterator, List, Optional
+from typing import Any, Dict, Iterator, List, Optional, Tuple
 
 import aiohttp
 import backoff
@@ -36,6 +36,33 @@ __all__ = [
 ]
 
 log = logging.getLogger('auraxium.http')
+
+
+def get_components(url: yarl.URL) -> Tuple[str, Optional[str]]:
+    """Return the namespace and collection of a given query.
+
+    Arguments:
+        url: The :class:`yarl.URL` to process. Only REST API query URLs
+            in the DBG census API format are allowed.
+
+    Returns:
+        The namespace/game and collection that was accessed. Collection
+        may be ``None`` for some queries.
+
+    """
+    components = url.path.split('/')[1:]
+    if components[0].startswith('s:'):  # Remove service ID
+        _ = components.pop(0)
+    if components[0] in ('xml', 'json'):  # Remove format specifier
+        _ = components.pop(0)
+    _ = components.pop(0)  # Remove query verb
+    if not components[-1]:  # Remove collection if empty
+        _ = components.pop(-1)
+    # If only a namespace was provided, return None as the collection
+    if len(components) == 1:
+        return components[0], None
+    assert len(components) == 2, 'Unable to parse URL'
+    return components[0], components[1]
 
 
 async def response_to_dict(response: aiohttp.ClientResponse) -> CensusData:
@@ -76,9 +103,6 @@ async def response_to_dict(response: aiohttp.ClientResponse) -> CensusData:
         except json.JSONDecodeError:
             # There really is something wrong with this data; let the original
             # content type error propagate.
-            log.error(
-                'Erroneous response object:\n  Status: %d, URL: %s',
-                response.status, response.request_info.real_url.human_repr())
             raise ResponseError(f'Received a non-JSON response: {text}')
         log.info(
             'Received a plain text response containing JSON data: %s', text)
@@ -177,20 +201,19 @@ def raise_for_dict(data: CensusData, url: yarl.URL) -> None:
     # Syntax parser and namespace dispatching
     if (msg := data.get('error')) is not None:
         if msg == 'No data found.':
+            namespace, collection = get_components(url)
             # NOTE: This error is returned if either the namespace or
             # collection are unknown
-            components = url.path.split('/')[3:]
-            # Namespace only
-            if len(components) == 1:
+            if collection is None:
                 raise UnknownCollectionError(
-                    f'The namespace "{components[0]}" does not exist.', url)
-            # Namespace and collection
-            namespace, collection, *_ = components
+                    f'The namespace "{namespace}" does not exist.',
+                    url, namespace, collection)
             help_url = Query(namespace=namespace)
             raise UnknownCollectionError(
                 f'No collection at "{namespace}/{collection}", try {help_url} '
                 f'for a the list of valid collections, or an error message if '
-                f'the the namespace "{namespace}" is invalid.', url)
+                f'the the namespace "{namespace}" is invalid.',
+                url, namespace, collection)
         if msg == 'Bad request syntax':
             raise BadRequestSyntaxError(
                 'An error occurred in the auraxium.census URL generator. '

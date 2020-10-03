@@ -55,6 +55,12 @@ class UnknownCollectionError(CensusError):
     collection name, e.g. ``ps2/character`` or ``dcuo/world``.
     """
 
+    def __init__(self, message: str, url: yarl.URL, namespace: str,
+                 collection: Optional[str]) -> None:
+        super().__init__(message, url)
+        self.namespace = namespace
+        self.collection = collection
+
 
 class ServiceUnavailableError(CensusError):
     """Raised if the API reports a service as temporarily unavailable.
