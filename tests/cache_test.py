@@ -2,14 +2,28 @@
 
 import datetime
 import logging
-import time
 import unittest
+from typing import Any
 
 from auraxium.cache import TLRUCache  # pylint: disable=import-error
+
+
+class CacheFilter(logging.Filter):
+    """This filter hides the cache debug statements from the user.
+
+    For testing reasons, these are always enabled, but they should not
+    propagate out into the unit testing script.
+    """
+
+    def filter(self, record: logging.LogRecord) -> bool:
+        """Return whether the given record should be recorded."""
+        return record.name != 'auraxium.cache'
+
 
 # Logger added with no handlers to trigger debug clauses in the code
 log = logging.getLogger('auraxium.cache')
 log.setLevel(logging.DEBUG)
+log.addFilter(CacheFilter())
 
 
 class TestCacheInterface(unittest.TestCase):
@@ -98,21 +112,20 @@ class TestCacheInterface(unittest.TestCase):
 
     def test_expired(self) -> None:
         """Test TLRUCache.expired()"""
-        cache: TLRUCache[int, str] = TLRUCache(10, .01)
+        cache: TLRUCache[int, str] = TLRUCache(10, 1.0)
         cache.add(0, 'Bogus')
         self.assertEqual(cache.get(0), 'Bogus')
-        time.sleep(0.01)
+        _age_up(cache, 0, 10.0)
         self.assertIsNone(cache.get(0))
 
     def test_last_accessed(self) -> None:
         """Test TLRUCache.last_accessed()"""
         cache: TLRUCache[int, str] = TLRUCache(10, -1)
         cache.add(0, 'Bogus')
-        start = datetime.datetime.now()
-        time.sleep(0.01)
+        offset = datetime.timedelta(0.1)
+        start = datetime.datetime.now() - offset
         _ = cache.get(0)
-        time.sleep(0.01)
-        end = datetime.datetime.now()
+        end = datetime.datetime.now() + offset
         self.assertTrue(start < cache.last_accessed(0) < end)
         # Test ValueError
         with self.assertRaises(ValueError):
@@ -131,14 +144,14 @@ class TestCacheInterface(unittest.TestCase):
     def test_remove_expired(self) -> None:
         """Test TLRUCache.remove_expired()"""
         # Test the auto-discard feature for outdated items
-        cache: TLRUCache[int, str] = TLRUCache(10, 0.015)
+        cache: TLRUCache[int, str] = TLRUCache(10, 4.0)
         cache.add(0, 'Apple')
-        time.sleep(0.01)
+        _age_up(cache, 0, 3.0)
         self.assertEqual(cache.remove_expired(), 0)
         cache.add(1, 'Banana')
-        time.sleep(0.01)
+        _age_up(cache, 0, 5.0)
         self.assertEqual(cache.remove_expired(), 1)
-        time.sleep(0.01)
+        _age_up(cache, 1, 10.0)
         self.assertEqual(cache.remove_expired(), 1)
 
     def test_remove_lru(self) -> None:
@@ -163,3 +176,14 @@ class TestCacheInterface(unittest.TestCase):
         cache.add(0, 'Item 0')
         cache.add_many(test_dict.items())
         self.assertDictEqual(cache.items(), test_dict)
+
+
+def _age_up(cache: TLRUCache[Any, Any], item: int, age: float) -> None:
+    """Set a cache item's age to the given number of seconds.
+
+    This mutates the associated cache entry, allowing to pretend time
+    having passed without needing to slow down execution with sleeps.
+    """
+    mock_time = datetime.datetime.now() - datetime.timedelta(seconds=age)
+    # pylint: disable=protected-access
+    cache._data[item].first_added = mock_time  # type: ignore

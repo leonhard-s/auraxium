@@ -1,0 +1,5 @@
+{
+    "_URL": "http://census.daybreakgames.com/get/ps2/item?c:limit=Bogus",
+    "errorCode": "SERVER_ERROR",
+    "errorMessage": "INVALID_SEARCH_TERM: Invalid search term: c:limit. Value must be a whole number."
+}

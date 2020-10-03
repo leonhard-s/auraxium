@@ -99,7 +99,7 @@ class EventType(enum.IntEnum):
     def from_event_name(cls, event_name: str) -> 'EventType':
         """Return the appropriate enum value for the given name.
 
-        The event name is case-insensitive here, not not in general.
+        The event name is case-insensitive here, but not in general.
 
         Returns:
             The event type for the given event payload, or

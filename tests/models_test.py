@@ -5,10 +5,12 @@ import os
 import unittest
 from typing import Any, Dict, List, Optional
 
-from auraxium.base import Ps2Data  # pylint: disable=import-error
-from auraxium import ps2  # pylint: disable=import-error
+# pylint: disable=import-error
+from auraxium.base import Ps2Data
+from auraxium import ps2
+from tests.utils import DATA
 
-PAYLOAD_DIRECTORY = 'tests/data/models/'
+PAYLOAD_DIRECTORY = os.path.join(DATA, 'models')
 
 
 class TestModels(unittest.TestCase):

@@ -99,7 +99,8 @@ class TLRUCache(Generic[K, V]):
 
         This will remove any expired keys before calculation.
         """
-        self.remove_expired()
+        if self.ttu > 0:
+            self.remove_expired()
         return len(self._data)
 
     def add(self, key: K, item: V) -> None:

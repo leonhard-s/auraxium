@@ -9,7 +9,6 @@ import warnings
 from typing import List
 
 import yarl
-
 from auraxium import census  # pylint: disable=import-error
 
 ENDPOINT = 'https://census.daybreakgames.com/'
@@ -17,6 +16,9 @@ ENDPOINT = 'https://census.daybreakgames.com/'
 
 class TestQueryBaseInterface(unittest.TestCase):
     """Test the class interface of the QueryBase class."""
+
+    def setUp(self) -> None:
+        warnings.filterwarnings('ignore', 'The default service ID is')
 
     def test_add_join(self) -> None:
         """Test QueryBase.add_join()"""
@@ -467,7 +469,6 @@ class TestURLs(unittest.TestCase):
         with warnings.catch_warnings(record=True) as caught:
             assert caught is not None
             _ = query_empty.url()
-            print(caught)
             self.assertFalse(find_warning(caught, 'No collection specified'))
         with warnings.catch_warnings(record=True) as caught:
             assert caught is not None
