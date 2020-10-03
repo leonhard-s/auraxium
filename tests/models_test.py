@@ -41,8 +41,8 @@ class TestModels(unittest.TestCase):
                     continue
                 if type_.collection == collection:
                     cls_ = type_.__annotations__['data']
-            if cls_ is None:
-                assert False, f'Type for collection "{collection}" not found'
+            assert cls_ is not None, (
+                f'Type for collection "{collection}" not found')
             # Instantiate any payloads found
             for data in payload[f'{collection}_list']:
                 instance = cls_.from_census(data)

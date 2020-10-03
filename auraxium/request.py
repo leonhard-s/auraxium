@@ -214,7 +214,7 @@ def raise_for_dict(data: CensusData, url: yarl.URL) -> None:
                 f'for a the list of valid collections, or an error message if '
                 f'the the namespace "{namespace}" is invalid.',
                 url, namespace, collection)
-        if msg == 'Bad request syntax':
+        if msg == 'Bad request syntax.':
             raise BadRequestSyntaxError(
                 'An error occurred in the auraxium.census URL generator. '
                 'Please report this error at '
