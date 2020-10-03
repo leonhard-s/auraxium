@@ -346,7 +346,7 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
         MaintenanceError)
 
     def expo_scaled() -> Iterator[float]:
-        """A scaled, version backoff.expo that doesn't wait as long."""
+        """A scaled version backoff.expo that doesn't wait as long."""
         gen: Iterator[float] = backoff.expo(2, 0.1)  # type: ignore
         while True:
             try:
@@ -356,7 +356,7 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
 
     @backoff.on_exception(expo_scaled, backoff_errors,  # type: ignore
                           on_backoff=on_backoff, on_giveup=on_giveup,
-                          on_success=on_success, max_time=5.0, max_tries=10,
+                          on_success=on_success, max_time=30.0, max_tries=10,
                           jitter=None)
     async def retry_query() -> aiohttp.ClientResponse:
         """Request handling wrapper."""

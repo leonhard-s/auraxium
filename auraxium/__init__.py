@@ -17,7 +17,7 @@ from . import errors
 from . import ps2
 from .base import Cached, Named, Ps2Object
 from .client import Client
-from .event import Event, EventType, Trigger
+from .event import Event, EventClient, EventType, Trigger
 
 __all__ = [
     'Cached',
@@ -25,6 +25,7 @@ __all__ = [
     'Client',
     'errors',
     'Event',
+    'EventClient',
     'EventType',
     'Named',
     'ps2',
