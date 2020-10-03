@@ -10,7 +10,7 @@ from auraxium.base import Ps2Data
 from auraxium import ps2
 from tests.utils import DATA
 
-PAYLOAD_DIRECTORY = os.path.join(DATA, 'models')
+PAYLOAD_DIRECTORY = os.path.join(DATA, 'rest')
 
 
 class TestModels(unittest.TestCase):
