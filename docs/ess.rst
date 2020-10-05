@@ -66,13 +66,13 @@ The only argument passed to the function set as the trigger action is the event 
 Registering Triggers
 --------------------
 
-The easiest way to register a trigger to the client is via the :meth:`auraxium.Client.trigger()` decorator. It takes the event/s to listen for as the arguments and creates a trigger using the decorated function as the trigger action.
+The easiest way to register a trigger to the client is via the :meth:`auraxium.EventClient.trigger()` decorator. It takes the event/s to listen for as the arguments and creates a trigger using the decorated function as the trigger action.
 
 .. note::
     
     Keep in mind that the websocket connection will be continuously looping, waiting for new events to come in.
 
-    This means that using :class:`auraxium.Client()` as a context manager may cause issues since the context manager will close the connection when the context manager is exited.
+    This means that using :class:`auraxium.EventClient()` as a context manager may cause issues since the context manager will close the connection when the context manager is exited.
 
 Here is an example trigger setup:
 
@@ -87,7 +87,7 @@ Here is an example trigger setup:
     async def main():
         # NOTE: Depending on player activity, this script will likely exceed the
         # ~6 requests per minute and IP address limit for the default service ID.
-        client = auraxium.Client(service_id='s:example')
+        client = auraxium.EventClient(service_id='s:example')
 
         @client.trigger(auraxium.EventType.BATTLE_RANK_UP)
         async def print_levelup(event):
