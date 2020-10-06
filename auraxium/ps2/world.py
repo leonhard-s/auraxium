@@ -1,12 +1,13 @@
 """World class definition."""
 
-from typing import Any, Final, List, Optional, Union
+import datetime
+from typing import Any, Final, List, Optional, Tuple, Union
 
 from ..base import Named
 from ..census import Query
 from ..client import Client
 from ..models import WorldData
-from ..request import extract_payload
+from ..request import extract_payload, extract_single
 from ..types import CensusData
 
 from .zone import Zone
@@ -71,3 +72,19 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
         payload = await self._client.request(query)
         data = extract_payload(payload, collection=collection)
         return data
+
+    async def status(self) -> Tuple[str, datetime.datetime]:
+        """Return the online status for the world.
+
+        This returns a tuple consisting of the reported server state
+        (e.g. "locked", "low", or "high", the latter referring to
+        population numbers), and the last time this value was updated.
+        """
+        query = Query('game_server_status', namespace='global',
+                      service_id=self._client.service_id, game_code='ps2',
+                      name=f'^{self.data.name.en}')
+        payload = await self._client.request(query)
+        data = extract_single(payload, 'game_server_status')
+        status = str(data['last_reported_state'])
+        last_updated = int(data['last_reported_time'])
+        return status, datetime.datetime.utcfromtimestamp(last_updated)
