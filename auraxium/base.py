@@ -143,7 +143,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
             # points to a mismatch between the object model and the API
             msg = 'keys' if len(list(keys)) > 1 else 'key'
             warnings.warn(
-                f'Unexpected key{msg} in payload: {list(keys)}\n'
+                f'Unexpected {msg} in payload: {list(keys)}\n'
                 'Please report this error as it hints at a mismatch between '
                 'the auraxium object model and the API.')
 
