@@ -110,7 +110,7 @@ async def main():
 
         char = await client.get_by_name(ps2.Character, 'auroram')
         print(char.name())
-        print(character.data.asp_rank)
+        print(char.data.prestige_level)
 
         # NOTE: Any methods that might incur network traffic are asynchronous.
         # If the data type has been cached locally, no network communication
@@ -120,12 +120,11 @@ async def main():
         # data type is cached forever by default.
         print(await char.faction())
 
-        # The outfit data type is only cached for a few seconds before being
-        # required as it might change.
-        outfit = await char.outfit()
-        print(outfit.name())
+        # The online status is never cached as it is bound to change at any
+        # moment.
+        print(await char.is_online())
 
-asyncio.run_until_complete(main())
+asyncio.get_event_loop().run_until_complete(main())
 ```
 
 ## Event Streaming

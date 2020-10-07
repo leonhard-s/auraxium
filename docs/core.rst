@@ -39,22 +39,21 @@ Here is an example script that prints various character properties:
 
             char = await client.get_by_name(ps2.Character, 'auroram')
             print(char.name())
-            print(character.data.asp_rank)
+            print(char.data.prestige_level)
 
             # NOTE: Any methods that might incur network traffic are asynchronous.
             # If the data type has been cached locally, no network communication
             # is required.
 
             # This will only generate a request once per faction, as the faction
-            # data type is cached forever by default.
+            # data type is cached forever by default
             print(await char.faction())
 
-            # The outfit data type is only cached for a few seconds before being
-            # requeried as it might change.
-            outfit = await char.outfit()
-            print(outfit.name())
-
-    asyncio.run_until_complete(main())
+            # The online status is never cached as it is bound to change at any
+            # moment.
+            print(await char.is_online())
+            
+    asyncio.get_event_loop().run_until_complete(main())
 
 API Reference
 -------------
