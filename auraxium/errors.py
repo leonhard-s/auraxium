@@ -18,7 +18,7 @@ __all__ = [
     'MaintenanceError',
     'NotFoundError',
     'ResponseError',
-    'BadPayloadError'
+    'PayloadError'
 ]
 
 
@@ -164,7 +164,7 @@ class ResponseError(AuraxiumException):
     """
 
 
-class BadPayloadError(AuraxiumException):
+class PayloadError(AuraxiumException):
     """Raised if the payload returned by the API is unexpected.
 
     This generally points to a bug in the object model, or to the API

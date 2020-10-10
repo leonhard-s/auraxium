@@ -22,7 +22,7 @@ import backoff
 import yarl
 
 from .census import Query
-from .errors import (BadPayloadError, BadRequestSyntaxError, CensusError,
+from .errors import (PayloadError, BadRequestSyntaxError, CensusError,
                      InvalidSearchTermError, InvalidServiceIDError,
                      MaintenanceError, MissingServiceIDError, NotFoundError,
                      ResponseError, ServerError, ServiceUnavailableError,
@@ -128,7 +128,7 @@ def extract_payload(data: CensusData, collection: str) -> List[CensusData]:
     try:
         list_: List[CensusData] = data[f'{collection}_list']
     except KeyError as err:
-        raise BadPayloadError(
+        raise PayloadError(
             f'Unable to extract list of results due to missing key '
             f'"{collection}_list" in payload: {data}') from err
     return list_
@@ -159,8 +159,8 @@ def extract_single(data: CensusData, collection: str,
     """
     try:
         list_ = extract_payload(data, collection)
-    except BadPayloadError as err:
-        raise BadPayloadError(
+    except PayloadError as err:
+        raise PayloadError(
             f'Unable to extract result due to missing key "{collection}_list" '
             f'in payload: {data}') from err
     if not list_:

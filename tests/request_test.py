@@ -175,7 +175,7 @@ class TestPayloadParsing(unittest.IsolatedAsyncioTestCase):
         self.assertTrue(len(data), 20)
         self.assertTrue('character_id' in data[0])
         self.assertTrue(len(data[0]), 20)
-        with self.assertRaises(errors.BadPayloadError):
+        with self.assertRaises(errors.PayloadError):
             _ = request.extract_payload({}, 'example')
 
     def test_extract_single(self) -> None:
@@ -201,7 +201,7 @@ class TestPayloadParsing(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(len(caught), 0, 'Unexpected warning')
         # Check contents
         self.assertTrue('character_id' in data)
-        with self.assertRaises(errors.BadPayloadError):
+        with self.assertRaises(errors.PayloadError):
             _ = request.extract_single({}, 'example')
         # Check for NotFoundError
         with self.assertRaises(errors.NotFoundError):

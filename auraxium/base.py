@@ -14,7 +14,7 @@ from typing import (Any, ClassVar, get_args, List, Optional, Type,
 
 from .cache import TLRUCache
 from .census import Query
-from .errors import BadPayloadError, NotFoundError
+from .errors import PayloadError, NotFoundError
 from .request import extract_payload, extract_single
 from .types import CensusData
 
@@ -135,7 +135,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
         try:
             self.data = self._build_dataclass(data)
         except KeyError as err:
-            raise BadPayloadError(
+            raise PayloadError(
                 f'Unable to populate {self.__class__.__name__} due to a '
                 f'missing key: {err.args[0]}') from err
         if data and (keys := filter(lambda k: '_join_' not in k, data.keys())):
@@ -203,10 +203,10 @@ class Ps2Object(metaclass=abc.ABCMeta):
         try:
             return int(result['count'])
         except KeyError as err:
-            raise BadPayloadError(
+            raise PayloadError(
                 'Missing key "count" in API response') from err
         except ValueError as err:
-            raise BadPayloadError(f'Invalid count: {result["count"]}') from err
+            raise PayloadError(f'Invalid count: {result["count"]}') from err
 
     @classmethod
     async def find(cls: Type[Ps2ObjectT], results: int = 10, *,
