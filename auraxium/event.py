@@ -12,13 +12,14 @@ import enum
 import json
 import logging
 import warnings
-from typing import (Any, Awaitable, Callable, Coroutine, Dict, Iterable, List,
-                    Optional, Set, TYPE_CHECKING, Union)
+from typing import (Any, Awaitable, Callable, Coroutine, Dict, Iterable,
+                    Iterator, List, Optional, Set, TYPE_CHECKING, Union)
 
 import websockets
 
 from .client import Client
 from .types import CensusData
+from .utils import expo_scaled
 
 if TYPE_CHECKING:
     # This is only imported during static type checking to resolve the forward
@@ -143,7 +144,7 @@ class EventType(enum.IntEnum):
         of players.
 
         This returns a string that can be passed to both
-        :meth:`Client.trigger()` and the :class:`Trigger` class's
+        :meth:`EventClient.trigger()` and the :class:`Trigger` class's
         initialiser in place of the enum value itself.
 
         Arguments:
@@ -389,15 +390,17 @@ class EventClient(Client):
 
     To use the websocket endpoint, you have to define a
     :class:`Trigger` and register it using the
-    :meth:`Client.add_trigger()` method. This will automatically open
-    the websocket connection if one does not exist.
+    :meth:`EventClient.add_trigger()` method. This will automatically
+    open a websocket connection is there is not already one running.
+    Likewise, removing all event triggers from the client will cause
+    the underlying websocket connection to close.
 
     Refer to the :class:`Trigger` class's documentation for details on
     how to use triggers and respond to events.
 
     Attributes:
-        triggers: The list of :class:`Triggers <Trigger>` registered for
-            the client.
+        triggers: The list of :class:`Triggers <Trigger>` registered
+            for the client.
         websocket: The websocket client used for the real-time event
             stream. This will be automatically opened and closed by the
             client as event triggers are added and removed.
@@ -408,8 +411,9 @@ class EventClient(Client):
         super().__init__(*args, **kwargs)
         self.triggers: List[Trigger] = []
         self.websocket: Optional[websockets.WebSocketClientProtocol] = None
-        self._connected: bool = False
-        self._lock = asyncio.Lock()
+        self._connect_lock = asyncio.Lock()
+        # NOTE: This utility returns a factory, hence the trailing parentheses
+        self._reconnect_backoff = self._reset_backoff()
         self._send_queue: List[str] = []
 
     def add_trigger(self, trigger: Trigger) -> None:
@@ -418,9 +422,11 @@ class EventClient(Client):
         If there is currently no active websocket connection to the
         event streaming service, one will be created for this trigger.
 
-        Note that the event loop will take a few cycles to get started,
-        use the :meth:`Client.wait_ready()` method if you need to await
-        the trigger being active.
+        .. note::
+            As this is a synchronous method, the websocket will not be
+            active by the time this method returns.
+            Use :meth:`EventClient.wait_ready()` to wait for the
+            websocket being ready.
 
         Arguments:
             trigger: The trigger to add.
@@ -430,9 +436,10 @@ class EventClient(Client):
         self.triggers.append(trigger)
         subscription = trigger.generate_subscription()
         self._send_queue.append(subscription)
-        if self.websocket is None:
+        # Only queue the connect() method if it is not already running
+        if self.websocket is None and not self._connect_lock.locked():
             log.debug('Websocket not connected, scheduling connection')
-            self.loop.create_task(self._connect())
+            self.loop.create_task(self.connect())
 
     def find_trigger(self, name: str) -> Trigger:
         """Retrieve a registered event trigger by name.
@@ -501,59 +508,52 @@ class EventClient(Client):
         await self.disconnect()
         await super().close()
 
-    async def _connect(self) -> None:
+    async def connect(self) -> None:
         """Connect to the websocket endpoint and process responses.
 
-        This will continuously loop until :meth:`Client.close()` is
-        called.
+        This will continuously loop until :meth:`EventClient.close()`
+        is called.
+        If the websocket connection encounters and error, it will be
+        automatically restarted.
 
-        Add payloads to :attr`Client._send_queue` to schedule their
-        transmission.
+        Add payloads to :attr`EventClient._send_queue` to schedule
+        their transmission.
 
-        Any payloads received will be passed to
-        :meth:`Client.dispatch()` for filtering and event dispatch.
+        Any event payloads received will be passed to
+        :meth:`EventClient.dispatch()` for filtering and event
+        dispatch.
 
         """
-        await self._lock.acquire()
-        if self.websocket is not None:
+        # NOTE: When multiple triggers are added to the bot without an active
+        # websocket connection, this function may be scheduled multiple times.
+        if self._connect_lock.locked():
+            log.debug('Websocket already running')
             return
+        await self._connect_lock.acquire()
+
         log.info('Connecting to websocket endpoint...')
         url = f'{ESS_ENDPOINT}?environment=ps2&service-id={self.service_id}'
         async with websockets.connect(url) as websocket:
+            self.websocket = websocket
             log.info(
                 'Connected to %s?environment=ps2&service-id=XXX', ESS_ENDPOINT)
-            self.websocket = websocket
-            self._lock.release()
-            # This loop will go on until this flag is unset, which is done by
-            # the close() method.
-            self._connected = True
-            while self._connected:
+
+            # Reset the backoff generator as the connection attempt was
+            # successful
+            self._reconnect_backoff = self._reset_backoff()
+
+            # Keep processing websocket events until the connection dies or is
+            # closed by the user or trigger system.
+            while self._connect_lock.locked():
                 try:
-                    try:
-                        response = str(await asyncio.wait_for(
-                            self.websocket.recv(), timeout=0.25))
-                    except asyncio.TimeoutError:
-                        # NOTE: This inner timeout try block is used to ensure
-                        # the websocket will regularly check for messages in
-                        # the client's _send_queue even when no messages are
-                        # being received.
-                        # Without this, awaiting self.websocket.recv() would
-                        # block events from being sent if no responses are
-                        # received.
-                        pass
-                    else:
-                        log.debug('Received response: %s', response)
-                        self._process_payload(response)
-                    finally:
-                        if self._send_queue:
-                            msg = self._send_queue.pop(0)
-                            log.info('Sending message: %s', msg)
-                            await self.websocket.send(msg)
-                except websockets.exceptions.ConnectionClosed as err:
-                    log.warning('Connection was closed, reconnecting: %s', err)
+                    await self._handle_websocket()
+                except websockets.exceptions.ConnectionClosed:
                     await self.disconnect()
-                    self.loop.create_task(self._connect())
-                    return
+                    # NOTE: This will increment the reconnect delay each time,
+                    # until one connection attempt is successful.
+                    delay = next(self._reconnect_backoff)
+                    await asyncio.sleep(delay)
+                    self.loop.create_task(self.connect())
 
     async def disconnect(self) -> None:
         """Disconnect the websocket.
@@ -562,12 +562,14 @@ class EventClient(Client):
         HTTP session used by regular REST requests.
 
         """
+        if self.websocket is None:
+            return
         log.info('Closing websocket connection')
-        if self._connected:
-            self._connected = False
-            if self.websocket is not None and self.websocket.open:
-                await self.websocket.close()
-                self.websocket = None
+        if self.websocket.open:
+            await self.websocket.close()
+        with contextlib.suppress(RuntimeError):
+            self._connect_lock.release()
+        self.websocket = None
 
     def dispatch(self, event: Event) -> None:
         """Dispatch an event to the appropriate event triggers.
@@ -601,6 +603,36 @@ class EventClient(Client):
                 if trigger.single_shot:
                     log.info('Removing single-shot trigger %s', trigger)
                     self.remove_trigger(trigger)
+
+    async def _handle_websocket(self, timeout: float = 0.1) -> None:
+        """Main loop handling the websocket connection.
+
+        This method processes event payloads, adds automatic reconnect
+        capabilities and sends messages added to
+        :attr:`EventClient._send_queue`.
+        """
+        if self.websocket is None:
+            return
+        try:
+            response = str(await asyncio.wait_for(
+                self.websocket.recv(), timeout=timeout))
+        except asyncio.TimeoutError:
+            # NOTE: This inner timeout try block is used to ensure
+            # the websocket will regularly check for messages in
+            # the client's _send_queue even when no messages are
+            # being received.
+            # Without this, awaiting self.websocket.recv() would
+            # block events from being sent if no responses are
+            # received.
+            pass
+        else:
+            log.debug('Received response: %s', response)
+            self._process_payload(response)
+        finally:
+            if self._send_queue:
+                msg = self._send_queue.pop(0)
+                log.info('Sending message: %s', msg)
+                await self.websocket.send(msg)
 
     def trigger(self, event: Union[str, EventType],
                 *args: Union[str, EventType], name: Optional[str] = None,
@@ -647,7 +679,7 @@ class EventClient(Client):
 
         This method filters out any non-event messages (such as service
         messages, connection heartbeats or subscription echoes) before
-        passing any event payloads on to :meth:`Client.dispatch()`.
+        passing any event payloads on to :meth:`EventClient.dispatch()`.
 
         Arguments:
             response: The plain text response received through the ESS.
@@ -678,6 +710,11 @@ class EventClient(Client):
         # Other
         else:
             log.warning('Unhandled message: %s', data)
+
+    @staticmethod
+    def _reset_backoff() -> Iterator[float]:
+        """Reset the reconnect backoff generator."""
+        return expo_scaled(factor=0.1, max_=30.0)()
 
     async def wait_for(self, trigger: Trigger, *args: Trigger,
                        timeout: Optional[float] = None) -> Event:
@@ -764,7 +801,7 @@ class EventClient(Client):
                 websocket connection's status. Defaults to ``0.05``.
 
         """
-        if self._connected:
+        if self._connect_lock.locked():
             return
-        while not self._connected:
+        while not self._connect_lock.locked():
             await asyncio.sleep(interval)
