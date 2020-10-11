@@ -15,7 +15,7 @@ import json
 import logging
 import sys
 import warnings
-from typing import Any, Dict, Iterator, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import aiohttp
 import backoff
@@ -28,6 +28,7 @@ from .errors import (PayloadError, BadRequestSyntaxError, CensusError,
                      ResponseError, ServerError, ServiceUnavailableError,
                      UnknownCollectionError)
 from .types import CensusData
+from .utils import expo_scaled
 
 __all__ = [
     'extract_payload',
@@ -355,8 +356,8 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
 
     def on_giveup(details: Dict[str, Any]) -> None:
         """Called when giving up on a query."""
-        elapsed = details['elapsed']
-        tries = details['tries']
+        elapsed: float = details['elapsed']
+        tries: int = details['tries']
         log.warning('Giving up on query and re-raising exception after %.2f '
                     'seconds and %d attempts: %s', elapsed, tries, url)
         _, exc_value, _ = sys.exc_info()
@@ -369,16 +370,7 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
         aiohttp.ClientConnectionError,
         MaintenanceError)
 
-    def expo_scaled() -> Iterator[float]:
-        """A scaled version backoff.expo that doesn't wait as long."""
-        gen: Iterator[float] = backoff.expo(2, 0.1)  # type: ignore
-        while True:
-            try:
-                yield next(gen) * 0.1  # Scaling factor
-            except StopIteration:
-                return
-
-    @backoff.on_exception(expo_scaled, backoff_errors,  # type: ignore
+    @backoff.on_exception(expo_scaled(0.05), backoff_errors,  # type: ignore
                           on_backoff=on_backoff, on_giveup=on_giveup,
                           on_success=on_success, max_time=30.0, max_tries=10,
                           jitter=None)
