@@ -138,6 +138,10 @@ class Ps2Object(metaclass=abc.ABCMeta):
             raise PayloadError(
                 f'Unable to populate {self.__class__.__name__} due to a '
                 f'missing key: {err.args[0]}', data) from err
+        except ValueError as err:
+            raise PayloadError(
+                f'Unable to instantiate {self.__class__.__name__} instance '
+                f'from given payload: {err.args[0]}', data) from err
         if data and (keys := filter(lambda k: '_join_' not in k, data.keys())):
             # Any leftover data (excluding joins) will raise a warning as it
             # points to a mismatch between the object model and the API
