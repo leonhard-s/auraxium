@@ -4,8 +4,7 @@ import dataclasses
 from typing import Optional
 
 from ..base import Ps2Data
-from ..types import CensusData
-from ..utils import LocaleData, optional
+from ..types import CensusData, LocaleData, optional
 
 __all__ = [
     'WeaponAmmoSlot',

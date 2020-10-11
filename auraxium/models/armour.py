@@ -4,8 +4,7 @@ import dataclasses
 from typing import Optional
 
 from ..base import Ps2Data
-from ..utils import optional
-from ..types import CensusData
+from ..types import CensusData, optional
 
 __all__ = [
     'ArmourInfoData'

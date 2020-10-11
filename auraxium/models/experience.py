@@ -3,8 +3,7 @@
 import dataclasses
 
 from ..base import Ps2Data
-from ..types import CensusData
-from ..utils import LocaleData
+from ..types import CensusData, LocaleData
 
 __all__ = [
     'ExperienceData',
