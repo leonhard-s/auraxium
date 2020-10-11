@@ -412,6 +412,7 @@ class EventClient(Client):
         self.triggers: List[Trigger] = []
         self.websocket: Optional[websockets.WebSocketClientProtocol] = None
         self._connect_lock = asyncio.Lock()
+        self._connected: bool = False
         # NOTE: This utility returns a factory, hence the trailing parentheses
         self._reconnect_backoff = self._reset_backoff()
         self._send_queue: List[str] = []
@@ -537,6 +538,7 @@ class EventClient(Client):
             self.websocket = websocket
             log.info(
                 'Connected to %s?environment=ps2&service-id=XXX', ESS_ENDPOINT)
+            self._connected = True
 
             # Reset the backoff generator as the connection attempt was
             # successful
@@ -547,12 +549,17 @@ class EventClient(Client):
             while self._connect_lock.locked():
                 try:
                     await self._handle_websocket()
-                except websockets.exceptions.ConnectionClosed:
+                except websockets.exceptions.ConnectionClosed as err:
+                    log.info('Websocket connection closed (%d, %s)',
+                             err.code, err.reason)  # type: ignore
                     await self.disconnect()
                     # NOTE: This will increment the reconnect delay each time,
                     # until one connection attempt is successful.
                     delay = next(self._reconnect_backoff)
+                    log.info(
+                        'Next reconnection attempt in %.2f seconds', delay)
                     await asyncio.sleep(delay)
+                    log.info('Attempting to reconnect...')
                     self.loop.create_task(self.connect())
 
     async def disconnect(self) -> None:
@@ -570,6 +577,7 @@ class EventClient(Client):
         with contextlib.suppress(RuntimeError):
             self._connect_lock.release()
         self.websocket = None
+        self._connected = False
 
     def dispatch(self, event: Event) -> None:
         """Dispatch an event to the appropriate event triggers.
@@ -801,7 +809,7 @@ class EventClient(Client):
                 websocket connection's status. Defaults to ``0.05``.
 
         """
-        if self._connect_lock.locked():
+        if self._connected:
             return
-        while not self._connect_lock.locked():
+        while not self._connected:
             await asyncio.sleep(interval)
