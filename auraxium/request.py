@@ -94,16 +94,17 @@ async def response_to_dict(response: aiohttp.ClientResponse) -> CensusData:
         # setting the content_type flag to False and letting its JSON decoder
         # error out within aiohttp, then handle that - this is arguably neater.
         data = await response.json()
-    except aiohttp.ContentTypeError:
+    except aiohttp.ContentTypeError as err:
         text = await response.text()
         # Run the plain text through the JSON decoder anyway before we let the
         # error propagate to handle the misrepresented content type issue.
         try:
             data = json.loads(text)
         except json.JSONDecodeError:
-            # There really is something wrong with this data; let the original
-            # content type error propagate.
-            raise ResponseError(f'Received a non-JSON response: {text}')
+            # There really is something wrong with this data, let an updated
+            # error propagate.
+            raise ResponseError(
+                f'Received a non-JSON response: {text}') from err
         log.info(
             'Received a plain text response containing JSON data: %s', text)
         return data
@@ -130,7 +131,7 @@ def extract_payload(data: CensusData, collection: str) -> List[CensusData]:
     except KeyError as err:
         raise PayloadError(
             f'Unable to extract list of results due to missing key '
-            f'"{collection}_list" in payload: {data}') from err
+            f'"{collection}_list" in payload: {data}', data) from err
     return list_
 
 
@@ -162,7 +163,7 @@ def extract_single(data: CensusData, collection: str,
     except PayloadError as err:
         raise PayloadError(
             f'Unable to extract result due to missing key "{collection}_list" '
-            f'in payload: {data}') from err
+            f'in payload: {data}', data) from err
     if not list_:
         raise NotFoundError('The server did not return any matches')
     if not no_warn_multi and len(list_) > 1:

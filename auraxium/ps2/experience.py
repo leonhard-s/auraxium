@@ -43,7 +43,7 @@ class ExperienceRank:
         except KeyError as err:
             raise PayloadError(
                 f'Unable to populate {self.__class__.__name__} due to a '
-                f'missing key: {err.args[0]}') from err
+                f'missing key: {err.args[0]}', data) from err
 
     def __repr__(self) -> str:
         """Return the unique string representation of this object.

@@ -137,7 +137,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
         except KeyError as err:
             raise PayloadError(
                 f'Unable to populate {self.__class__.__name__} due to a '
-                f'missing key: {err.args[0]}') from err
+                f'missing key: {err.args[0]}', data) from err
         if data and (keys := filter(lambda k: '_join_' not in k, data.keys())):
             # Any leftover data (excluding joins) will raise a warning as it
             # points to a mismatch between the object model and the API
@@ -204,9 +204,10 @@ class Ps2Object(metaclass=abc.ABCMeta):
             return int(result['count'])
         except KeyError as err:
             raise PayloadError(
-                'Missing key "count" in API response') from err
+                'Missing key "count" in API response', result) from err
         except ValueError as err:
-            raise PayloadError(f'Invalid count: {result["count"]}') from err
+            raise PayloadError(
+                f'Invalid count: {result["count"]}', result) from err
 
     @classmethod
     async def find(cls: Type[Ps2ObjectT], results: int = 10, *,
