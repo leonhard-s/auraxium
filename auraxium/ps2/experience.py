@@ -4,7 +4,7 @@ import logging
 
 from ..base import Cached
 from ..client import Client
-from ..errors import BadPayloadError
+from ..errors import PayloadError
 from ..models import ExperienceData, ExperienceRankData
 from ..types import CensusData
 
@@ -41,9 +41,9 @@ class ExperienceRank:
         try:
             self.data = ExperienceRankData.from_census(data)
         except KeyError as err:
-            raise BadPayloadError(
+            raise PayloadError(
                 f'Unable to populate {self.__class__.__name__} due to a '
-                f'missing key: {err.args[0]}') from err
+                f'missing key: {err.args[0]}', data) from err
 
     def __repr__(self) -> str:
         """Return the unique string representation of this object.

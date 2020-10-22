@@ -1,6 +1,6 @@
 """Custom exceptions specific to the auraxium module."""
 
-from typing import Optional
+from typing import Any, Dict, Optional
 
 import aiohttp
 import yarl
@@ -18,7 +18,7 @@ __all__ = [
     'MaintenanceError',
     'NotFoundError',
     'ResponseError',
-    'BadPayloadError'
+    'PayloadError'
 ]
 
 
@@ -164,7 +164,7 @@ class ResponseError(AuraxiumException):
     """
 
 
-class BadPayloadError(AuraxiumException):
+class PayloadError(AuraxiumException):
     """Raised if the payload returned by the API is unexpected.
 
     This generally points to a bug in the object model, or to the API
@@ -173,6 +173,10 @@ class BadPayloadError(AuraxiumException):
     Please submit an issue at
     https://github.com/leonhard-s/auraxium/issues either way.
     """
+
+    def __init__(self, message: str, payload: Dict[str, Any]) -> None:
+        super().__init__(message)
+        self.payload = payload
 
 
 class NotFoundError(AuraxiumException):

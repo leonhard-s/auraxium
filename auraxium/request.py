@@ -15,19 +15,20 @@ import json
 import logging
 import sys
 import warnings
-from typing import Any, Dict, Iterator, List, Optional, Tuple
+from typing import Any, Dict, List, Optional, Tuple
 
 import aiohttp
 import backoff
 import yarl
 
 from .census import Query
-from .errors import (BadPayloadError, BadRequestSyntaxError, CensusError,
+from .errors import (PayloadError, BadRequestSyntaxError, CensusError,
                      InvalidSearchTermError, InvalidServiceIDError,
                      MaintenanceError, MissingServiceIDError, NotFoundError,
                      ResponseError, ServerError, ServiceUnavailableError,
                      UnknownCollectionError)
 from .types import CensusData
+from .utils import expo_scaled
 
 __all__ = [
     'extract_payload',
@@ -94,16 +95,17 @@ async def response_to_dict(response: aiohttp.ClientResponse) -> CensusData:
         # setting the content_type flag to False and letting its JSON decoder
         # error out within aiohttp, then handle that - this is arguably neater.
         data = await response.json()
-    except aiohttp.ContentTypeError:
+    except aiohttp.ContentTypeError as err:
         text = await response.text()
         # Run the plain text through the JSON decoder anyway before we let the
         # error propagate to handle the misrepresented content type issue.
         try:
             data = json.loads(text)
         except json.JSONDecodeError:
-            # There really is something wrong with this data; let the original
-            # content type error propagate.
-            raise ResponseError(f'Received a non-JSON response: {text}')
+            # There really is something wrong with this data, let an updated
+            # error propagate.
+            raise ResponseError(
+                f'Received a non-JSON response: {text}') from err
         log.info(
             'Received a plain text response containing JSON data: %s', text)
         return data
@@ -128,9 +130,9 @@ def extract_payload(data: CensusData, collection: str) -> List[CensusData]:
     try:
         list_: List[CensusData] = data[f'{collection}_list']
     except KeyError as err:
-        raise BadPayloadError(
+        raise PayloadError(
             f'Unable to extract list of results due to missing key '
-            f'"{collection}_list" in payload: {data}') from err
+            f'"{collection}_list" in payload: {data}', data) from err
     return list_
 
 
@@ -159,10 +161,10 @@ def extract_single(data: CensusData, collection: str,
     """
     try:
         list_ = extract_payload(data, collection)
-    except BadPayloadError as err:
-        raise BadPayloadError(
+    except PayloadError as err:
+        raise PayloadError(
             f'Unable to extract result due to missing key "{collection}_list" '
-            f'in payload: {data}') from err
+            f'in payload: {data}', data) from err
     if not list_:
         raise NotFoundError('The server did not return any matches')
     if not no_warn_multi and len(list_) > 1:
@@ -354,8 +356,8 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
 
     def on_giveup(details: Dict[str, Any]) -> None:
         """Called when giving up on a query."""
-        elapsed = details['elapsed']
-        tries = details['tries']
+        elapsed: float = details['elapsed']
+        tries: int = details['tries']
         log.warning('Giving up on query and re-raising exception after %.2f '
                     'seconds and %d attempts: %s', elapsed, tries, url)
         _, exc_value, _ = sys.exc_info()
@@ -368,16 +370,7 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
         aiohttp.ClientConnectionError,
         MaintenanceError)
 
-    def expo_scaled() -> Iterator[float]:
-        """A scaled version backoff.expo that doesn't wait as long."""
-        gen: Iterator[float] = backoff.expo(2, 0.1)  # type: ignore
-        while True:
-            try:
-                yield next(gen) * 0.1  # Scaling factor
-            except StopIteration:
-                return
-
-    @backoff.on_exception(expo_scaled, backoff_errors,  # type: ignore
+    @backoff.on_exception(expo_scaled(0.05), backoff_errors,  # type: ignore
                           on_backoff=on_backoff, on_giveup=on_giveup,
                           on_success=on_success, max_time=30.0, max_tries=10,
                           jitter=None)
