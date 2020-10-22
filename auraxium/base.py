@@ -9,7 +9,7 @@ import abc
 import copy
 import logging
 import warnings
-from typing import (Any, ClassVar, get_args, List, Optional, Type,
+from typing import (Any, ClassVar, Dict, get_args, List, Optional, Type,
                     TYPE_CHECKING, TypeVar, Union)
 
 from .cache import TLRUCache
@@ -93,6 +93,18 @@ class Ps2Data(metaclass=abc.ABCMeta):
 
         """
         ...
+
+
+class FallbackMixin:
+    """A mixin class used to provide hard-coded fallback instances.
+
+    Some collections are out of date and do not contain all required
+    data. This mixin provides a hook to insert this missing data into
+    data types while not causing issues if the API ends up being
+    updated to include these missing types.
+    """
+
+    _fallback: ClassVar[Dict[int, CensusData]]
 
 
 class Ps2Object(metaclass=abc.ABCMeta):
@@ -291,8 +303,34 @@ class Ps2Object(metaclass=abc.ABCMeta):
         """
         filters: CensusData = {cls.id_field: id_}
         results = await cls.find(client=client, results=1, **filters)
-        if results:
+
+        # Check for FallbackMixin compatibility
+        if hasattr(cls, '_fallback'):
+            # pylint: disable=no-member
+            fallbacks: Dict[int, CensusData] = cls._fallback  # type: ignore
+            log.debug('Fallback attribute found for type "%s", checking ID...',
+                      cls.__name__)
+            if (data := fallbacks.get(id_)) is not None:
+                log.debug('Instantiating "%s" with ID %d through local copy',
+                          cls.__name__, id_)
+
+                if results:
+                    # Log the fact that the local copy is not required
+                    log.info('Type "%s" provides a local fallback for ID %d '
+                             'despite this type being available on-line',
+                             cls.__name__, id_)
+                    return results[0]
+
+                # Return a locally instantiated copy
+                return cls(data, client=client)
+
+            log.debug('No matching fallback instance found for ID %d', id_)
+
+        elif results:
+            # If no fallback value was provided, return the first item found
+            # as normal
             return results[0]
+
         return None
 
     def query(self) -> Query:
@@ -421,14 +459,13 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
             was found.
 
         """
-        filters: CensusData = {cls.id_field: id_}
         log.debug('<%s:%d> requested', cls.__name__, id_)
         if (instance := cls._cache.get(id_)) is not None:
             log.debug('%r restored from cache', instance)
             return instance  # type: ignore
         log.debug('<%s:%d> not cached, generating API query...',
                   cls.__name__, id_)
-        return await cls.get(client=client, **filters)
+        return await super().get_by_id(id_, client=client)  # type: ignore
 
 
 class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):

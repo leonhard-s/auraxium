@@ -2,7 +2,7 @@
 
 from typing import Final
 
-from ..base import Cached
+from ..base import Cached, FallbackMixin
 from ..census import Query
 from ..models import LoadoutData, ProfileData
 from ..proxy import InstanceProxy, SequenceProxy
@@ -59,12 +59,29 @@ class Profile(Cached, cache_size=200, cache_ttu=60.0):
         return SequenceProxy(ResistInfo, query, client=self._client)
 
 
-class Loadout(Cached, cache_size=20, cache_ttu=3600.0):
+def _get_fallback(id_: int) -> CensusData:
+    profile_id = id_ + 162 if id_ != 45 else 252
+    code_name = {
+        28: 'NSO Infiltrator',
+        29: 'NSO Light Assault',
+        30: 'NSO Medic',
+        31: 'NSO Engineer',
+        32: 'NSO Heavy Assault',
+        45: 'NSO MAX'}
+    return {
+        'loadout_id': id_,
+        'profile_id': profile_id,
+        'faction_id': 4,
+        'code_name': code_name[id_]}
+
+
+class Loadout(Cached, FallbackMixin, cache_size=20, cache_ttu=3600.0):
     """Represents a faction-specific infantry class."""
 
     collection = 'loadout'
     data: LoadoutData
     id_field = 'loadout_id'
+    _fallback = {k: _get_fallback(k) for k in (*range(28, 33), 45)}
 
     @staticmethod
     def _build_dataclass(data: CensusData) -> LoadoutData:
