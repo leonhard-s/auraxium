@@ -3,7 +3,7 @@
 import dataclasses
 from typing import Optional
 
-from ..base import Ps2Data
+from ..base import ImageData, Ps2Data
 from ..types import CensusData, LocaleData, optional
 
 
@@ -16,7 +16,7 @@ __all__ = [
 
 
 @dataclasses.dataclass(frozen=True)
-class SkillData(Ps2Data):
+class SkillData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.skill.Skill`.
 
     This class mirrors the payload data returned by the API, you may
@@ -31,9 +31,6 @@ class SkillData(Ps2Data):
             skill, if any.
         name: The localised name of this skill.
         description: The localised description for this skill.
-        image_set_id: The image set for this skill.
-        image_id: The default image asset for this skill.
-        image_path: The path to the default image asset for this skill.
 
     """
 
@@ -44,27 +41,24 @@ class SkillData(Ps2Data):
     grant_item_id: Optional[int]
     name: LocaleData
     description: LocaleData
-    image_set_id: Optional[int]
-    image_id: Optional[int]
-    image_path: Optional[str]
 
     @classmethod
     def from_census(cls, data: CensusData) -> 'SkillData':
         return cls(
+            optional(data, 'image_set_id', int),
+            optional(data, 'image_id', int),
+            optional(data, 'image_path', str),
             int(data.pop('skill_id')),
             int(data.pop('skill_line_id')),
             int(data.pop('skill_line_index')),
             int(data.pop('skill_points')),
             optional(data, 'grant_item_id', int),
             LocaleData.from_census(data.pop('name')),
-            LocaleData.from_census(data.pop('description')),
-            optional(data, 'image_set_id', int),
-            optional(data, 'image_id', int),
-            optional(data, 'image_path', str))
+            LocaleData.from_census(data.pop('description')))
 
 
 @dataclasses.dataclass(frozen=True)
-class SkillCategoryData(Ps2Data):
+class SkillCategoryData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.skill.SkillCategory`.
 
     This class mirrors the payload data returned by the API, you may
@@ -79,10 +73,6 @@ class SkillCategoryData(Ps2Data):
         skill_points: The unlock cost for this skill category.
         name: The localised name of this skill category.
         description: The localised description for this skill category.
-        image_set_id: The image set for this skill category.
-        image_id: The default image asset for this skill category.
-        image_path: The path to the default image asset for this skill
-            category.
 
     """
 
@@ -92,9 +82,6 @@ class SkillCategoryData(Ps2Data):
     skill_points: int
     name: LocaleData
     description: LocaleData
-    image_set_id: int
-    image_id: int
-    image_path: str
 
     @classmethod
     def from_census(cls, data: CensusData) -> 'SkillCategoryData':
@@ -103,19 +90,19 @@ class SkillCategoryData(Ps2Data):
         else:
             description = LocaleData.empty()
         return cls(
+            int(data.pop('image_id')),
+            int(data.pop('image_set_id')),
+            str(data.pop('image_path')),
             int(data.pop('skill_category_id')),
             int(data.pop('skill_set_id')),
             int(data.pop('skill_set_index')),
             int(data.pop('skill_points')),
             LocaleData.from_census(data.pop('name')),
-            description,
-            int(data.pop('image_set_id')),
-            int(data.pop('image_id')),
-            str(data.pop('image_path')))
+            description)
 
 
 @dataclasses.dataclass(frozen=True)
-class SkillLineData(Ps2Data):
+class SkillLineData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.skill.SkillLine`.
 
     This class mirrors the payload data returned by the API, you may
@@ -130,10 +117,6 @@ class SkillLineData(Ps2Data):
             containing skill category.
         name: The localised name of this skill line.
         description: The localised description for this skill line.
-        image_set_id: The image set for this skill line.
-        image_id: The default image asset for this skill line.
-        image_path: The path to the default image asset for this skill
-            line.
 
     """
 
@@ -143,26 +126,23 @@ class SkillLineData(Ps2Data):
     skill_category_index: Optional[int]
     name: LocaleData
     description: LocaleData
-    image_set_id: int
-    image_id: int
-    image_path: str
 
     @classmethod
     def from_census(cls, data: CensusData) -> 'SkillLineData':
         return cls(
+            int(data.pop('image_id')),
+            int(data.pop('image_set_id')),
+            str(data.pop('image_path')),
             int(data.pop('skill_line_id')),
             int(data.pop('skill_points')),
             optional(data, 'skill_category_id', int),
             optional(data, 'skill_category_index', int),
             LocaleData.from_census(data.pop('name')),
-            LocaleData.from_census(data.pop('description')),
-            int(data.pop('image_set_id')),
-            int(data.pop('image_id')),
-            str(data.pop('image_path')))
+            LocaleData.from_census(data.pop('description')))
 
 
 @dataclasses.dataclass(frozen=True)
-class SkillSetData(Ps2Data):
+class SkillSetData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.skill.SkillSet`.
 
     This class mirrors the payload data returned by the API, you may
@@ -176,10 +156,6 @@ class SkillSetData(Ps2Data):
             not unlocked yet.
         name: The localised name of the skill set.
         description: The localised description of the skill set.
-        image_set_id: The image set for this skill set.
-        image_id: The default image asset for this skill set.
-        image_path: The path to the default image asset for this skill
-            set.
 
     """
 
@@ -188,9 +164,6 @@ class SkillSetData(Ps2Data):
     required_item_id: Optional[int]
     name: LocaleData
     description: LocaleData
-    image_set_id: Optional[int]
-    image_id: Optional[int]
-    image_path: Optional[str]
 
     @classmethod
     def from_census(cls, data: CensusData) -> 'SkillSetData':
@@ -199,11 +172,11 @@ class SkillSetData(Ps2Data):
         else:
             description = LocaleData.empty()
         return cls(
+            optional(data, 'image_id', int),
+            optional(data, 'image_set_id', int),
+            optional(data, 'image_path', str),
             int(data.pop('skill_set_id')),
             optional(data, 'skill_points', int),
             optional(data, 'required_item_id', int),
             LocaleData.from_census(data.pop('name')),
-            description,
-            optional(data, 'image_set_id', int),
-            optional(data, 'image_id', int),
-            optional(data, 'image_path', str))
+            description)

@@ -1,9 +1,8 @@
 """Data classes for :mod:`auraxium.ps2.faction`."""
 
 import dataclasses
-from typing import Optional
 
-from ..base import Ps2Data
+from ..base import ImageData, Ps2Data
 from ..types import CensusData, LocaleData, optional
 
 __all__ = [
@@ -12,7 +11,7 @@ __all__ = [
 
 
 @dataclasses.dataclass(frozen=True)
-class FactionData(Ps2Data):
+class FactionData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.faction.Faction`.
 
     This class mirrors the payload data returned by the API, you may
@@ -23,9 +22,6 @@ class FactionData(Ps2Data):
         name: The localised name of the faction.
         code_tag: The canonical tag representation of the faction.
         user_selectable: Whether this faction is playable.
-        image_set_id: The image set associated with this faction.
-        image_id: The default image asset for this faction.
-        image_path: The string version of the faction's default image.
 
     """
 
@@ -33,17 +29,14 @@ class FactionData(Ps2Data):
     name: LocaleData
     code_tag: str
     user_selectable: bool
-    image_set_id: Optional[int]
-    image_id: Optional[int]
-    image_path: Optional[str]
 
     @classmethod
     def from_census(cls, data: CensusData) -> 'FactionData':
         return cls(
+            optional(data, 'image_id', int),
+            optional(data, 'image_set_id', int),
+            optional(data, 'image_path', str),
             int(data.pop('faction_id')),
             LocaleData.from_census(data.pop('name')),
             str(data.pop('code_tag')),
-            bool(int(data.pop('user_selectable'))),
-            optional(data, 'image_set_id', int),
-            optional(data, 'image_id', int),
-            optional(data, 'image_path', str))
+            bool(int(data.pop('user_selectable'))))

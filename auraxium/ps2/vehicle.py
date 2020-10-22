@@ -2,7 +2,7 @@
 
 from typing import Final, List, Optional, Union
 
-from ..base import Cached, Named
+from ..base import Cached, ImageMixin, Named
 from ..census import Query
 from ..client import Client
 from ..models import VehicleAttachmentData, VehicleData
@@ -14,7 +14,7 @@ from .item import Item
 from .skill import SkillSet
 
 
-class Vehicle(Named, cache_size=50, cache_ttu=3600.0):
+class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
     """A mountable vehicle in PlanetSide 2.
 
     This includes aircraft and ground vehicles, as well as mountable

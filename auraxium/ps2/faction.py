@@ -1,11 +1,11 @@
 """Object definition for the faction type."""
 
-from ..base import Named
+from ..base import ImageMixin, Named
 from ..models import FactionData
 from ..types import CensusData
 
 
-class Faction(Named, cache_size=10):
+class Faction(Named, ImageMixin, cache_size=10):
     """A faction in PS2."""
 
     collection = 'faction'

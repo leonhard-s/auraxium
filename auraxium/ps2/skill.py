@@ -1,6 +1,6 @@
 """Skill and skill line class definitions."""
 
-from ..base import Named
+from ..base import ImageMixin, Named
 from ..census import Query
 from ..models import SkillData, SkillCategoryData, SkillLineData, SkillSetData
 from ..proxy import InstanceProxy, SequenceProxy
@@ -9,7 +9,7 @@ from ..types import CensusData
 from .item import Item
 
 
-class SkillSet(Named, cache_size=100, cache_ttu=60.0):
+class SkillSet(Named, ImageMixin, cache_size=100, cache_ttu=60.0):
     """A skill set for a particular vehicle or class."""
 
     collection = 'skill_set'
@@ -42,7 +42,7 @@ class SkillSet(Named, cache_size=100, cache_ttu=60.0):
         return InstanceProxy(Item, query, client=self._client)
 
 
-class SkillCategory(Named, cache_size=50, cache_ttu=60.0):
+class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     """A skill category for a particular class or vehicle.
 
     Skill categories are groups like "Passive Systems" or "Performance
@@ -77,7 +77,7 @@ class SkillCategory(Named, cache_size=50, cache_ttu=60.0):
         return InstanceProxy(SkillSet, query, client=self._client)
 
 
-class SkillLine(Named, cache_size=50, cache_ttu=60.0):
+class SkillLine(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     """A series of skills or certifications."""
 
     collection = 'skill_line'
@@ -111,7 +111,7 @@ class SkillLine(Named, cache_size=50, cache_ttu=60.0):
         return SequenceProxy(Skill, query, client=self._client)
 
 
-class Skill(Named, cache_size=50, cache_ttu=60.0):
+class Skill(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     """A skill or certification unlockable by a character."""
 
     collection = 'skill'

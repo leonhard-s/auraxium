@@ -2,7 +2,7 @@
 
 from typing import Final, TYPE_CHECKING
 
-from ..base import Cached, Named
+from ..base import Cached, ImageMixin, Named
 from ..census import Query
 from ..models import ItemCategoryData, ItemData, ItemTypeData
 from ..request import extract_single
@@ -53,7 +53,7 @@ class ItemType(Cached, cache_size=10, cache_ttu=60.0):
         return ItemTypeData.from_census(data)
 
 
-class Item(Named, cache_size=128, cache_ttu=3600.0):
+class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     """An item that may be owned by a character.
 
     This includes the item component of weapons, which is extended by

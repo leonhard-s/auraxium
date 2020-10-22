@@ -3,7 +3,7 @@
 import dataclasses
 from typing import Optional
 
-from ..base import Ps2Data
+from ..base import ImageData, Ps2Data
 from ..types import CensusData, LocaleData, optional
 
 __all__ = [
@@ -45,7 +45,7 @@ class VehicleAttachmentData(Ps2Data):
 
 
 @dataclasses.dataclass(frozen=True)
-class VehicleData(Ps2Data):
+class VehicleData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.vehicle.Vehicle`.
 
     This class mirrors the payload data returned by the API, you may
@@ -59,10 +59,6 @@ class VehicleData(Ps2Data):
         type_name: The name of the type of vehicle.
         cost: The cost of the vehicle.
         cost_resource_id: The ID of the resource the cost is in.
-        image_set_id: The image set for this vehicle.
-        image_id: The default image asset for this vehicle.
-        image_path: The path to the default image asset for this
-            vehicle.
 
     """
 
@@ -73,9 +69,6 @@ class VehicleData(Ps2Data):
     type_name: str
     cost: Optional[int]
     cost_resource_id: Optional[int]
-    image_set_id: Optional[int]
-    image_id: Optional[int]
-    image_path: Optional[str]
 
     @classmethod
     def from_census(cls, data: CensusData) -> 'VehicleData':
@@ -88,13 +81,13 @@ class VehicleData(Ps2Data):
         else:
             description = LocaleData.empty()
         return cls(
+            optional(data, 'image_id', int),
+            optional(data, 'image_set_id', int),
+            optional(data, 'image_path', str),
             int(data.pop('vehicle_id')),
             name,
             description,
             int(data.pop('type_id')),
             str(data.pop('type_name')),
             optional(data, 'cost', int),
-            optional(data, 'cost_resource_id', int),
-            optional(data, 'image_set_id', int),
-            optional(data, 'image_id', int),
-            optional(data, 'image_path', str))
+            optional(data, 'cost_resource_id', int))

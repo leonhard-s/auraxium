@@ -3,7 +3,7 @@
 import dataclasses
 from typing import Optional
 
-from ..base import Ps2Data
+from ..base import ImageData, Ps2Data
 from ..types import CensusData, LocaleData, optional
 
 __all__ = [
@@ -37,7 +37,7 @@ class ItemCategoryData(Ps2Data):
 
 
 @dataclasses.dataclass(frozen=True)
-class ItemData(Ps2Data):
+class ItemData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.item.Item`.
 
     This class mirrors the payload data returned by the API, you may
@@ -55,9 +55,6 @@ class ItemData(Ps2Data):
         faction_id: The faction that has access to this item.
         max_stack_size: The stack size for stackable items such as
             grenades.
-        item_set_id: The image set for this item.
-        item_id: The default image asset for this item.
-        image_path: The path to the default image for this item.
         skill_set_id: The skill set associated with this item. This is
             used for upgradable items like the Medical Applicator or
             Repair Tool.
@@ -79,9 +76,6 @@ class ItemData(Ps2Data):
     description: LocaleData
     faction_id: Optional[int]
     max_stack_size: int
-    image_set_id: Optional[int]
-    image_id: Optional[int]
-    image_path: Optional[str]
     skill_set_id: Optional[int]
     is_default_attachment: bool
 
@@ -92,6 +86,9 @@ class ItemData(Ps2Data):
         else:
             description = LocaleData.empty()
         return cls(
+            optional(data, 'image_id', int),
+            optional(data, 'image_set_id', int),
+            optional(data, 'image_path', str),
             int(data.pop('item_id')),
             optional(data, 'item_type_id', int),
             optional(data, 'item_category_id', int),
@@ -102,9 +99,6 @@ class ItemData(Ps2Data):
             description,
             optional(data, 'faction_id', int),
             int(data.pop('max_stack_size')),
-            optional(data, 'image_set_id', int),
-            optional(data, 'image_id', int),
-            optional(data, 'image_path', str),
             optional(data, 'skill_set_id', int),
             bool(int(data.pop('is_default_attachment'))))
 

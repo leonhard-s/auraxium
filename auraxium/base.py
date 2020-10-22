@@ -7,6 +7,7 @@ throughout the PlanetSide 2 object model.
 
 import abc
 import copy
+import dataclasses
 import logging
 import warnings
 from typing import (Any, ClassVar, Dict, get_args, List, Optional, Type,
@@ -582,3 +583,27 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
             return str(getattr(data.name, locale))  # type: ignore
         except AttributeError as err:
             raise ValueError(f'Invalid locale: {locale}') from err
+
+
+class ImageMixin(Ps2Object, metaclass=abc.ABCMeta):
+    """A mixin class for types supporting image access."""
+
+    def image(self) -> str:
+        """Return the default image for this type."""
+        image_id: int = self.data.image_id  # type: ignore
+        return self._image_url(image_id)
+
+    @staticmethod
+    def _image_url(image_id: int) -> str:
+        """Return the URL for a given image ID."""
+        url = 'https://census.daybreakgames.com/files/ps2/images/static/'
+        return url + f'{image_id}.png'
+
+
+@dataclasses.dataclass(frozen=True)
+class ImageData:
+    """Mixin dataclass for types supporting image access."""
+
+    image_id: Optional[int]
+    image_set_id: Optional[int]
+    image_path: Optional[str]

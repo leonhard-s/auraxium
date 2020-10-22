@@ -27,6 +27,12 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
     def _build_dataclass(data: CensusData) -> MarketingBundleData:
         return MarketingBundleData.from_census(data)
 
+    def image(self) -> str:
+        """Return the default image for this type."""
+        image_id: int = self.data.image_id  # type: ignore
+        url = 'https://census.daybreakgames.com/files/ps2/images/static/'
+        return url + f'{image_id}.png'
+
     async def items(self) -> List[Tuple[Item, int]]:
         """Return the contents of the bundle.
 

@@ -2,7 +2,7 @@
 
 import dataclasses
 
-from ..base import Ps2Data
+from ..base import ImageData, Ps2Data
 from ..types import CensusData, LocaleData
 
 __all__ = [
@@ -11,7 +11,7 @@ __all__ = [
 
 
 @dataclasses.dataclass(frozen=True)
-class AchievementData(Ps2Data):
+class AchievementData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.achievement.Achievement`.
 
     This class mirrors the payload data returned by the API, you may
@@ -29,9 +29,6 @@ class AchievementData(Ps2Data):
             generally are repeatable, weapon medals are not.
         name: The localised name of the achievement.
         description: The localised description of achievement.
-        image_set_id: The image set associated with this achievement.
-        image_id: The default image for this achievement.
-        image_path: The image path for this achievement.
 
     """
 
@@ -42,20 +39,17 @@ class AchievementData(Ps2Data):
     repeatable: bool
     name: LocaleData
     description: LocaleData
-    image_set_id: int
-    image_id: int
-    image_path: str
 
     @classmethod
     def from_census(cls, data: CensusData) -> 'AchievementData':
         return cls(
+            int(data.pop('image_id')),
+            int(data.pop('image_set_id')),
+            str(data.pop('image_path')),
             int(data.pop('achievement_id')),
             int(data.pop('item_id')),
             int(data.pop('objective_group_id')),
             int(data.pop('reward_id')),
             bool(int(data.pop('repeatable'))),
             LocaleData.from_census(data.pop('name')),
-            LocaleData.from_census(data.pop('description')),
-            int(data.pop('image_set_id')),
-            int(data.pop('image_id')),
-            str(data.pop('image_path')))
+            LocaleData.from_census(data.pop('description')))

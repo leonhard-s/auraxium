@@ -2,7 +2,7 @@
 
 from typing import Final
 
-from ..base import Named
+from ..base import ImageMixin, Named
 from ..census import Query
 from ..models import (DirectiveData, DirectiveTierData,
                       DirectiveTreeCategoryData, DirectiveTreeData)
@@ -12,7 +12,7 @@ from ..types import CensusData
 from .objective import Objective
 
 
-class DirectiveTreeCategory(Named, cache_size=10, cache_ttu=300.0):
+class DirectiveTreeCategory(Named, ImageMixin, cache_size=10, cache_ttu=300.0):
     """A directive category.
 
     Directive tree category are the topmost directive categorisation,
@@ -38,7 +38,7 @@ class DirectiveTreeCategory(Named, cache_size=10, cache_ttu=300.0):
         return SequenceProxy(DirectiveTree, query, client=self._client)
 
 
-class DirectiveTree(Named, cache_size=30, cache_ttu=60.0):
+class DirectiveTree(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     """A tree of directives.
 
     Directive trees are a chain of related directive, e.g.
@@ -84,7 +84,7 @@ class DirectiveTree(Named, cache_size=30, cache_ttu=60.0):
         return SequenceProxy(DirectiveTier, query, client=self._client)
 
 
-class DirectiveTier(Named, cache_size=30, cache_ttu=60.0):
+class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     """A directive tier.
 
     Container for related directives, e.g. "Combat Medic: Adept".
@@ -119,7 +119,7 @@ class DirectiveTier(Named, cache_size=30, cache_ttu=60.0):
         return InstanceProxy(DirectiveTree, query, client=self._client)
 
 
-class Directive(Named, cache_size=30, cache_ttu=60.0):
+class Directive(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     """A directive a character may complete."""
 
     collection = 'directive'
