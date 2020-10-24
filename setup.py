@@ -16,7 +16,7 @@ setuptools.setup(name='auraxium',
                  keywords='auraxium python daybreak census planetside ps2',
                  url='https://github.com/leonhard-s/auraxium',
                  packages=setuptools.find_packages(),
-                 package_data = {'auraxium': ['py.typed']}
+                 package_data={'auraxium': ['py.typed']},
                  classifiers=['Development Status :: 3 - Alpha',
                               'Programming Language :: Python :: 3.8',
                               'License :: OSI Approved :: MIT License',
