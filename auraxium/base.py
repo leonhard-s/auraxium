@@ -6,10 +6,8 @@ throughout the PlanetSide 2 object model.
 """
 
 import abc
-import copy
 import dataclasses
 import logging
-import warnings
 from typing import (Any, ClassVar, Dict, List, Optional, Type, TYPE_CHECKING,
                     TypeVar, Union)
 
@@ -127,26 +125,12 @@ class Ps2Object(metaclass=abc.ABCMeta):
                   self.__class__.__name__, id_, data)
         self.id = id_  # pylint: disable=invalid-name
         self._client = client
-        # Work with a copy of the data to allow pop-ing used keys
-        data = copy.copy(data)
         try:
             self.data = self.dataclass(**data)
-        except KeyError as err:
-            raise PayloadError(
-                f'Unable to populate {self.__class__.__name__} due to a '
-                f'missing key: {err.args[0]}', data) from err
-        except ValueError as err:
+        except pydantic.ValidationError as err:
             raise PayloadError(
                 f'Unable to instantiate {self.__class__.__name__} instance '
-                f'from given payload: {err.args[0]}', data) from err
-        if data and (keys := filter(lambda k: '_join_' not in k, data.keys())):
-            # Any leftover data (excluding joins) will raise a warning as it
-            # points to a mismatch between the object model and the API
-            msg = 'keys' if len(list(keys)) > 1 else 'key'
-            warnings.warn(
-                f'Unexpected {msg} in payload: {list(keys)}\n'
-                'Please report this error as it hints at a mismatch between '
-                'the auraxium object model and the API.')
+                f'from given payload: {err}', data) from err
 
     def __eq__(self, value: Any) -> bool:
         if not isinstance(value, self.__class__):
