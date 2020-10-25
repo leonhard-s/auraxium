@@ -3,10 +3,10 @@
 import json
 import os
 import unittest
-from typing import Any, Dict, List, Optional
+from typing import Any, Dict, List, Optional, Type
 
 # pylint: disable=import-error
-from auraxium.base import Ps2Data
+from auraxium.base import Ps2Data, Ps2Object
 from auraxium import ps2
 from tests.utils import DATA
 
@@ -34,18 +34,19 @@ class TestModels(unittest.TestCase):
             _ = payload.pop('timing', None)
             collection = list(payload.keys())[0][:-5]
             # Find the appropriate class for this collection
-            cls_: Optional[Ps2Data] = None
+            type_: Ps2Object
+            cls_: Optional[Type[Ps2Data]] = None
             for name in ps2.__dict__['__all__']:
                 type_ = getattr(ps2, name)
                 if not hasattr(type_, 'collection'):
                     continue
                 if type_.collection == collection:
-                    cls_ = type_.__annotations__['data']
+                    cls_ = type_.dataclass
             assert cls_ is not None, (
                 f'Type for collection "{collection}" not found')
             # Instantiate any payloads found
             for data in payload[f'{collection}_list']:
-                instance = cls_.from_census(data)
+                instance = cls_(**data)
                 self.assertIsInstance(instance, Ps2Data)
 
     def test_enum_datatypes(self) -> None:
