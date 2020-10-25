@@ -10,8 +10,10 @@ import copy
 import dataclasses
 import logging
 import warnings
-from typing import (Any, ClassVar, Dict, get_args, List, Optional, Type,
-                    TYPE_CHECKING, TypeVar, Union)
+from typing import (Any, ClassVar, Dict, List, Optional, Type, TYPE_CHECKING,
+                    TypeVar, Union)
+
+import pydantic
 
 from .cache import TLRUCache
 from .census import Query
@@ -38,7 +40,7 @@ Ps2ObjectT = TypeVar('Ps2ObjectT', bound='Ps2Object')
 log = logging.getLogger('auraxium.ps2')
 
 
-class Ps2Data(metaclass=abc.ABCMeta):
+class Ps2Data(pydantic.BaseModel, metaclass=abc.ABCMeta):
     """Base class for PlanetSide 2 data classes.
 
     This defines the interface used to populate the data classes, and
@@ -49,51 +51,15 @@ class Ps2Data(metaclass=abc.ABCMeta):
     compound type declarations like :class:`typing.Union` or
     :class:`typing.Optional`.
     """
+    # TODO: Update docstring
 
-    def __post_init__(self) -> None:
-        """Enforce type constraints after initialisation.
+    class Config:
+        """Pydantic model configuration.
 
-        This is run right after the object initialiser and compares the
-        assigned attributes against the type annotations given and
-        raises a :class:`TypeError` if a mismatch is found.
-
-        Raises:
-            TypeError: Raised if an attribute value does not match the
-                attribute's type annotation.
-
+        This inner class is used to namespace the pydantic
+        configuration options.
         """
-        assert hasattr(self, '__annotations__')
-        # pylint: disable=no-member
-        for name, type_ in self.__annotations__.items():
-            value = getattr(self, name)
-            # NOTE: typing.get_args() is a utility method used to expand
-            # compound types like typing.Union or typing.Optional into a tuple
-            # of the types it represents.
-            # For regular objects, it returns an empty tuple.
-            if types := get_args(type_):
-                if not any(isinstance(value, t) for t in types):
-                    raise TypeError(
-                        f'Field {name} got {type(value)}, expected {type_}')
-            elif not isinstance(value, type_):
-                raise TypeError(
-                    f'Field {name} got {type(value)}, expected {type_}')
-
-    @classmethod
-    @abc.abstractmethod
-    def from_census(cls: Type[Ps2DataT], data: CensusData) -> Ps2DataT:
-        """Populate the data class with values from the dictionary.
-
-        This parses the API response and casts the appropriate types.
-
-        Arguments:
-            data: A dictionary containing API data that will be used to
-                to populate the data class.
-
-        Returns:
-            A populated instance of the current data class.
-
-        """
-        ...
+        allow_mutation = False
 
 
 class FallbackMixin:

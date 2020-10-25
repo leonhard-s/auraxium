@@ -4,6 +4,10 @@ from typing import Callable, Iterator
 
 import backoff
 
+__all__ = [
+    'expo_scaled'
+]
+
 
 def expo_scaled(factor: float = 1.0, max_: float = 3600.0
                 ) -> Callable[[], Iterator[float]]:
