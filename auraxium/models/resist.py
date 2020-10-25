@@ -1,10 +1,8 @@
 """Data classes for :mod:`auraxium.ps2.resist`."""
 
-import dataclasses
 from typing import Optional
 
 from ..base import Ps2Data
-from ..types import CensusData, optional
 
 __all__ = [
     'ResistInfoData',
@@ -12,7 +10,6 @@ __all__ = [
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class ResistInfoData(Ps2Data):
     """Data class for :class:`auraxium.ps2.armour.ResistInfo`.
 
@@ -33,23 +30,12 @@ class ResistInfoData(Ps2Data):
 
     resist_info_id: int
     resist_type_id: int
-    resist_percent: Optional[int]
-    resist_amount: Optional[int]
-    multiplier_when_headshot: Optional[float]
+    resist_percent: Optional[int] = None
+    resist_amount: Optional[int] = None
+    multiplier_when_headshot: Optional[float] = None
     description: str
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'ResistInfoData':
-        return cls(
-            int(data.pop('resist_info_id')),
-            int(data.pop('resist_type_id')),
-            optional(data, 'resist_percent', int),
-            optional(data, 'resist_amount', int),
-            optional(data, 'multiplier_when_headshot', float),
-            str(data.pop('description')))
 
-
-@dataclasses.dataclass(frozen=True)
 class ResistTypeData(Ps2Data):
     """Data class for :class:`auraxium.ps2.armour.ResistType`.
 
@@ -65,9 +51,3 @@ class ResistTypeData(Ps2Data):
 
     resist_type_id: int
     description: str
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'ResistTypeData':
-        return cls(
-            int(data.pop('resist_type_id')),
-            str(data.pop('description')))

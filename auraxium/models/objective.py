@@ -1,11 +1,8 @@
 """Data classes for :mod:`auraxium.ps2.objective`."""
 
-import dataclasses
-from typing import List, Optional
+from typing import Optional
 
 from ..base import Ps2Data
-from ..types import CensusData, optional
-
 
 __all__ = [
     'ObjectiveData',
@@ -13,7 +10,6 @@ __all__ = [
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class ObjectiveData(Ps2Data):
     """Data class for :class:`auraxium.ps2.ability.Objective`.
 
@@ -34,28 +30,17 @@ class ObjectiveData(Ps2Data):
     objective_id: int
     objective_type_id: int
     objective_group_id: int
-    param1: Optional[str]
-    param2: Optional[str]
-    param3: Optional[str]
-    param4: Optional[str]
-    param5: Optional[str]
-    param6: Optional[str]
-    param7: Optional[str]
-    param8: Optional[str]
-    param9: Optional[str]
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'ObjectiveData':
-        params: List[Optional[str]] = [
-            optional(data, f'param{i+1}', str) for i in range(9)]
-        return cls(
-            int(data.pop('objective_id')),
-            int(data.pop('objective_type_id')),
-            int(data.pop('objective_group_id')),
-            *params)
+    param1: Optional[str] = None
+    param2: Optional[str] = None
+    param3: Optional[str] = None
+    param4: Optional[str] = None
+    param5: Optional[str] = None
+    param6: Optional[str] = None
+    param7: Optional[str] = None
+    param8: Optional[str] = None
+    param9: Optional[str] = None
 
 
-@dataclasses.dataclass(frozen=True)
 class ObjectiveTypeData(Ps2Data):
     """Data class for :class:`auraxium.ps2.ability.ObjectiveType`.
 
@@ -73,21 +58,12 @@ class ObjectiveTypeData(Ps2Data):
 
     objective_type_id: int
     description: str
-    param1: Optional[str]
-    param2: Optional[str]
-    param3: Optional[str]
-    param4: Optional[str]
-    param5: Optional[str]
-    param6: Optional[str]
-    param7: Optional[str]
-    param8: Optional[str]
-    param9: Optional[str]
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'ObjectiveTypeData':
-        params: List[Optional[str]] = [
-            optional(data, f'param{i+1}', str) for i in range(9)]
-        return cls(
-            int(data.pop('objective_type_id')),
-            str(data.pop('description')),
-            *params)
+    param1: Optional[str] = None
+    param2: Optional[str] = None
+    param3: Optional[str] = None
+    param4: Optional[str] = None
+    param5: Optional[str] = None
+    param6: Optional[str] = None
+    param7: Optional[str] = None
+    param8: Optional[str] = None
+    param9: Optional[str] = None

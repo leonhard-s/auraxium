@@ -1,16 +1,13 @@
 """Data classes for :mod:`auraxium.ps2.world`."""
 
-import dataclasses
-
 from ..base import Ps2Data
-from ..types import CensusData, LocaleData
+from ..types import LocaleData
 
 __all__ = [
     'WorldData'
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class WorldData(Ps2Data):
     """Data class for :class:`auraxium.ps2.world.World`.
 
@@ -29,15 +26,3 @@ class WorldData(Ps2Data):
     state: str
     name: LocaleData
     description: LocaleData
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'WorldData':
-        if 'description' in data:
-            description = LocaleData.from_census(data.pop('description'))
-        else:
-            description = LocaleData.empty()
-        return cls(
-            int(data.pop('world_id')),
-            str(data.pop('state')),
-            LocaleData.from_census(data.pop('name')),
-            description)

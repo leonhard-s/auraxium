@@ -1,10 +1,9 @@
 """Data classes for :mod:`auraxium.ps2.item`."""
 
-import dataclasses
 from typing import Optional
 
 from ..base import ImageData, Ps2Data
-from ..types import CensusData, LocaleData, optional
+from ..types import LocaleData
 
 __all__ = [
     'ItemCategoryData',
@@ -13,7 +12,6 @@ __all__ = [
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class ItemCategoryData(Ps2Data):
     """Data class for :class:`auraxium.ps2.item.ItemCategory`.
 
@@ -29,14 +27,7 @@ class ItemCategoryData(Ps2Data):
     item_category_id: int
     name: LocaleData
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'ItemCategoryData':
-        return cls(
-            int(data.pop('item_category_id')),
-            LocaleData.from_census(data.pop('name')))
 
-
-@dataclasses.dataclass(frozen=True)
 class ItemData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.item.Item`.
 
@@ -67,43 +58,19 @@ class ItemData(Ps2Data, ImageData):
     """
 
     item_id: int
-    item_type_id: Optional[int]
-    item_category_id: Optional[int]
-    activatable_ability_id: Optional[int]
-    passive_ability_id: Optional[int]
+    item_type_id: Optional[int] = None
+    item_category_id: Optional[int] = None
+    activatable_ability_id: Optional[int] = None
+    passive_ability_id: Optional[int] = None
     is_vehicle_weapon: bool
     name: LocaleData
     description: LocaleData
-    faction_id: Optional[int]
+    faction_id: Optional[int] = None
     max_stack_size: int
-    skill_set_id: Optional[int]
+    skill_set_id: Optional[int] = None
     is_default_attachment: bool
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'ItemData':
-        if 'description' in data:
-            description = LocaleData.from_census(data.pop('description'))
-        else:
-            description = LocaleData.empty()
-        return cls(
-            optional(data, 'image_id', int),
-            optional(data, 'image_set_id', int),
-            optional(data, 'image_path', str),
-            int(data.pop('item_id')),
-            optional(data, 'item_type_id', int),
-            optional(data, 'item_category_id', int),
-            optional(data, 'activatable_ability_id', int),
-            optional(data, 'passive_ability_id', int),
-            bool(int(data.pop('is_vehicle_weapon'))),
-            LocaleData.from_census(data.pop('name')),
-            description,
-            optional(data, 'faction_id', int),
-            int(data.pop('max_stack_size')),
-            optional(data, 'skill_set_id', int),
-            bool(int(data.pop('is_default_attachment'))))
 
-
-@dataclasses.dataclass(frozen=True)
 class ItemTypeData(Ps2Data):
     """Data class for :class:`auraxium.ps2.item.ItemType`.
 
@@ -120,10 +87,3 @@ class ItemTypeData(Ps2Data):
     item_type_id: int
     name: str
     code: str
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'ItemTypeData':
-        return cls(
-            int(data.pop('item_type_id')),
-            str(data.pop('name')),
-            str(data.pop('code')))

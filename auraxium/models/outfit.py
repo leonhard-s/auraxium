@@ -1,9 +1,6 @@
 """Data classes for :mod:`auraxium.ps2.outfit`."""
 
-import dataclasses
-
 from ..base import Ps2Data
-from ..types import CensusData
 
 __all__ = [
     'OutfitData',
@@ -12,7 +9,6 @@ __all__ = [
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class OutfitData(Ps2Data):
     """Data class for :class:`auraxium.ps2.outfit.Outfit`.
 
@@ -47,21 +43,7 @@ class OutfitData(Ps2Data):
     leader_character_id: int
     member_count: int
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'OutfitData':
-        return cls(
-            int(data.pop('outfit_id')),
-            str(data.pop('name')),
-            str(data.pop('name_lower')),
-            str(data.pop('alias')),
-            str(data.pop('alias_lower')),
-            int(data.pop('time_created')),
-            str(data.pop('time_created_date')),
-            int(data.pop('leader_character_id')),
-            int(data.pop('member_count')))
 
-
-@dataclasses.dataclass(frozen=True)
 class OutfitMemberData(Ps2Data):
     """Data class for :class:`auraxium.ps2.outfit.OutfitMember`.
 
@@ -88,18 +70,7 @@ class OutfitMemberData(Ps2Data):
     rank: str
     rank_ordinal: int
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'OutfitMemberData':
-        return cls(
-            int(data.pop('outfit_id')),
-            int(data.pop('character_id')),
-            int(data.pop('member_since')),
-            str(data.pop('member_since_date')),
-            str(data.pop('rank')),
-            int(data.pop('rank_ordinal')))
 
-
-@dataclasses.dataclass(frozen=True)
 class OutfitRankData(Ps2Data):
     """Data class for :class:`auraxium.ps2.outfit.OutfitRank`.
 
@@ -119,11 +90,3 @@ class OutfitRankData(Ps2Data):
     ordinal: int
     name: str
     description: str
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'OutfitRankData':
-        return cls(
-            int(data.pop('outfit_id')),
-            int(data.pop('ordinal')),
-            str(data.pop('name')),
-            str(data.pop('description')))

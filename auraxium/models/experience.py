@@ -1,9 +1,7 @@
 """Data classes for :mod:`auraxium.ps2.experience`."""
 
-import dataclasses
-
 from ..base import Ps2Data
-from ..types import CensusData, LocaleData
+from ..types import LocaleData
 
 __all__ = [
     'ExperienceData',
@@ -11,7 +9,6 @@ __all__ = [
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class ExperienceData(Ps2Data):
     """Data class for :class:`auraxium.ps2.experience.Experience`.
 
@@ -30,15 +27,7 @@ class ExperienceData(Ps2Data):
     description: str
     xp: int  # pylint: disable=invalid-name
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'ExperienceData':
-        return cls(
-            int(data.pop('experience_id')),
-            str(data.pop('description')),
-            int(data.pop('xp')))
 
-
-@dataclasses.dataclass(frozen=True)
 class ExperienceRankData(Ps2Data):
     """Data class for :class:`auraxium.ps2.experience.Experience`.
 
@@ -57,7 +46,6 @@ class ExperienceRankData(Ps2Data):
 
     """
 
-    @dataclasses.dataclass(frozen=True)
     class EmpireData(Ps2Data):
         """Object representation of an empire-specific sub-key.
 
@@ -72,19 +60,6 @@ class ExperienceRankData(Ps2Data):
         image_set_id: int
         image_id: int
 
-        @classmethod
-        def from_census(cls, data: CensusData
-                        ) -> 'ExperienceRankData.EmpireData':
-            """Populate the data class with values from the dictionary.
-
-            This parses the API response and casts the appropriate
-            types.
-            """
-            return cls(
-                LocaleData.from_census(data.pop('title')),
-                int(data.pop('image_set_id')),
-                int(data.pop('image_id')))
-
     rank: int
     xp_max: int
     vs: EmpireData  # pylint: disable=invalid-name
@@ -93,15 +68,3 @@ class ExperienceRankData(Ps2Data):
     nc_image_path: str
     tr: EmpireData  # pylint: disable=invalid-name
     tr_image_path: str
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'ExperienceRankData':
-        return cls(
-            int(data.pop('rank')),
-            int(data.pop('xp_max')),
-            cls.EmpireData.from_census(data.pop('vs')),
-            str(data.pop('vs_image_path')),
-            cls.EmpireData.from_census(data.pop('nc')),
-            str(data.pop('nc_image_path')),
-            cls.EmpireData.from_census(data.pop('tr')),
-            str(data.pop('tr_image_path')))

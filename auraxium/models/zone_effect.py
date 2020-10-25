@@ -1,10 +1,8 @@
 """Data classes for :mod:`auraxium.ps2.zone_effect`."""
 
-import dataclasses
-from typing import List, Optional
+from typing import Optional
 
 from ..base import Ps2Data
-from ..types import CensusData, optional
 
 __all__ = [
     'ZoneEffectData',
@@ -12,7 +10,6 @@ __all__ = [
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class ZoneEffectData(Ps2Data):
     """Data class for :class:`auraxium.ps2.zone_effect.ZoneEffectData`.
 
@@ -33,25 +30,14 @@ class ZoneEffectData(Ps2Data):
     zone_effect_id: int
     zone_effect_type_id: int
     ability_id: int
-    param1: Optional[str]
-    param2: Optional[str]
-    param3: Optional[str]
-    param4: Optional[str]
-    param5: Optional[str]
-    param6: Optional[str]
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'ZoneEffectData':
-        params: List[Optional[str]] = [
-            optional(data, f'param{i+1}', str) for i in range(6)]
-        return cls(
-            int(data.pop('zone_effect_id')),
-            int(data.pop('zone_effect_type_id')),
-            int(data.pop('ability_id')),
-            *params)
+    param1: Optional[str] = None
+    param2: Optional[str] = None
+    param3: Optional[str] = None
+    param4: Optional[str] = None
+    param5: Optional[str] = None
+    param6: Optional[str] = None
 
 
-@dataclasses.dataclass(frozen=True)
 class ZoneEffectTypeData(Ps2Data):
     """Data class for :class:`auraxium.ps2.zone_effect.ZoneEffectType`.
 
@@ -75,11 +61,3 @@ class ZoneEffectTypeData(Ps2Data):
     param4: str
     param5: str
     param6: str
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'ZoneEffectTypeData':
-        params: List[str] = [str(data[f'param{i+1}']) for i in range(6)]
-        return cls(
-            int(data.pop('zone_effect_type_id')),
-            str(data.pop('description')),
-            *params)

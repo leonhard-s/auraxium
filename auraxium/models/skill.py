@@ -1,10 +1,9 @@
 """Data classes for :mod:`auraxium.ps2.skill`."""
 
-import dataclasses
 from typing import Optional
 
 from ..base import ImageData, Ps2Data
-from ..types import CensusData, LocaleData, optional
+from ..types import LocaleData
 
 
 __all__ = [
@@ -15,7 +14,6 @@ __all__ = [
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class SkillData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.skill.Skill`.
 
@@ -38,26 +36,10 @@ class SkillData(Ps2Data, ImageData):
     skill_line_id: int
     skill_line_index: int
     skill_points: int
-    grant_item_id: Optional[int]
+    grant_item_id: Optional[int] = None
     name: LocaleData
     description: LocaleData
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'SkillData':
-        return cls(
-            optional(data, 'image_set_id', int),
-            optional(data, 'image_id', int),
-            optional(data, 'image_path', str),
-            int(data.pop('skill_id')),
-            int(data.pop('skill_line_id')),
-            int(data.pop('skill_line_index')),
-            int(data.pop('skill_points')),
-            optional(data, 'grant_item_id', int),
-            LocaleData.from_census(data.pop('name')),
-            LocaleData.from_census(data.pop('description')))
-
-
-@dataclasses.dataclass(frozen=True)
 class SkillCategoryData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.skill.SkillCategory`.
 
@@ -83,25 +65,7 @@ class SkillCategoryData(Ps2Data, ImageData):
     name: LocaleData
     description: LocaleData
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'SkillCategoryData':
-        if 'description' in data:
-            description = LocaleData.from_census(data.pop('description'))
-        else:
-            description = LocaleData.empty()
-        return cls(
-            int(data.pop('image_id')),
-            int(data.pop('image_set_id')),
-            str(data.pop('image_path')),
-            int(data.pop('skill_category_id')),
-            int(data.pop('skill_set_id')),
-            int(data.pop('skill_set_index')),
-            int(data.pop('skill_points')),
-            LocaleData.from_census(data.pop('name')),
-            description)
 
-
-@dataclasses.dataclass(frozen=True)
 class SkillLineData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.skill.SkillLine`.
 
@@ -122,26 +86,12 @@ class SkillLineData(Ps2Data, ImageData):
 
     skill_line_id: int
     skill_points: int
-    skill_category_id: Optional[int]
-    skill_category_index: Optional[int]
+    skill_category_id: Optional[int] = None
+    skill_category_index: Optional[int] = None
     name: LocaleData
     description: LocaleData
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'SkillLineData':
-        return cls(
-            int(data.pop('image_id')),
-            int(data.pop('image_set_id')),
-            str(data.pop('image_path')),
-            int(data.pop('skill_line_id')),
-            int(data.pop('skill_points')),
-            optional(data, 'skill_category_id', int),
-            optional(data, 'skill_category_index', int),
-            LocaleData.from_census(data.pop('name')),
-            LocaleData.from_census(data.pop('description')))
 
-
-@dataclasses.dataclass(frozen=True)
 class SkillSetData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.skill.SkillSet`.
 
@@ -160,23 +110,7 @@ class SkillSetData(Ps2Data, ImageData):
     """
 
     skill_set_id: int
-    skill_points: Optional[int]
-    required_item_id: Optional[int]
+    skill_points: Optional[int] = None
+    required_item_id: Optional[int] = None
     name: LocaleData
     description: LocaleData
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'SkillSetData':
-        if 'description' in data:
-            description = LocaleData.from_census(data.pop('description'))
-        else:
-            description = LocaleData.empty()
-        return cls(
-            optional(data, 'image_id', int),
-            optional(data, 'image_set_id', int),
-            optional(data, 'image_path', str),
-            int(data.pop('skill_set_id')),
-            optional(data, 'skill_points', int),
-            optional(data, 'required_item_id', int),
-            LocaleData.from_census(data.pop('name')),
-            description)

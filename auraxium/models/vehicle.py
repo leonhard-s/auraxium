@@ -1,10 +1,9 @@
 """Data classes for :mod:`auraxium.ps2.vehicle`."""
 
-import dataclasses
 from typing import Optional
 
 from ..base import ImageData, Ps2Data
-from ..types import CensusData, LocaleData, optional
+from ..types import LocaleData
 
 __all__ = [
     'VehicleAttachmentData',
@@ -12,7 +11,6 @@ __all__ = [
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class VehicleAttachmentData(Ps2Data):
     """Data class for :class:`auraxium.ps2.vehicle.VehicleAttachment`.
 
@@ -34,17 +32,7 @@ class VehicleAttachmentData(Ps2Data):
     description: str
     slot_id: int
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'VehicleAttachmentData':
-        return cls(
-            int(data.pop('item_id')),
-            int(data.pop('vehicle_id')),
-            int(data.pop('faction_id')),
-            str(data.pop('description')),
-            int(data.pop('slot_id')))
 
-
-@dataclasses.dataclass(frozen=True)
 class VehicleData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.vehicle.Vehicle`.
 
@@ -67,27 +55,5 @@ class VehicleData(Ps2Data, ImageData):
     description: LocaleData
     type_id: int
     type_name: str
-    cost: Optional[int]
-    cost_resource_id: Optional[int]
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'VehicleData':
-        if 'name' in data:
-            name = LocaleData.from_census(data.pop('name'))
-        else:
-            name = LocaleData.empty()
-        if 'description' in data:
-            description = LocaleData.from_census(data.pop('description'))
-        else:
-            description = LocaleData.empty()
-        return cls(
-            optional(data, 'image_id', int),
-            optional(data, 'image_set_id', int),
-            optional(data, 'image_path', str),
-            int(data.pop('vehicle_id')),
-            name,
-            description,
-            int(data.pop('type_id')),
-            str(data.pop('type_name')),
-            optional(data, 'cost', int),
-            optional(data, 'cost_resource_id', int))
+    cost: Optional[int] = None
+    cost_resource_id: Optional[int] = None

@@ -1,11 +1,9 @@
 """Data classes for :mod:`auraxium.ps2.depot`."""
 
-import dataclasses
 from typing import Optional
 
 from ..base import Ps2Data
-from ..types import CensusData, LocaleData, optional
-
+from ..types import LocaleData
 
 __all__ = [
     'MarketingBundleData',
@@ -13,7 +11,6 @@ __all__ = [
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class MarketingBundleData(Ps2Data):
     """Data class for :class:`auraxium.ps2.depot.MarketingBundle`.
 
@@ -40,19 +37,7 @@ class MarketingBundleData(Ps2Data):
     station_cash_price: int
     release_time: int
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'MarketingBundleData':
-        return cls(
-            int(data.pop('marketing_bundle_id')),
-            LocaleData.from_census(data.pop('name')),
-            LocaleData.from_census(data.pop('description')),
-            int(data.pop('image_id')),
-            optional(data, 'cert_price', int),
-            int(data.pop('station_cash_price')),
-            int(data.pop('release_time')))
 
-
-@dataclasses.dataclass(frozen=True)
 class MarketingBundleSingleData(Ps2Data):
     """Data class for :class:`auraxium.ps2.depot.MarketingBundleSingle`.
 
@@ -79,13 +64,3 @@ class MarketingBundleSingleData(Ps2Data):
     station_cash_price: int
     cert_price: Optional[int]
     release_time: int
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'MarketingBundleSingleData':
-        return cls(
-            int(data.pop('marketing_bundle_id')),
-            int(data.pop('item_id')),
-            int(data.pop('item_quantity')),
-            int(data.pop('station_cash_price')),
-            optional(data, 'cert_price', int),
-            int(data.pop('release_time')))

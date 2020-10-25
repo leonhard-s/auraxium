@@ -1,17 +1,14 @@
 """Data classes for :mod:`auraxium.ps2.armour`."""
 
-import dataclasses
 from typing import Optional
 
 from ..base import Ps2Data
-from ..types import CensusData, optional
 
 __all__ = [
     'ArmourInfoData'
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class ArmourInfoData(Ps2Data):
     """Data class for :class:`auraxium.ps2.armour.ArmorInfo`.
 
@@ -32,14 +29,5 @@ class ArmourInfoData(Ps2Data):
     armor_info_id: int
     armor_facing_id: int
     armor_percent: int
-    armor_amount: Optional[int]
+    armor_amount: Optional[int] = None
     description: str
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'ArmourInfoData':
-        return cls(
-            int(data.pop('armor_info_id')),
-            int(data.pop('armor_facing_id')),
-            int(data.pop('armor_percent')),
-            optional(data, 'armor_amount', int),
-            str(data.pop('description')))

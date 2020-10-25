@@ -1,10 +1,9 @@
 """Data classes for :mod:`auraxium.ps2.fire`."""
 
-import dataclasses
 from typing import Optional
 
 from ..base import Ps2Data
-from ..types import CensusData, LocaleData, optional
+from ..types import LocaleData
 
 __all__ = [
     'FireModeData',
@@ -12,7 +11,6 @@ __all__ = [
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class FireModeData(Ps2Data):
     """Data class for :class:`auraxium.ps2.ability.FireMode`.
 
@@ -164,191 +162,94 @@ class FireModeData(Ps2Data):
 
     fire_mode_id: int
     fire_mode_type_id: int
-    ability_id: Optional[int]
-    ammo_slot: Optional[int]
+    ability_id: Optional[int] = None
+    ammo_slot: Optional[int] = None
     automatic: bool
-    grief_immune: Optional[bool]
-    iron_sights: Optional[bool]
-    laser_guided: Optional[bool]
+    grief_immune: Optional[bool] = None
+    iron_sights: Optional[bool] = None
+    laser_guided: Optional[bool] = None
     move_modifier: float
-    projectile_speed_override: Optional[int]
-    sprint_fire: Optional[bool]
+    projectile_speed_override: Optional[int] = None
+    sprint_fire: Optional[bool] = None
     turn_modifier: float
-    use_in_water: Optional[bool]
+    use_in_water: Optional[bool] = None
     zoom_default: float
-    cof_override: Optional[float]
-    cof_pellet_spread: Optional[float]
+    cof_override: Optional[float] = None
+    cof_pellet_spread: Optional[float] = None
     cof_range: float
-    cof_recoil: Optional[float]
+    cof_recoil: Optional[float] = None
     cof_scalar: float
     cof_scalar_moving: float
     player_state_group_id: int
-    damage_direct_effect_id: Optional[int]
-    damage_head_multiplier: Optional[float]
-    damage_indirect_effect_id: Optional[int]
-    damage_legs_multiplier: Optional[float]
+    damage_direct_effect_id: Optional[int] = None
+    damage_head_multiplier: Optional[float] = None
+    damage_indirect_effect_id: Optional[int] = None
+    damage_legs_multiplier: Optional[float] = None
     fire_ammo_per_shot: int
-    fire_auto_fire_ms: Optional[int]
+    fire_auto_fire_ms: Optional[int] = None
     fire_burst_count: int
-    fire_charge_up_ms: Optional[int]
-    fire_delay_ms: Optional[int]
+    fire_charge_up_ms: Optional[int] = None
+    fire_delay_ms: Optional[int] = None
     fire_detect_range: float
-    fire_duration_ms: Optional[int]
+    fire_duration_ms: Optional[int] = None
     fire_refire_ms: int
-    fire_pellets_per_shot: Optional[int]
-    heat_per_shot: Optional[int]
-    heat_recovery_delay_ms: Optional[int]
-    heat_threshold: Optional[int]
-    lockon_acquire_close_ms: Optional[int]
-    lockon_acquire_far_ms: Optional[int]
-    lockon_acquire_ms: Optional[int]
-    lockon_angle: Optional[float]
-    lockon_lose_ms: Optional[int]
-    lockon_maintain: Optional[bool]
-    lockon_radius: Optional[float]  # Not used as of June 2020
-    lockon_range: Optional[float]  # Maybe this replaced "lockon_radius"?
-    lockon_range_close: Optional[float]
-    lockon_range_far: Optional[float]
-    lockon_required: Optional[bool]
-    recoil_angle_max: Optional[float]
-    recoil_angle_min: Optional[float]
+    fire_pellets_per_shot: Optional[int] = None
+    heat_per_shot: Optional[int] = None
+    heat_recovery_delay_ms: Optional[int] = None
+    heat_threshold: Optional[int] = None
+    lockon_acquire_close_ms: Optional[int] = None
+    lockon_acquire_far_ms: Optional[int] = None
+    lockon_acquire_ms: Optional[int] = None
+    lockon_angle: Optional[float] = None
+    lockon_lose_ms: Optional[int] = None
+    lockon_maintain: Optional[bool] = None
+    lockon_radius: Optional[float] = None  # Not used as of June 2020
+    lockon_range: Optional[float] = None  # Maybe this replaced "lockon_radius"
+    lockon_range_close: Optional[float] = None
+    lockon_range_far: Optional[float] = None
+    lockon_required: Optional[bool] = None
+    recoil_angle_max: Optional[float] = None
+    recoil_angle_min: Optional[float] = None
     recoil_first_shot_modifier: float
-    recoil_horizontal_max: Optional[float]
-    recoil_horizontal_max_increase: Optional[float]
-    recoil_horizontal_min: Optional[float]
-    recoil_horizontal_min_increase: Optional[float]
-    recoil_horizontal_tolerance: Optional[float]
-    recoil_increase: Optional[float]
-    recoil_increase_crouched: Optional[float]
-    recoil_magnitude_max: Optional[float]
-    recoil_magnitude_min: Optional[float]
-    recoil_max_total_magnitude: Optional[float]
-    recoil_recovery_acceleration: Optional[int]
-    recoil_recovery_delay_ms: Optional[int]
-    recoil_recovery_rate: Optional[int]
-    recoil_shots_at_min_magnitude: Optional[bool]
-    reload_block_auto: Optional[bool]
-    reload_continuous: Optional[bool]  # Always False or None
-    reload_ammo_fill_ms: Optional[int]
-    reload_chamber_ms: Optional[int]
-    reload_loop_start_ms: Optional[int]
-    reload_loop_end_ms: Optional[int]
+    recoil_horizontal_max: Optional[float] = None
+    recoil_horizontal_max_increase: Optional[float] = None
+    recoil_horizontal_min: Optional[float] = None
+    recoil_horizontal_min_increase: Optional[float] = None
+    recoil_horizontal_tolerance: Optional[float] = None
+    recoil_increase: Optional[float] = None
+    recoil_increase_crouched: Optional[float] = None
+    recoil_magnitude_max: Optional[float] = None
+    recoil_magnitude_min: Optional[float] = None
+    recoil_max_total_magnitude: Optional[float] = None
+    recoil_recovery_acceleration: Optional[int] = None
+    recoil_recovery_delay_ms: Optional[int] = None
+    recoil_recovery_rate: Optional[int] = None
+    recoil_shots_at_min_magnitude: Optional[bool] = None
+    reload_block_auto: Optional[bool] = None
+    reload_continuous: Optional[bool] = None  # Always False or None
+    reload_ammo_fill_ms: Optional[int] = None
+    reload_chamber_ms: Optional[int] = None
+    reload_loop_start_ms: Optional[int] = None
+    reload_loop_end_ms: Optional[int] = None
     reload_time_ms: int
-    sway_amplitude_x: Optional[float]
-    sway_amplitude_y: Optional[float]
-    sway_can_steady: Optional[bool]
-    sway_period_x: Optional[int]
-    sway_period_y: Optional[int]
-    armor_penetration: Optional[float]  # Always zero or None
-    max_damage: Optional[int]
-    max_damage_ind: Optional[int]
-    max_damage_ind_radius: Optional[float]
-    max_damage_range: Optional[float]
-    min_damage: Optional[int]
-    min_damage_ind: Optional[int]
-    min_damage_ind_radius: Optional[float]
-    min_damage_range: Optional[float]
-    shield_bypass_pct: Optional[int]
+    sway_amplitude_x: Optional[float] = None
+    sway_amplitude_y: Optional[float] = None
+    sway_can_steady: Optional[bool] = None
+    sway_period_x: Optional[int] = None
+    sway_period_y: Optional[int] = None
+    armor_penetration: Optional[float] = None  # Always zero or None
+    max_damage: Optional[int] = None
+    max_damage_ind: Optional[int] = None
+    max_damage_ind_radius: Optional[float] = None
+    max_damage_range: Optional[float] = None
+    min_damage: Optional[int] = None
+    min_damage_ind: Optional[int] = None
+    min_damage_ind_radius: Optional[float] = None
+    min_damage_range: Optional[float] = None
+    shield_bypass_pct: Optional[int] = None
     description: LocaleData
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'FireModeData':
-        if 'description' in data:
-            description = LocaleData.from_census(data.pop('description'))
-        else:
-            description = LocaleData.empty()
-        return cls(
-            int(data.pop('fire_mode_id')),
-            int(data.pop('fire_mode_type_id')),
-            optional(data, 'ability_id', int),
-            optional(data, 'ammo_slot', int),
-            bool(int(data.pop('automatic'))),
-            optional(data, 'grief_immune', bool),
-            optional(data, 'iron_sights', bool),
-            optional(data, 'laser_guided', bool),
-            float(data.pop('move_modifier')),
-            optional(data, 'projectile_speed_override', int),
-            optional(data, 'sprint_fire', bool),
-            float(data.pop('turn_modifier')),
-            optional(data, 'use_in_water', bool),
-            float(data.pop('zoom_default')),
-            optional(data, 'cof_override', float),
-            optional(data, 'cof_pellet_spread', float),
-            float(data.pop('cof_range')),
-            optional(data, 'cof_recoil', float),
-            float(data.pop('cof_scalar')),
-            float(data.pop('cof_scalar_moving')),
-            int(data.pop('player_state_group_id')),
-            optional(data, 'damage_direct_effect_id', int),
-            optional(data, 'damage_head_multiplier', float),
-            optional(data, 'damage_indirect_effect_id', int),
-            optional(data, 'damage_legs_multiplier', float),
-            int(data.pop('fire_ammo_per_shot')),
-            optional(data, 'fire_auto_fire_ms', int),
-            int(data.pop('fire_burst_count')),
-            optional(data, 'fire_charge_up_ms', int),
-            optional(data, 'fire_delay_ms', int),
-            float(data.pop('fire_detect_range')),
-            optional(data, 'fire_duration_ms', int),
-            int(data.pop('fire_refire_ms')),
-            optional(data, 'fire_pellets_per_shot', int),
-            optional(data, 'heat_per_shot', int),
-            optional(data, 'heat_recovery_delay_ms', int),
-            optional(data, 'heat_threshold', int),
-            optional(data, 'lockon_acquire_close_ms', int),
-            optional(data, 'lockon_acquire_far_ms', int),
-            optional(data, 'lockon_acquire_ms', int),
-            optional(data, 'lockon_angle', float),
-            optional(data, 'lockon_lose_ms', int),
-            optional(data, 'lockon_maintain', bool),
-            optional(data, 'lockon_radius', int),
-            optional(data, 'lockon_range', float),
-            optional(data, 'lockon_range_close', float),
-            optional(data, 'lockon_range_far', float),
-            optional(data, 'lockon_required', bool),
-            optional(data, 'recoil_angle_max', float),
-            optional(data, 'recoil_angle_min', float),
-            float(data.pop('recoil_first_shot_modifier')),
-            optional(data, 'recoil_horizontal_max', float),
-            optional(data, 'recoil_horizontal_max_increase', float),
-            optional(data, 'recoil_horizontal_min', float),
-            optional(data, 'recoil_horizontal_min_increase', float),
-            optional(data, 'recoil_horizontal_tolerance', float),
-            optional(data, 'recoil_increase', float),
-            optional(data, 'recoil_increase_crouched', float),
-            optional(data, 'recoil_magnitude_max', float),
-            optional(data, 'recoil_magnitude_min', float),
-            optional(data, 'recoil_max_total_magnitude', float),
-            optional(data, 'recoil_recovery_acceleration', int),
-            optional(data, 'recoil_recovery_delay_ms', int),
-            optional(data, 'recoil_recovery_rate', int),
-            optional(data, 'recoil_shots_at_min_magnitude', bool),
-            optional(data, 'reload_block_auto', bool),
-            optional(data, 'reload_continuous', bool),
-            optional(data, 'reload_ammo_fill_ms', int),
-            optional(data, 'reload_chamber_ms', int),
-            optional(data, 'reload_loop_start_ms', int),
-            optional(data, 'reload_loop_end_ms', int),
-            int(data.pop('reload_time_ms')),
-            optional(data, 'sway_amplitude_x', float),
-            optional(data, 'sway_amplitude_y', float),
-            optional(data, 'sway_can_steady', bool),
-            optional(data, 'sway_period_x', int),
-            optional(data, 'sway_period_y', int),
-            optional(data, 'armor_penetration', float),
-            optional(data, 'max_damage', int),
-            optional(data, 'max_damage_ind', int),
-            optional(data, 'max_damage_ind_radius', float),
-            optional(data, 'max_damage_range', float),
-            optional(data, 'min_damage', int),
-            optional(data, 'min_damage_ind', int),
-            optional(data, 'min_damage_ind_radius', float),
-            optional(data, 'min_damage_range', float),
-            optional(data, 'shield_bypass_pct', int),
-            description)
 
-
-@dataclasses.dataclass(frozen=True)
 class FireGroupData(Ps2Data):
     """Data class for :class:`auraxium.ps2.ability.FireGroup`.
 
@@ -372,18 +273,8 @@ class FireGroupData(Ps2Data):
     """
 
     fire_group_id: int
-    chamber_duration_ms: Optional[int]
-    transition_duration_ms: Optional[int]
-    spool_up_ms: Optional[int]
-    spool_up_initial_refire_ms: Optional[int]
-    can_chamber_ironsights: Optional[bool]
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'FireGroupData':
-        return cls(
-            int(data.pop('fire_group_id')),
-            optional(data, 'chamber_duration_ms', int),
-            optional(data, 'transition_duration_ms', int),
-            optional(data, 'spool_up_ms', int),
-            optional(data, 'spool_up_initial_refire_ms', int),
-            optional(data, 'can_chamber_ironsights', bool))
+    chamber_duration_ms: Optional[int] = None
+    transition_duration_ms: Optional[int] = None
+    spool_up_ms: Optional[int] = None
+    spool_up_initial_refire_ms: Optional[int] = None
+    can_chamber_ironsights: Optional[bool] = None

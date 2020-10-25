@@ -1,17 +1,13 @@
 """Data classes for :mod:`auraxium.ps2.currency`."""
 
-
-import dataclasses
-
 from ..base import Ps2Data
-from ..types import CensusData, LocaleData
+from ..types import LocaleData
 
 __all__ = [
     'CurrencyData'
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class CurrencyData(Ps2Data):
     """Data class for :class:`auraxium.ps2.currency.Currency`.
 
@@ -31,11 +27,3 @@ class CurrencyData(Ps2Data):
     name: LocaleData
     icon_id: int
     inventory_cap: int
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'CurrencyData':
-        return cls(
-            int(data.pop('currency_id')),
-            LocaleData.from_census(data.pop('name')),
-            int(data.pop('icon_id')),
-            int(data.pop('inventory_cap')))
