@@ -38,7 +38,8 @@ class SkillData(Ps2Data, ImageData):
     skill_points: int
     grant_item_id: Optional[int] = None
     name: LocaleData
-    description: LocaleData
+    description: Optional[LocaleData] = None
+
 
 class SkillCategoryData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.skill.SkillCategory`.
@@ -63,7 +64,7 @@ class SkillCategoryData(Ps2Data, ImageData):
     skill_set_index: int
     skill_points: int
     name: LocaleData
-    description: LocaleData
+    description: Optional[LocaleData] = None
 
 
 class SkillLineData(Ps2Data, ImageData):
@@ -89,7 +90,7 @@ class SkillLineData(Ps2Data, ImageData):
     skill_category_id: Optional[int] = None
     skill_category_index: Optional[int] = None
     name: LocaleData
-    description: LocaleData
+    description: Optional[LocaleData] = None
 
 
 class SkillSetData(Ps2Data, ImageData):
@@ -113,4 +114,4 @@ class SkillSetData(Ps2Data, ImageData):
     skill_points: Optional[int] = None
     required_item_id: Optional[int] = None
     name: LocaleData
-    description: LocaleData
+    description: Optional[LocaleData] = None

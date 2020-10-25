@@ -52,7 +52,7 @@ class VehicleData(Ps2Data, ImageData):
 
     vehicle_id: int
     name: LocaleData
-    description: LocaleData
+    description: Optional[LocaleData] = None
     type_id: int
     type_name: str
     cost: Optional[int] = None

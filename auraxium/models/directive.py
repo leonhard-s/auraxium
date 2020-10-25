@@ -39,7 +39,7 @@ class DirectiveData(Ps2Data, ImageData):
     objective_set_id: int
     qualify_requirement_id: Optional[int] = None
     name: LocaleData
-    description: LocaleData
+    description: Optional[LocaleData] = None
 
 
 class DirectiveTierData(Ps2Data, ImageData):
@@ -87,7 +87,7 @@ class DirectiveTreeData(Ps2Data, ImageData):
     directive_tree_id: int
     directive_tree_category_id: int
     name: LocaleData
-    description: LocaleData
+    description: Optional[LocaleData] = None
 
 
 class DirectiveTreeCategoryData(Ps2Data):

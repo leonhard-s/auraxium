@@ -1,5 +1,7 @@
 """Data classes for :mod:`auraxium.ps2.world`."""
 
+from typing import Optional
+
 from ..base import Ps2Data
 from ..types import LocaleData
 
@@ -25,4 +27,4 @@ class WorldData(Ps2Data):
     world_id: int
     state: str
     name: LocaleData
-    description: LocaleData
+    description: Optional[LocaleData] = None

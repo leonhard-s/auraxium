@@ -33,12 +33,11 @@ class LocaleData(pydantic.BaseModel):
         """
         allow_mutation = False
 
-
-    de: str
-    en: str
-    es: str
-    fr: str
-    it: str
+    de: Optional[str] = None
+    en: Optional[str] = None
+    es: Optional[str] = None
+    fr: Optional[str] = None
+    it: Optional[str] = None
 
     @classmethod
     def empty(cls) -> 'LocaleData':
@@ -47,7 +46,7 @@ class LocaleData(pydantic.BaseModel):
         This is mostly provided to easily handle payloads who's entire
         localised string field is ``NULL``.
         """
-        return cls(*(None,)*5)  # type: ignore
+        return cls()
 
 
 def optional(data: CensusData, key: str,

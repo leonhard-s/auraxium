@@ -55,9 +55,9 @@ class ZoneEffectTypeData(Ps2Data):
 
     zone_effect_type_id: int
     description: str
-    param1: str
-    param2: str
-    param3: str
-    param4: str
-    param5: str
-    param6: str
+    param1: Optional[str]
+    param2: Optional[str]
+    param3: Optional[str]
+    param4: Optional[str]
+    param5: Optional[str]
+    param6: Optional[str]

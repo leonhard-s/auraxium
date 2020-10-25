@@ -33,6 +33,7 @@ __all__ = [
     'Named'
 ]
 
+AnyT = TypeVar('AnyT')
 CachedT = TypeVar('CachedT', bound='Cached')
 NamedT = TypeVar('NamedT', bound='Named')
 Ps2DataT = TypeVar('Ps2DataT', bound='Ps2Data')
@@ -61,6 +62,23 @@ class Ps2Data(pydantic.BaseModel, metaclass=abc.ABCMeta):
         """
         allow_mutation = False
         anystr_strip_whitespace = True
+
+    @pydantic.validator('*', pre=True)
+    def convert_null(cls: Type['Ps2Data'], value: AnyT) -> Optional[AnyT]:
+        """Handle "NULL" string return values.
+
+        This converts any NULL strings to equal ``None`` instead.
+
+        By default, the API will omit any NULL fields in the response,
+        unless the ``c:includeNull`` flag is set.
+        This value being a string would break type annotations like
+        ``Optional[int] = None``, which is why they are silently
+        converted into ``None`` before any parsing takes place.
+        """
+        # pylint: disable=no-self-use,no-self-argument
+        if value == 'NULL':
+            return None
+        return value
 
 
 class FallbackMixin:
