@@ -44,15 +44,17 @@ log = logging.getLogger('auraxium.ps2')
 class Ps2Data(pydantic.BaseModel, metaclass=abc.ABCMeta):
     """Base class for PlanetSide 2 data classes.
 
-    This defines the interface used to populate the data classes, and
-    also performs type checking for data class attributes.
+    This class is based on :class:`pydantic.BaseModel` and will
+    automatically cast any kwargs provided into the set of attributes
+    defined for the current subclass.
 
-    Upon instantiation, a :class:`TypeError` will be raised for any
-    attributes that do not match the annotation. This does process
-    compound type declarations like :class:`typing.Union` or
-    :class:`typing.Optional`.
+    Extraneous kwargs are silently discarded. Any values equal to the
+    string ``'NULL'`` are converted to ``None`` before the parsing is
+    performed.
+
+    This does support compound type declarations like
+    :class:`typing.Union` or :class:`typing.Optional`.
     """
-    # TODO: Update docstring
 
     class Config:
         """Pydantic model configuration.
@@ -65,7 +67,7 @@ class Ps2Data(pydantic.BaseModel, metaclass=abc.ABCMeta):
 
     @pydantic.validator('*', pre=True)
     def convert_null(cls: Type['Ps2Data'], value: AnyT) -> Optional[AnyT]:
-        """Handle "NULL" string return values.
+        """Handle NULL string return values.
 
         This converts any NULL strings to equal ``None`` instead.
 
@@ -96,7 +98,7 @@ class FallbackMixin:
 class Ps2Object(metaclass=abc.ABCMeta):
     """Common base class for all PS2 object representations.
 
-    This requires that subclasses implement the
+    This requires that subclasses overwrite the
     :attr:`Ps2Object.collection` and :attr:`Ps2Object.id_field` names,
     which are used to tie the class to its corresponding API
     counterpart.
@@ -569,6 +571,6 @@ class ImageMixin(Ps2Object, metaclass=abc.ABCMeta):
 class ImageData:
     """Mixin dataclass for types supporting image access."""
 
-    image_id: Optional[int]
-    image_set_id: Optional[int]
-    image_path: Optional[str]
+    image_id: Optional[int] = None
+    image_set_id: Optional[int] = None
+    image_path: Optional[str] = None
