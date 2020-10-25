@@ -1,9 +1,6 @@
 """Data classes for :mod:`auraxium.ps2.profile`."""
 
-import dataclasses
-
 from ..base import Ps2Data
-from ..types import CensusData
 
 __all__ = [
     'LoadoutData',
@@ -11,7 +8,6 @@ __all__ = [
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class LoadoutData(Ps2Data):
     """Data class for :class:`auraxium.ps2.ability.Loadout`.
 
@@ -31,16 +27,7 @@ class LoadoutData(Ps2Data):
     faction_id: int
     code_name: str
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'LoadoutData':
-        return cls(
-            int(data.pop('loadout_id')),
-            int(data.pop('profile_id')),
-            int(data.pop('faction_id')),
-            str(data.pop('code_name')))
 
-
-@dataclasses.dataclass(frozen=True)
 class ProfileData(Ps2Data):
     """Data class for :class:`auraxium.ps2.profile.Profile`.
 
@@ -55,9 +42,3 @@ class ProfileData(Ps2Data):
 
     profile_id: int
     description: str
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'ProfileData':
-        return cls(
-            int(data.pop('profile_id')),
-            str(data.pop('description')))

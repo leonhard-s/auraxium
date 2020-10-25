@@ -4,7 +4,6 @@ from ..base import Cached
 from ..census import Query
 from ..models import ZoneEffectData, ZoneEffectTypeData
 from ..proxy import InstanceProxy
-from ..types import CensusData
 
 from .ability import Ability
 
@@ -17,11 +16,8 @@ class ZoneEffectType(Cached, cache_size=20, cache_ttu=60.0):
 
     collection = 'zone_effect_type'
     data: ZoneEffectTypeData
+    dataclass = ZoneEffectTypeData
     id_field = 'zone_effect_type_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> ZoneEffectTypeData:
-        return ZoneEffectTypeData.from_census(data)
 
 
 class ZoneEffect(Cached, cache_size=10, cache_ttu=60.0):
@@ -34,11 +30,8 @@ class ZoneEffect(Cached, cache_size=10, cache_ttu=60.0):
 
     collection = 'zone_effect'
     data: ZoneEffectData
+    dataclass = ZoneEffectData
     id_field = 'zone_effect_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> ZoneEffectData:
-        return ZoneEffectData.from_census(data)
 
     def ability(self) -> InstanceProxy[Ability]:
         """Return the ability associated with this zone effect."""

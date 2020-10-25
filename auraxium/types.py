@@ -1,6 +1,8 @@
 """Custom types used by the auraxium module."""
 
-from typing import Any, Callable, Dict, NamedTuple, Optional, TypeVar
+from typing import Any, Callable, Dict, Optional, TypeVar
+
+import pydantic
 
 __all__ = [
     'CensusData',
@@ -16,18 +18,26 @@ T = TypeVar('T')  # pylint: disable=invalid-name
 CensusData = Dict[str, Any]
 
 
-class LocaleData(NamedTuple):
+class LocaleData(pydantic.BaseModel):
     """Container for localised strings.
 
     Note that the ``tr`` locale is ignored as it was abandoned by the
     developers and is generally either missing or unpopulated.
     """
 
-    de: str
-    en: str
-    es: str
-    fr: str
-    it: str
+    class Config:
+        """Pydantic model configuration.
+
+        This inner class is used to namespace the pydantic
+        configuration options.
+        """
+        allow_mutation = False
+
+    de: Optional[str] = None
+    en: Optional[str] = None
+    es: Optional[str] = None
+    fr: Optional[str] = None
+    it: Optional[str] = None
 
     @classmethod
     def empty(cls) -> 'LocaleData':
@@ -36,28 +46,7 @@ class LocaleData(NamedTuple):
         This is mostly provided to easily handle payloads who's entire
         localised string field is ``NULL``.
         """
-        return cls(*(None,)*5)  # type: ignore
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'LocaleData':
-        """Create and populate an instance using the given payload.
-
-        This expects to be passed the inner dictionary containing the
-        localisation keys (i.e. ``{'de': '...', 'en': '...', ... }``).
-        """
-        de_ = optional(data, 'de', str) or 'Missing String'
-        en_ = optional(data, 'en', str) or 'Missing String'
-        es_ = optional(data, 'es', str) or 'Missing String'
-        fr_ = optional(data, 'fr', str) or 'Missing String'
-        it_ = optional(data, 'it', str) or 'Missing String'
-        # The TR locale is unfinished and deliberately discarded if found
-        _ = optional(data, 'tr', str)
-        return cls(
-            de_,
-            en_,
-            es_,
-            fr_,
-            it_)
+        return cls()
 
 
 def optional(data: CensusData, key: str,

@@ -1,10 +1,9 @@
 """Data classes for :mod:`auraxium.ps2.directive`."""
 
-import dataclasses
 from typing import Optional
 
 from ..base import ImageData, Ps2Data
-from ..types import CensusData, LocaleData, optional
+from ..types import LocaleData
 
 __all__ = [
     'DirectiveData',
@@ -14,7 +13,6 @@ __all__ = [
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class DirectiveData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.directive.Directive`.
 
@@ -39,26 +37,11 @@ class DirectiveData(Ps2Data, ImageData):
     directive_tree_id: int
     directive_tier_id: int
     objective_set_id: int
-    qualify_requirement_id: Optional[int]
+    qualify_requirement_id: Optional[int] = None
     name: LocaleData
-    description: LocaleData
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'DirectiveData':
-        return cls(
-            int(data.pop('image_id')),
-            int(data.pop('image_set_id')),
-            str(data.pop('image_path')),
-            int(data.pop('directive_id')),
-            int(data.pop('directive_tree_id')),
-            int(data.pop('directive_tier_id')),
-            int(data.pop('objective_set_id')),
-            optional(data, 'qualify_requirement_id', int),
-            LocaleData.from_census(data.pop('name')),
-            LocaleData.from_census(data.pop('description')))
+    description: Optional[LocaleData] = None
 
 
-@dataclasses.dataclass(frozen=True)
 class DirectiveTierData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.directive.DirectiveTier`.
 
@@ -81,26 +64,12 @@ class DirectiveTierData(Ps2Data, ImageData):
 
     directive_tier_id: int
     directive_tree_id: int
-    reward_set_id: Optional[int]
+    reward_set_id: Optional[int] = None
     directive_points: int
     completion_count: int
     name: LocaleData
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'DirectiveTierData':
-        return cls(
-            int(data.pop('image_id')),
-            int(data.pop('image_set_id')),
-            str(data.pop('image_path')),
-            int(data.pop('directive_tier_id')),
-            int(data.pop('directive_tree_id')),
-            optional(data, 'reward_set_id', int),
-            int(data.pop('directive_points')),
-            int(data.pop('completion_count')),
-            LocaleData.from_census(data.pop('name')))
 
-
-@dataclasses.dataclass(frozen=True)
 class DirectiveTreeData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.directive.DirectiveTree`.
 
@@ -118,25 +87,9 @@ class DirectiveTreeData(Ps2Data, ImageData):
     directive_tree_id: int
     directive_tree_category_id: int
     name: LocaleData
-    description: LocaleData
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'DirectiveTreeData':
-        if 'description' in data:
-            description = LocaleData.from_census(data.pop('description'))
-        else:
-            description = LocaleData.empty()
-        return cls(
-            int(data.pop('image_id')),
-            int(data.pop('image_set_id')),
-            str(data.pop('image_path')),
-            int(data.pop('directive_tree_id')),
-            int(data.pop('directive_tree_category_id')),
-            LocaleData.from_census(data.pop('name')),
-            description)
+    description: Optional[LocaleData] = None
 
 
-@dataclasses.dataclass(frozen=True)
 class DirectiveTreeCategoryData(Ps2Data):
     """Data class for :class:`auraxium.ps2.directive.DirectiveTreeCategory`.
 
@@ -152,9 +105,3 @@ class DirectiveTreeCategoryData(Ps2Data):
 
     directive_tree_category_id: int
     name: LocaleData
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'DirectiveTreeCategoryData':
-        return cls(
-            int(data.pop('directive_tree_category_id')),
-            LocaleData.from_census(data.pop('name')))

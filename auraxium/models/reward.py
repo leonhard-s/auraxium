@@ -1,10 +1,8 @@
 """Data classes for :mod:`auraxium.ps2.reward`."""
 
-import dataclasses
-from typing import List, Optional
+from typing import Optional
 
 from ..base import Ps2Data
-from ..types import CensusData, optional
 
 __all__ = [
     'RewardData',
@@ -12,7 +10,6 @@ __all__ = [
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class RewardData(Ps2Data):
     """Data class for :class:`auraxium.ps2.ability.Reward`.
 
@@ -34,25 +31,12 @@ class RewardData(Ps2Data):
     count_min: int
     count_max: int
     param1: str
-    param2: Optional[str]
-    param3: Optional[str]
-    param4: Optional[str]
-    param5: Optional[str]
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'RewardData':
-        params: List[Optional[str]] = [
-            optional(data, f'param{i+1}', str) for i in range(1, 5)]
-        return cls(
-            int(data.pop('reward_id')),
-            int(data.pop('reward_type_id')),
-            int(data.pop('count_min')),
-            int(data.pop('count_max')),
-            str(data.pop('param1')),
-            *params)
+    param2: Optional[str] = None
+    param3: Optional[str] = None
+    param4: Optional[str] = None
+    param5: Optional[str] = None
 
 
-@dataclasses.dataclass(frozen=True)
 class RewardTypeData(Ps2Data):
     """Data class for :class:`auraxium.ps2.ability.ResourceType`.
 
@@ -75,19 +59,7 @@ class RewardTypeData(Ps2Data):
     count_min: Optional[str]
     count_max: Optional[str]
     param1: str
-    param2: Optional[str]
-    param3: Optional[str]
-    param4: Optional[str]
-    param5: Optional[str]
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'RewardTypeData':
-        params: List[Optional[str]] = [
-            optional(data, f'param{i+1}', str) for i in range(1, 5)]
-        return cls(
-            int(data.pop('reward_type_id')),
-            str(data.pop('description')),
-            optional(data, 'count_min', str),
-            optional(data, 'count_max', str),
-            str(data.pop('param1')),
-            *params)
+    param2: Optional[str] = None
+    param3: Optional[str] = None
+    param4: Optional[str] = None
+    param5: Optional[str] = None

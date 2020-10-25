@@ -7,7 +7,6 @@ from ..census import Query
 from ..client import Client
 from ..models import VehicleAttachmentData, VehicleData
 from ..proxy import InstanceProxy, SequenceProxy
-from ..types import CensusData
 
 from .faction import Faction
 from .item import Item
@@ -23,11 +22,8 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
 
     collection = 'vehicle'
     data: VehicleData
+    dataclass = VehicleData
     id_field = 'vehicle_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> VehicleData:
-        return VehicleData.from_census(data)
 
     def factions(self) -> SequenceProxy[Faction]:
         """Return the factions that have access to this vehicle.
@@ -85,11 +81,8 @@ class VehicleAttachment(Cached, cache_size=250, cache_ttu=180.0):
 
     collection = 'vehicle_attachment'
     data: VehicleAttachmentData
+    dataclass = VehicleAttachmentData
     id_field = 'vehicle_attachment_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> VehicleAttachmentData:
-        return VehicleAttachmentData.from_census(data)
 
     def faction(self) -> InstanceProxy[Faction]:
         """Return the faction this attachment is available to.

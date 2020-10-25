@@ -7,7 +7,6 @@ from ..census import Query
 from ..client import Client
 from ..models import RewardData, RewardTypeData
 from ..proxy import InstanceProxy, SequenceProxy
-from ..types import CensusData
 
 
 class RewardType(Cached, cache_size=10, cache_ttu=3600.0):
@@ -18,11 +17,8 @@ class RewardType(Cached, cache_size=10, cache_ttu=3600.0):
 
     collection = 'reward_type'
     data: RewardTypeData
+    dataclass = RewardTypeData
     id_field = 'reward_type_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> RewardTypeData:
-        return RewardTypeData.from_census(data)
 
 
 class Reward(Cached, cache_size=50, cache_ttu=60.0):
@@ -35,11 +31,8 @@ class Reward(Cached, cache_size=50, cache_ttu=60.0):
 
     collection = 'reward'
     data: RewardData
+    dataclass = RewardData
     id_field = 'reward_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> RewardData:
-        return RewardData.from_census(data)
 
     @classmethod
     def get_by_reward_group(cls, reward_group_id: int, client: Client

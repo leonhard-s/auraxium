@@ -1,17 +1,14 @@
 """Data classes for :mod:`auraxium.ps2.projectile`."""
 
-import dataclasses
 from typing import Optional
 
 from ..base import Ps2Data
-from ..types import CensusData, optional
 
 __all__ = [
     'ProjectileData'
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class ProjectileData(Ps2Data):
     """Data class for :class:`auraxium.ps2.projectile.Projectile`.
 
@@ -58,42 +55,19 @@ class ProjectileData(Ps2Data):
     projectile_id: int
     projectile_flight_type_id: int
     speed: int
-    speed_max: Optional[int]
-    acceleration: Optional[int]
-    turn_rate: Optional[int]
-    lifespan: Optional[float]
-    drag: Optional[float]
-    gravity: Optional[float]
-    lockon_acceleration: Optional[float]
-    lockon_lifespan: Optional[float]
-    arm_distance: Optional[float]
-    tether_distance: Optional[float]
-    detonate_distance: Optional[float]
-    detonate_on_contact: Optional[bool]
-    sticky: Optional[bool]
-    sticks_to_players: Optional[bool]
-    lockon_lose_angle: Optional[int]
-    lockon_seek_in_flight: Optional[bool]
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'ProjectileData':
-        return cls(
-            int(data.pop('projectile_id')),
-            int(data.pop('projectile_flight_type_id')),
-            int(data.pop('speed')),
-            optional(data, 'speed_max', int),
-            optional(data, 'acceleration', int),
-            optional(data, 'turn_rate', int),
-            optional(data, 'lifespan', float),
-            optional(data, 'drag', float),
-            optional(data, 'gravity', float),
-            optional(data, 'lockon_acceleration', float),
-            optional(data, 'lockon_lifespan', float),
-            optional(data, 'arm_distance', float),
-            optional(data, 'tether_distance', float),
-            optional(data, 'detonate_distance', float),
-            optional(data, 'detonate_on_contact', bool),
-            optional(data, 'sticky', bool),
-            optional(data, 'sticks_to_players', bool),
-            optional(data, 'lockon_lose_angle', int),
-            optional(data, 'lockon_seek_in_flight', bool))
+    speed_max: Optional[int] = None
+    acceleration: Optional[int] = None
+    turn_rate: Optional[int] = None
+    lifespan: Optional[float] = None
+    drag: Optional[float] = None
+    gravity: Optional[float] = None
+    lockon_acceleration: Optional[float] = None
+    lockon_lifespan: Optional[float] = None
+    arm_distance: Optional[float] = None
+    tether_distance: Optional[float] = None
+    detonate_distance: Optional[float] = None
+    detonate_on_contact: Optional[bool] = None
+    sticky: Optional[bool] = None
+    sticks_to_players: Optional[bool] = None
+    lockon_lose_angle: Optional[int] = None
+    lockon_seek_in_flight: Optional[bool] = None

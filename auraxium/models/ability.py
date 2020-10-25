@@ -1,10 +1,8 @@
 """Data classes for :mod:`auraxium.ps2.ability`."""
 
-import dataclasses
-from typing import List, Optional
+from typing import Optional
 
 from ..base import Ps2Data
-from ..types import CensusData, optional
 
 __all__ = [
     'AbilityData',
@@ -13,7 +11,6 @@ __all__ = [
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class AbilityData(Ps2Data):
     """Data class for :class:`auraxium.ps2.ability.Ability`.
 
@@ -42,59 +39,36 @@ class AbilityData(Ps2Data):
 
     ability_id: int
     ability_type_id: int
-    expire_msec: Optional[int]
-    first_use_delay_msec: Optional[int]
-    next_use_delay_msec: Optional[int]
-    reuse_delay_msec: Optional[int]
-    resource_type_id: Optional[int]
-    resource_first_cost: Optional[int]
-    resource_cost_per_msec: Optional[int]
-    distance_max: Optional[float]
-    radius_max: Optional[float]
-    flag_toggle: Optional[bool]
-    param1: Optional[str]
-    param2: Optional[str]
-    param3: Optional[str]
-    param4: Optional[str]
-    param5: Optional[str]
-    param6: Optional[str]
-    param7: Optional[str]
-    param8: Optional[str]
-    param9: Optional[str]
-    param10: Optional[str]
-    param11: Optional[str]
-    param12: Optional[str]
-    param13: Optional[str]
-    param14: Optional[str]
-    string1: Optional[str]
-    string2: Optional[str]
-    string3: Optional[str]
-    string4: Optional[str]
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'AbilityData':
-        params: List[Optional[str]] = [
-            optional(data, f'param{i+1}', str) for i in range(14)]
-        strings: List[Optional[str]] = [
-            optional(data, f'string{i+1}', str) for i in range(4)]
-        return cls(
-            int(data.pop('ability_id')),
-            int(data.pop('ability_type_id')),
-            optional(data, 'expire_msec', int),
-            optional(data, 'first_use_delay_msec', int),
-            optional(data, 'next_use_delay_msec', int),
-            optional(data, 'reuse_delay_msec', int),
-            optional(data, 'resource_type_id', int),
-            optional(data, 'resource_first_cost', int),
-            optional(data, 'resource_cost_per_msec', int),
-            optional(data, 'distance_max', float),
-            optional(data, 'radius_max', float),
-            optional(data, 'flag_toggle', bool),
-            *params,
-            *strings)
+    expire_msec: Optional[int] = None
+    first_use_delay_msec: Optional[int] = None
+    next_use_delay_msec: Optional[int] = None
+    reuse_delay_msec: Optional[int] = None
+    resource_type_id: Optional[int] = None
+    resource_first_cost: Optional[int] = None
+    resource_cost_per_msec: Optional[int] = None
+    distance_max: Optional[float] = None
+    radius_max: Optional[float] = None
+    flag_toggle: Optional[bool] = None
+    param1: Optional[str] = None
+    param2: Optional[str] = None
+    param3: Optional[str] = None
+    param4: Optional[str] = None
+    param5: Optional[str] = None
+    param6: Optional[str] = None
+    param7: Optional[str] = None
+    param8: Optional[str] = None
+    param9: Optional[str] = None
+    param10: Optional[str] = None
+    param11: Optional[str] = None
+    param12: Optional[str] = None
+    param13: Optional[str] = None
+    param14: Optional[str] = None
+    string1: Optional[str] = None
+    string2: Optional[str] = None
+    string3: Optional[str] = None
+    string4: Optional[str] = None
 
 
-@dataclasses.dataclass(frozen=True)
 class AbilityTypeData(Ps2Data):
     """Data class for :class:`auraxium.ps2.ability.AbilityType`.
 
@@ -113,40 +87,27 @@ class AbilityTypeData(Ps2Data):
     """
 
     ability_type_id: int
-    description: Optional[str]
-    param1: Optional[str]
-    param2: Optional[str]
-    param3: Optional[str]
-    param4: Optional[str]
-    param5: Optional[str]
-    param6: Optional[str]
-    param7: Optional[str]
-    param8: Optional[str]
-    param9: Optional[str]
-    param10: Optional[str]
-    param11: Optional[str]
-    param12: Optional[str]
-    param13: Optional[str]
-    param14: Optional[str]
-    string1: Optional[str]
-    string2: Optional[str]
-    string3: Optional[str]
-    string4: Optional[str]
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'AbilityTypeData':
-        params: List[Optional[str]] = [
-            optional(data, f'param{i+1}', str) for i in range(14)]
-        strings: List[Optional[str]] = [
-            optional(data, f'string{i+1}', str) for i in range(4)]
-        return cls(
-            int(data.pop('ability_type_id')),
-            optional(data, 'description', str),
-            *params,
-            *strings)
+    description: Optional[str] = None
+    param1: Optional[str] = None
+    param2: Optional[str] = None
+    param3: Optional[str] = None
+    param4: Optional[str] = None
+    param5: Optional[str] = None
+    param6: Optional[str] = None
+    param7: Optional[str] = None
+    param8: Optional[str] = None
+    param9: Optional[str] = None
+    param10: Optional[str] = None
+    param11: Optional[str] = None
+    param12: Optional[str] = None
+    param13: Optional[str] = None
+    param14: Optional[str] = None
+    string1: Optional[str] = None
+    string2: Optional[str] = None
+    string3: Optional[str] = None
+    string4: Optional[str] = None
 
 
-@dataclasses.dataclass(frozen=True)
 class ResourceTypeData(Ps2Data):
     """Data class for :class:`auraxium.ps2.ability.ResourceType`.
 
@@ -162,9 +123,3 @@ class ResourceTypeData(Ps2Data):
 
     resource_type_id: int
     description: str
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'ResourceTypeData':
-        return cls(
-            int(data.pop('resource_type_id')),
-            str(data.pop('description')))

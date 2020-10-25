@@ -1,17 +1,14 @@
 """Data classes for :mod:`auraxium.ps2.states`."""
 
-import dataclasses
 from typing import Optional
 
 from ..base import Ps2Data
-from ..types import CensusData, optional
 
 __all__ = [
     'PlayerStateGroup'
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class PlayerStateGroup(Ps2Data):
     """A fire-mode-specific state group.
 
@@ -38,26 +35,11 @@ class PlayerStateGroup(Ps2Data):
     player_state_group_id: int
     player_state_id: int
     can_iron_sight: bool
-    cof_grow_rate: Optional[float]
+    cof_grow_rate: Optional[float] = None
     cof_max: float
     cof_min: float
-    cof_recovery_delay_ms: Optional[int]
+    cof_recovery_delay_ms: Optional[int] = None
     cof_recovery_rate: float
-    cof_shots_before_penalty: Optional[int]
-    cof_recovery_delay_threshold: Optional[int]
-    cof_turn_penalty: Optional[int]
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'PlayerStateGroup':
-        return cls(
-            int(data.pop('player_state_group_id')),
-            int(data.pop('player_state_id')),
-            bool(int(data.pop('can_iron_sight'))),
-            optional(data, 'cof_grow_rate', float),
-            float(data.pop('cof_max')),
-            float(data.pop('cof_min')),
-            optional(data, 'cof_recovery_delay_ms', int),
-            float(data.pop('cof_recovery_rate')),
-            optional(data, 'cof_shots_before_penalty', int),
-            optional(data, 'cof_recovery_delay_threshold', int),
-            optional(data, 'cof_turn_penalty', int))
+    cof_shots_before_penalty: Optional[int] = None
+    cof_recovery_delay_threshold: Optional[int] = None
+    cof_turn_penalty: Optional[int] = None

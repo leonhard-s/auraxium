@@ -1,11 +1,8 @@
 """Data classes for :mod:`auraxium.ps2.effect`."""
 
-import dataclasses
-from typing import List, Optional
+from typing import Optional
 
 from ..base import Ps2Data
-from ..types import CensusData, optional
-
 
 __all__ = [
     'EffectData',
@@ -13,7 +10,6 @@ __all__ = [
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class EffectData(Ps2Data):
     """Data class for :class:`auraxium.ps2.effect.Effect`.
 
@@ -56,22 +52,7 @@ class EffectData(Ps2Data):
     param12: Optional[str]
     param13: Optional[str]
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'EffectData':
-        params: List[Optional[str]] = [
-            optional(data, f'param{i+1}', str) for i in range(13)]
-        return cls(
-            int(data.pop('effect_id')),
-            int(data.pop('effect_type_id')),
-            optional(data, 'ability_id', int),
-            optional(data, 'target_type_id', int),
-            int(data.pop('resist_type_id')),
-            optional(data, 'is_drain', bool),
-            optional(data, 'duration_seconds', float),
-            *params)
 
-
-@dataclasses.dataclass(frozen=True)
 class EffectTypeData(Ps2Data):
     """Data class for :class:`auraxium.ps2.effect.EffectType`.
 
@@ -102,12 +83,3 @@ class EffectTypeData(Ps2Data):
     param11: Optional[str]
     param12: Optional[str]
     param13: Optional[str]
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'EffectTypeData':
-        params: List[Optional[str]] = [
-            optional(data, f'param{i+1}', str) for i in range(13)]
-        return cls(
-            int(data.pop('effect_type_id')),
-            str(data.pop('description')),
-            *params)

@@ -6,12 +6,12 @@ throughout the PlanetSide 2 object model.
 """
 
 import abc
-import copy
 import dataclasses
 import logging
-import warnings
-from typing import (Any, ClassVar, Dict, get_args, List, Optional, Type,
-                    TYPE_CHECKING, TypeVar, Union)
+from typing import (Any, ClassVar, Dict, List, Optional, Type, TYPE_CHECKING,
+                    TypeVar, Union)
+
+import pydantic
 
 from .cache import TLRUCache
 from .census import Query
@@ -31,6 +31,7 @@ __all__ = [
     'Named'
 ]
 
+AnyT = TypeVar('AnyT')
 CachedT = TypeVar('CachedT', bound='Cached')
 NamedT = TypeVar('NamedT', bound='Named')
 Ps2DataT = TypeVar('Ps2DataT', bound='Ps2Data')
@@ -38,62 +39,46 @@ Ps2ObjectT = TypeVar('Ps2ObjectT', bound='Ps2Object')
 log = logging.getLogger('auraxium.ps2')
 
 
-class Ps2Data(metaclass=abc.ABCMeta):
+class Ps2Data(pydantic.BaseModel, metaclass=abc.ABCMeta):
     """Base class for PlanetSide 2 data classes.
 
-    This defines the interface used to populate the data classes, and
-    also performs type checking for data class attributes.
+    This class is based on :class:`pydantic.BaseModel` and will
+    automatically cast any kwargs provided into the set of attributes
+    defined for the current subclass.
 
-    Upon instantiation, a :class:`TypeError` will be raised for any
-    attributes that do not match the annotation. This does process
-    compound type declarations like :class:`typing.Union` or
-    :class:`typing.Optional`.
+    Extraneous kwargs are silently discarded. Any values equal to the
+    string ``'NULL'`` are converted to ``None`` before the parsing is
+    performed.
+
+    This does support compound type declarations like
+    :class:`typing.Union` or :class:`typing.Optional`.
     """
 
-    def __post_init__(self) -> None:
-        """Enforce type constraints after initialisation.
+    class Config:
+        """Pydantic model configuration.
 
-        This is run right after the object initialiser and compares the
-        assigned attributes against the type annotations given and
-        raises a :class:`TypeError` if a mismatch is found.
-
-        Raises:
-            TypeError: Raised if an attribute value does not match the
-                attribute's type annotation.
-
+        This inner class is used to namespace the pydantic
+        configuration options.
         """
-        assert hasattr(self, '__annotations__')
-        # pylint: disable=no-member
-        for name, type_ in self.__annotations__.items():
-            value = getattr(self, name)
-            # NOTE: typing.get_args() is a utility method used to expand
-            # compound types like typing.Union or typing.Optional into a tuple
-            # of the types it represents.
-            # For regular objects, it returns an empty tuple.
-            if types := get_args(type_):
-                if not any(isinstance(value, t) for t in types):
-                    raise TypeError(
-                        f'Field {name} got {type(value)}, expected {type_}')
-            elif not isinstance(value, type_):
-                raise TypeError(
-                    f'Field {name} got {type(value)}, expected {type_}')
+        allow_mutation = False
+        anystr_strip_whitespace = True
 
-    @classmethod
-    @abc.abstractmethod
-    def from_census(cls: Type[Ps2DataT], data: CensusData) -> Ps2DataT:
-        """Populate the data class with values from the dictionary.
+    @pydantic.validator('*', pre=True)
+    def convert_null(cls: Type['Ps2Data'], value: AnyT) -> Optional[AnyT]:
+        """Handle NULL string return values.
 
-        This parses the API response and casts the appropriate types.
+        This converts any NULL strings to equal ``None`` instead.
 
-        Arguments:
-            data: A dictionary containing API data that will be used to
-                to populate the data class.
-
-        Returns:
-            A populated instance of the current data class.
-
+        By default, the API will omit any NULL fields in the response,
+        unless the ``c:includeNull`` flag is set.
+        This value being a string would break type annotations like
+        ``Optional[int] = None``, which is why they are silently
+        converted into ``None`` before any parsing takes place.
         """
-        ...
+        # pylint: disable=no-self-use,no-self-argument
+        if value == 'NULL':
+            return None
+        return value
 
 
 class FallbackMixin:
@@ -111,18 +96,15 @@ class FallbackMixin:
 class Ps2Object(metaclass=abc.ABCMeta):
     """Common base class for all PS2 object representations.
 
-    This requires that subclasses implement the
+    This requires that subclasses overwrite the
     :attr:`Ps2Object.collection` and :attr:`Ps2Object.id_field` names,
     which are used to tie the class to its corresponding API
     counterpart.
 
-    Likewise, subclasses must implement the abstract
-    :meth:`Ps2Object._build_dataclass`, which is called to convert the
-    API response into an instance of the respective subclass of
-    :class:`Ps2Data`.
     """
 
     collection: ClassVar[str] = 'bogus'
+    dataclass: ClassVar[Type[Ps2Data]]
     id_field: ClassVar[str] = 'bogus_id'
 
     def __init__(self, data: CensusData, client: 'Client') -> None:
@@ -143,26 +125,12 @@ class Ps2Object(metaclass=abc.ABCMeta):
                   self.__class__.__name__, id_, data)
         self.id = id_  # pylint: disable=invalid-name
         self._client = client
-        # Work with a copy of the data to allow pop-ing used keys
-        data = copy.copy(data)
         try:
-            self.data = self._build_dataclass(data)
-        except KeyError as err:
-            raise PayloadError(
-                f'Unable to populate {self.__class__.__name__} due to a '
-                f'missing key: {err.args[0]}', data) from err
-        except ValueError as err:
+            self.data = self.dataclass(**data)
+        except pydantic.ValidationError as err:
             raise PayloadError(
                 f'Unable to instantiate {self.__class__.__name__} instance '
-                f'from given payload: {err.args[0]}', data) from err
-        if data and (keys := filter(lambda k: '_join_' not in k, data.keys())):
-            # Any leftover data (excluding joins) will raise a warning as it
-            # points to a mismatch between the object model and the API
-            msg = 'keys' if len(list(keys)) > 1 else 'key'
-            warnings.warn(
-                f'Unexpected {msg} in payload: {list(keys)}\n'
-                'Please report this error as it hints at a mismatch between '
-                'the auraxium object model and the API.')
+                f'from given payload: {err}', data) from err
 
     def __eq__(self, value: Any) -> bool:
         if not isinstance(value, self.__class__):
@@ -183,23 +151,6 @@ class Ps2Object(metaclass=abc.ABCMeta):
 
         """
         return f'<{self.__class__.__name__}:{self.id}>'
-
-    @staticmethod
-    @abc.abstractmethod
-    def _build_dataclass(data: CensusData) -> Ps2Data:
-        """Factory method for the appropriate data class.
-
-        This connects the class initialiser to the appropriate
-        :class:`Ps2Data` subclass.
-
-        Arguments:
-            data: The API response dictionary to process.
-
-        Returns:
-            An instance of the appropriate data class.
-
-        """
-        ...
 
     @classmethod
     async def count(cls: Type[Ps2ObjectT], client: 'Client',
@@ -604,6 +555,6 @@ class ImageMixin(Ps2Object, metaclass=abc.ABCMeta):
 class ImageData:
     """Mixin dataclass for types supporting image access."""
 
-    image_id: Optional[int]
-    image_set_id: Optional[int]
-    image_path: Optional[str]
+    image_id: Optional[int] = None
+    image_set_id: Optional[int] = None
+    image_path: Optional[str] = None

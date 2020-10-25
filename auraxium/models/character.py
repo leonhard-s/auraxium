@@ -1,10 +1,9 @@
 """Data classes for :mod:`auraxium.ps2.character`."""
 
-import dataclasses
 from typing import Optional
 
 from ..base import Ps2Data
-from ..types import CensusData, LocaleData, optional
+from ..types import LocaleData
 
 __all__ = [
     'CharacterAchievement',
@@ -14,7 +13,6 @@ __all__ = [
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class CharacterAchievement(Ps2Data):
     """Data container for a character's achievement status.
 
@@ -45,25 +43,7 @@ class CharacterAchievement(Ps2Data):
     last_save: int
     last_save_date: str
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'CharacterAchievement':
-        """Populate the data class with values from the dictionary.
 
-        This parses the API response and casts the appropriate types.
-        """
-        return cls(
-            int(data.pop('character_id')),
-            int(data.pop('achievement_id')),
-            int(data.pop('earned_count')),
-            int(data.pop('start')),
-            str(data.pop('start_date')),
-            int(data.pop('finish')),
-            str(data.pop('finish_date')),
-            int(data.pop('last_save')),
-            str(data.pop('last_save_date')))
-
-
-@dataclasses.dataclass(frozen=True)
 class CharacterData(Ps2Data):
     """Data class for :class:`auraxium.ps2.character.Character`.
 
@@ -86,7 +66,6 @@ class CharacterData(Ps2Data):
 
     """
 
-    @dataclasses.dataclass(frozen=True)
     class BattleRank(Ps2Data):
         """Object representation of the "battle_rank" sub-key.
 
@@ -99,18 +78,6 @@ class CharacterData(Ps2Data):
         value: int
         percent_to_next: float
 
-        @classmethod
-        def from_census(cls, data: CensusData) -> 'CharacterData.BattleRank':
-            """Populate the data class with values from the dictionary.
-
-            This parses the API response and casts the appropriate
-            types.
-            """
-            return cls(
-                int(data.pop('value')),
-                float(data.pop('percent_to_next')))
-
-    @dataclasses.dataclass(frozen=True)
     class Certs(Ps2Data):
         """Object representation of the "certs" sub-key.
 
@@ -133,21 +100,6 @@ class CharacterData(Ps2Data):
         available_points: int
         percent_to_next: float
 
-        @classmethod
-        def from_census(cls, data: CensusData) -> 'CharacterData.Certs':
-            """Populate the data class with values from the dictionary.
-
-            This parses the API response and casts the appropriate
-            types.
-            """
-            return cls(
-                int(data.pop('earned_points')),
-                int(data.pop('gifted_points')),
-                int(data.pop('spent_points')),
-                int(data.pop('available_points')),
-                float(data.pop('percent_to_next')))
-
-    @dataclasses.dataclass(frozen=True)
     class DailyRibbon(Ps2Data):
         """Object representation of the "daily_ribbon" sub-key.
 
@@ -159,22 +111,9 @@ class CharacterData(Ps2Data):
         """
 
         count: int  # type: ignore
-        time: Optional[int]
-        date: Optional[str]
+        time: Optional[int] = None
+        date: Optional[str] = None
 
-        @classmethod
-        def from_census(cls, data: CensusData) -> 'CharacterData.DailyRibbon':
-            """Populate the data class with values from the dictionary.
-
-            This parses the API response and casts the appropriate
-            types.
-            """
-            return cls(
-                int(data.pop('count')),
-                optional(data, 'time', int),
-                optional(data, 'date', str))
-
-    @dataclasses.dataclass(frozen=True)
     class Name(Ps2Data):
         """Object representation of the "name" sub-key.
 
@@ -187,18 +126,6 @@ class CharacterData(Ps2Data):
         first: str
         first_lower: str
 
-        @classmethod
-        def from_census(cls, data: CensusData) -> 'CharacterData.Name':
-            """Populate the data class with values from the dictionary.
-
-            This parses the API response and casts the appropriate
-            types.
-            """
-            return cls(
-                data.pop('first'),
-                data.pop('first_lower'))
-
-    @dataclasses.dataclass(frozen=True)
     class Times(Ps2Data):
         """Object representation of the "times" sub-key.
 
@@ -228,23 +155,6 @@ class CharacterData(Ps2Data):
         login_count: int
         minutes_played: int
 
-        @classmethod
-        def from_census(cls, data: CensusData) -> 'CharacterData.Times':
-            """Populate the data class with values from the dictionary.
-
-            This parses the API response and casts the appropriate
-            types.
-            """
-            return cls(
-                int(data.pop('creation')),
-                str(data.pop('creation_date')),
-                int(data.pop('last_save')),
-                str(data.pop('last_save_date')),
-                int(data.pop('last_login')),
-                str(data.pop('last_login_date')),
-                int(data.pop('login_count')),
-                int(data.pop('minutes_played')))
-
     character_id: int
     name: Name
     faction_id: int
@@ -257,23 +167,7 @@ class CharacterData(Ps2Data):
     daily_ribbon: DailyRibbon
     prestige_level: int
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'CharacterData':
-        return cls(
-            int(data.pop('character_id')),
-            cls.Name.from_census(data.pop('name')),
-            int(data.pop('faction_id')),
-            int(data.pop('head_id')),
-            int(data.pop('title_id')),
-            cls.Times.from_census(data.pop('times')),
-            cls.Certs.from_census(data.pop('certs')),
-            cls.BattleRank.from_census(data.pop('battle_rank')),
-            int(data.pop('profile_id')),
-            cls.DailyRibbon.from_census(data.pop('daily_ribbon')),
-            int(data.pop('prestige_level')))
 
-
-@dataclasses.dataclass(frozen=True)
 class CharacterDirective(Ps2Data):
     """Data container for a character's directive status.
 
@@ -294,21 +188,7 @@ class CharacterDirective(Ps2Data):
     completion_time: int
     completion_time_date: str
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'CharacterDirective':
-        """Populate the data class with values from the dictionary.
 
-        This parses the API response and casts the appropriate types.
-        """
-        return cls(
-            int(data.pop('character_id')),
-            int(data.pop('directive_tree_id')),
-            int(data.pop('directive_id')),
-            int(data.pop('completion_time')),
-            str(data.pop('completion_time_date')))
-
-
-@dataclasses.dataclass(frozen=True)
 class TitleData(Ps2Data):
     """Data class for :class:`auraxium.ps2.character.Title`.
 
@@ -330,9 +210,3 @@ class TitleData(Ps2Data):
 
     title_id: int
     name: LocaleData
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'TitleData':
-        return cls(
-            int(data.pop('title_id')),
-            LocaleData.from_census(data.pop('name')))

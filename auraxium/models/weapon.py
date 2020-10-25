@@ -1,10 +1,9 @@
 """Data classes for :mod:`auraxium.ps2.weapon`."""
 
-import dataclasses
 from typing import Optional
 
 from ..base import Ps2Data
-from ..types import CensusData, LocaleData, optional
+from ..types import LocaleData
 
 __all__ = [
     'WeaponAmmoSlot',
@@ -13,7 +12,6 @@ __all__ = [
 ]
 
 
-@dataclasses.dataclass(frozen=True)
 class WeaponAmmoSlot(Ps2Data):
     """Data class for weapon ammo slot data.
 
@@ -38,21 +36,10 @@ class WeaponAmmoSlot(Ps2Data):
     weapon_slot_index: int
     clip_size: int
     capacity: int
-    refill_ammo_rate: Optional[int]
-    refill_ammo_delay_ms: Optional[int]
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'WeaponAmmoSlot':
-        return cls(
-            int(data.pop('weapon_id')),
-            int(data.pop('weapon_slot_index')),
-            int(data.pop('clip_size')),
-            int(data.pop('capacity')),
-            optional(data, 'refill_ammo_rate', int),
-            optional(data, 'refill_ammo_delay_ms', int))
+    refill_ammo_rate: Optional[int] = None
+    refill_ammo_delay_ms: Optional[int] = None
 
 
-@dataclasses.dataclass(frozen=True)
 class WeaponData(Ps2Data):
     """Data class for :class:`auraxium.ps2.ability.Weapon`.
 
@@ -87,40 +74,21 @@ class WeaponData(Ps2Data):
     """
 
     weapon_id: int
-    weapon_group_id: Optional[int]
+    weapon_group_id: Optional[int] = None
     turn_modifier: float
     move_modifier: float
-    sprint_recovery_ms: Optional[int]
+    sprint_recovery_ms: Optional[int] = None
     equip_ms: Optional[int]
-    unequip_ms: Optional[int]
-    to_iron_sights_ms: Optional[int]
-    from_iron_sights_ms: Optional[int]
+    unequip_ms: Optional[int] = None
+    to_iron_sights_ms: Optional[int] = None
+    from_iron_sights_ms: Optional[int] = None
     heat_capacity: Optional[int] = None
     heat_bleed_off_rate: Optional[float] = None
     heat_overheat_penalty_ms: Optional[int] = None
     melee_detect_width: Optional[float] = None
     melee_detect_height: Optional[float] = None
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'WeaponData':
-        return cls(
-            int(data.pop('weapon_id')),
-            optional(data, 'weapon_group_id', int),
-            float(data.pop('turn_modifier')),
-            float(data.pop('move_modifier')),
-            optional(data, 'sprint_recovery_ms', int),
-            optional(data, 'equip_ms', int),
-            optional(data, 'unequip_ms', int),
-            optional(data, 'to_iron_sights_ms', int),
-            optional(data, 'from_iron_sights_ms', int),
-            optional(data, 'heat_capacity', int),
-            optional(data, 'heat_bleed_off_rate_ms', int),
-            optional(data, 'heat_overhead_penalty_ms', int),
-            optional(data, 'melee_detect_width', float),
-            optional(data, 'melee_detect_height', float))
 
-
-@dataclasses.dataclass(frozen=True)
 class WeaponDatasheet(Ps2Data):
     """Data class for weapon datasheets.
 
@@ -166,8 +134,8 @@ class WeaponDatasheet(Ps2Data):
     """
 
     item_id: int
-    direct_damage: Optional[int]
-    indirect_damage: Optional[int]
+    direct_damage: Optional[int] = None
+    indirect_damage: Optional[int] = None
     damage: int
     damage_min: int
     damage_max: int
@@ -186,29 +154,3 @@ class WeaponDatasheet(Ps2Data):
     show_clip_size: bool
     show_fire_modes: bool
     show_range: bool
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'WeaponDatasheet':
-        return cls(
-            int(data.pop('item_id')),
-            optional(data, 'direct_damage', int),
-            optional(data, 'indirect_damage', int),
-            int(data.pop('damage')),
-            int(data.pop('damage_min')),
-            int(data.pop('damage_max')),
-            float(data.pop('fire_cone')),
-            float(data.pop('fire_cone_min')),
-            float(data.pop('fire_cone_max')),
-            int(data.pop('fire_rate_ms')),
-            int(data.pop('fire_rate_ms_min')),
-            # The "mx" is not a typo - not mine
-            int(data.pop('fire_rate_mx_max')),
-            int(data.pop('reload_ms')),
-            int(data.pop('reload_ms_min')),
-            int(data.pop('reload_ms_max')),
-            int(data.pop('clip_size')),
-            int(data.pop('capacity')),
-            LocaleData.from_census(data.pop('range')),
-            bool(int(data.pop('show_clip_size'))),
-            bool(int(data.pop('show_fire_modes'))),
-            bool(int(data.pop('show_range'))))
