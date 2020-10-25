@@ -287,7 +287,8 @@ class Query(QueryBase):
 
         """
         super().__init__(collection, **kwargs)
-        self.data = QueryData.from_base(self.data)
+        data: QueryBaseData = self.data  # type: ignore
+        self.data = QueryData.from_base(data)
         self.data.namespace = namespace
         self.data.service_id = service_id
 
@@ -751,7 +752,8 @@ class JoinedQuery(QueryBase):
     def __init__(self, collection: str, **kwargs: CensusValue) -> None:
         """Instantiate a joined, inner query."""
         super().__init__(collection, **kwargs)
-        self.data = JoinedQueryData.from_base(self.data)
+        data: QueryBaseData = self.data  # type: ignore
+        self.data = JoinedQueryData.from_base(data)
 
     @classmethod
     def copy(cls, template: QueryBase, copy_joins: bool = False,
