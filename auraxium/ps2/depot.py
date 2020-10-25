@@ -7,7 +7,6 @@ from ..census import Query
 from ..models import MarketingBundleData, MarketingBundleSingleData
 from ..proxy import InstanceProxy
 from ..request import extract_payload
-from ..types import CensusData
 
 from .item import Item
 
@@ -21,11 +20,8 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
 
     collection = 'marketing_bundle'
     data: MarketingBundleData
+    dataclass = MarketingBundleData
     id_field = 'marketing_bundle_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> MarketingBundleData:
-        return MarketingBundleData.from_census(data)
 
     def image(self) -> str:
         """Return the default image for this type."""
@@ -66,11 +62,8 @@ class MarketingBundleSingle(Cached, cache_size=100, cache_ttu=60.0):
 
     collection = 'marketing_bundle_with_1_item'
     data: MarketingBundleSingleData
+    dataclass = MarketingBundleSingleData
     id_field = 'marketing_bundle_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> MarketingBundleSingleData:
-        return MarketingBundleSingleData.from_census(data)
 
     def item(self) -> InstanceProxy[Item]:
         """Return the item unlocked by the bundle.

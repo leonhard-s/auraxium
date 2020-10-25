@@ -18,11 +18,8 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
 
     collection = 'world'
     data: WorldData
+    dataclass = WorldData
     id_field = 'world_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> WorldData:
-        return WorldData.from_census(data)
 
     async def events(self, **kwargs: Any) -> List[CensusData]:
         """Return events for this world.

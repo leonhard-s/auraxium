@@ -7,7 +7,6 @@ from ..census import Query
 from ..models import ItemCategoryData, ItemData, ItemTypeData
 from ..request import extract_single
 from ..proxy import InstanceProxy, SequenceProxy
-from ..types import CensusData
 
 from .faction import Faction
 from .profile import Profile
@@ -27,11 +26,8 @@ class ItemCategory(Named, cache_size=32, cache_ttu=3600.0):
 
     collection = 'item_category'
     data: ItemCategoryData
+    dataclass = ItemCategoryData
     id_field = 'item_category_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> ItemCategoryData:
-        return ItemCategoryData.from_census(data)
 
 
 class ItemType(Cached, cache_size=10, cache_ttu=60.0):
@@ -46,11 +42,8 @@ class ItemType(Cached, cache_size=10, cache_ttu=60.0):
 
     collection = 'item_type'
     data: ItemTypeData
+    dataclass = ItemTypeData
     id_field = 'item_type_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> ItemTypeData:
-        return ItemTypeData.from_census(data)
 
 
 class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
@@ -63,11 +56,8 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
 
     collection = 'item'
     data: ItemData
+    dataclass = ItemData
     id_field = 'item_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> ItemData:
-        return ItemData.from_census(data)
 
     def attachments(self) -> SequenceProxy['Item']:
         """Return the attachment options for this item.
@@ -124,7 +114,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
         query.add_term(field=self.id_field, value=self.id)
         payload = await self._client.request(query)
         data = extract_single(payload, collection)
-        return WeaponDatasheet.from_census(data)
+        return WeaponDatasheet(**data)
 
     def profiles(self) -> SequenceProxy[Profile]:
         """Return the profiles the item is available to.

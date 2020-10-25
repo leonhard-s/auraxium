@@ -27,11 +27,8 @@ class Title(Named, cache_size=300, cache_ttu=300.0):
 
     collection = 'title'
     data: TitleData
+    dataclass = TitleData
     id_field = 'title_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> TitleData:
-        return TitleData.from_census(data)
 
 
 class Character(Named, cache_size=256, cache_ttu=30.0):
@@ -40,6 +37,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     _cache: ClassVar[TLRUCache[Union[int, str], 'Character']]
     collection = 'character'
     data: CharacterData
+    dataclass = CharacterData
     id_field = 'character_id'
 
     async def achievements(self, **kwargs: Any) -> List[CharacterAchievement]:
@@ -50,11 +48,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.add_term(field=self.id_field, value=self.id)
         payload = await self._client.request(query)
         data = extract_payload(payload, collection)
-        return [CharacterAchievement.from_census(d) for d in data]
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> CharacterData:
-        return CharacterData.from_census(data)
+        return [CharacterAchievement(**d) for d in data]
 
     async def currency(self) -> Tuple[int, int]:
         """Return the currencies of the character.

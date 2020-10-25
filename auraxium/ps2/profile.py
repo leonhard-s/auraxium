@@ -26,6 +26,7 @@ class Profile(Cached, cache_size=200, cache_ttu=60.0):
 
     collection = 'profile_2'
     data: ProfileData
+    dataclass = ProfileData
     id_field = 'profile_id'
 
     def armour_info(self) -> SequenceProxy[ArmourInfo]:
@@ -40,10 +41,6 @@ class Profile(Cached, cache_size=200, cache_ttu=60.0):
         join = query.create_join(ArmourInfo.collection)
         join.set_fields(ArmourInfo.id_field)
         return SequenceProxy(ArmourInfo, query, client=self._client)
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> ProfileData:
-        return ProfileData.from_census(data)
 
     def resist_info(self) -> SequenceProxy[ResistInfo]:
         """Return the resist info of the profile.
@@ -80,12 +77,9 @@ class Loadout(Cached, FallbackMixin, cache_size=20, cache_ttu=3600.0):
 
     collection = 'loadout'
     data: LoadoutData
+    dataclass = LoadoutData
     id_field = 'loadout_id'
     _fallback = {k: _get_fallback(k) for k in (*range(28, 33), 45)}
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> LoadoutData:
-        return LoadoutData.from_census(data)
 
     def armour_info(self) -> SequenceProxy[ArmourInfo]:
         """Return the armour info of the loadout.

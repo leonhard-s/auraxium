@@ -2,7 +2,6 @@
 
 from ..base import Named
 from ..models import ZoneData
-from ..types import CensusData
 
 
 class Zone(Named, cache_size=20, cache_ttu=3600.0):
@@ -15,6 +14,7 @@ class Zone(Named, cache_size=20, cache_ttu=3600.0):
 
     collection = 'zone'
     data: ZoneData
+    dataclass = ZoneData
     id_field = 'zone_id'
 
     # @property
@@ -25,7 +25,3 @@ class Zone(Named, cache_size=20, cache_ttu=3600.0):
     #     such as the tutorial world space.
     #     """
     #     # TODO: Add dynamic zone detection
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> ZoneData:
-        return ZoneData.from_census(data)

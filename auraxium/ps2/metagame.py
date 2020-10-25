@@ -4,7 +4,6 @@ import enum
 
 from ..base import Cached
 from ..models import MetagameEventData
-from ..types import CensusData
 
 
 class MetagameEventState(enum.IntEnum):
@@ -22,8 +21,5 @@ class MetagameEvent(Cached, cache_size=100, cache_ttu=60.0):
 
     collection = 'metagame_event'
     data: MetagameEventData
+    dataclass = MetagameEventData
     id_field = 'metagame_event_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> MetagameEventData:
-        return MetagameEventData.from_census(data)

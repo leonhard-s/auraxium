@@ -9,7 +9,6 @@ from ..census import Query
 from ..models import WeaponAmmoSlot, WeaponData, WeaponDatasheet
 from ..proxy import InstanceProxy, SequenceProxy
 from ..request import extract_payload, extract_single
-from ..types import CensusData
 
 from .fire import FireGroup
 from .item import Item
@@ -32,6 +31,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
 
     collection = 'weapon'
     data: WeaponData
+    dataclass = WeaponData
     id_field = 'weapon_id'
 
     @property
@@ -53,7 +53,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
         query.limit(10).sort('weapon_slot_index')
         payload = await self._client.request(query)
         data = extract_payload(payload, collection)
-        return [WeaponAmmoSlot.from_census(d) for d in data]
+        return [WeaponAmmoSlot(**d) for d in data]
 
     def attachments(self) -> SequenceProxy[Item]:
         """Return the attachments available for this weapon.
@@ -70,10 +70,6 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
         join.set_outer(False)
         return SequenceProxy(Item, query, client=self._client)
 
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> WeaponData:
-        return WeaponData.from_census(data)
-
     async def datasheet(self) -> WeaponDatasheet:
         """Return the datasheet for the weapon."""
         collection: Final[str] = 'weapon_datasheet'
@@ -83,7 +79,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
         query.add_term(field=Item.id_field, value=item.id)
         payload = await self._client.request(query)
         data = extract_single(payload, collection)
-        return WeaponDatasheet.from_census(data)
+        return WeaponDatasheet(**data)
 
     def fire_groups(self) -> SequenceProxy[FireGroup]:
         """Return the fire groups for this weapon.

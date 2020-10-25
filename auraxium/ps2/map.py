@@ -6,7 +6,6 @@ from ..base import Cached, Named
 from ..census import Query
 from ..models import FacilityTypeData, MapHexData, MapRegionData, RegionData
 from ..proxy import InstanceProxy, SequenceProxy
-from ..types import CensusData
 
 from .zone import Zone
 
@@ -16,11 +15,8 @@ class FacilityType(Cached, cache_size=10, cache_ttu=3600.0):
 
     collection = 'facility_type'
     data: FacilityTypeData
+    dataclass = FacilityTypeData
     id_field = 'facility_type_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> FacilityTypeData:
-        return FacilityTypeData.from_census(data)
 
 
 class MapHex(Cached, cache_size=100, cache_ttu=60.0):
@@ -28,11 +24,8 @@ class MapHex(Cached, cache_size=100, cache_ttu=60.0):
 
     collection = 'map_hex'
     data: MapHexData
+    dataclass = MapHexData
     id_field = 'map_hex_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> MapHexData:
-        return MapHexData.from_census(data)
 
     def map_region(self) -> InstanceProxy['MapRegion']:
         """Return the map region associated with this map hex."""
@@ -46,18 +39,15 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
 
     collection = 'map_region'
     data: MapRegionData
+    dataclass = MapRegionData
     id_field = 'map_region_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> MapRegionData:
-        return MapRegionData.from_census(data)
 
     async def get_connected(self) -> Set['MapRegion']:
         """Return the facilities connected to this region."""
         # NOTE: This operation cannot be done in a single query as there is no
         # "or" operator.
         collection: Final[str] = 'facility_link'
-        connected: Set['MapRegion'] = set()
+        connected: Set['MapRegion'] = set()  # type: ignore
         # Set up the base query
         query = Query(collection, service_id=self._client.service_id)
         query.limit(10)
@@ -93,11 +83,8 @@ class Region(Named, cache_size=100, cache_ttu=60.0):
 
     collection = 'region'
     data: RegionData
+    dataclass = RegionData
     id_field = 'region_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> RegionData:
-        return RegionData.from_census(data)
 
     def map_region(self) -> InstanceProxy[MapRegion]:
         """Return the map region associated with this region.

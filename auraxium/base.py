@@ -60,6 +60,7 @@ class Ps2Data(pydantic.BaseModel, metaclass=abc.ABCMeta):
         configuration options.
         """
         allow_mutation = False
+        anystr_strip_whitespace = True
 
 
 class FallbackMixin:
@@ -82,13 +83,10 @@ class Ps2Object(metaclass=abc.ABCMeta):
     which are used to tie the class to its corresponding API
     counterpart.
 
-    Likewise, subclasses must implement the abstract
-    :meth:`Ps2Object._build_dataclass`, which is called to convert the
-    API response into an instance of the respective subclass of
-    :class:`Ps2Data`.
     """
 
     collection: ClassVar[str] = 'bogus'
+    dataclass: ClassVar[Type[Ps2Data]]
     id_field: ClassVar[str] = 'bogus_id'
 
     def __init__(self, data: CensusData, client: 'Client') -> None:
@@ -112,7 +110,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
         # Work with a copy of the data to allow pop-ing used keys
         data = copy.copy(data)
         try:
-            self.data = self._build_dataclass(data)
+            self.data = self.dataclass(**data)
         except KeyError as err:
             raise PayloadError(
                 f'Unable to populate {self.__class__.__name__} due to a '
@@ -149,23 +147,6 @@ class Ps2Object(metaclass=abc.ABCMeta):
 
         """
         return f'<{self.__class__.__name__}:{self.id}>'
-
-    @staticmethod
-    @abc.abstractmethod
-    def _build_dataclass(data: CensusData) -> Ps2Data:
-        """Factory method for the appropriate data class.
-
-        This connects the class initialiser to the appropriate
-        :class:`Ps2Data` subclass.
-
-        Arguments:
-            data: The API response dictionary to process.
-
-        Returns:
-            An instance of the appropriate data class.
-
-        """
-        ...
 
     @classmethod
     async def count(cls: Type[Ps2ObjectT], client: 'Client',
