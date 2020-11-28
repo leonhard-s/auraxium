@@ -25,7 +25,7 @@ class MapHex(Cached, cache_size=100, cache_ttu=60.0):
     collection = 'map_hex'
     data: MapHexData
     dataclass = MapHexData
-    id_field = 'map_hex_id'
+    id_field = 'map_region_id'
 
     def map_region(self) -> InstanceProxy['MapRegion']:
         """Return the map region associated with this map hex."""
