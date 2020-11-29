@@ -80,10 +80,10 @@ class MapRegionData(Ps2Data):
 
     map_region_id: int
     zone_id: int
-    facility_id: int
+    facility_id: Optional[int]  # Only missing for the shattered warpgate
     facility_name: str
-    facility_type_id: int
-    facility_type: str
+    facility_type_id: Optional[int]  # Only missing for the shattered warpgate
+    facility_type: Optional[str]  # Only missing for the shattered warpgate
     location_x: Optional[float] = None
     location_y: Optional[float] = None
     location_z: Optional[float] = None
