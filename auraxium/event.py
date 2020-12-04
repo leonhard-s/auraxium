@@ -214,9 +214,9 @@ class Event:
     """
 
     def __init__(self, payload: CensusData) -> None:
-        self.timestamp = datetime.datetime.utcfromtimestamp(
+        self.timestamp: datetime.datetime = datetime.datetime.utcfromtimestamp(
             int(payload['timestamp']))
-        self.payload = payload
+        self.payload: CensusData = payload
 
     @property
     def age(self) -> float:
