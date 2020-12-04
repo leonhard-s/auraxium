@@ -27,6 +27,7 @@ __all__ = [
     'Client'
 ]
 
+ClientT = TypeVar('ClientT', bound='Client')
 NamedT = TypeVar('NamedT', bound='Named')
 Ps2ObjectT = TypeVar('Ps2ObjectT', bound='Ps2Object')
 log = logging.getLogger('auraxium.client')
@@ -75,7 +76,7 @@ class Client:
         self.service_id = service_id
         self.session = aiohttp.ClientSession()
 
-    async def __aenter__(self) -> 'Client':
+    async def __aenter__(self: ClientT) -> ClientT:
         """Enter the context manager and return the client."""
         return self
 
