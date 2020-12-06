@@ -295,7 +295,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
     async def stat(self, results: int = 1, **kwargs: Any) -> List[CensusData]:
         """Return global statistics for this character."""
-        collection: Final[str] = 'characters_skill'
+        collection: Final[str] = 'characters_stat'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
         query.limit(results)
