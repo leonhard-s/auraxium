@@ -291,8 +291,9 @@ class Ps2Object(metaclass=abc.ABCMeta):
         This is a utility method targeted at advanced users and
         developers. It is generally not required for most use cases.
         """
-        return Query(collection=self.collection,
-                     service_id=self._client.service_id)
+        query = Query(self.collection, service_id=self._client.service_id)
+        query.add_term(field=self.id_field, value=self.id)
+        return query
 
 
 class Cached(Ps2Object, metaclass=abc.ABCMeta):
