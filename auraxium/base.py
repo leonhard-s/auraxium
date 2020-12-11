@@ -10,6 +10,7 @@ import dataclasses
 import logging
 from typing import (Any, ClassVar, Dict, List, Optional, Type, TYPE_CHECKING,
                     TypeVar, Union, cast)
+import warnings
 
 import pydantic
 
@@ -242,6 +243,9 @@ class Ps2Object(metaclass=abc.ABCMeta):
                 raise RuntimeError(
                     f'Expected {cls} instance, got {type(data[0])} instead, '
                     'please report this bug to the project maintainers')
+            if len(data) > 1:
+                warnings.warn(f'Ps2Object.get() got {len(data)} results, all '
+                              'but the first will be discarded')
             data = cast(List[Ps2ObjectT], data)
             return data[0]
         return None
