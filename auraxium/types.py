@@ -18,6 +18,7 @@ T = TypeVar('T')  # pylint: disable=invalid-name
 CensusData = Dict[str, Any]
 
 
+# pylint: disable=no-member
 class LocaleData(pydantic.BaseModel):
     """Container for localised strings.
 
