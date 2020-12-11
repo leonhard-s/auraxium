@@ -324,8 +324,9 @@ class Query(QueryBase):
         return self
 
     @classmethod
-    def copy(cls, template: 'QueryBase', copy_joins: bool = False,
-             deep_copy: bool = False, **kwargs: Any) -> 'Query':
+    def copy(cls, template: QueryBase,  # type: ignore
+             copy_joins: bool = False, deep_copy: bool = False,
+             **kwargs: Any) -> 'Query':
         """Create a new query, copying most data from the template.
 
         The new query will share the collection, terms and show/hide
@@ -383,8 +384,9 @@ class Query(QueryBase):
         """
         copy_func = copy.deepcopy if deep_copy else _dummy_copy
         # Create a new Query instance
-        instance: 'Query' = super().copy(  # type: ignore
-            template, copy_joins=copy_joins, deep_copy=deep_copy, *kwargs)
+        instance = super().copy(template, copy_joins=copy_joins,
+                                deep_copy=deep_copy, *kwargs)
+        assert isinstance(instance, Query)
         if isinstance(template, Query):
             # Additional attributes to include when copying a top-level query
             attrs = ['case', 'distinct', 'exact_match_first', 'has',
@@ -756,8 +758,9 @@ class JoinedQuery(QueryBase):
         self.data = JoinedQueryData.from_base(data)
 
     @classmethod
-    def copy(cls, template: QueryBase, copy_joins: bool = False,
-             deep_copy: bool = False, **kwargs: Any) -> 'JoinedQuery':
+    def copy(cls, template: QueryBase,  # type: ignore
+             copy_joins: bool = False,   deep_copy: bool = False,
+             **kwargs: Any) -> 'JoinedQuery':
         """Create a new query, copying most data from the template.
 
         The new query will share the collection, terms and show/hide
@@ -818,8 +821,9 @@ class JoinedQuery(QueryBase):
             raise TypeError('JoinedQuery requires a collection')
         copy_func = copy.deepcopy if deep_copy else _dummy_copy
         # Create a new JoinedQuery instance
-        instance: JoinedQuery = super().copy(  # type: ignore
-            template, copy_joins=copy_joins, deep_copy=deep_copy, **kwargs)
+        instance = super().copy(template, copy_joins=copy_joins,
+                                deep_copy=deep_copy, **kwargs)
+        assert isinstance(instance, JoinedQuery)
         if isinstance(template, JoinedQuery):
             # Additional attributes to include when copying another join
             attrs = [
