@@ -44,6 +44,8 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
 
     async def get_connected(self) -> Set['MapRegion']:
         """Return the facilities connected to this region."""
+        if self.data.facility_id is None:
+            return set()
         # NOTE: This operation cannot be done in a single query as there is no
         # "or" operator.
         collection: Final[str] = 'facility_link'
