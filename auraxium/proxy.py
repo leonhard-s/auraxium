@@ -173,7 +173,7 @@ class SequenceProxy(Proxy[Ps2ObjectT]):
 
 
 class InstanceProxy(Proxy[Ps2ObjectT]):
-    """Proxy for lists of results.
+    """Proxy for a single result.
 
     Use this is your joins are returning a single object.
 
