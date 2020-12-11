@@ -169,9 +169,9 @@ class Client:
                                 check_case=check_case,
                                 client=self, **kwargs)
         data = cast(List[Ps2ObjectT], data)
-        if data and not isinstance(data[0], type(self)):
+        if data and not isinstance(data[0], type_):
             raise RuntimeError(
-                f'Expected {type(self)} instance, got {type(data[0])} '
+                f'Expected {type_} instance, got {type(data[0])} '
                 f'instead, please report this bug to the project maintainers')
         return data
 
@@ -194,11 +194,11 @@ class Client:
         """
         data = await type_.get(check_case=check_case, client=self, **kwargs)
         data = cast(Optional[Ps2ObjectT], data)
-        if data is not None and not isinstance(data, type(self)):
+        if data is not None and not isinstance(data, type_):
             raise RuntimeError(
-                f'Expected {type(self)} instance, got {type(data)} instead, '
+                f'Expected {type_} instance, got {type(data)} instead, '
                 'please report this bug to the project maintainers')
-        return data
+        return data  # type: ignore
 
     async def get_by_id(self, type_: Type[Ps2ObjectT], id_: int
                         ) -> Optional[Ps2ObjectT]:
@@ -217,11 +217,11 @@ class Client:
         """
         data = await type_.get_by_id(id_, client=self)
         data = cast(Optional[Ps2ObjectT], data)
-        if data is not None and not isinstance(data, type(self)):
+        if data is not None and not isinstance(data, type_):
             raise RuntimeError(
-                f'Expected {type(self)} instance, got {type(data)} instead, '
+                f'Expected {type_} instance, got {type(data)} instead, '
                 'please report this bug to the project maintainers')
-        return data
+        return data  # type: ignore
 
     async def get_by_name(self, type_: Type[NamedT], name: str, *,
                           locale: str = 'en') -> Optional[NamedT]:
@@ -248,11 +248,11 @@ class Client:
         """
         data = await type_.get_by_name(name, locale=locale, client=self)
         data = cast(Optional[NamedT], data)
-        if data is not None and not isinstance(data, type(self)):
+        if data is not None and not isinstance(data, type_):
             raise RuntimeError(
-                f'Expected {type(self)} instance, got {type(data)} instead, '
+                f'Expected {type_} instance, got {type(data)} instead, '
                 'please report this bug to the project maintainers')
-        return data
+        return data  # type: ignore
 
     async def request(self, query: Query, verb: str = 'get') -> CensusData:
         """Perform a REST API request.
