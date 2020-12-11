@@ -9,7 +9,7 @@ import abc
 import dataclasses
 import logging
 from typing import (Any, ClassVar, Dict, List, Optional, Type, TYPE_CHECKING,
-                    TypeVar, Union)
+                    TypeVar, Union, cast)
 
 import pydantic
 
@@ -39,6 +39,7 @@ Ps2ObjectT = TypeVar('Ps2ObjectT', bound='Ps2Object')
 log = logging.getLogger('auraxium.ps2')
 
 
+# pylint: disable=no-member
 class Ps2Data(pydantic.BaseModel, metaclass=abc.ABCMeta):
     """Base class for PlanetSide 2 data classes.
 
@@ -234,10 +235,15 @@ class Ps2Object(metaclass=abc.ABCMeta):
             A matching entry, or None if not found.
 
         """
-        results = await cls.find(client=client, results=1,
-                                 check_case=check_case, **kwargs)
-        if results:
-            return results[0]
+        data = await cls.find(client=client, results=1,
+                              check_case=check_case, **kwargs)
+        if data:
+            if not isinstance(data[0], cls):
+                raise RuntimeError(
+                    f'Expected {cls} instance, got {type(data[0])} instead, '
+                    'please report this bug to the project maintainers')
+            data = cast(List[Ps2ObjectT], data)
+            return data[0]
         return None
 
     @classmethod
@@ -254,35 +260,37 @@ class Ps2Object(metaclass=abc.ABCMeta):
 
         """
         filters: CensusData = {cls.id_field: id_}
-        results = await cls.find(client=client, results=1, **filters)
+        data = await cls.find(client=client, results=1, **filters)
+        data = cast(List[Ps2ObjectT], data)
+        if data and not isinstance(data[0], cls):
+            raise RuntimeError(
+                f'Expected {cls} instance, got {type(data[0])} instead, '
+                'please report this bug to the project maintainers')
 
         # Check for FallbackMixin compatibility
         if hasattr(cls, '_fallback'):
             # pylint: disable=no-member
-            fallbacks: Dict[int, CensusData] = cls._fallback  # type: ignore
+            data_fallback: Dict[int, CensusData] = (
+                cls._fallback)  # type: ignore
             log.debug('Fallback attribute found for type "%s", checking ID...',
                       cls.__name__)
-            if (data := fallbacks.get(id_)) is not None:
+            if (fallback := data_fallback.get(id_)) is not None:
                 log.debug('Instantiating "%s" with ID %d through local copy',
                           cls.__name__, id_)
-
-                if results:
+                if data:
                     # Log the fact that the local copy is not required
                     log.info('Type "%s" provides a local fallback for ID %d '
                              'despite this type being available on-line',
                              cls.__name__, id_)
-                    return results[0]
-
+                    return data[0]
                 # Return a locally instantiated copy
-                return cls(data, client=client)
-
+                return cls(fallback, client=client)
             log.debug('No matching fallback instance found for ID %d', id_)
 
-        elif results:
+        elif data:
             # If no fallback value was provided, return the first item found
             # as normal
-            return results[0]
-
+            return data[0]
         return None
 
     def query(self) -> Query:

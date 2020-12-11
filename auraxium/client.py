@@ -9,7 +9,7 @@ streaming service (ESS).
 import asyncio
 import copy
 import logging
-from typing import Any, List, Literal, Optional, Type, TYPE_CHECKING, TypeVar
+from typing import Any, List, Literal, Optional, Type, TYPE_CHECKING, TypeVar, cast
 from types import TracebackType
 
 import aiohttp
@@ -164,9 +164,16 @@ class Client:
             A list of matching entries.
 
         """
-        return await type_.find(results=results, offset=offset,
+        data = await type_.find(results=results, offset=offset,
                                 promote_exact=promote_exact,
-                                check_case=check_case, client=self, **kwargs)
+                                check_case=check_case,
+                                client=self, **kwargs)
+        data = cast(List[Ps2ObjectT], data)
+        if data and not isinstance(data[0], type(self)):
+            raise RuntimeError(
+                f'Expected {type(self)} instance, got {type(data[0])} '
+                f'instead, please report this bug to the project maintainers')
+        return data
 
     async def get(self, type_: Type[Ps2ObjectT], check_case: bool = True,
                   **kwargs: Any) -> Optional[Ps2ObjectT]:
@@ -185,7 +192,13 @@ class Client:
             The first matching entry, or ``None`` if not found.
 
         """
-        return await type_.get(check_case=check_case, client=self, **kwargs)
+        data = await type_.get(check_case=check_case, client=self, **kwargs)
+        data = cast(Optional[Ps2ObjectT], data)
+        if data is not None and not isinstance(data, type(self)):
+            raise RuntimeError(
+                f'Expected {type(self)} instance, got {type(data)} instead, '
+                'please report this bug to the project maintainers')
+        return data
 
     async def get_by_id(self, type_: Type[Ps2ObjectT], id_: int
                         ) -> Optional[Ps2ObjectT]:
@@ -202,7 +215,13 @@ class Client:
             The entry with the matching ID, or None if not found.
 
         """
-        return await type_.get_by_id(id_, client=self)
+        data = await type_.get_by_id(id_, client=self)
+        data = cast(Optional[Ps2ObjectT], data)
+        if data is not None and not isinstance(data, type(self)):
+            raise RuntimeError(
+                f'Expected {type(self)} instance, got {type(data)} instead, '
+                'please report this bug to the project maintainers')
+        return data
 
     async def get_by_name(self, type_: Type[NamedT], name: str, *,
                           locale: str = 'en') -> Optional[NamedT]:
@@ -227,7 +246,13 @@ class Client:
             The entry with the matching name, or ``None`` if not found.
 
         """
-        return await type_.get_by_name(name, locale=locale, client=self)
+        data = await type_.get_by_name(name, locale=locale, client=self)
+        data = cast(Optional[NamedT], data)
+        if data is not None and not isinstance(data, type(self)):
+            raise RuntimeError(
+                f'Expected {type(self)} instance, got {type(data)} instead, '
+                'please report this bug to the project maintainers')
+        return data
 
     async def request(self, query: Query, verb: str = 'get') -> CensusData:
         """Perform a REST API request.
