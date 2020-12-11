@@ -1,7 +1,7 @@
 """World class definition."""
 
 import datetime
-from typing import Any, Final, List, Optional, Tuple, Union, cast
+from typing import Any, Final, List, Optional, Tuple, Type, Union, cast
 
 from ..base import Named, NamedT
 from ..census import Query
@@ -39,8 +39,8 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
         return data
 
     @classmethod
-    async def get_by_name(cls, name: str, *, locale: str = 'en',
-                          client: Client) -> Optional['World']:
+    async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
+                          client: Client) -> Optional[NamedT]:
         """Retrieve a world by name.
 
         This query is always case-insensitive.

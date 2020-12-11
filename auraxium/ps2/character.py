@@ -1,9 +1,9 @@
 """Character class definition."""
 
 import logging
-from typing import Any, ClassVar, Final, List, Optional, Tuple, Union
+from typing import Any, ClassVar, Final, List, Optional, Tuple, Type, Union
 
-from ..base import Named
+from ..base import Named, NamedT
 from ..cache import TLRUCache
 from ..census import Query
 from ..client import Client
@@ -167,8 +167,8 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         return characters
 
     @classmethod
-    async def get_by_name(cls, name: str, *, locale: str = 'en', client: Client
-                          ) -> Optional['Character']:
+    async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
+                          client: Client) -> Optional[NamedT]:
         """Retrieve an object by its unique name.
 
         This query is always case-insensitive.

@@ -1,9 +1,9 @@
 """Outfit and outfit member class definitions."""
 
 import logging
-from typing import ClassVar, Final, List, Optional, TYPE_CHECKING, Union
+from typing import ClassVar, Final, List, Optional, TYPE_CHECKING, Type, Union
 
-from ..base import Cached, Named
+from ..base import Cached, Named, NamedT
 from ..cache import TLRUCache
 from ..census import Query
 from ..client import Client
@@ -65,8 +65,8 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
     id_field = 'outfit_id'
 
     @classmethod
-    async def get_by_name(cls, name: str, *, locale: str = 'en', client: Client
-                          ) -> Optional['Outfit']:
+    async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
+                          client: Client) -> Optional[NamedT]:
         """Retrieve an outfit by its unique name.
 
         This query is always case-insensitive.
