@@ -24,6 +24,9 @@ from .resist import ResistInfoData, ResistTypeData
 from .reward import RewardData, RewardTypeData
 from .skill import SkillData, SkillCategoryData, SkillLineData, SkillSetData
 from .states import PlayerStateGroup
+from .stats import (CharacterStat, CharacterStatByFaction,
+                    CharacterStatHistory, CharacterWeaponStat,
+                    CharacterWeaponStatByFaction, SingleCharacterById)
 from .vehicle import VehicleAttachmentData, VehicleData
 from .weapon import WeaponAmmoSlot, WeaponData, WeaponDatasheet
 from .world import WorldData
@@ -38,6 +41,11 @@ __all__ = [
     'CharacterAchievement',
     'CharacterData',
     'CharacterDirective',
+    'CharacterStat',
+    'CharacterStatByFaction',
+    'CharacterStatHistory',
+    'CharacterWeaponStat',
+    'CharacterWeaponStatByFaction',
     'CurrencyData',
     'DirectiveData',
     'DirectiveTierData',
@@ -74,6 +82,7 @@ __all__ = [
     'ResourceTypeData',
     'RewardData',
     'RewardTypeData',
+    'SingleCharacterById',
     'SkillData',
     'SkillCategoryData',
     'SkillLineData',
