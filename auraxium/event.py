@@ -361,7 +361,7 @@ class Trigger:
         if self.worlds:
             json_data['worlds'] = [str(c) for c in self.worlds]
         else:
-            json_data['characters'] = ['all']
+            json_data['worlds'] = ['all']
         return json.dumps(json_data)
 
     async def run(self, event: Event) -> None:
