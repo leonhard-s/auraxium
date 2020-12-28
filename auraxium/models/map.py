@@ -47,8 +47,6 @@ class MapHexData(Ps2Data):
 
     """
 
-    # pylint: disable=invalid-name
-
     zone_id: int
     map_region_id: int
     x: int

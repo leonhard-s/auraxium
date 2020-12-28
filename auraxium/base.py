@@ -23,7 +23,7 @@ from .types import CensusData
 if TYPE_CHECKING:
     # This is only imported during static type checking to resolve the 'Client'
     # forward reference. This avoids a circular import at runtime.
-    from .client import Client
+    from .client import Client  # pragma: no cover
 
 __all__ = [
     'Ps2Data',
@@ -40,7 +40,6 @@ Ps2ObjectT = TypeVar('Ps2ObjectT', bound='Ps2Object')
 log = logging.getLogger('auraxium.ps2')
 
 
-# pylint: disable=no-member
 class Ps2Data(pydantic.BaseModel, metaclass=abc.ABCMeta):
     """Base class for PlanetSide 2 data classes.
 
@@ -66,6 +65,7 @@ class Ps2Data(pydantic.BaseModel, metaclass=abc.ABCMeta):
         anystr_strip_whitespace = True
 
     @pydantic.validator('*', pre=True)
+    @classmethod
     def convert_null(cls: Type['Ps2Data'], value: AnyT) -> Optional[AnyT]:
         """Handle NULL string return values.
 
@@ -77,7 +77,6 @@ class Ps2Data(pydantic.BaseModel, metaclass=abc.ABCMeta):
         ``Optional[int] = None``, which is why they are silently
         converted into ``None`` before any parsing takes place.
         """
-        # pylint: disable=no-self-use,no-self-argument
         if value == 'NULL':
             return None
         return value
@@ -125,7 +124,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
         id_ = int(data[self.id_field])
         log.debug('Instantiating <%s:%d> using payload: %s',
                   self.__class__.__name__, id_, data)
-        self.id = id_  # pylint: disable=invalid-name
+        self.id = id_
         self._client = client
         try:
             self.data = self.dataclass(**data)

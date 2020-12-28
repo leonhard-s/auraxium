@@ -15,7 +15,7 @@ from ..request import extract_payload, extract_single
 if TYPE_CHECKING:
     # This is only imported during static type checking to resolve the
     # 'Character' forward reference. This avoids a circular import at runtime.
-    from .character import Character
+    from .character import Character  # pragma: no cover
 
 log = logging.getLogger('auraxium.ps2')
 

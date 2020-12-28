@@ -10,7 +10,7 @@ __all__ = [
     'optional'
 ]
 
-T = TypeVar('T')  # pylint: disable=invalid-name
+_T = TypeVar('_T')
 
 
 # NOTE: The inner dict's value is typed as "Any" due to Mypy not supporting
@@ -18,7 +18,6 @@ T = TypeVar('T')  # pylint: disable=invalid-name
 CensusData = Dict[str, Any]
 
 
-# pylint: disable=no-member
 class LocaleData(pydantic.BaseModel):
     """Container for localised strings.
 
@@ -51,7 +50,7 @@ class LocaleData(pydantic.BaseModel):
 
 
 def optional(data: CensusData, key: str,
-             cast: Callable[[Any], T]) -> Optional[T]:
+             cast: Callable[[Any], _T]) -> Optional[_T]:
     """Cast an optional dictionary value to a given type.
 
     This is a helper method that acts much like :meth:`dict.get()`, but
@@ -66,7 +65,7 @@ def optional(data: CensusData, key: str,
         The cast value retrieved from the dictionary, or None.
 
     """
-    raw: Optional[T]
+    raw: Optional[_T]
     if (raw := data.pop(key, None)) is not None:
         if raw == 'NULL':
             raw = None

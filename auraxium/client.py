@@ -21,7 +21,7 @@ from .types import CensusData
 if TYPE_CHECKING:
     # This is only imported during static type checking to resolve the forward
     # references. This avoids a circular import at runtime.
-    from .base import Named, Ps2Object
+    from .base import Named, Ps2Object  # pragma: no cover
 
 __all__ = [
     'Client'
