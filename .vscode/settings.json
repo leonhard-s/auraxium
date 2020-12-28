@@ -9,10 +9,6 @@
     },
     // Python linting
     "python.linting.pylintEnabled": true,
-    "python.linting.pylintArgs": [
-        "--enable=all", // Maximum pedantry
-        "--disable=suppressed-message,locally-disabled" // Allow disabling of messages
-    ],
     // Python docstring generator (njpwerner.autodocstring)
     "autoDocstring.customTemplatePath": ".vscode/docstring.mustache",
     "autoDocstring.includeExtendedSummary": true,

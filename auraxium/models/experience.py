@@ -25,7 +25,7 @@ class ExperienceData(Ps2Data):
 
     experience_id: int
     description: str
-    xp: int  # pylint: disable=invalid-name
+    xp: int
 
 
 class ExperienceRankData(Ps2Data):
@@ -62,9 +62,9 @@ class ExperienceRankData(Ps2Data):
 
     rank: int
     xp_max: int
-    vs: EmpireData  # pylint: disable=invalid-name
+    vs: EmpireData
     vs_image_path: str
-    nc: EmpireData  # pylint: disable=invalid-name
+    nc: EmpireData
     nc_image_path: str
-    tr: EmpireData  # pylint: disable=invalid-name
+    tr: EmpireData
     tr_image_path: str
