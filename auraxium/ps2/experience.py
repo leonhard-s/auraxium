@@ -12,7 +12,7 @@ from ..models import ExperienceData, ExperienceRankData
 from ..types import CensusData
 
 if TYPE_CHECKING:
-    from ..ps2 import Faction
+    from ..ps2 import Faction  # pragma: no cover
 
 log = logging.getLogger('auraxium.ps2')
 

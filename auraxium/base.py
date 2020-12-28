@@ -23,7 +23,7 @@ from .types import CensusData
 if TYPE_CHECKING:
     # This is only imported during static type checking to resolve the 'Client'
     # forward reference. This avoids a circular import at runtime.
-    from .client import Client
+    from .client import Client  # pragma: no cover
 
 __all__ = [
     'Ps2Data',
