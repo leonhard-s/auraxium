@@ -9,6 +9,8 @@ __all__ = [
     'ObjectiveTypeData'
 ]
 
+# pylint: disable=too-few-public-methods
+
 
 class ObjectiveData(Ps2Data):
     """Data class for :class:`auraxium.ps2.ability.Objective`.

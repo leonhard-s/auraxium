@@ -9,6 +9,8 @@ __all__ = [
     'RewardTypeData'
 ]
 
+# pylint: disable=too-few-public-methods
+
 
 class RewardData(Ps2Data):
     """Data class for :class:`auraxium.ps2.ability.Reward`.

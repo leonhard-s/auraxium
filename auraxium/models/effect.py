@@ -9,6 +9,8 @@ __all__ = [
     'EffectTypeData'
 ]
 
+# pylint: disable=too-few-public-methods
+
 
 class EffectData(Ps2Data):
     """Data class for :class:`auraxium.ps2.effect.Effect`.

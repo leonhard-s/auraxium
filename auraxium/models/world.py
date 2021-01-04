@@ -9,6 +9,8 @@ __all__ = [
     'WorldData'
 ]
 
+# pylint: disable=too-few-public-methods
+
 
 class WorldData(Ps2Data):
     """Data class for :class:`auraxium.ps2.world.World`.

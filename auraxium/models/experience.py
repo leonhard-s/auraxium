@@ -8,6 +8,8 @@ __all__ = [
     'ExperienceRankData'
 ]
 
+# pylint: disable=too-few-public-methods
+
 
 class ExperienceData(Ps2Data):
     """Data class for :class:`auraxium.ps2.experience.Experience`.

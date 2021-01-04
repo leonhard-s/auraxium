@@ -13,6 +13,8 @@ __all__ = [
     'SkillSetData'
 ]
 
+# pylint: disable=too-few-public-methods
+
 
 class SkillData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.skill.Skill`.

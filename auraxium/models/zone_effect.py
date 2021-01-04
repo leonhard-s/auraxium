@@ -9,6 +9,8 @@ __all__ = [
     'ZoneEffectTypeData'
 ]
 
+# pylint: disable=too-few-public-methods
+
 
 class ZoneEffectData(Ps2Data):
     """Data class for :class:`auraxium.ps2.zone_effect.ZoneEffectData`.
