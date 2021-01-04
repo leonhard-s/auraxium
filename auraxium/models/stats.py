@@ -4,6 +4,17 @@ from typing import Dict, List
 
 from ..base import Ps2Data
 
+__all__ = [
+    'CharacterStat',
+    'CharacterStatByFaction',
+    'CharacterStatHistory',
+    'CharacterWeaponStat',
+    'CharacterWeaponStatByFaction',
+    'SingleCharacterById'
+]
+
+# pylint: disable=too-few-public-methods
+
 
 class CharacterStat(Ps2Data):
     """Data class for ``characters_stat`` payloads.
