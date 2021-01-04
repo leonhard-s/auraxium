@@ -332,7 +332,7 @@ class Trigger:
         if self.characters:
             char_id = int(payload.get('character_id', 0))
             other_id = int(payload.get('attacker_character_id', 0))
-            if char_id not in self.characters or other_id in self.characters:
+            if not (char_id in self.characters or other_id in self.characters):
                 return False
         # Check world ID requirements
         if self.worlds:
