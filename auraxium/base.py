@@ -54,6 +54,7 @@ class Ps2Data(pydantic.BaseModel, metaclass=abc.ABCMeta):
     This does support compound type declarations like
     :class:`typing.Union` or :class:`typing.Optional`.
     """
+    # pylint: disable=too-few-public-methods
 
     class Config:
         """Pydantic model configuration.

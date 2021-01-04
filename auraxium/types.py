@@ -24,6 +24,7 @@ class LocaleData(pydantic.BaseModel):
     Note that the ``tr`` locale is ignored as it was abandoned by the
     developers and is generally either missing or unpopulated.
     """
+    # pylint: disable=too-few-public-methods
 
     class Config:
         """Pydantic model configuration.
