@@ -1,4 +1,4 @@
-# <img src="assets/icon_256.png" align="left" height="140"/>Auraxium
+# <img src="https://raw.githubusercontent.com/leonhard-s/auraxium/master/assets/icon_256.png" align="left" height="140"/>Auraxium
 
 Auraxium is an object-oriented, pure-Python wrapper for the [PlanetSide 2](https://www.planetside2.com/) API.  
 It provides a simple object model that can be used by players and outfits without requiring deep knowledge of the API and its idiosyncrasies.
