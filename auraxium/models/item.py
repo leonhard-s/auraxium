@@ -11,6 +11,8 @@ __all__ = [
     'ItemTypeData'
 ]
 
+# pylint: disable=too-few-public-methods
+
 
 class ItemCategoryData(Ps2Data):
     """Data class for :class:`auraxium.ps2.item.ItemCategory`.

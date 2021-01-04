@@ -210,6 +210,7 @@ class QueryBaseData:
 @dataclasses.dataclass()
 class QueryData(QueryBaseData):
     """A dataclass used to store global flags and settings for queries."""
+    # pylint: disable=too-many-instance-attributes
 
     case: bool = True
     distinct: Optional[str] = None

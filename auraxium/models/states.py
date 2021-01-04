@@ -8,6 +8,8 @@ __all__ = [
     'PlayerStateGroup'
 ]
 
+# pylint: disable=too-few-public-methods
+
 
 class PlayerStateGroup(Ps2Data):
     """A fire-mode-specific state group.

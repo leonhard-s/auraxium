@@ -14,7 +14,7 @@ from .profile import Profile
 if TYPE_CHECKING:
     # This is only imported during static type checking to resolve the forward
     # references. This avoids a circular import at runtime.
-    from .weapon import Weapon, WeaponDatasheet
+    from .weapon import Weapon, WeaponDatasheet  # pragma: no cover
 
 
 class ItemCategory(Named, cache_size=32, cache_ttu=3600.0):

@@ -12,6 +12,8 @@ __all__ = [
     'TitleData'
 ]
 
+# pylint: disable=too-few-public-methods
+
 
 class CharacterAchievement(Ps2Data):
     """Data container for a character's achievement status.
@@ -31,7 +33,7 @@ class CharacterAchievement(Ps2Data):
             achievement at as a UTC timestamp.
         last_save_date: Human-readable version of :attr:`last_save`.
 
-        """
+    """
 
     character_id: int
     achievement_id: int

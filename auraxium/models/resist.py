@@ -9,6 +9,8 @@ __all__ = [
     'ResistTypeData'
 ]
 
+# pylint: disable=too-few-public-methods
+
 
 class ResistInfoData(Ps2Data):
     """Data class for :class:`auraxium.ps2.armour.ResistInfo`.

@@ -8,6 +8,8 @@ __all__ = [
     'OutfitRankData'
 ]
 
+# pylint: disable=too-few-public-methods
+
 
 class OutfitData(Ps2Data):
     """Data class for :class:`auraxium.ps2.outfit.Outfit`.

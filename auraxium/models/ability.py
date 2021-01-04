@@ -10,6 +10,8 @@ __all__ = [
     'ResourceTypeData'
 ]
 
+# pylint: disable=too-few-public-methods
+
 
 class AbilityData(Ps2Data):
     """Data class for :class:`auraxium.ps2.ability.Ability`.

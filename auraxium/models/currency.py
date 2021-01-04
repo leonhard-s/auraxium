@@ -7,6 +7,8 @@ __all__ = [
     'CurrencyData'
 ]
 
+# pylint: disable=too-few-public-methods
+
 
 class CurrencyData(Ps2Data):
     """Data class for :class:`auraxium.ps2.currency.Currency`.

@@ -2,12 +2,13 @@
 """Package deployment script."""
 
 import setuptools
+from auraxium import __version__ as version
 
 with open('README.md') as readme:
     long_description = readme.read()
 
 setuptools.setup(name='auraxium',
-                 version='0.1.0a2',
+                 version=version,
                  author='Leonhard S.',
                  author_email='leonhard-sei@outlook.com',
                  description='A python wrapper for the PlanetSide 2 Census API.',

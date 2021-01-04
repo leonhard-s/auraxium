@@ -12,6 +12,8 @@ __all__ = [
     'RegionData'
 ]
 
+# pylint: disable=too-few-public-methods
+
 
 class FacilityTypeData(Ps2Data):
     """Data class for :class:`auraxium.ps2.map.FacilityType`.
@@ -46,8 +48,6 @@ class MapHexData(Ps2Data):
         type_name: The name of the hex' type.
 
     """
-
-    # pylint: disable=invalid-name
 
     zone_id: int
     map_region_id: int

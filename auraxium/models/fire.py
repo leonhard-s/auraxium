@@ -10,6 +10,8 @@ __all__ = [
     'FireGroupData'
 ]
 
+# pylint: disable=too-few-public-methods
+
 
 class FireModeData(Ps2Data):
     """Data class for :class:`auraxium.ps2.ability.FireMode`.

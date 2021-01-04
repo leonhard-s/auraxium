@@ -11,6 +11,8 @@ __all__ = [
     'WeaponDatasheet'
 ]
 
+# pylint: disable=too-few-public-methods
+
 
 class WeaponAmmoSlot(Ps2Data):
     """Data class for weapon ammo slot data.

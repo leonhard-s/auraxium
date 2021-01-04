@@ -12,6 +12,8 @@ __all__ = [
     'DirectiveTreeCategoryData'
 ]
 
+# pylint: disable=too-few-public-methods
+
 
 class DirectiveData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.directive.Directive`.

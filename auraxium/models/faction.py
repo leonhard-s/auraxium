@@ -7,6 +7,8 @@ __all__ = [
     'FactionData'
 ]
 
+# pylint: disable=too-few-public-methods
+
 
 class FactionData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.faction.Faction`.
