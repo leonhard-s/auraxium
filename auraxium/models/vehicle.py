@@ -1,18 +1,18 @@
 """Data classes for :mod:`auraxium.ps2.vehicle`."""
 
-import dataclasses
 from typing import Optional
 
-from ..base import Ps2Data
-from ..types import CensusData, LocaleData, optional
+from ..base import ImageData, Ps2Data
+from ..types import LocaleData
 
 __all__ = [
     'VehicleAttachmentData',
     'VehicleData'
 ]
 
+# pylint: disable=too-few-public-methods
 
-@dataclasses.dataclass(frozen=True)
+
 class VehicleAttachmentData(Ps2Data):
     """Data class for :class:`auraxium.ps2.vehicle.VehicleAttachment`.
 
@@ -34,18 +34,8 @@ class VehicleAttachmentData(Ps2Data):
     description: str
     slot_id: int
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'VehicleAttachmentData':
-        return cls(
-            int(data.pop('item_id')),
-            int(data.pop('vehicle_id')),
-            int(data.pop('faction_id')),
-            str(data.pop('description')),
-            int(data.pop('slot_id')))
 
-
-@dataclasses.dataclass(frozen=True)
-class VehicleData(Ps2Data):
+class VehicleData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.vehicle.Vehicle`.
 
     This class mirrors the payload data returned by the API, you may
@@ -59,42 +49,13 @@ class VehicleData(Ps2Data):
         type_name: The name of the type of vehicle.
         cost: The cost of the vehicle.
         cost_resource_id: The ID of the resource the cost is in.
-        image_set_id: The image set for this vehicle.
-        image_id: The default image asset for this vehicle.
-        image_path: The path to the default image asset for this
-            vehicle.
 
     """
 
     vehicle_id: int
     name: LocaleData
-    description: LocaleData
+    description: Optional[LocaleData] = None
     type_id: int
     type_name: str
-    cost: Optional[int]
-    cost_resource_id: Optional[int]
-    image_set_id: Optional[int]
-    image_id: Optional[int]
-    image_path: Optional[str]
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'VehicleData':
-        if 'name' in data:
-            name = LocaleData.from_census(data.pop('name'))
-        else:
-            name = LocaleData.empty()
-        if 'description' in data:
-            description = LocaleData.from_census(data.pop('description'))
-        else:
-            description = LocaleData.empty()
-        return cls(
-            int(data.pop('vehicle_id')),
-            name,
-            description,
-            int(data.pop('type_id')),
-            str(data.pop('type_name')),
-            optional(data, 'cost', int),
-            optional(data, 'cost_resource_id', int),
-            optional(data, 'image_set_id', int),
-            optional(data, 'image_id', int),
-            optional(data, 'image_path', str))
+    cost: Optional[int] = None
+    cost_resource_id: Optional[int] = None

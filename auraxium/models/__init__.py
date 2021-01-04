@@ -1,5 +1,35 @@
 """Python representations of PlanetSide 2 payloads."""
 
+from .ability import AbilityData, AbilityTypeData, ResourceTypeData
+from .achievement import AchievementData
+from .armour import ArmourInfoData
+from .character import (CharacterAchievement, CharacterData,
+                        CharacterDirective, TitleData)
+from .currency import CurrencyData
+from .depot import MarketingBundleData, MarketingBundleSingleData
+from .directive import (DirectiveData, DirectiveTierData,
+                        DirectiveTreeCategoryData, DirectiveTreeData)
+from .effect import EffectData, EffectTypeData
+from .experience import ExperienceData, ExperienceRankData
+from .faction import FactionData
+from .fire import FireGroupData, FireModeData
+from .item import ItemCategoryData, ItemData, ItemTypeData
+from .map import FacilityTypeData, MapHexData, MapRegionData, RegionData
+from .metagame import MetagameEventData
+from .objective import ObjectiveData, ObjectiveTypeData
+from .outfit import OutfitData, OutfitMemberData, OutfitRankData
+from .profile import LoadoutData, ProfileData
+from .projectile import ProjectileData
+from .resist import ResistInfoData, ResistTypeData
+from .reward import RewardData, RewardTypeData
+from .skill import SkillData, SkillCategoryData, SkillLineData, SkillSetData
+from .states import PlayerStateGroup
+from .vehicle import VehicleAttachmentData, VehicleData
+from .weapon import WeaponAmmoSlot, WeaponData, WeaponDatasheet
+from .world import WorldData
+from .zone import ZoneData
+from .zone_effect import ZoneEffectData, ZoneEffectTypeData
+
 __all__ = [
     'AbilityData',
     'AbilityTypeData',
@@ -59,33 +89,3 @@ __all__ = [
     'ZoneEffectData',
     'ZoneEffectTypeData'
 ]
-
-from .ability import AbilityData, AbilityTypeData, ResourceTypeData
-from .achievement import AchievementData
-from .armour import ArmourInfoData
-from .character import (CharacterAchievement, CharacterData,
-                        CharacterDirective, TitleData)
-from .currency import CurrencyData
-from .depot import MarketingBundleData, MarketingBundleSingleData
-from .directive import (DirectiveData, DirectiveTierData,
-                        DirectiveTreeCategoryData, DirectiveTreeData)
-from .effect import EffectData, EffectTypeData
-from .experience import ExperienceData, ExperienceRankData
-from .faction import FactionData
-from .fire import FireGroupData, FireModeData
-from .item import ItemCategoryData, ItemData, ItemTypeData
-from .map import FacilityTypeData, MapHexData, MapRegionData, RegionData
-from .metagame import MetagameEventData
-from .objective import ObjectiveData, ObjectiveTypeData
-from .outfit import OutfitData, OutfitMemberData, OutfitRankData
-from .profile import LoadoutData, ProfileData
-from .projectile import ProjectileData
-from .resist import ResistInfoData, ResistTypeData
-from .reward import RewardData, RewardTypeData
-from .skill import SkillData, SkillCategoryData, SkillLineData, SkillSetData
-from .states import PlayerStateGroup
-from .vehicle import VehicleAttachmentData, VehicleData
-from .weapon import WeaponAmmoSlot, WeaponData, WeaponDatasheet
-from .world import WorldData
-from .zone import ZoneData
-from .zone_effect import ZoneEffectData, ZoneEffectTypeData

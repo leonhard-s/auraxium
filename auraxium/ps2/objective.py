@@ -4,7 +4,6 @@ from ..base import Cached
 from ..census import Query
 from ..models import ObjectiveData, ObjectiveTypeData
 from ..proxy import InstanceProxy
-from ..types import CensusData
 
 
 class ObjectiveType(Cached, cache_size=10, cache_ttu=60.0):
@@ -15,11 +14,8 @@ class ObjectiveType(Cached, cache_size=10, cache_ttu=60.0):
 
     collection = 'objective_type'
     data: ObjectiveTypeData
+    dataclass = ObjectiveTypeData
     id_field = 'objective_type_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> ObjectiveTypeData:
-        return ObjectiveTypeData.from_census(data)
 
 
 class Objective(Cached, cache_size=10, cache_ttu=60.0):
@@ -27,11 +23,8 @@ class Objective(Cached, cache_size=10, cache_ttu=60.0):
 
     collection = 'objective'
     data: ObjectiveData
+    dataclass = ObjectiveData
     id_field = 'objective_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> ObjectiveData:
-        return ObjectiveData.from_census(data)
 
     def type(self) -> InstanceProxy[ObjectiveType]:
         """Return the objective type of this objective."""

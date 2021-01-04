@@ -1,10 +1,9 @@
 """Data classes for :mod:`auraxium.ps2.directive`."""
 
-import dataclasses
 from typing import Optional
 
-from ..base import Ps2Data
-from ..types import CensusData, LocaleData, optional
+from ..base import ImageData, Ps2Data
+from ..types import LocaleData
 
 __all__ = [
     'DirectiveData',
@@ -13,9 +12,10 @@ __all__ = [
     'DirectiveTreeCategoryData'
 ]
 
+# pylint: disable=too-few-public-methods
 
-@dataclasses.dataclass(frozen=True)
-class DirectiveData(Ps2Data):
+
+class DirectiveData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.directive.Directive`.
 
     This class mirrors the payload data returned by the API, you may
@@ -31,10 +31,7 @@ class DirectiveData(Ps2Data):
             directive to be available.
         name: The localised name of the directive.
         name: The localised description of the directive.
-        image_set_id: The image set for this directive.
-        image_id: The default image asset for this directive.
-        image_path: The path of the default image asset for this
-            directive.
+
 
     """
 
@@ -42,30 +39,12 @@ class DirectiveData(Ps2Data):
     directive_tree_id: int
     directive_tier_id: int
     objective_set_id: int
-    qualify_requirement_id: Optional[int]
+    qualify_requirement_id: Optional[int] = None
     name: LocaleData
-    description: LocaleData
-    image_set_id: int
-    image_id: int
-    image_path: str
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'DirectiveData':
-        return cls(
-            int(data.pop('directive_id')),
-            int(data.pop('directive_tree_id')),
-            int(data.pop('directive_tier_id')),
-            int(data.pop('objective_set_id')),
-            optional(data, 'qualify_requirement_id', int),
-            LocaleData.from_census(data.pop('name')),
-            LocaleData.from_census(data.pop('description')),
-            int(data.pop('image_set_id')),
-            int(data.pop('image_id')),
-            str(data.pop('image_path')))
+    description: Optional[LocaleData] = None
 
 
-@dataclasses.dataclass(frozen=True)
-class DirectiveTierData(Ps2Data):
+class DirectiveTierData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.directive.DirectiveTier`.
 
     This class mirrors the payload data returned by the API, you may
@@ -82,39 +61,18 @@ class DirectiveTierData(Ps2Data):
         completion_count: The number of directives that must be
             completed for completion of this directive tier.
         name: The localised name of the directive tier.
-        image_set_id: The image set for this directive tier.
-        image_id: The default image asset for this directive tier.
-        image_path: The path of the default image asset for this
-            directive tier.
 
     """
 
     directive_tier_id: int
     directive_tree_id: int
-    reward_set_id: Optional[int]
+    reward_set_id: Optional[int] = None
     directive_points: int
     completion_count: int
     name: LocaleData
-    image_set_id: int
-    image_id: int
-    image_path: str
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'DirectiveTierData':
-        return cls(
-            int(data.pop('directive_tier_id')),
-            int(data.pop('directive_tree_id')),
-            optional(data, 'reward_set_id', int),
-            int(data.pop('directive_points')),
-            int(data.pop('completion_count')),
-            LocaleData.from_census(data.pop('name')),
-            int(data.pop('image_set_id')),
-            int(data.pop('image_id')),
-            str(data.pop('image_path')))
 
 
-@dataclasses.dataclass(frozen=True)
-class DirectiveTreeData(Ps2Data):
+class DirectiveTreeData(Ps2Data, ImageData):
     """Data class for :class:`auraxium.ps2.directive.DirectiveTree`.
 
     This class mirrors the payload data returned by the API, you may
@@ -125,38 +83,15 @@ class DirectiveTreeData(Ps2Data):
         directive_tree_category_id: The category of the directive tree.
         name: The localised name of the directive tree.
         description: The localised description of the directive tree.
-        image_set_id: The image set for this directive tree.
-        image_id: The default image asset for this directive tree.
-        image_path: The path of the default image asset for this
-            directive tree.
 
     """
 
     directive_tree_id: int
     directive_tree_category_id: int
     name: LocaleData
-    description: LocaleData
-    image_set_id: int
-    image_id: int
-    image_path: str
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'DirectiveTreeData':
-        if 'description' in data:
-            description = LocaleData.from_census(data.pop('description'))
-        else:
-            description = LocaleData.empty()
-        return cls(
-            int(data.pop('directive_tree_id')),
-            int(data.pop('directive_tree_category_id')),
-            LocaleData.from_census(data.pop('name')),
-            description,
-            int(data.pop('image_set_id')),
-            int(data.pop('image_id')),
-            str(data.pop('image_path')))
+    description: Optional[LocaleData] = None
 
 
-@dataclasses.dataclass(frozen=True)
 class DirectiveTreeCategoryData(Ps2Data):
     """Data class for :class:`auraxium.ps2.directive.DirectiveTreeCategory`.
 
@@ -172,9 +107,3 @@ class DirectiveTreeCategoryData(Ps2Data):
 
     directive_tree_category_id: int
     name: LocaleData
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'DirectiveTreeCategoryData':
-        return cls(
-            int(data.pop('directive_tree_category_id')),
-            LocaleData.from_census(data.pop('name')))

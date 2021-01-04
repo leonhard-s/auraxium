@@ -1,9 +1,9 @@
 """Outfit and outfit member class definitions."""
 
 import logging
-from typing import ClassVar, Final, List, Optional, TYPE_CHECKING, Union
+from typing import ClassVar, Final, List, Optional, TYPE_CHECKING, Type, Union
 
-from ..base import Cached, Named
+from ..base import Cached, Named, NamedT
 from ..cache import TLRUCache
 from ..census import Query
 from ..client import Client
@@ -11,12 +11,11 @@ from ..errors import NotFoundError
 from ..models import OutfitData, OutfitMemberData, OutfitRankData
 from ..proxy import InstanceProxy, SequenceProxy
 from ..request import extract_payload, extract_single
-from ..types import CensusData
 
 if TYPE_CHECKING:
     # This is only imported during static type checking to resolve the
     # 'Character' forward reference. This avoids a circular import at runtime.
-    from .character import Character
+    from .character import Character  # pragma: no cover
 
 log = logging.getLogger('auraxium.ps2')
 
@@ -30,11 +29,8 @@ class OutfitMember(Cached, cache_size=100, cache_ttu=300.0):
 
     collection = 'outfit_member'
     data: OutfitMemberData
+    dataclass = OutfitMemberData
     id_field = 'character_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> OutfitMemberData:
-        return OutfitMemberData.from_census(data)
 
     def character(self) -> InstanceProxy['Character']:
         """Return the character associated with this member.
@@ -65,15 +61,12 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
     _cache: ClassVar[TLRUCache[Union[int, str], 'Outfit']]
     collection = 'outfit'
     data: OutfitData
+    dataclass = OutfitData
     id_field = 'outfit_id'
 
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> OutfitData:
-        return OutfitData.from_census(data)
-
     @classmethod
-    async def get_by_name(cls, name: str, *, locale: str = 'en', client: Client
-                          ) -> Optional['Outfit']:
+    async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
+                          client: Client) -> Optional[NamedT]:
         """Retrieve an outfit by its unique name.
 
         This query is always case-insensitive.
@@ -153,4 +146,4 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         query.limit(20)
         data = await self._client.request(query)
         payload = extract_payload(data, collection)
-        return [OutfitRankData.from_census(c) for c in payload]
+        return [OutfitRankData(**c) for c in payload]

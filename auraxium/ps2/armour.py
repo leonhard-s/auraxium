@@ -4,7 +4,6 @@ import enum
 
 from ..base import Cached
 from ..models import ArmourInfoData
-from ..types import CensusData
 
 
 class ArmourFacing(enum.IntEnum):
@@ -33,13 +32,10 @@ class ArmourInfo(Cached, cache_size=100, cache_ttu=60.0):
 
     collection = 'armor_info'
     data: ArmourInfoData
+    dataclass = ArmourInfoData
     id_field = 'armor_info_id'
 
     @property
     def facing(self) -> ArmourFacing:
         """Return the facing direction for this stat entry."""
         return ArmourFacing(self.data.armor_info_id)
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> ArmourInfoData:
-        return ArmourInfoData.from_census(data)

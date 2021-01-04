@@ -4,7 +4,6 @@ import enum
 
 from ..base import Cached
 from ..models import ProjectileData
-from ..types import CensusData
 
 
 class ProjectileFlightType(enum.IntEnum):
@@ -21,13 +20,10 @@ class Projectile(Cached, cache_size=100, cache_ttu=60.0):
 
     collection = 'projectile'
     data: ProjectileData
+    dataclass = ProjectileData
     id_field = 'projectile_id'
 
     @property
     def flight_type(self) -> ProjectileFlightType:
         """Return the flight type of the projectile."""
         return ProjectileFlightType(self.data.projectile_flight_type_id)
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> ProjectileData:
-        return ProjectileData.from_census(data)

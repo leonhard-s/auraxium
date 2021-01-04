@@ -1,9 +1,9 @@
 """World class definition."""
 
 import datetime
-from typing import Any, Final, List, Optional, Tuple, Union
+from typing import Any, Final, List, Optional, Tuple, Type, Union, cast
 
-from ..base import Named
+from ..base import Named, NamedT
 from ..census import Query
 from ..client import Client
 from ..models import WorldData
@@ -18,11 +18,8 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
 
     collection = 'world'
     data: WorldData
+    dataclass = WorldData
     id_field = 'world_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> WorldData:
-        return WorldData.from_census(data)
 
     async def events(self, **kwargs: Any) -> List[CensusData]:
         """Return events for this world.
@@ -42,8 +39,8 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
         return data
 
     @classmethod
-    async def get_by_name(cls, name: str, *, locale: str = 'en',
-                          client: Client) -> Optional['World']:
+    async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
+                          client: Client) -> Optional[NamedT]:
         """Retrieve a world by name.
 
         This query is always case-insensitive.
@@ -51,9 +48,14 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
         # NOTE: The world collection may only be queried by the world_id field
         # due to API limitations. This method works around this by first
         # retrieving all worlds, then looking the returned list up by name.
-        worlds = await cls.find(20, client=client)
+        data = await cls.find(20, client=client)
+        data = cast(List[NamedT], data)
+        if data and not isinstance(data[0], cls):
+            raise RuntimeError(
+                f'Expected {cls} instance, got {type(data[0])} instead, '
+                'please report this bug to the project maintainers')
         name = name.lower()
-        for world in worlds:
+        for world in data:
             if world.name(locale=locale).lower() == name:
                 return world
         return None

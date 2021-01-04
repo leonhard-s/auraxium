@@ -24,7 +24,7 @@ from .utils import expo_scaled
 if TYPE_CHECKING:
     # This is only imported during static type checking to resolve the forward
     # references. This avoids a circular import at runtime.
-    from .ps2 import Character, World
+    from .ps2 import Character, World  # pragma: no cover
 
 __all__ = [
     'ESS_ENDPOINT',
@@ -214,9 +214,9 @@ class Event:
     """
 
     def __init__(self, payload: CensusData) -> None:
-        self.timestamp = datetime.datetime.utcfromtimestamp(
+        self.timestamp: datetime.datetime = datetime.datetime.utcfromtimestamp(
             int(payload['timestamp']))
-        self.payload = payload
+        self.payload: CensusData = payload
 
     @property
     def age(self) -> float:
@@ -332,7 +332,7 @@ class Trigger:
         if self.characters:
             char_id = int(payload.get('character_id', 0))
             other_id = int(payload.get('attacker_character_id', 0))
-            if char_id not in self.characters or other_id in self.characters:
+            if not (char_id in self.characters or other_id in self.characters):
                 return False
         # Check world ID requirements
         if self.worlds:
@@ -361,7 +361,7 @@ class Trigger:
         if self.worlds:
             json_data['worlds'] = [str(c) for c in self.worlds]
         else:
-            json_data['characters'] = ['all']
+            json_data['worlds'] = ['all']
         return json.dumps(json_data)
 
     async def run(self, event: Event) -> None:

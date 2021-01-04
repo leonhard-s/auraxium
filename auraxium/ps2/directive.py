@@ -2,17 +2,16 @@
 
 from typing import Final
 
-from ..base import Named
+from ..base import ImageMixin, Named
 from ..census import Query
 from ..models import (DirectiveData, DirectiveTierData,
                       DirectiveTreeCategoryData, DirectiveTreeData)
 from ..proxy import InstanceProxy, SequenceProxy
-from ..types import CensusData
 
 from .objective import Objective
 
 
-class DirectiveTreeCategory(Named, cache_size=10, cache_ttu=300.0):
+class DirectiveTreeCategory(Named, ImageMixin, cache_size=10, cache_ttu=300.0):
     """A directive category.
 
     Directive tree category are the topmost directive categorisation,
@@ -21,11 +20,8 @@ class DirectiveTreeCategory(Named, cache_size=10, cache_ttu=300.0):
 
     collection = 'directive_tree_category'
     data: DirectiveTreeCategoryData
+    dataclass = DirectiveTreeCategoryData
     id_field = 'directive_tree_category_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> DirectiveTreeCategoryData:
-        return DirectiveTreeCategoryData.from_census(data)
 
     def trees(self) -> SequenceProxy['DirectiveTree']:
         """Return the trees in the category.
@@ -38,7 +34,7 @@ class DirectiveTreeCategory(Named, cache_size=10, cache_ttu=300.0):
         return SequenceProxy(DirectiveTree, query, client=self._client)
 
 
-class DirectiveTree(Named, cache_size=30, cache_ttu=60.0):
+class DirectiveTree(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     """A tree of directives.
 
     Directive trees are a chain of related directive, e.g.
@@ -47,11 +43,8 @@ class DirectiveTree(Named, cache_size=30, cache_ttu=60.0):
 
     collection = 'directive_tree'
     data: DirectiveTreeData
+    dataclass = DirectiveTreeData
     id_field = 'directive_tree_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> DirectiveTreeData:
-        return DirectiveTreeData.from_census(data)
 
     def category(self) -> InstanceProxy[DirectiveTreeCategory]:
         """Return the category of the directive tree.
@@ -84,7 +77,7 @@ class DirectiveTree(Named, cache_size=30, cache_ttu=60.0):
         return SequenceProxy(DirectiveTier, query, client=self._client)
 
 
-class DirectiveTier(Named, cache_size=30, cache_ttu=60.0):
+class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     """A directive tier.
 
     Container for related directives, e.g. "Combat Medic: Adept".
@@ -92,11 +85,8 @@ class DirectiveTier(Named, cache_size=30, cache_ttu=60.0):
 
     collection = 'directive_tier'
     data: DirectiveTierData
+    dataclass = DirectiveTierData
     id_field = 'directive_tier_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> DirectiveTierData:
-        return DirectiveTierData.from_census(data)
 
     def directives(self) -> SequenceProxy['Directive']:
         """Return the list of directives in this tier.
@@ -119,16 +109,13 @@ class DirectiveTier(Named, cache_size=30, cache_ttu=60.0):
         return InstanceProxy(DirectiveTree, query, client=self._client)
 
 
-class Directive(Named, cache_size=30, cache_ttu=60.0):
+class Directive(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     """A directive a character may complete."""
 
     collection = 'directive'
     data: DirectiveData
+    dataclass = DirectiveData
     id_field = 'directive_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> DirectiveData:
-        return DirectiveData.from_census(data)
 
     def objectives(self) -> SequenceProxy[Objective]:
         """Return the objectives for this directive.

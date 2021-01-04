@@ -4,7 +4,6 @@ from ..base import Cached
 from ..census import Query
 from ..models import ResistInfoData, ResistTypeData
 from ..proxy import InstanceProxy
-from ..types import CensusData
 
 
 class ResistType(Cached, cache_size=100, cache_ttu=60.0):
@@ -16,11 +15,8 @@ class ResistType(Cached, cache_size=100, cache_ttu=60.0):
 
     collection = 'resist_type'
     data: ResistTypeData
+    dataclass = ResistTypeData
     id_field = 'resist_type_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> ResistTypeData:
-        return ResistTypeData.from_census(data)
 
 
 class ResistInfo(Cached, cache_size=100, cache_ttu=60.0):
@@ -28,11 +24,8 @@ class ResistInfo(Cached, cache_size=100, cache_ttu=60.0):
 
     collection = 'resist_info'
     data: ResistInfoData
+    dataclass = ResistInfoData
     id_field = 'resist_info_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> ResistInfoData:
-        return ResistInfoData.from_census(data)
 
     def type(self) -> InstanceProxy[ResistType]:
         """Return the resist type for this entry.

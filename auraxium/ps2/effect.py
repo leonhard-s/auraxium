@@ -7,7 +7,6 @@ from ..base import Cached
 from ..census import Query
 from ..models import EffectData, EffectTypeData
 from ..proxy import InstanceProxy
-from ..types import CensusData
 
 
 class TargetType(enum.IntEnum):
@@ -27,11 +26,8 @@ class EffectType(Cached, cache_size=20, cache_ttu=60.0):
 
     collection = 'effect_type'
     data: EffectTypeData
+    dataclass = EffectTypeData
     id_field = 'effect_type_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> EffectTypeData:
-        return EffectTypeData.from_census(data)
 
 
 class Effect(Cached, cache_size=10, cache_ttu=60.0):
@@ -44,11 +40,8 @@ class Effect(Cached, cache_size=10, cache_ttu=60.0):
 
     collection = 'effect'
     data: EffectData
+    dataclass = EffectData
     id_field = 'effect_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> EffectData:
-        return EffectData.from_census(data)
 
     def target_type(self) -> Optional[TargetType]:
         """Return the target type of this effect."""

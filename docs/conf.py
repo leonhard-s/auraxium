@@ -22,7 +22,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 project = 'Auraxium'
 copyright = '2020, Leonhard S.'
 author = 'Leonhard S.'
-version = '0.1.0a1'
+version = '0.1.0a2'
 
 
 # -- General configuration ---------------------------------------------------

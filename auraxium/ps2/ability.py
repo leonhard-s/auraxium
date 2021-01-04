@@ -4,7 +4,6 @@ from ..base import Cached
 from ..census import Query
 from ..models import AbilityData, AbilityTypeData, ResourceTypeData
 from ..proxy import InstanceProxy
-from ..types import CensusData
 
 
 class ResourceType(Cached, cache_size=50, cache_ttu=3600.0):
@@ -12,16 +11,13 @@ class ResourceType(Cached, cache_size=50, cache_ttu=3600.0):
 
     collection = 'resource_type'
     data: ResourceTypeData
+    dataclass = ResourceTypeData
     id_field = 'resource_type_id'
 
     @property
     def description(self) -> str:
         """A description of what this resource type is used for."""
         return self.data.description
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> ResourceTypeData:
-        return ResourceTypeData.from_census(data)
 
 
 class AbilityType(Cached, cache_size=20, cache_ttu=60.0):
@@ -32,11 +28,8 @@ class AbilityType(Cached, cache_size=20, cache_ttu=60.0):
 
     collection = 'ability_type'
     data: AbilityTypeData
+    dataclass = AbilityTypeData
     id_field = 'ability_type_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> AbilityTypeData:
-        return AbilityTypeData.from_census(data)
 
 
 class Ability(Cached, cache_size=10, cache_ttu=60.0):
@@ -49,11 +42,8 @@ class Ability(Cached, cache_size=10, cache_ttu=60.0):
 
     collection = 'ability'
     data: AbilityData
+    dataclass = AbilityData
     id_field = 'ability_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> AbilityData:
-        return AbilityData.from_census(data)
 
     def resource_type(self) -> InstanceProxy[ResourceType]:
         """Return the resource type used by this ability, if any."""

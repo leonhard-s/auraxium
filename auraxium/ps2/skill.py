@@ -1,24 +1,20 @@
 """Skill and skill line class definitions."""
 
-from ..base import Named
+from ..base import ImageMixin, Named
 from ..census import Query
 from ..models import SkillData, SkillCategoryData, SkillLineData, SkillSetData
 from ..proxy import InstanceProxy, SequenceProxy
-from ..types import CensusData
 
 from .item import Item
 
 
-class SkillSet(Named, cache_size=100, cache_ttu=60.0):
+class SkillSet(Named, ImageMixin, cache_size=100, cache_ttu=60.0):
     """A skill set for a particular vehicle or class."""
 
     collection = 'skill_set'
     data: SkillSetData
+    dataclass = SkillSetData
     id_field = 'skill_set_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> SkillSetData:
-        return SkillSetData.from_census(data)
 
     def categories(self) -> SequenceProxy['SkillCategory']:
         """Return the skill categories in this skill set.
@@ -42,7 +38,7 @@ class SkillSet(Named, cache_size=100, cache_ttu=60.0):
         return InstanceProxy(Item, query, client=self._client)
 
 
-class SkillCategory(Named, cache_size=50, cache_ttu=60.0):
+class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     """A skill category for a particular class or vehicle.
 
     Skill categories are groups like "Passive Systems" or "Performance
@@ -51,11 +47,8 @@ class SkillCategory(Named, cache_size=50, cache_ttu=60.0):
 
     collection = 'skill_category'
     data: SkillCategoryData
+    dataclass = SkillCategoryData
     id_field = 'skill_category_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> SkillCategoryData:
-        return SkillCategoryData.from_census(data)
 
     def skill_lines(self) -> SequenceProxy['SkillLine']:
         """Return the skill lines contained in this category.
@@ -77,16 +70,13 @@ class SkillCategory(Named, cache_size=50, cache_ttu=60.0):
         return InstanceProxy(SkillSet, query, client=self._client)
 
 
-class SkillLine(Named, cache_size=50, cache_ttu=60.0):
+class SkillLine(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     """A series of skills or certifications."""
 
     collection = 'skill_line'
     data: SkillLineData
+    dataclass = SkillLineData
     id_field = 'skill_line_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> SkillLineData:
-        return SkillLineData.from_census(data)
 
     def category(self) -> InstanceProxy[SkillCategory]:
         """Return the category this skill line belongs to.
@@ -111,16 +101,13 @@ class SkillLine(Named, cache_size=50, cache_ttu=60.0):
         return SequenceProxy(Skill, query, client=self._client)
 
 
-class Skill(Named, cache_size=50, cache_ttu=60.0):
+class Skill(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     """A skill or certification unlockable by a character."""
 
     collection = 'skill'
     data: SkillData
+    dataclass = SkillData
     id_field = 'skill_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> SkillData:
-        return SkillData.from_census(data)
 
     def grant_item(self) -> InstanceProxy[Item]:
         """Return the item unlocked by this skill.

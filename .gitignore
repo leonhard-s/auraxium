@@ -1,6 +1,3 @@
-# Pylance-generated Python stub files
-typings/
-
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]

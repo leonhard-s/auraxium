@@ -8,7 +8,6 @@ from ..census import Query
 from ..models import FireGroupData, FireModeData
 from ..proxy import InstanceProxy, SequenceProxy
 from ..request import extract_payload
-from ..types import CensusData
 
 from .projectile import Projectile
 from .states import PlayerState, PlayerStateGroup
@@ -45,16 +44,13 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
 
     collection = 'fire_mode_2'
     data: FireModeData
+    dataclass = FireModeData
     id_field = 'fire_mode_id'
 
     @property
     def type(self) -> FireModeType:
         """Return the type of fire mode as an enum."""
         return FireModeType(self.data.fire_mode_type_id)
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> FireModeData:
-        return FireModeData.from_census(data)
 
     async def state_groups(self) -> Dict[PlayerState, PlayerStateGroup]:
         """Return the state-specific data for a fire mode."""
@@ -67,7 +63,7 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
         data = extract_payload(payload, collection)
         states: Dict[PlayerState, PlayerStateGroup] = {}
         for group_data in data:
-            group = PlayerStateGroup.from_census(group_data)
+            group = PlayerStateGroup(**group_data)
             state = PlayerState(group.player_state_id)
             states[state] = group
         return states
@@ -92,11 +88,8 @@ class FireGroup(Cached, cache_size=10, cache_ttu=60.0):
 
     collection = 'fire_group'
     data: FireGroupData
+    dataclass = FireGroupData
     id_field = 'fire_group_id'
-
-    @staticmethod
-    def _build_dataclass(data: CensusData) -> FireGroupData:
-        return FireGroupData.from_census(data)
 
     def fire_modes(self) -> SequenceProxy[FireMode]:
         """Return the fire modes in the fire group."""

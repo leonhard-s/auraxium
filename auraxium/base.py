@@ -6,11 +6,13 @@ throughout the PlanetSide 2 object model.
 """
 
 import abc
-import copy
+import dataclasses
 import logging
+from typing import (Any, ClassVar, Dict, List, Optional, Type, TYPE_CHECKING,
+                    TypeVar, Union, cast)
 import warnings
-from typing import (Any, ClassVar, get_args, List, Optional, Type,
-                    TYPE_CHECKING, TypeVar, Union)
+
+import pydantic
 
 from .cache import TLRUCache
 from .census import Query
@@ -21,7 +23,7 @@ from .types import CensusData
 if TYPE_CHECKING:
     # This is only imported during static type checking to resolve the 'Client'
     # forward reference. This avoids a circular import at runtime.
-    from .client import Client
+    from .client import Client  # pragma: no cover
 
 __all__ = [
     'Ps2Data',
@@ -30,6 +32,7 @@ __all__ = [
     'Named'
 ]
 
+AnyT = TypeVar('AnyT')
 CachedT = TypeVar('CachedT', bound='Cached')
 NamedT = TypeVar('NamedT', bound='Named')
 Ps2DataT = TypeVar('Ps2DataT', bound='Ps2Data')
@@ -37,79 +40,73 @@ Ps2ObjectT = TypeVar('Ps2ObjectT', bound='Ps2Object')
 log = logging.getLogger('auraxium.ps2')
 
 
-class Ps2Data(metaclass=abc.ABCMeta):
+class Ps2Data(pydantic.BaseModel, metaclass=abc.ABCMeta):
     """Base class for PlanetSide 2 data classes.
 
-    This defines the interface used to populate the data classes, and
-    also performs type checking for data class attributes.
+    This class is based on :class:`pydantic.BaseModel` and will
+    automatically cast any kwargs provided into the set of attributes
+    defined for the current subclass.
 
-    Upon instantiation, a :class:`TypeError` will be raised for any
-    attributes that do not match the annotation. This does process
-    compound type declarations like :class:`typing.Union` or
-    :class:`typing.Optional`.
+    Extraneous kwargs are silently discarded. Any values equal to the
+    string ``'NULL'`` are converted to ``None`` before the parsing is
+    performed.
+
+    This does support compound type declarations like
+    :class:`typing.Union` or :class:`typing.Optional`.
+    """
+    # pylint: disable=too-few-public-methods
+
+    class Config:
+        """Pydantic model configuration.
+
+        This inner class is used to namespace the pydantic
+        configuration options.
+        """
+        allow_mutation = False
+        anystr_strip_whitespace = True
+
+    @pydantic.validator('*', pre=True)
+    @classmethod
+    def convert_null(cls: Type['Ps2Data'], value: AnyT) -> Optional[AnyT]:
+        """Handle NULL string return values.
+
+        This converts any NULL strings to equal ``None`` instead.
+
+        By default, the API will omit any NULL fields in the response,
+        unless the ``c:includeNull`` flag is set.
+        This value being a string would break type annotations like
+        ``Optional[int] = None``, which is why they are silently
+        converted into ``None`` before any parsing takes place.
+        """
+        if value == 'NULL':
+            return None
+        return value
+
+
+class FallbackMixin:
+    """A mixin class used to provide hard-coded fallback instances.
+
+    Some collections are out of date and do not contain all required
+    data. This mixin provides a hook to insert this missing data into
+    data types while not causing issues if the API ends up being
+    updated to include these missing types.
     """
 
-    def __post_init__(self) -> None:
-        """Enforce type constraints after initialisation.
-
-        This is run right after the object initialiser and compares the
-        assigned attributes against the type annotations given and
-        raises a :class:`TypeError` if a mismatch is found.
-
-        Raises:
-            TypeError: Raised if an attribute value does not match the
-                attribute's type annotation.
-
-        """
-        assert hasattr(self, '__annotations__')
-        # pylint: disable=no-member
-        for name, type_ in self.__annotations__.items():
-            value = getattr(self, name)
-            # NOTE: typing.get_args() is a utility method used to expand
-            # compound types like typing.Union or typing.Optional into a tuple
-            # of the types it represents.
-            # For regular objects, it returns an empty tuple.
-            if types := get_args(type_):
-                if not any(isinstance(value, t) for t in types):
-                    raise TypeError(
-                        f'Field {name} got {type(value)}, expected {type_}')
-            elif not isinstance(value, type_):
-                raise TypeError(
-                    f'Field {name} got {type(value)}, expected {type_}')
-
-    @classmethod
-    @abc.abstractmethod
-    def from_census(cls: Type[Ps2DataT], data: CensusData) -> Ps2DataT:
-        """Populate the data class with values from the dictionary.
-
-        This parses the API response and casts the appropriate types.
-
-        Arguments:
-            data: A dictionary containing API data that will be used to
-                to populate the data class.
-
-        Returns:
-            A populated instance of the current data class.
-
-        """
-        ...
+    _fallback: ClassVar[Dict[int, CensusData]]
 
 
 class Ps2Object(metaclass=abc.ABCMeta):
     """Common base class for all PS2 object representations.
 
-    This requires that subclasses implement the
+    This requires that subclasses overwrite the
     :attr:`Ps2Object.collection` and :attr:`Ps2Object.id_field` names,
     which are used to tie the class to its corresponding API
     counterpart.
 
-    Likewise, subclasses must implement the abstract
-    :meth:`Ps2Object._build_dataclass`, which is called to convert the
-    API response into an instance of the respective subclass of
-    :class:`Ps2Data`.
     """
 
     collection: ClassVar[str] = 'bogus'
+    dataclass: ClassVar[Type[Ps2Data]]
     id_field: ClassVar[str] = 'bogus_id'
 
     def __init__(self, data: CensusData, client: 'Client') -> None:
@@ -128,28 +125,14 @@ class Ps2Object(metaclass=abc.ABCMeta):
         id_ = int(data[self.id_field])
         log.debug('Instantiating <%s:%d> using payload: %s',
                   self.__class__.__name__, id_, data)
-        self.id = id_  # pylint: disable=invalid-name
+        self.id = id_
         self._client = client
-        # Work with a copy of the data to allow pop-ing used keys
-        data = copy.copy(data)
         try:
-            self.data = self._build_dataclass(data)
-        except KeyError as err:
-            raise PayloadError(
-                f'Unable to populate {self.__class__.__name__} due to a '
-                f'missing key: {err.args[0]}', data) from err
-        except ValueError as err:
+            self.data = self.dataclass(**data)
+        except pydantic.ValidationError as err:
             raise PayloadError(
                 f'Unable to instantiate {self.__class__.__name__} instance '
-                f'from given payload: {err.args[0]}', data) from err
-        if data and (keys := filter(lambda k: '_join_' not in k, data.keys())):
-            # Any leftover data (excluding joins) will raise a warning as it
-            # points to a mismatch between the object model and the API
-            msg = 'keys' if len(list(keys)) > 1 else 'key'
-            warnings.warn(
-                f'Unexpected {msg} in payload: {list(keys)}\n'
-                'Please report this error as it hints at a mismatch between '
-                'the auraxium object model and the API.')
+                f'from given payload: {err}', data) from err
 
     def __eq__(self, value: Any) -> bool:
         if not isinstance(value, self.__class__):
@@ -170,23 +153,6 @@ class Ps2Object(metaclass=abc.ABCMeta):
 
         """
         return f'<{self.__class__.__name__}:{self.id}>'
-
-    @staticmethod
-    @abc.abstractmethod
-    def _build_dataclass(data: CensusData) -> Ps2Data:
-        """Factory method for the appropriate data class.
-
-        This connects the class initialiser to the appropriate
-        :class:`Ps2Data` subclass.
-
-        Arguments:
-            data: The API response dictionary to process.
-
-        Returns:
-            An instance of the appropriate data class.
-
-        """
-        ...
 
     @classmethod
     async def count(cls: Type[Ps2ObjectT], client: 'Client',
@@ -270,10 +236,18 @@ class Ps2Object(metaclass=abc.ABCMeta):
             A matching entry, or None if not found.
 
         """
-        results = await cls.find(client=client, results=1,
-                                 check_case=check_case, **kwargs)
-        if results:
-            return results[0]
+        data = await cls.find(client=client, results=1,
+                              check_case=check_case, **kwargs)
+        if data:
+            if not isinstance(data[0], cls):
+                raise RuntimeError(
+                    f'Expected {cls} instance, got {type(data[0])} instead, '
+                    'please report this bug to the project maintainers')
+            if len(data) > 1:
+                warnings.warn(f'Ps2Object.get() got {len(data)} results, all '
+                              'but the first will be discarded')
+            data = cast(List[Ps2ObjectT], data)
+            return data[0]
         return None
 
     @classmethod
@@ -290,9 +264,37 @@ class Ps2Object(metaclass=abc.ABCMeta):
 
         """
         filters: CensusData = {cls.id_field: id_}
-        results = await cls.find(client=client, results=1, **filters)
-        if results:
-            return results[0]
+        data = await cls.find(client=client, results=1, **filters)
+        data = cast(List[Ps2ObjectT], data)
+        if data and not isinstance(data[0], cls):
+            raise RuntimeError(
+                f'Expected {cls} instance, got {type(data[0])} instead, '
+                'please report this bug to the project maintainers')
+
+        # Check for FallbackMixin compatibility
+        if hasattr(cls, '_fallback'):
+            # pylint: disable=no-member
+            data_fallback: Dict[int, CensusData] = (
+                cls._fallback)  # type: ignore
+            log.debug('Fallback attribute found for type "%s", checking ID...',
+                      cls.__name__)
+            if (fallback := data_fallback.get(id_)) is not None:
+                log.debug('Instantiating "%s" with ID %d through local copy',
+                          cls.__name__, id_)
+                if data:
+                    # Log the fact that the local copy is not required
+                    log.info('Type "%s" provides a local fallback for ID %d '
+                             'despite this type being available on-line',
+                             cls.__name__, id_)
+                    return data[0]
+                # Return a locally instantiated copy
+                return cls(fallback, client=client)
+            log.debug('No matching fallback instance found for ID %d', id_)
+
+        elif data:
+            # If no fallback value was provided, return the first item found
+            # as normal
+            return data[0]
         return None
 
     def query(self) -> Query:
@@ -422,14 +424,13 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
             was found.
 
         """
-        filters: CensusData = {cls.id_field: id_}
         log.debug('<%s:%d> requested', cls.__name__, id_)
         if (instance := cls._cache.get(id_)) is not None:
             log.debug('%r restored from cache', instance)
             return instance  # type: ignore
         log.debug('<%s:%d> not cached, generating API query...',
                   cls.__name__, id_)
-        return await cls.get(client=client, **filters)
+        return await super().get_by_id(id_, client=client)  # type: ignore
 
 
 class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
@@ -546,3 +547,27 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
             return str(getattr(data.name, locale))  # type: ignore
         except AttributeError as err:
             raise ValueError(f'Invalid locale: {locale}') from err
+
+
+class ImageMixin(Ps2Object, metaclass=abc.ABCMeta):
+    """A mixin class for types supporting image access."""
+
+    def image(self) -> str:
+        """Return the default image for this type."""
+        image_id: int = self.data.image_id  # type: ignore
+        return self._image_url(image_id)
+
+    @staticmethod
+    def _image_url(image_id: int) -> str:
+        """Return the URL for a given image ID."""
+        url = 'https://census.daybreakgames.com/files/ps2/images/static/'
+        return url + f'{image_id}.png'
+
+
+@dataclasses.dataclass(frozen=True)
+class ImageData:
+    """Mixin dataclass for types supporting image access."""
+
+    image_id: Optional[int] = None
+    image_set_id: Optional[int] = None
+    image_path: Optional[str] = None

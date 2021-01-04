@@ -1,10 +1,9 @@
 """Data classes for :mod:`auraxium.ps2.map`."""
 
-import dataclasses
 from typing import Optional
 
 from ..base import Ps2Data
-from ..types import CensusData, LocaleData, optional
+from ..types import LocaleData
 
 __all__ = [
     'FacilityTypeData',
@@ -13,8 +12,9 @@ __all__ = [
     'RegionData'
 ]
 
+# pylint: disable=too-few-public-methods
 
-@dataclasses.dataclass(frozen=True)
+
 class FacilityTypeData(Ps2Data):
     """Data class for :class:`auraxium.ps2.map.FacilityType`.
 
@@ -30,14 +30,7 @@ class FacilityTypeData(Ps2Data):
     facility_type_id: int
     description: str
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'FacilityTypeData':
-        return cls(
-            int(data.pop('facility_type_id')),
-            str(data.pop('description')))
 
-
-@dataclasses.dataclass(frozen=True)
 class MapHexData(Ps2Data):
     """Data class for :class:`auraxium.ps2.map.MapHex`.
 
@@ -56,8 +49,6 @@ class MapHexData(Ps2Data):
 
     """
 
-    # pylint: disable=invalid-name
-
     zone_id: int
     map_region_id: int
     x: int
@@ -65,18 +56,7 @@ class MapHexData(Ps2Data):
     hex_type: int
     type_name: str
 
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'MapHexData':
-        return cls(
-            int(data.pop('zone_id')),
-            int(data.pop('map_region_id')),
-            int(data.pop('x')),
-            int(data.pop('y')),
-            int(data.pop('hex_type')),
-            str(data.pop('type_name')))
 
-
-@dataclasses.dataclass(frozen=True)
 class MapRegionData(Ps2Data):
     """Data class for :class:`auraxium.ps2.map.MapHex`.
 
@@ -100,33 +80,17 @@ class MapRegionData(Ps2Data):
 
     map_region_id: int
     zone_id: int
-    facility_id: int
+    facility_id: Optional[int]  # Only missing for the shattered warpgate
     facility_name: str
-    facility_type_id: int
-    facility_type: str
-    location_x: Optional[float]
-    location_y: Optional[float]
-    location_z: Optional[float]
-    reward_amount: Optional[int]
-    reward_currency_id: Optional[int]
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'MapRegionData':
-        return cls(
-            int(data.pop('map_region_id')),
-            int(data.pop('zone_id')),
-            int(data.pop('facility_id')),
-            str(data.pop('facility_name')),
-            int(data.pop('facility_type_id')),
-            str(data.pop('facility_type')),
-            optional(data, 'location_x', float),
-            optional(data, 'location_y', float),
-            optional(data, 'location_z', float),
-            optional(data, 'reward_amount', int),
-            optional(data, 'reward_currency_id', int))
+    facility_type_id: Optional[int]  # Only missing for the shattered warpgate
+    facility_type: Optional[str]  # Only missing for the shattered warpgate
+    location_x: Optional[float] = None
+    location_y: Optional[float] = None
+    location_z: Optional[float] = None
+    reward_amount: Optional[int] = None
+    reward_currency_id: Optional[int] = None
 
 
-@dataclasses.dataclass(frozen=True)
 class RegionData(Ps2Data):
     """Data class for :class:`auraxium.ps2.map.Region`.
 
@@ -145,11 +109,3 @@ class RegionData(Ps2Data):
     zone_id: int
     initial_faction_id: int
     name: LocaleData
-
-    @classmethod
-    def from_census(cls, data: CensusData) -> 'RegionData':
-        return cls(
-            int(data.pop('region_id')),
-            int(data.pop('zone_id')),
-            int(data.pop('initial_faction_id')),
-            LocaleData.from_census(data.pop('name')))
