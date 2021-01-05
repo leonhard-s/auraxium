@@ -6,11 +6,13 @@ throughout the PlanetSide 2 object model.
 """
 
 import abc
+import asyncio
 import dataclasses
+import datetime
 import logging
-from typing import (Any, ClassVar, Dict, List, Optional, Type, TYPE_CHECKING,
-                    TypeVar, Union, cast)
 import warnings
+from typing import (Any, ClassVar, Dict, List, Optional, Tuple, Type,
+                    TYPE_CHECKING, TypeVar, Union, cast)
 
 import pydantic
 
@@ -37,6 +39,7 @@ CachedT = TypeVar('CachedT', bound='Cached')
 NamedT = TypeVar('NamedT', bound='Named')
 Ps2DataT = TypeVar('Ps2DataT', bound='Ps2Data')
 Ps2ObjectT = TypeVar('Ps2ObjectT', bound='Ps2Object')
+LazyFutures = Dict[int, List[asyncio.Future]]
 log = logging.getLogger('auraxium.ps2')
 
 
@@ -108,6 +111,8 @@ class Ps2Object(metaclass=abc.ABCMeta):
     collection: ClassVar[str] = 'bogus'
     dataclass: ClassVar[Type[Ps2Data]]
     id_field: ClassVar[str] = 'bogus_id'
+    _lazy_cache: ClassVar[Tuple[int, datetime.datetime, LazyFutures]] = (
+        0, datetime.datetime.now(), {})
 
     def __init__(self, data: CensusData, client: 'Client') -> None:
         """Initialise the object.
@@ -296,6 +301,114 @@ class Ps2Object(metaclass=abc.ABCMeta):
             # as normal
             return data[0]
         return None
+
+    @classmethod
+    async def get_soon(cls: Type[Ps2ObjectT], id_: int, *,
+                       timeout: float = 10.0, max_items: int = 100,
+                       client: 'Client') -> Optional[Ps2ObjectT]:
+        """Retrieve an object by ID within the given timeframe.
+
+        This works much like :meth:`get_by_id()`, but does not return
+        immediately. Instead, up to ``max_items`` queries will be
+        batched together until either one of their timeouts is reached,
+        or the total number of items exceeds the ``max_items``
+        parameter.
+
+        This is useful when throughput and API load is more important
+        than when exactly the query is performed. A common use-case for
+        this would be resolving character names for a kill feed or
+        similar high-throughput websocket events.
+
+        The ``timeout`` and ``max_items`` parameters are subtractive,
+        whenever a new item is added, the more restrictive constraint
+        is kept.
+
+        Arguments:
+            id_: The ID of the instance to retrieve.
+            client: The client to use for the request.
+            timeout (optional): The maximum number of seconds to defer
+                the retrieval of the given item. Defaults to 10.0.
+            max_items (optional): The maximum number of items to batch
+                into a single request. This is limited by the length of
+                the resulting query, longer IDs (such as those for
+                ``ps2/character``) will max out more quickly. Defaults
+                to 100.
+
+        Returns:
+            The requested item, or ``None`` if not found. Keep in mind
+            that this coroutine could take up to the number of seconds
+            provided in the ``timeout`` parameter to return.
+
+        """
+        # Create a new future for the item to call soon. This future is used to
+        # hold execution of this method until the corresponding result has been
+        # retrieved.
+        future: 'asyncio.Future[Optional[Ps2ObjectT]]' = asyncio.Future()
+        call_latest = (
+            datetime.datetime.now() + datetime.timedelta(seconds=timeout))
+
+        # It is possible that multiple get_soon calls are registered for the
+        # same type and ID, hence them being stored in lists
+        try:
+            cls._lazy_cache[2][id_].append(future)
+        except KeyError:
+            cls._lazy_cache[2][id_] = [future]
+
+        # Update the cache constraints to the most restrictive value
+        cur_max_items, cur_call_latest, futures = cls._lazy_cache
+        if max_items < cur_max_items:
+            cur_max_items = max_items
+        if cur_call_latest < call_latest:
+            cur_call_latest = call_latest
+        cls._lazy_cache = cur_max_items, cur_call_latest, futures
+
+        # Check time-based call
+        if cur_call_latest < datetime.datetime.now():
+            log.debug('Scheduling lazy call due to time constraint')
+        elif len(futures) >= cur_max_items:
+            log.debug('Scheduling lazy call due to size constraint')
+        else:
+            log.debug('No lazy call required, awaiting future')
+            if len(futures) == 1:
+                log.debug('Only item in cache, adding lazy checker')
+                client.loop.create_task(cls._check_lazy_cache(client))
+            return await future
+
+        # Perform the call
+        await cls._lazy_getter(client)
+        return await future
+
+    @classmethod
+    async def _check_lazy_cache(cls, client: 'Client') -> None:
+        """Check the class's lazy_cache every second."""
+        while True:
+            await asyncio.sleep(1.0)
+            if cls._lazy_cache[1] < datetime.datetime.now():
+                await cls._lazy_getter(client)
+                return
+
+    @classmethod
+    async def _lazy_getter(cls, client: 'Client') -> None:
+        """Lazy request dispatcher."""
+        cache_items = cls._lazy_cache[2]
+        cls._lazy_cache = 0, datetime.datetime.now(), {}
+
+        # Run request
+        ids = ','.join(str(i) for i in cache_items)
+        result_list = await cls.find(results=len(cls.id_field), client=client,
+                                     **{cls.id_field: ids})
+        results = {i.id: i for i in result_list}
+
+        # Mark respective futures as completed
+        for id_, futures in cache_items.items():
+            if id_ in results:
+                result = results[id_]
+                for fut in futures:
+                    fut.set_result(result)
+                continue
+            # No result found
+            for fut in futures:
+                fut.set_result(None)
 
     def query(self) -> Query:
         """Return a query from the current object.
