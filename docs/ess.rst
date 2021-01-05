@@ -113,8 +113,11 @@ API Reference
     :members:
 
     .. automethod:: auraxium.EventType.from_event_name
+        :noindex:
     .. automethod:: auraxium.EventType.from_payload
+        :noindex:
     .. automethod:: auraxium.EventType.filter_experience
+        :noindex:
 
 .. autoclass:: auraxium.Event
     :members:
