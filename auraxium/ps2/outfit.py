@@ -5,11 +5,11 @@ from typing import ClassVar, Final, List, Optional, TYPE_CHECKING, Type, Union
 
 from ..base import Cached, Named, NamedT
 from ..cache import TLRUCache
-from ..census import Query
+from ..census import JoinedQuery, Query
 from ..client import Client
 from ..errors import NotFoundError
 from ..models import OutfitData, OutfitMemberData, OutfitRankData
-from ..proxy import InstanceProxy, SequenceProxy
+from ..proxy import InstanceProxy, SequenceProxy, supports_proxy
 from ..request import extract_payload, extract_single
 
 if TYPE_CHECKING:
@@ -19,6 +19,8 @@ if TYPE_CHECKING:
 
 log = logging.getLogger('auraxium.ps2')
 
+character = JoinedQuery('character')
+character.set_fields('character_id')
 
 class OutfitMember(Cached, cache_size=100, cache_ttu=300.0):
     """A member of an outfit.

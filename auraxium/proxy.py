@@ -3,8 +3,8 @@
 import asyncio
 import datetime
 import warnings
-from typing import (Any, Dict, Generator, Generic, Iterator, List, Optional,
-                    Type, TypeVar)
+from typing import (Any, Callable, Dict, Generator, Generic, Iterator, List,
+                    Optional, Type, TypeVar)
 
 from .base import Ps2Object
 from .census import JoinedQuery, Query
@@ -14,10 +14,12 @@ from .request import extract_payload
 __all__ = [
     'InstanceProxy',
     'Proxy',
-    'SequenceProxy'
+    'SequenceProxy',
+    'supports_proxy'
 ]
 
 Ps2ObjectT = TypeVar('Ps2ObjectT', bound=Ps2Object)
+CallbackT = TypeVar('CallbackT', bound=Callable[..., Any])
 
 
 class Proxy(Generic[Ps2ObjectT]):
@@ -59,6 +61,37 @@ class Proxy(Generic[Ps2ObjectT]):
         self._last_fetched = datetime.datetime.utcfromtimestamp(0)
         max_age = datetime.datetime.now() - self._last_fetched
         assert self._ttu < max_age.total_seconds()
+
+    def __getattribute__(self, name: str) -> Any:
+        try:
+            return super().__getattribute__(name)
+        except AttributeError as err:
+            print(f'The Proxy class does not have an attribute {name}')
+            try:
+                attr = getattr(self._type, name)
+                print(f'The proxy type, {self._type.__name__}, '
+                      f'has an attribute {name}')
+            except AttributeError:
+                print(f'Neither does the proxy type, {self._type.__name__}')
+                print('Raising error!')
+                raise err
+
+            try:
+                join: JoinedQuery = getattr(attr, 'join')
+                print('Join found')
+            except AttributeError:
+                # Raise the original attribute error for good measure
+                print('No join found')
+                raise err
+
+            print(f'Join info: {join.data.__dict__}')
+
+            def dummy() -> Any:
+                query = self.query.add_join(JoinedQuery.copy(join))
+                return InstanceProxy(Ps2Object, query, self._client)
+                # self.query.add_join(JoinedQuery.copy(join))
+
+            return dummy
 
     async def _poll(self) -> None:
         """Query the API, retrieving the data.
@@ -196,3 +229,16 @@ class InstanceProxy(Proxy[Ps2ObjectT]):
             return self._data[0]
         except IndexError:
             return None
+
+
+def supports_proxy(join: JoinedQuery
+                   ) -> Callable[[CallbackT], CallbackT]:
+    """Decorator for creating proxy-compatible methods."""
+
+    def wrapper(func: CallbackT) -> CallbackT:
+
+        func.join = join
+
+        return func
+
+    return wrapper

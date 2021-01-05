@@ -5,11 +5,11 @@ from typing import Any, ClassVar, Final, List, Optional, Tuple, Type, Union
 
 from ..base import Named, NamedT
 from ..cache import TLRUCache
-from ..census import Query
+from ..census import JoinedQuery, Query
 from ..client import Client
 from ..errors import NotFoundError
 from ..models import CharacterAchievement, TitleData, CharacterData
-from ..proxy import InstanceProxy, SequenceProxy
+from ..proxy import InstanceProxy, SequenceProxy, supports_proxy
 from ..request import extract_payload, extract_single
 from ..types import CensusData
 
@@ -21,6 +21,9 @@ from .world import World
 
 log = logging.getLogger('auraxium.ps2')
 
+characters_stat = JoinedQuery('characters_stat')
+characters_stat.set_fields('character_id')
+characters_stat.set_list(True)
 
 class Title(Named, cache_size=300, cache_ttu=300.0):
     """A title selectable by a character."""
@@ -293,15 +296,17 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         data = extract_payload(payload, collection)
         return data
 
-    async def stat(self, results: int = 1, **kwargs: Any) -> List[CensusData]:
+    @supports_proxy(characters_stat)
+    async def stat(self, **kwargs: Any) -> List[CensusData]:
         """Return global statistics for this character."""
         collection: Final[str] = 'characters_stat'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
         query.limit(results)
         payload = await self._client.request(query)
-        data = extract_payload(payload, collection)
-        return data
+        data = extract_single(payload, 'character')
+        stats: List[CensusData] = data['character_id_join_characters_stat']
+        return stats
 
     async def stat_by_faction(self, results: int = 1,
                               **kwargs: Any) -> List[CensusData]:
