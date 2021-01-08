@@ -155,7 +155,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
         return f'<{self.__class__.__name__}:{self.id}>'
 
     @classmethod
-    async def count(cls: Type[Ps2ObjectT], client: 'Client',
+    async def count(cls: Type['Ps2Object'], client: 'Client',
                     **kwargs: Any) -> int:
         """Return the number of items matching the given terms.
 
@@ -345,7 +345,7 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
         self._cache.add(self.id, self)
 
     @classmethod
-    def __init_subclass__(cls: Type[CachedT], cache_size: int,
+    def __init_subclass__(cls: Type['Cached'], cache_size: int,
                           cache_ttu: float = 0.0) -> None:
         """Initialise a cacheable subclass.
 

@@ -125,7 +125,7 @@ class Client:
         log.info('Shutting down client')
         await self.session.close()
 
-    async def count(self, type_: Type[Ps2ObjectT], **kwargs: Any) -> int:
+    async def count(self, type_: Type['Ps2Object'], **kwargs: Any) -> int:
         """Return the number of items matching the given terms.
 
         Arguments:
