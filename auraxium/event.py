@@ -325,8 +325,18 @@ class Trigger:
             Whether this trigger should run for the given event.
 
         """
-        if event.type not in self.events:
-            return False
+        if (event.type not in self.events
+                and event.type.to_event_name() not in self.events):
+            # Extra check for the dynamically generated experience ID events
+            if event.type == EventType.GAIN_EXPERIENCE:
+                id_ = int(event.payload['experience_id'])
+                for event_name in self.events:
+                    if event_name == EventType.filter_experience(id_):
+                        break
+                else:
+                    return False  # Dynamic event but non-matching ID
+            else:
+                return False
         payload = event.payload
         # Check character ID requirements
         if self.characters:
