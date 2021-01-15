@@ -28,6 +28,6 @@ jobs:
           python -m coverage run --source auraxium/ -m unittest discover -p *_test.py tests/
       - name: Upload code coverage analysis
         env:
-          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
         run: |
           python -m coveralls
