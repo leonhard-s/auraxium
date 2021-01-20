@@ -20,10 +20,10 @@ from .errors import PayloadError, NotFoundError
 from .request import extract_payload, extract_single
 from .types import CensusData
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     # This is only imported during static type checking to resolve the 'Client'
     # forward reference. This avoids a circular import at runtime.
-    from .client import Client  # pragma: no cover
+    from .client import Client
 
 __all__ = [
     'Ps2Data',

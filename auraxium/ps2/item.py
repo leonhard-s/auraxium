@@ -12,10 +12,10 @@ from ..types import LocaleData
 from .faction import Faction
 from .profile import Profile
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     # This is only imported during static type checking to resolve the forward
     # references. This avoids a circular import at runtime.
-    from .weapon import Weapon, WeaponDatasheet  # pragma: no cover
+    from .weapon import Weapon, WeaponDatasheet
 
 __all__ = [
     'Item',

@@ -11,8 +11,10 @@ from ..errors import PayloadError
 from ..models import ExperienceData, ExperienceRankData
 from ..types import CensusData
 
-if TYPE_CHECKING:
-    from ..ps2 import Faction  # pragma: no cover
+if TYPE_CHECKING:  # pragma: no cover
+    # This is only imported during static type checking to resolve the forward
+    # references. This avoids import issues at runtime.
+    from ..ps2 import Faction
 
 __all__ = [
     'Experience',
