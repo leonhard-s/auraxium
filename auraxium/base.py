@@ -139,6 +139,22 @@ class Ps2Object(metaclass=abc.ABCMeta):
             return False
         return self.id == value.id
 
+    def __getattr__(self, name: str) -> Any:
+        """Fallback for missing attributes.
+
+        This allows missing attribute in the :class:`Ps2Object`
+        instance to fall back to its corresponding data class.
+
+        If the attribute cannot be found there either, an
+        :class:`AttributeError` is raised as normal.
+
+        """
+        # Re-raising or propagating the inner exception would only clutter up
+        # the exception traceback, so we raise one "from scratch" instead.
+        if hasattr(self.data, name):
+            return getattr(self.data, name)
+        raise AttributeError(name)
+
     def __hash__(self) -> int:
         return hash((self.__class__, self.id))
 
