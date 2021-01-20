@@ -12,6 +12,11 @@ from .armour import ArmourInfo
 from .faction import Faction
 from .resist import ResistInfo
 
+__all__ = [
+    'Loadout',
+    'Profile'
+]
+
 
 class Profile(Cached, cache_size=200, cache_ttu=60.0):
     """An entity in the game world.
@@ -22,12 +27,21 @@ class Profile(Cached, cache_size=200, cache_ttu=60.0):
     Profiles include faction-specific classes, vehicles, facility
     infrastructure such as turrets, generators or shields, as well as
     other non-static entities such as Cortium nodes or pumpkins.
+
+    Attributes:
+        profile_id: The unique ID of this profile.
+        description: The description of the profile.
+
     """
 
     collection = 'profile_2'
     data: ProfileData
     dataclass = ProfileData
     id_field = 'profile_id'
+
+    # Type hints for data class fallback attributes
+    profile_id: int
+    description: str
 
     def armour_info(self) -> SequenceProxy[ArmourInfo]:
         """Return the armour info of the profile.
@@ -73,13 +87,27 @@ def _get_fallback(id_: int) -> CensusData:
 
 
 class Loadout(Cached, FallbackMixin, cache_size=20, cache_ttu=3600.0):
-    """Represents a faction-specific infantry class."""
+    """Represents a faction-specific infantry class.
+
+    Attributes:
+        loadout_id: The unique ID of this loadout.
+        profile_id: The ID of the associated profile.
+        faction_id: The faction for this loadout.
+        code_name: A string describing the loadout.
+
+    """
 
     collection = 'loadout'
     data: LoadoutData
     dataclass = LoadoutData
     id_field = 'loadout_id'
     _fallback = {k: _get_fallback(k) for k in (*range(28, 33), 45)}
+
+    # Type hints for data class fallback attributes
+    loadout_id: int
+    profile_id: int
+    faction_id: int
+    code_name: str
 
     def armour_info(self) -> SequenceProxy[ArmourInfo]:
         """Return the armour info of the loadout.

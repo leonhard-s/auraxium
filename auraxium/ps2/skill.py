@@ -1,20 +1,48 @@
 """Skill and skill line class definitions."""
 
+from typing import Optional
+
 from ..base import ImageMixin, Named
 from ..census import Query
 from ..models import SkillData, SkillCategoryData, SkillLineData, SkillSetData
 from ..proxy import InstanceProxy, SequenceProxy
+from ..types import LocaleData
 
 from .item import Item
 
+__all__ = [
+    'Skill',
+    'SkillCategory',
+    'SkillLine',
+    'SkillSet',
+]
+
 
 class SkillSet(Named, ImageMixin, cache_size=100, cache_ttu=60.0):
-    """A skill set for a particular vehicle or class."""
+    """A skill set for a particular vehicle or class.
+
+    Attributes:
+        skill_set_id: The unique ID of this skill set.
+        skill_points: (Not yet documented)
+        required_item_id: The item required to unlock this skill set.
+            Used to prevent buying upgrades for items the player has
+            not unlocked yet.
+        name: The localised name of the skill set.
+        description: The localised description of the skill set.
+
+    """
 
     collection = 'skill_set'
     data: SkillSetData
     dataclass = SkillSetData
     id_field = 'skill_set_id'
+
+    # Type hints for data class fallback attributes
+    skill_set_id: int
+    skill_points: Optional[int]
+    required_item_id: Optional[int]
+    name: LocaleData
+    description: Optional[LocaleData]
 
     def categories(self) -> SequenceProxy['SkillCategory']:
         """Return the skill categories in this skill set.
@@ -43,12 +71,31 @@ class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
 
     Skill categories are groups like "Passive Systems" or "Performance
     Slot".
+
+    Attributes:
+        skill_category_id: The unique ID of this skill category.
+        skill_set_id: The :class:`SkillCategory` this category belongs
+            to.
+        skill_set_index: The position of this category in the
+            associated skill category.
+        skill_points: The unlock cost for this skill category.
+        name: The localised name of this skill category.
+        description: The localised description for this skill category.
+
     """
 
     collection = 'skill_category'
     data: SkillCategoryData
     dataclass = SkillCategoryData
     id_field = 'skill_category_id'
+
+    # Type hints for data class fallback attributes
+    skill_category_id: int
+    skill_set_id: int
+    skill_set_index: int
+    skill_points: int
+    name: LocaleData
+    description: Optional[LocaleData]
 
     def skill_lines(self) -> SequenceProxy['SkillLine']:
         """Return the skill lines contained in this category.
@@ -71,12 +118,32 @@ class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
 
 
 class SkillLine(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
-    """A series of skills or certifications."""
+    """A series of skills or certifications.
+
+    Attributes:
+        skill_line_id: The unique ID for this skill line.
+        skill_points: The unlock cost for this skill line.
+        skill_category_id: The :class:`SkillCategory` this skill line
+            belongs to.
+        skill_category_index: The index of this skill line in its
+            containing skill category.
+        name: The localised name of this skill line.
+        description: The localised description for this skill line.
+
+    """
 
     collection = 'skill_line'
     data: SkillLineData
     dataclass = SkillLineData
     id_field = 'skill_line_id'
+
+    # Type hints for data class fallback attributes
+    skill_line_id: int
+    skill_points: int
+    skill_category_id: Optional[int]
+    skill_category_index: Optional[int]
+    name: LocaleData
+    description: Optional[LocaleData]
 
     def category(self) -> InstanceProxy[SkillCategory]:
         """Return the category this skill line belongs to.
@@ -102,12 +169,33 @@ class SkillLine(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
 
 
 class Skill(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
-    """A skill or certification unlockable by a character."""
+    """A skill or certification unlockable by a character.
+
+    Attributes:
+        skill_id: The unique ID of this skill.
+        skill_line_id: The ID of the associated :class:`SkillLine`.
+        skill_line_index: The position of the skill in its skill line.
+        skill_points: The unlock cost of the skill.
+        grant_item_id: The :class:`~auraxium.ps2.Item` granted by this
+            skill, if any.
+        name: The localised name of this skill.
+        description: The localised description for this skill.
+
+    """
 
     collection = 'skill'
     data: SkillData
     dataclass = SkillData
     id_field = 'skill_id'
+
+    # Type hints for data class fallback attributes
+    skill_id: int
+    skill_line_id: int
+    skill_line_index: int
+    skill_points: int
+    grant_item_id: Optional[int]
+    name: LocaleData
+    description: Optional[LocaleData]
 
     def grant_item(self) -> InstanceProxy[Item]:
         """Return the item unlocked by this skill.

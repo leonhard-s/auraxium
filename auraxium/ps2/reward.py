@@ -1,6 +1,6 @@
 """Reward and reward type class definitions."""
 
-from typing import Final
+from typing import Final, Optional
 
 from ..base import Cached
 from ..census import Query
@@ -8,17 +8,43 @@ from ..client import Client
 from ..models import RewardData, RewardTypeData
 from ..proxy import InstanceProxy, SequenceProxy
 
+__all__ = [
+    'Reward',
+    'RewardType'
+]
+
 
 class RewardType(Cached, cache_size=10, cache_ttu=3600.0):
     """A type of reward.
 
     This class mostly specifies the purpose of any generic parameters.
+
+    Attributes:
+        reward_type_id: The unique ID of this reward type.
+        description: A description of what this reward type is used
+            for.
+        count_min: The minimum number of rewarded items/currency.
+        count_max: The maximum number of rewarded items/currency.
+        param*: Descriptions of what the corresponding parameter is
+            used for in rewards of this type.
+
     """
 
     collection = 'reward_type'
     data: RewardTypeData
     dataclass = RewardTypeData
     id_field = 'reward_type_id'
+
+    # Type hints for data class fallback attributes
+    reward_type_id: int
+    description: str
+    count_min: Optional[str]
+    count_max: Optional[str]
+    param1: str
+    param2: Optional[str]
+    param3: Optional[str]
+    param4: Optional[str]
+    param5: Optional[str]
 
 
 class Reward(Cached, cache_size=50, cache_ttu=60.0):
@@ -27,12 +53,32 @@ class Reward(Cached, cache_size=50, cache_ttu=60.0):
     Access the corresponding :class:`auraxium.ps2.reward.RewardType`
     instance via the :meth:`type` method for information on generic
     parameters.
+
+    Attributes:
+        reward_id: The unique ID of this reward.
+        reward_type_id: The :class:`RewardType` of this reward.
+        count_min: The minimum number of rewarded items/currency.
+        count_max: The maximum number of rewarded items/currency.
+        param*: Type-specific parameters for this reward. Refer to the
+            corresponding :class:`RewardType` for details.
+
     """
 
     collection = 'reward'
     data: RewardData
     dataclass = RewardData
     id_field = 'reward_id'
+
+    # Type hints for data class fallback attributes
+    reward_id: int
+    reward_type_id: int
+    count_min: int
+    count_max: int
+    param1: str
+    param2: Optional[str]
+    param3: Optional[str]
+    param4: Optional[str]
+    param5: Optional[str]
 
     @classmethod
     def get_by_reward_group(cls, reward_group_id: int, client: Client

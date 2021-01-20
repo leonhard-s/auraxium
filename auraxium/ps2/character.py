@@ -11,7 +11,7 @@ from ..errors import NotFoundError
 from ..models import CharacterAchievement, TitleData, CharacterData
 from ..proxy import InstanceProxy, SequenceProxy
 from ..request import extract_payload, extract_single
-from ..types import CensusData
+from ..types import CensusData, LocaleData
 
 from .faction import Faction
 from .item import Item
@@ -19,26 +19,78 @@ from .outfit import Outfit, OutfitMember
 from .profile import Profile
 from .world import World
 
+__all__ = [
+    'Character',
+    'Title'
+]
+
 log = logging.getLogger('auraxium.ps2')
 
 
 class Title(Named, cache_size=300, cache_ttu=300.0):
-    """A title selectable by a character."""
+    """A title selectable by a character.
+
+    .. important::
+        Unlike most other forms of API data, the ID used by titles is
+        **not** unique.
+
+        This is due to the ASP system re-using the same title IDs while
+        introducing a different name ("A.S.P. Operative" for ``en``).
+
+
+    Attributes:
+        title_id: The ID of this title.
+        name: The localised name of this title.
+
+    """
 
     collection = 'title'
     data: TitleData
     dataclass = TitleData
     id_field = 'title_id'
 
+    # Type hints for data class fallback attributes
+    title_id: int
+    name: LocaleData
+
 
 class Character(Named, cache_size=256, cache_ttu=30.0):
-    """A player-controlled fighter."""
+    """A player-controlled fighter.
+
+    Attributes:
+        character_id: The unique name of the character.
+        name: The name of the player.
+        faction_id: The faction the character belongs to.
+        head_id: The head model for this character.
+        title_id: The current title selected for this character. May be
+            zero.
+        times: Play and login time data for the character.
+        certs: Certification data for the character.
+        battle_rank: Battle rank data for the character.
+        profile_id: The last profile the character used.
+        daily_ribbon: Daily ribbon data for the character.
+        prestige_level: The ASP rank of the character.
+
+    """
 
     _cache: ClassVar[TLRUCache[Union[int, str], 'Character']]
     collection = 'character'
     data: CharacterData
     dataclass = CharacterData
     id_field = 'character_id'
+
+    # Type hints for data class fallback attributes
+    character_id: int
+    name: CharacterData.Name
+    faction_id: int
+    head_id: int
+    title_id: int
+    times: CharacterData.Times
+    certs: CharacterData.Certs
+    battle_rank: CharacterData.BattleRank
+    profile_id: int
+    daily_ribbon: CharacterData.DailyRibbon
+    prestige_level: int
 
     async def achievements(self, **kwargs: Any) -> List[CharacterAchievement]:
         """Return the achievement status for a character."""

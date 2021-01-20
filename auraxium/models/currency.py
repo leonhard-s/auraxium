@@ -15,14 +15,6 @@ class CurrencyData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
-
-    Attributes:
-        currency_id: The unique ID of this currency entry.
-        name: The localised name of this currency.
-        icon_id: The image ID of the currency icon image asset.
-        inventory_cap: The maximum amount of this currency a character
-            may hold.
-
     """
 
     currency_id: int
