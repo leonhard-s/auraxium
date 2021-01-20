@@ -26,5 +26,7 @@
     // ReStructured text linter
     "restructuredtext.linter.extraArgs": [
         "--ignore-directives autoclass,automodule"
-    ]
+    ],
+    "restructuredtext.languageServer.disabled": true,
+    "restructuredtext.confPath": "${workspaceFolder}\\docs"
 }
