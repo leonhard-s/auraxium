@@ -153,7 +153,6 @@ class Region(Named, cache_size=100, cache_ttu=60.0):
         region_id: The unique ID of the map region.
         zone_id: The ID of the zone (i.e. continent) the region is in.
         initial_faction_id: (Unused)
-        name: The localised name of the map region.
 
     """
 
@@ -166,7 +165,6 @@ class Region(Named, cache_size=100, cache_ttu=60.0):
     region_id: int
     zone_id: int
     initial_faction_id: int
-    name: LocaleData
 
     def map_region(self) -> InstanceProxy[MapRegion]:
         """Return the map region associated with this region.

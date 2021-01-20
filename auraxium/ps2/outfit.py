@@ -85,7 +85,6 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
 
     Attributes:
         outfit_id: The unique ID of the outfit.
-        name: The name of the outfit.
         name_lower: Lowercase version of :attr`name`. Useful for
             optimising case-insensitive searches.
         alias: The alias (or tag) of the outfit.
@@ -109,7 +108,6 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
 
     # Type hints for data class fallback attributes
     outfit_id: int
-    name: str
     name_lower: str
     alias: str
     alias_lower: str

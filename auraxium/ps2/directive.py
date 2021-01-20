@@ -28,7 +28,6 @@ class DirectiveTreeCategory(Named, ImageMixin, cache_size=10, cache_ttu=300.0):
     Attributes:
         directive_tree_category_id: The unique ID of the directive tree
             category.
-        name: The localised name of the directive tree category.
 
     """
 
@@ -39,7 +38,6 @@ class DirectiveTreeCategory(Named, ImageMixin, cache_size=10, cache_ttu=300.0):
 
     # Type hints for data class fallback attributes
     directive_tree_category_id: int
-    name: LocaleData
 
     def trees(self) -> SequenceProxy['DirectiveTree']:
         """Return the trees in the category.
@@ -61,7 +59,6 @@ class DirectiveTree(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     Attributes:
         directive_tree_id: The unique ID of the directive tree.
         directive_tree_category_id: The category of the directive tree.
-        name: The localised name of the directive tree.
         description: The localised description of the directive tree.
 
     """
@@ -74,7 +71,6 @@ class DirectiveTree(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     # Type hints for data class fallback attributes
     directive_tree_id: int
     directive_tree_category_id: int
-    name: LocaleData
     description: Optional[LocaleData]
 
     def category(self) -> InstanceProxy[DirectiveTreeCategory]:
@@ -123,7 +119,6 @@ class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
             of this directive tier.
         completion_count: The number of directives that must be
             completed for completion of this directive tier.
-        name: The localised name of the directive tier.
 
     """
 
@@ -138,7 +133,6 @@ class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     reward_set_id: Optional[int]
     directive_points: int
     completion_count: int
-    name: LocaleData
 
     def directives(self) -> SequenceProxy['Directive']:
         """Return the list of directives in this tier.
@@ -172,8 +166,7 @@ class Directive(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
             directive.
         qualify_requirement_id: An item that must be unlocked for this
             directive to be available.
-        name: The localised name of the directive.
-        name: The localised description of the directive.
+        description: The localised description of the directive.
 
     """
 
@@ -188,7 +181,6 @@ class Directive(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     directive_tier_id: int
     objective_set_id: int
     qualify_requirement_id: Optional[int]
-    name: LocaleData
     description: Optional[LocaleData]
 
     def objectives(self) -> SequenceProxy[Objective]:

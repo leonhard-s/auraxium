@@ -27,7 +27,6 @@ class SkillSet(Named, ImageMixin, cache_size=100, cache_ttu=60.0):
         required_item_id: The item required to unlock this skill set.
             Used to prevent buying upgrades for items the player has
             not unlocked yet.
-        name: The localised name of the skill set.
         description: The localised description of the skill set.
 
     """
@@ -41,7 +40,6 @@ class SkillSet(Named, ImageMixin, cache_size=100, cache_ttu=60.0):
     skill_set_id: int
     skill_points: Optional[int]
     required_item_id: Optional[int]
-    name: LocaleData
     description: Optional[LocaleData]
 
     def categories(self) -> SequenceProxy['SkillCategory']:
@@ -79,7 +77,6 @@ class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
         skill_set_index: The position of this category in the
             associated skill category.
         skill_points: The unlock cost for this skill category.
-        name: The localised name of this skill category.
         description: The localised description for this skill category.
 
     """
@@ -94,7 +91,6 @@ class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     skill_set_id: int
     skill_set_index: int
     skill_points: int
-    name: LocaleData
     description: Optional[LocaleData]
 
     def skill_lines(self) -> SequenceProxy['SkillLine']:
@@ -127,7 +123,6 @@ class SkillLine(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
             belongs to.
         skill_category_index: The index of this skill line in its
             containing skill category.
-        name: The localised name of this skill line.
         description: The localised description for this skill line.
 
     """
@@ -142,7 +137,6 @@ class SkillLine(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     skill_points: int
     skill_category_id: Optional[int]
     skill_category_index: Optional[int]
-    name: LocaleData
     description: Optional[LocaleData]
 
     def category(self) -> InstanceProxy[SkillCategory]:
@@ -178,7 +172,6 @@ class Skill(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
         skill_points: The unlock cost of the skill.
         grant_item_id: The :class:`~auraxium.ps2.Item` granted by this
             skill, if any.
-        name: The localised name of this skill.
         description: The localised description for this skill.
 
     """
@@ -194,7 +187,6 @@ class Skill(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     skill_line_index: int
     skill_points: int
     grant_item_id: Optional[int]
-    name: LocaleData
     description: Optional[LocaleData]
 
     def grant_item(self) -> InstanceProxy[Item]:

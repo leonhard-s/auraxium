@@ -14,7 +14,6 @@ class Faction(Named, ImageMixin, cache_size=10):
 
     Attributes:
         faction_id: The unique ID of this faction.
-        name: The localised name of the faction.
         code_tag: The canonical tag representation of the faction.
         user_selectable: Whether this faction is playable.
 
@@ -27,7 +26,6 @@ class Faction(Named, ImageMixin, cache_size=10):
 
     # Type hints for data class fallback attributes
     faction_id: int
-    name: LocaleData
     code_tag: str
     user_selectable: bool
 

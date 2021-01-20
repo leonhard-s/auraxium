@@ -32,7 +32,6 @@ class ItemCategory(Named, cache_size=32, cache_ttu=3600.0):
 
     Attributes:
         item_category_id: The unique ID of this item category.
-        name: The localised name of the category.
 
     """
 
@@ -43,7 +42,6 @@ class ItemCategory(Named, cache_size=32, cache_ttu=3600.0):
 
     # Type hints for data class fallback attributes
     item_category_id: int
-    name: LocaleData
 
 
 class ItemType(Cached, cache_size=10, cache_ttu=60.0):
@@ -57,7 +55,6 @@ class ItemType(Cached, cache_size=10, cache_ttu=60.0):
 
     Attributes:
         item_type_id: The unique ID of this item type.
-        name: The identifying name of this item type.
         code: The internal code used to describe this item type.
 
     """
@@ -69,7 +66,6 @@ class ItemType(Cached, cache_size=10, cache_ttu=60.0):
 
     # Type hints for data class fallback attributes
     item_type_id: int
-    name: str
     code: str
 
 
@@ -87,7 +83,6 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
         activatable_ability_id: (Not yet documented)
         passive_ability_id: (Not yet documented)
         is_vehicle_weapon: Whether this item is a vehicle weapon.
-        name: Localised name of the item.
         description: Localised description of the item.
         faction_id: The faction that has access to this item.
         max_stack_size: The stack size for stackable items such as
@@ -115,7 +110,6 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     activatable_ability_id: Optional[int]
     passive_ability_id: Optional[int]
     is_vehicle_weapon: bool
-    name: LocaleData
     description: Optional[LocaleData]
     faction_id: Optional[int]
     max_stack_size: int

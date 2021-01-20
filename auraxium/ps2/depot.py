@@ -25,7 +25,6 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
 
     Attributes:
         marketing_bundle_id: The unique ID of this bundle.
-        name: The localised name of the bundle.
         description: The description text for this bundle.
         image_id: The image asset ID for this bundle.
         cert_price: The unlock price in certification points, if any.
@@ -42,7 +41,6 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
 
     # Type hints for data class fallback attributes
     marketing_bundle_id: int
-    name: LocaleData
     description: LocaleData
     image_id: int
     cert_price: Optional[int]

@@ -30,7 +30,6 @@ class Zone(Named, cache_size=20, cache_ttu=3600.0):
         zone_id: The unique ID of this zone.
         code: The internal code used to represent this zone.
         hex_size: The map size for this zone.
-        name: The localised name of this zone.
         description: The localised name of this zone.
 
     """
@@ -44,7 +43,6 @@ class Zone(Named, cache_size=20, cache_ttu=3600.0):
     zone_id: int
     code: str
     hex_size: int
-    name: LocaleData
     description: LocaleData
 
     @property

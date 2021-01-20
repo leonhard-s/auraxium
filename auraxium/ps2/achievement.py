@@ -27,7 +27,6 @@ class Achievement(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
         reward_id: The reward granted when this achievement is earned.
         repeatable: Whether this achievement is repeatable. Ribbons
             generally are repeatable, weapon medals are not.
-        name: The localised name of the achievement.
         description: The localised description of achievement.
 
     """
@@ -43,5 +42,4 @@ class Achievement(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     objective_group_id: int
     reward_id: int
     repeatable: bool
-    name: LocaleData
     description: LocaleData
