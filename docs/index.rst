@@ -3,8 +3,9 @@
 
    self
 
-Welcome to Auraxium
-===================
+.. image:: ../assets/logo_dark.png
+   :alt: Auraxium Logo
+   :align: center
 
 Auraxium is an object-oriented, pure-Python wrapper for the `PlanetSide 2 <https://www.planetside2.com/home>`_ API.
 
