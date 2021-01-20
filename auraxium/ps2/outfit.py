@@ -32,6 +32,14 @@ class OutfitMember(Cached, cache_size=100, cache_ttu=300.0):
     dataclass = OutfitMemberData
     id_field = 'character_id'
 
+    # Type hints for data class fallback attributes
+    outfit_id: int
+    character_id: int
+    member_since: int
+    member_since_date: str
+    rank: str
+    rank_ordinal: int
+
     def character(self) -> InstanceProxy['Character']:
         """Return the character associated with this member.
 
@@ -63,6 +71,17 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
     data: OutfitData
     dataclass = OutfitData
     id_field = 'outfit_id'
+
+    # Type hints for data class fallback attributes
+    outfit_id: int
+    name: str
+    name_lower: str
+    alias: str
+    alias_lower: str
+    time_created: int
+    time_created_date: str
+    leader_character_id: int
+    member_count: int
 
     @classmethod
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
@@ -126,17 +145,6 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         query.add_term(field=self.id_field, value=self.id)
         query.limit(5000)
         return SequenceProxy(OutfitMember, query, client=self._client)
-
-    def name(self, locale: str = 'en') -> str:
-        """Return the unique name of the outfit.
-
-        Since outfit names are not localised, the "locale" keyword
-        argument is ignored.
-
-        This will always return the capitalised version of the name.
-        Use the built-int str.lower() method for a lowercase version.
-        """
-        return str(self.data.name)
 
     async def ranks(self) -> List[OutfitRankData]:
         """Return the list of ranks for the outfit."""

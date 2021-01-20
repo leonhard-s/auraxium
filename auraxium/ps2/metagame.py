@@ -1,9 +1,11 @@
 """Alert and alert state class definitions."""
 
 import enum
+from typing import Optional
 
 from ..base import Cached
 from ..models import MetagameEventData
+from ..types import LocaleData
 
 
 class MetagameEventState(enum.IntEnum):
@@ -23,3 +25,10 @@ class MetagameEvent(Cached, cache_size=100, cache_ttu=60.0):
     data: MetagameEventData
     dataclass = MetagameEventData
     id_field = 'metagame_event_id'
+
+    # Type hints for data class fallback attributes
+    metagame_event_id: int
+    name: LocaleData
+    description: LocaleData
+    type: int
+    experience_bonus: Optional[int]

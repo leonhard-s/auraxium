@@ -2,6 +2,7 @@
 
 from ..base import Named
 from ..models import ZoneData
+from ..types import LocaleData
 
 _KNOWN_ZONES = [
     2,  # Indar
@@ -26,6 +27,13 @@ class Zone(Named, cache_size=20, cache_ttu=3600.0):
     data: ZoneData
     dataclass = ZoneData
     id_field = 'zone_id'
+
+    # Type hints for data class fallback attributes
+    zone_id: int
+    code: str
+    hex_size: int
+    name: LocaleData
+    description: LocaleData
 
     @property
     def is_dynamic(self) -> bool:

@@ -7,6 +7,7 @@ from ..census import Query
 from ..client import Client
 from ..models import VehicleAttachmentData, VehicleData
 from ..proxy import InstanceProxy, SequenceProxy
+from ..types import LocaleData
 
 from .faction import Faction
 from .item import Item
@@ -24,6 +25,15 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
     data: VehicleData
     dataclass = VehicleData
     id_field = 'vehicle_id'
+
+    # Type hints for data class fallback attributes
+    vehicle_id: int
+    name: LocaleData
+    description: Optional[LocaleData]
+    type_id: int
+    type_name: str
+    cost: Optional[int]
+    cost_resource_id: Optional[int]
 
     def factions(self) -> SequenceProxy[Faction]:
         """Return the factions that have access to this vehicle.
@@ -83,6 +93,13 @@ class VehicleAttachment(Cached, cache_size=250, cache_ttu=180.0):
     data: VehicleAttachmentData
     dataclass = VehicleAttachmentData
     id_field = 'vehicle_attachment_id'
+
+    # Type hints for data class fallback attributes
+    item_id: int
+    vehicle_id: int
+    faction_id: int
+    description: str
+    slot_id: int
 
     def faction(self) -> InstanceProxy[Faction]:
         """Return the faction this attachment is available to.

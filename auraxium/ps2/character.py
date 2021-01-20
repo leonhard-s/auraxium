@@ -11,7 +11,7 @@ from ..errors import NotFoundError
 from ..models import CharacterAchievement, TitleData, CharacterData
 from ..proxy import InstanceProxy, SequenceProxy
 from ..request import extract_payload, extract_single
-from ..types import CensusData
+from ..types import CensusData, LocaleData
 
 from .faction import Faction
 from .item import Item
@@ -30,6 +30,9 @@ class Title(Named, cache_size=300, cache_ttu=300.0):
     dataclass = TitleData
     id_field = 'title_id'
 
+    # Type hints for data class fallback attributes
+    title_id: int
+    name: LocaleData
 
 class Character(Named, cache_size=256, cache_ttu=30.0):
     """A player-controlled fighter."""
@@ -39,6 +42,19 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     data: CharacterData
     dataclass = CharacterData
     id_field = 'character_id'
+
+    # Type hints for data class fallback attributes
+    character_id: int
+    name: CharacterData.Name
+    faction_id: int
+    head_id: int
+    title_id: int
+    times: CharacterData.Times
+    certs: CharacterData.Certs
+    battle_rank: CharacterData.BattleRank
+    profile_id: int
+    daily_ribbon: CharacterData.DailyRibbon
+    prestige_level: int
 
     async def achievements(self, **kwargs: Any) -> List[CharacterAchievement]:
         """Return the achievement status for a character."""

@@ -8,7 +8,7 @@ from ..census import Query
 from ..client import Client
 from ..models import WorldData
 from ..request import extract_payload, extract_single
-from ..types import CensusData
+from ..types import CensusData, LocaleData
 
 from .zone import Zone
 
@@ -20,6 +20,12 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
     data: WorldData
     dataclass = WorldData
     id_field = 'world_id'
+
+    # Type hints for data class fallback attributes
+    world_id: int
+    state: str
+    name: LocaleData
+    description: Optional[LocaleData]
 
     async def events(self, **kwargs: Any) -> List[CensusData]:
         """Return events for this world.

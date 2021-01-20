@@ -29,6 +29,10 @@ class Profile(Cached, cache_size=200, cache_ttu=60.0):
     dataclass = ProfileData
     id_field = 'profile_id'
 
+    # Type hints for data class fallback attributes
+    profile_id: int
+    description: str
+
     def armour_info(self) -> SequenceProxy[ArmourInfo]:
         """Return the armour info of the profile.
 
@@ -80,6 +84,12 @@ class Loadout(Cached, FallbackMixin, cache_size=20, cache_ttu=3600.0):
     dataclass = LoadoutData
     id_field = 'loadout_id'
     _fallback = {k: _get_fallback(k) for k in (*range(28, 33), 45)}
+
+    # Type hints for data class fallback attributes
+    loadout_id: int
+    profile_id: int
+    faction_id: int
+    code_name: str
 
     def armour_info(self) -> SequenceProxy[ArmourInfo]:
         """Return the armour info of the loadout.

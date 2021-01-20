@@ -1,12 +1,13 @@
 """Directive class definitions."""
 
-from typing import Final
+from typing import Final, Optional
 
 from ..base import ImageMixin, Named
 from ..census import Query
 from ..models import (DirectiveData, DirectiveTierData,
                       DirectiveTreeCategoryData, DirectiveTreeData)
 from ..proxy import InstanceProxy, SequenceProxy
+from ..types import LocaleData
 
 from .objective import Objective
 
@@ -22,6 +23,10 @@ class DirectiveTreeCategory(Named, ImageMixin, cache_size=10, cache_ttu=300.0):
     data: DirectiveTreeCategoryData
     dataclass = DirectiveTreeCategoryData
     id_field = 'directive_tree_category_id'
+
+    # Type hints for data class fallback attributes
+    directive_tree_category_id: int
+    name: LocaleData
 
     def trees(self) -> SequenceProxy['DirectiveTree']:
         """Return the trees in the category.
@@ -45,6 +50,12 @@ class DirectiveTree(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     data: DirectiveTreeData
     dataclass = DirectiveTreeData
     id_field = 'directive_tree_id'
+
+    # Type hints for data class fallback attributes
+    directive_tree_id: int
+    directive_tree_category_id: int
+    name: LocaleData
+    description: Optional[LocaleData]
 
     def category(self) -> InstanceProxy[DirectiveTreeCategory]:
         """Return the category of the directive tree.
@@ -88,6 +99,14 @@ class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     dataclass = DirectiveTierData
     id_field = 'directive_tier_id'
 
+    # Type hints for data class fallback attributes
+    directive_tier_id: int
+    directive_tree_id: int
+    reward_set_id: Optional[int]
+    directive_points: int
+    completion_count: int
+    name: LocaleData
+
     def directives(self) -> SequenceProxy['Directive']:
         """Return the list of directives in this tier.
 
@@ -116,6 +135,15 @@ class Directive(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     data: DirectiveData
     dataclass = DirectiveData
     id_field = 'directive_id'
+
+    # Type hints for data class fallback attributes
+    directive_id: int
+    directive_tree_id: int
+    directive_tier_id: int
+    objective_set_id: int
+    qualify_requirement_id: Optional[int]
+    name: LocaleData
+    description: Optional[LocaleData]
 
     def objectives(self) -> SequenceProxy[Objective]:
         """Return the objectives for this directive.

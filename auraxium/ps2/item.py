@@ -1,12 +1,13 @@
 """Item and item attachment class definitions."""
 
-from typing import Final, TYPE_CHECKING
+from typing import Final, Optional, TYPE_CHECKING
 
 from ..base import Cached, ImageMixin, Named
 from ..census import Query
 from ..models import ItemCategoryData, ItemData, ItemTypeData
 from ..request import extract_single
 from ..proxy import InstanceProxy, SequenceProxy
+from ..types import LocaleData
 
 from .faction import Faction
 from .profile import Profile
@@ -29,6 +30,10 @@ class ItemCategory(Named, cache_size=32, cache_ttu=3600.0):
     dataclass = ItemCategoryData
     id_field = 'item_category_id'
 
+    # Type hints for data class fallback attributes
+    item_category_id: int
+    name: LocaleData
+
 
 class ItemType(Cached, cache_size=10, cache_ttu=60.0):
     """A type of item.
@@ -45,6 +50,11 @@ class ItemType(Cached, cache_size=10, cache_ttu=60.0):
     dataclass = ItemTypeData
     id_field = 'item_type_id'
 
+    # Type hints for data class fallback attributes
+    item_type_id: int
+    name: str
+    code: str
+
 
 class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     """An item that may be owned by a character.
@@ -58,6 +68,20 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     data: ItemData
     dataclass = ItemData
     id_field = 'item_id'
+
+    # Type hints for data class fallback attributes
+    item_id: int
+    item_type_id: Optional[int]
+    item_category_id: Optional[int]
+    activatable_ability_id: Optional[int]
+    passive_ability_id: Optional[int]
+    is_vehicle_weapon: bool
+    name: LocaleData
+    description: Optional[LocaleData]
+    faction_id: Optional[int]
+    max_stack_size: int
+    skill_set_id: Optional[int]
+    is_default_attachment: bool
 
     def attachments(self) -> SequenceProxy['Item']:
         """Return the attachment options for this item.
@@ -84,16 +108,6 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
         query.add_term(
             field=ItemCategory.id_field, value=self.data.item_category_id)
         return InstanceProxy(ItemCategory, query, client=self._client)
-
-    def description(self, locale: str = 'en') -> str:
-        """Return the description of this item in the given locale.
-
-        This will return "Missing String" if no string has been set for
-        the selected locale.
-        """
-        if hasattr(self.data.description, locale):
-            return str(getattr(self.data.description, locale))
-        return 'Missing String'
 
     def faction(self) -> InstanceProxy[Faction]:
         """Return the faction that has access to this item.

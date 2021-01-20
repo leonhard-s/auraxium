@@ -1,6 +1,6 @@
 """Reward and reward type class definitions."""
 
-from typing import Final
+from typing import Final, Optional
 
 from ..base import Cached
 from ..census import Query
@@ -20,6 +20,17 @@ class RewardType(Cached, cache_size=10, cache_ttu=3600.0):
     dataclass = RewardTypeData
     id_field = 'reward_type_id'
 
+    # Type hints for data class fallback attributes
+    reward_type_id: int
+    description: str
+    count_min: Optional[str]
+    count_max: Optional[str]
+    param1: str
+    param2: Optional[str]
+    param3: Optional[str]
+    param4: Optional[str]
+    param5: Optional[str]
+
 
 class Reward(Cached, cache_size=50, cache_ttu=60.0):
     """A reward awarded to a player.
@@ -33,6 +44,17 @@ class Reward(Cached, cache_size=50, cache_ttu=60.0):
     data: RewardData
     dataclass = RewardData
     id_field = 'reward_id'
+
+    # Type hints for data class fallback attributes
+    reward_id: int
+    reward_type_id: int
+    count_min: int
+    count_max: int
+    param1: str
+    param2: Optional[str]
+    param3: Optional[str]
+    param4: Optional[str]
+    param5: Optional[str]
 
     @classmethod
     def get_by_reward_group(cls, reward_group_id: int, client: Client

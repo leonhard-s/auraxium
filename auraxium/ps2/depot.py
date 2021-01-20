@@ -1,12 +1,13 @@
 """Bundles and special offer class definitions."""
 
-from typing import Final, List, Tuple
+from typing import Final, List, Optional, Tuple
 
 from ..base import Named, Cached
 from ..census import Query
 from ..models import MarketingBundleData, MarketingBundleSingleData
 from ..proxy import InstanceProxy
 from ..request import extract_payload
+from ..types import LocaleData
 
 from .item import Item
 
@@ -22,6 +23,15 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
     data: MarketingBundleData
     dataclass = MarketingBundleData
     id_field = 'marketing_bundle_id'
+
+    # Type hints for data class fallback attributes
+    marketing_bundle_id: int
+    name: LocaleData
+    description: LocaleData
+    image_id: int
+    cert_price: Optional[int]
+    station_cash_price: int
+    release_time: int
 
     def image(self) -> str:
         """Return the default image for this type."""
@@ -64,6 +74,14 @@ class MarketingBundleSingle(Cached, cache_size=100, cache_ttu=60.0):
     data: MarketingBundleSingleData
     dataclass = MarketingBundleSingleData
     id_field = 'marketing_bundle_id'
+
+    # Type hints for data class fallback attributes
+    marketing_bundle_id: int
+    item_id: int
+    item_quantity: int
+    station_cash_price: int
+    cert_price: Optional[int]
+    release_time: int
 
     def item(self) -> InstanceProxy[Item]:
         """Return the item unlocked by the bundle.

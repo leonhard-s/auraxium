@@ -2,6 +2,7 @@
 
 from ..base import ImageMixin, Named
 from ..models import FactionData
+from ..types import LocaleData
 
 
 class Faction(Named, ImageMixin, cache_size=10):
@@ -11,6 +12,12 @@ class Faction(Named, ImageMixin, cache_size=10):
     data: FactionData
     dataclass = FactionData
     id_field = 'faction_id'
+
+    # Type hints for data class fallback attributes
+    faction_id: int
+    name: LocaleData
+    code_tag: str
+    user_selectable: bool
 
     def __repr__(self) -> str:
         """Return the unique string representation of the faction.

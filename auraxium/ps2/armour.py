@@ -1,6 +1,7 @@
 """Armor mapping class definitions."""
 
 import enum
+from typing import Optional
 
 from ..base import Cached
 from ..models import ArmourInfoData
@@ -34,6 +35,13 @@ class ArmourInfo(Cached, cache_size=100, cache_ttu=60.0):
     data: ArmourInfoData
     dataclass = ArmourInfoData
     id_field = 'armor_info_id'
+
+    # Type hints for data class fallback attributes
+    armor_info_id: int
+    armor_facing_id: int
+    armor_percent: int
+    armor_amount: Optional[int]
+    description: str
 
     @property
     def facing(self) -> ArmourFacing:

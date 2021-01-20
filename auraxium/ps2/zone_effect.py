@@ -1,5 +1,6 @@
 """Ability and ability type class definitions."""
 
+from typing import Optional
 from ..base import Cached
 from ..census import Query
 from ..models import ZoneEffectData, ZoneEffectTypeData
@@ -19,6 +20,16 @@ class ZoneEffectType(Cached, cache_size=20, cache_ttu=60.0):
     dataclass = ZoneEffectTypeData
     id_field = 'zone_effect_type_id'
 
+    # Type hints for data class fallback attributes
+    zone_effect_type_id: int
+    description: str
+    param1: Optional[str]
+    param2: Optional[str]
+    param3: Optional[str]
+    param4: Optional[str]
+    param5: Optional[str]
+    param6: Optional[str]
+
 
 class ZoneEffect(Cached, cache_size=10, cache_ttu=60.0):
     """An effect or buff applied by a zone.
@@ -32,6 +43,17 @@ class ZoneEffect(Cached, cache_size=10, cache_ttu=60.0):
     data: ZoneEffectData
     dataclass = ZoneEffectData
     id_field = 'zone_effect_id'
+
+    # Type hints for data class fallback attributes
+    zone_effect_id: int
+    zone_effect_type_id: int
+    ability_id: int
+    param1: Optional[str]
+    param2: Optional[str]
+    param3: Optional[str]
+    param4: Optional[str]
+    param5: Optional[str]
+    param6: Optional[str]
 
     def ability(self) -> InstanceProxy[Ability]:
         """Return the ability associated with this zone effect."""

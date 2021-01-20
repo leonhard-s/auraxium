@@ -34,6 +34,22 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
     dataclass = WeaponData
     id_field = 'weapon_id'
 
+    # Type hints for data class fallback attributes
+    weapon_id: int
+    weapon_group_id: Optional[int]
+    turn_modifier: float
+    move_modifier: float
+    sprint_recovery_ms: Optional[int]
+    equip_ms: Optional[int]
+    unequip_ms: Optional[int]
+    to_iron_sights_ms: Optional[int]
+    from_iron_sights_ms: Optional[int]
+    heat_capacity: Optional[int]
+    heat_bleed_off_rate: Optional[float]
+    heat_overheat_penalty_ms: Optional[int]
+    melee_detect_width: Optional[float]
+    melee_detect_height: Optional[float]
+
     @property
     def is_heat_weapon(self) -> bool:
         """Guess whether this weapon is using a heat mechanic.

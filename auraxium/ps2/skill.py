@@ -1,9 +1,12 @@
 """Skill and skill line class definitions."""
 
+from typing import Optional
+
 from ..base import ImageMixin, Named
 from ..census import Query
 from ..models import SkillData, SkillCategoryData, SkillLineData, SkillSetData
 from ..proxy import InstanceProxy, SequenceProxy
+from ..types import LocaleData
 
 from .item import Item
 
@@ -15,6 +18,13 @@ class SkillSet(Named, ImageMixin, cache_size=100, cache_ttu=60.0):
     data: SkillSetData
     dataclass = SkillSetData
     id_field = 'skill_set_id'
+
+    # Type hints for data class fallback attributes
+    skill_set_id: int
+    skill_points: Optional[int]
+    required_item_id: Optional[int]
+    name: LocaleData
+    description: Optional[LocaleData]
 
     def categories(self) -> SequenceProxy['SkillCategory']:
         """Return the skill categories in this skill set.
@@ -50,6 +60,14 @@ class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     dataclass = SkillCategoryData
     id_field = 'skill_category_id'
 
+    # Type hints for data class fallback attributes
+    skill_category_id: int
+    skill_set_id: int
+    skill_set_index: int
+    skill_points: int
+    name: LocaleData
+    description: Optional[LocaleData]
+
     def skill_lines(self) -> SequenceProxy['SkillLine']:
         """Return the skill lines contained in this category.
 
@@ -77,6 +95,14 @@ class SkillLine(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     data: SkillLineData
     dataclass = SkillLineData
     id_field = 'skill_line_id'
+
+    # Type hints for data class fallback attributes
+    skill_line_id: int
+    skill_points: int
+    skill_category_id: Optional[int]
+    skill_category_index: Optional[int]
+    name: LocaleData
+    description: Optional[LocaleData]
 
     def category(self) -> InstanceProxy[SkillCategory]:
         """Return the category this skill line belongs to.
@@ -108,6 +134,15 @@ class Skill(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     data: SkillData
     dataclass = SkillData
     id_field = 'skill_id'
+
+    # Type hints for data class fallback attributes
+    skill_id: int
+    skill_line_id: int
+    skill_line_index: int
+    skill_points: int
+    grant_item_id: Optional[int]
+    name: LocaleData
+    description: Optional[LocaleData]
 
     def grant_item(self) -> InstanceProxy[Item]:
         """Return the item unlocked by this skill.

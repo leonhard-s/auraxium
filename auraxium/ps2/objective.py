@@ -1,5 +1,6 @@
 """Objective class definitions."""
 
+from typing import Optional
 from ..base import Cached
 from ..census import Query
 from ..models import ObjectiveData, ObjectiveTypeData
@@ -17,6 +18,19 @@ class ObjectiveType(Cached, cache_size=10, cache_ttu=60.0):
     dataclass = ObjectiveTypeData
     id_field = 'objective_type_id'
 
+    # Type hints for data class fallback attributes
+    objective_type_id: int
+    description: str
+    param1: Optional[str]
+    param2: Optional[str]
+    param3: Optional[str]
+    param4: Optional[str]
+    param5: Optional[str]
+    param6: Optional[str]
+    param7: Optional[str]
+    param8: Optional[str]
+    param9: Optional[str]
+
 
 class Objective(Cached, cache_size=10, cache_ttu=60.0):
     """A objective presented to a character."""
@@ -25,6 +39,20 @@ class Objective(Cached, cache_size=10, cache_ttu=60.0):
     data: ObjectiveData
     dataclass = ObjectiveData
     id_field = 'objective_id'
+
+    # Type hints for data class fallback attributes
+    objective_id: int
+    objective_type_id: int
+    objective_group_id: int
+    param1: Optional[str]
+    param2: Optional[str]
+    param3: Optional[str]
+    param4: Optional[str]
+    param5: Optional[str]
+    param6: Optional[str]
+    param7: Optional[str]
+    param8: Optional[str]
+    param9: Optional[str]
 
     def type(self) -> InstanceProxy[ObjectiveType]:
         """Return the objective type of this objective."""

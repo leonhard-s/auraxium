@@ -25,6 +25,11 @@ class Experience(Cached, cache_size=100, cache_ttu=3600.0):
     dataclass = ExperienceData
     id_field = 'experience_id'
 
+    # Type hints for data class fallback attributes
+    experience_id: int
+    description: str
+    xp: int
+
 
 class ExperienceRank:
     """A type of experience tick."""
@@ -32,6 +37,16 @@ class ExperienceRank:
     collection = 'experience_rank'
     data: ExperienceRankData
     dataclass = ExperienceRankData
+
+    # Type hints for data class fallback attributes
+    rank: int
+    xp_max: int
+    vs: ExperienceRankData.EmpireData
+    vs_image_path: str
+    nc: ExperienceRankData.EmpireData
+    nc_image_path: str
+    tr: ExperienceRankData.EmpireData
+    tr_image_path: str
 
     def __init__(self, data: CensusData, client: Client) -> None:
         """Initialise the object.

@@ -1,11 +1,12 @@
 """Facility and map class definitions."""
 
-from typing import Final, Set
+from typing import Final, Optional, Set
 
 from ..base import Cached, Named
 from ..census import Query
 from ..models import FacilityTypeData, MapHexData, MapRegionData, RegionData
 from ..proxy import InstanceProxy, SequenceProxy
+from ..types import LocaleData
 
 from .zone import Zone
 
@@ -18,6 +19,10 @@ class FacilityType(Cached, cache_size=10, cache_ttu=3600.0):
     dataclass = FacilityTypeData
     id_field = 'facility_type_id'
 
+    # Type hints for data class fallback attributes
+    facility_type_id: int
+    description: str
+
 
 class MapHex(Cached, cache_size=100, cache_ttu=60.0):
     """An individual territory hex in the map."""
@@ -26,6 +31,14 @@ class MapHex(Cached, cache_size=100, cache_ttu=60.0):
     data: MapHexData
     dataclass = MapHexData
     id_field = 'map_region_id'
+
+    # Type hints for data class fallback attributes
+    zone_id: int
+    map_region_id: int
+    x: int
+    y: int
+    hex_type: int
+    type_name: str
 
     def map_region(self) -> InstanceProxy['MapRegion']:
         """Return the map region associated with this map hex."""
@@ -41,6 +54,19 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
     data: MapRegionData
     dataclass = MapRegionData
     id_field = 'map_region_id'
+
+    # Type hints for data class fallback attributes
+    map_region_id: int
+    zone_id: int
+    facility_id: Optional[int]
+    facility_name: str
+    facility_type_id: Optional[int]
+    facility_type: Optional[str]
+    location_x: Optional[float]
+    location_y: Optional[float]
+    location_z: Optional[float]
+    reward_amount: Optional[int]
+    reward_currency_id: Optional[int]
 
     async def get_connected(self) -> Set['MapRegion']:
         """Return the facilities connected to this region."""
@@ -87,6 +113,12 @@ class Region(Named, cache_size=100, cache_ttu=60.0):
     data: RegionData
     dataclass = RegionData
     id_field = 'region_id'
+
+    # Type hints for data class fallback attributes
+    region_id: int
+    zone_id: int
+    initial_faction_id: int
+    name: LocaleData
 
     def map_region(self) -> InstanceProxy[MapRegion]:
         """Return the map region associated with this region.

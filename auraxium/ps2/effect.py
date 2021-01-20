@@ -29,6 +29,23 @@ class EffectType(Cached, cache_size=20, cache_ttu=60.0):
     dataclass = EffectTypeData
     id_field = 'effect_type_id'
 
+    # Type hints for data class fallback attributes
+    effect_type_id: int
+    description: str
+    param1: Optional[str]
+    param2: Optional[str]
+    param3: Optional[str]
+    param4: Optional[str]
+    param5: Optional[str]
+    param6: Optional[str]
+    param7: Optional[str]
+    param8: Optional[str]
+    param9: Optional[str]
+    param10: Optional[str]
+    param11: Optional[str]
+    param12: Optional[str]
+    param13: Optional[str]
+
 
 class Effect(Cached, cache_size=10, cache_ttu=60.0):
     """An effect acting on a character.
@@ -42,6 +59,28 @@ class Effect(Cached, cache_size=10, cache_ttu=60.0):
     data: EffectData
     dataclass = EffectData
     id_field = 'effect_id'
+
+    # Type hints for data class fallback attributes
+    effect_id: int
+    effect_type_id: int
+    ability_id: Optional[int]
+    target_type_id: Optional[int]
+    resist_type_id: int
+    is_drain: Optional[bool]
+    duration_seconds: Optional[float]
+    param1: Optional[str]
+    param2: Optional[str]
+    param3: Optional[str]
+    param4: Optional[str]
+    param5: Optional[str]
+    param6: Optional[str]
+    param7: Optional[str]
+    param8: Optional[str]
+    param9: Optional[str]
+    param10: Optional[str]
+    param11: Optional[str]
+    param12: Optional[str]
+    param13: Optional[str]
 
     def target_type(self) -> Optional[TargetType]:
         """Return the target type of this effect."""

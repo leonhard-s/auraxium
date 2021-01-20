@@ -1,13 +1,14 @@
 """Fire modes and group class definitions."""
 
 import enum
-from typing import Dict, Final
+from typing import Dict, Final, Optional
 
 from ..base import Cached
 from ..census import Query
 from ..models import FireGroupData, FireModeData
 from ..proxy import InstanceProxy, SequenceProxy
 from ..request import extract_payload
+from ..types import LocaleData
 
 from .projectile import Projectile
 from .states import PlayerState, PlayerStateGroup
@@ -46,6 +47,95 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
     data: FireModeData
     dataclass = FireModeData
     id_field = 'fire_mode_id'
+
+    # Type hints for data class fallback attributes
+    fire_mode_id: int
+    fire_mode_type_id: int
+    ability_id: Optional[int]
+    ammo_slot: Optional[int]
+    automatic: bool
+    grief_immune: Optional[bool]
+    iron_sights: Optional[bool]
+    laser_guided: Optional[bool]
+    move_modifier: float
+    projectile_speed_override: Optional[int]
+    sprint_fire: Optional[bool]
+    turn_modifier: float
+    use_in_water: Optional[bool]
+    zoom_default: float
+    cof_override: Optional[float]
+    cof_pellet_spread: Optional[float]
+    cof_range: float
+    cof_recoil: Optional[float]
+    cof_scalar: float
+    cof_scalar_moving: float
+    player_state_group_id: int
+    damage_direct_effect_id: Optional[int]
+    damage_head_multiplier: Optional[float]
+    damage_indirect_effect_id: Optional[int]
+    damage_legs_multiplier: Optional[float]
+    fire_ammo_per_shot: int
+    fire_auto_fire_ms: Optional[int]
+    fire_burst_count: int
+    fire_charge_up_ms: Optional[int]
+    fire_delay_ms: Optional[int]
+    fire_detect_range: float
+    fire_duration_ms: Optional[int]
+    fire_refire_ms: int
+    fire_pellets_per_shot: Optional[int]
+    heat_per_shot: Optional[int]
+    heat_recovery_delay_ms: Optional[int]
+    heat_threshold: Optional[int]
+    lockon_acquire_close_ms: Optional[int]
+    lockon_acquire_far_ms: Optional[int]
+    lockon_acquire_ms: Optional[int]
+    lockon_angle: Optional[float]
+    lockon_lose_ms: Optional[int]
+    lockon_maintain: Optional[bool]
+    lockon_range: Optional[float]
+    lockon_range_close: Optional[float]
+    lockon_range_far: Optional[float]
+    lockon_required: Optional[bool]
+    recoil_angle_max: Optional[float]
+    recoil_angle_min: Optional[float]
+    recoil_first_shot_modifier: float
+    recoil_horizontal_max: Optional[float]
+    recoil_horizontal_max_increase: Optional[float]
+    recoil_horizontal_min: Optional[float]
+    recoil_horizontal_min_increase: Optional[float]
+    recoil_horizontal_tolerance: Optional[float]
+    recoil_increase: Optional[float]
+    recoil_increase_crouched: Optional[float]
+    recoil_magnitude_max: Optional[float]
+    recoil_magnitude_min: Optional[float]
+    recoil_max_total_magnitude: Optional[float]
+    recoil_recovery_acceleration: Optional[int]
+    recoil_recovery_delay_ms: Optional[int]
+    recoil_recovery_rate: Optional[int]
+    recoil_shots_at_min_magnitude: Optional[bool]
+    reload_block_auto: Optional[bool]
+    reload_continuous: Optional[bool]
+    reload_ammo_fill_ms: Optional[int]
+    reload_chamber_ms: Optional[int]
+    reload_loop_start_ms: Optional[int]
+    reload_loop_end_ms: Optional[int]
+    reload_time_ms: int
+    sway_amplitude_x: Optional[float]
+    sway_amplitude_y: Optional[float]
+    sway_can_steady: Optional[bool]
+    sway_period_x: Optional[int]
+    sway_period_y: Optional[int]
+    armor_penetration: Optional[float]
+    max_damage: Optional[int]
+    max_damage_ind: Optional[int]
+    max_damage_ind_radius: Optional[float]
+    max_damage_range: Optional[float]
+    min_damage: Optional[int]
+    min_damage_ind: Optional[int]
+    min_damage_ind_radius: Optional[float]
+    min_damage_range: Optional[float]
+    shield_bypass_pct: Optional[int]
+    description: LocaleData
 
     @property
     def type(self) -> FireModeType:
@@ -90,6 +180,14 @@ class FireGroup(Cached, cache_size=10, cache_ttu=60.0):
     data: FireGroupData
     dataclass = FireGroupData
     id_field = 'fire_group_id'
+
+    # Type hints for data class fallback attributes
+    fire_group_id: int
+    chamber_duration_ms: Optional[int]
+    transition_duration_ms: Optional[int]
+    spool_up_ms: Optional[int]
+    spool_up_initial_refire_ms: Optional[int]
+    can_chamber_ironsights: Optional[bool]
 
     def fire_modes(self) -> SequenceProxy[FireMode]:
         """Return the fire modes in the fire group."""
