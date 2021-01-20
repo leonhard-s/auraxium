@@ -19,6 +19,16 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
 
     This includes aircraft and ground vehicles, as well as mountable
     turrets and constructible.
+
+    Attributes:
+        vehicle_id: The unique ID of this vehicle.
+        name: The localised name of the vehicle.
+        description: The localised description of the vehicle.
+        type_id: The type of vehicle.
+        type_name: The name of the type of vehicle.
+        cost: The cost of the vehicle.
+        cost_resource_id: The ID of the resource the cost is in.
+
     """
 
     collection = 'vehicle'
@@ -87,7 +97,16 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
 
 
 class VehicleAttachment(Cached, cache_size=250, cache_ttu=180.0):
-    """Links vehicles to the items and attachments they support."""
+    """Links vehicles to the items and attachments they support.
+
+    Attributes:
+        item_id: The item that is being attached.
+        vehicle_id: The vehicle the item may be attached to.
+        faction_id: The faction for which this attachment is available.
+        description: A description of the attachment.
+        slot_id: The slot the attachment goes into.
+
+    """
 
     collection = 'vehicle_attachment'
     data: VehicleAttachmentData

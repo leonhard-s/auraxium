@@ -9,7 +9,14 @@ from ..proxy import InstanceProxy
 
 
 class ResourceType(Cached, cache_size=50, cache_ttu=3600.0):
-    """A type of resource consumed by an ability."""
+    """A type of resource consumed by an ability.
+
+    Attributes:
+        resource_type_id: The unique ID of this resource type.
+        description: A description of what this resource type is used
+            for.
+
+    """
 
     collection = 'resource_type'
     data: ResourceTypeData
@@ -25,6 +32,16 @@ class AbilityType(Cached, cache_size=20, cache_ttu=60.0):
     """A type of ability.
 
     This class mostly specifies the purpose of any generic parameters.
+
+    Attributes:
+        ability_type_id: The unique ID for this ability type.
+        description: A description of what this ability type is used
+            for.
+        param*: Descriptions of what the corresponding parameter is
+            used for in abilities of this type.
+        string*: Descriptions of what the corresponding string value is
+            used for in abilities of this type.
+
     """
 
     collection = 'ability_type'
@@ -61,6 +78,25 @@ class Ability(Cached, cache_size=10, cache_ttu=60.0):
     Access the corresponding :class:`auraxium.ps2.ability.AbilityType`
     instance via the :meth:`type` method for information on generic
     parameters.
+
+    Attributes:
+        ability_id: The unique ID of this ability.
+        ability_type_id: The associated ability type for this ability.
+        expire_msec: The duration of the ability.
+        first_use_delay_msec: The initial cooldown of the ability.
+        next_use_delay_msec: The reuse cooldown of the ability.
+        resource_type_id: The resource type used by the ability.
+        resource_first_cost: The initial cast cost of the ability.
+        resource_cost_per_msec: The resource cost per second for
+            toggled abilities.
+        distance_max: (Not yet documented)
+        radius_max: (Not yet documented)
+        flag_toggle: Whether the ability is toggled.
+        param*: Type-specific parameters for this ability. Refer to the
+            corresponding :class:`AbilityType` for details.
+        string*: Type-specific string values for this ability. Refer to
+            the corresponding :class:`AbilityType` for details.
+
     """
 
     collection = 'ability'

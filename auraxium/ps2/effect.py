@@ -22,6 +22,14 @@ class EffectType(Cached, cache_size=20, cache_ttu=60.0):
     """A type of effect.
 
     This class mostly specifies the purpose of any generic parameters.
+
+    Attributes:
+        effect_type_id: The unique ID of this effect type.
+        description: A description of what this effect type is used
+            for.
+        param*: Descriptions of what the corresponding parameter is
+            used for in abilities of this type.
+
     """
 
     collection = 'effect_type'
@@ -53,6 +61,20 @@ class Effect(Cached, cache_size=10, cache_ttu=60.0):
     Access the corresponding :class:`auraxium.ps2.effect.EffectType`
     instance via the :meth:`type` method for information on generic
     parameters.
+
+    Attributes:
+        effect_id: The unique ID of this effect.
+        effect_type_id: The associated effect type for this effect.
+        ability_id: The ability spawning the effect, if any.
+        target_type_id: Integer value of the :class:`TargetType`
+            enumerator used to find targets for this effect.
+        resist_type_id: The :class:`~auraxium.ps2.ResistInfo` entry
+            used by this effect.
+        is_drain: (Not yet documented)
+        duration_seconds: The duration of the effect.
+        param*: Type-specific parameters for this effect. Refer to the
+            corresponding :class:`EffectType` for details.
+
     """
 
     collection = 'effect'

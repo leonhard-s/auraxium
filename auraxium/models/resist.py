@@ -17,17 +17,6 @@ class ResistInfoData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
-
-    Attributes:
-        resist_info: The ID of this resist info entry.
-        resist_type_id: The ID of the :class:`ResistType` for this
-            entry.
-        resist_percent: The damage reduction in percent.
-        resist_amount: A flat amount of damage to absorb.
-        multiplier_when_headshot: A headshot multiplier override to
-            apply.
-        description: A description of this resist info entry.
-
     """
 
     resist_info_id: int
@@ -43,12 +32,6 @@ class ResistTypeData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
-
-    Attributes:
-        resist_type_id: The unique ID of this resist type.
-        description: A description of what this resist type is used
-            for.
-
     """
 
     resist_type_id: int

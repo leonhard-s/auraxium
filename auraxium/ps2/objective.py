@@ -11,6 +11,14 @@ class ObjectiveType(Cached, cache_size=10, cache_ttu=60.0):
     """A type of objective.
 
     This class mostly specifies the purpose of any generic parameters.
+
+    Attributes:
+        objective_type_id: The unique ID of the objective type.
+        description: A description of what the objective type is used
+            for.
+        param*: Descriptions of what the corresponding parameter is
+            used for in objectives of this type.
+
     """
 
     collection = 'objective_type'
@@ -33,7 +41,18 @@ class ObjectiveType(Cached, cache_size=10, cache_ttu=60.0):
 
 
 class Objective(Cached, cache_size=10, cache_ttu=60.0):
-    """A objective presented to a character."""
+    """A objective presented to a character.
+
+    Attributes:
+        objective_id: The unique ID of this objective.
+        objective_type_id: The associated objective type for this
+            objective.
+        objective_group_id: The objective group this objective
+            contributes to. Used to link objectives to directives.
+        param*: Type-specific parameters for this objective. Refer to
+            the corresponding :class:`ObjectiveType` for details.
+
+    """
 
     collection = 'objective'
     data: ObjectiveData

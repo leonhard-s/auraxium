@@ -14,7 +14,15 @@ from .zone import Zone
 
 
 class World(Named, cache_size=20, cache_ttu=3600.0):
-    """A world (or server) in the game."""
+    """A world (or server) in the game.
+
+    Attributes:
+        world_id: The unique ID of the world.
+        state: The current state (i.e. online status) of the world.
+        name: The localised name of the world.
+        description: A description of the world's server region.
+
+    """
 
     collection = 'world'
     data: WorldData

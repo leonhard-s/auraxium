@@ -18,7 +18,15 @@ log = logging.getLogger('auraxium.ps2')
 
 
 class Experience(Cached, cache_size=100, cache_ttu=3600.0):
-    """A type of experience tick."""
+    """A type of experience tick.
+
+    Attributes:
+        experience_id: The unique ID of this experience tick.
+        description: A description of when this experience reward is
+            granted.
+        xp: The amount of experience points awarded.
+
+    """
 
     collection = 'experience'
     data: ExperienceData
@@ -32,7 +40,19 @@ class Experience(Cached, cache_size=100, cache_ttu=3600.0):
 
 
 class ExperienceRank:
-    """A type of experience tick."""
+    """A type of experience tick.
+
+    Attributes:
+        rank: The battle rank value represented by this rank name.
+        xp_max: (Not yet documented)
+        vs: Empire-specific rank data for VS.
+        vs_image_path: The VS-specific default image path.
+        nc: Empire-specific rank data for NC.
+        nc_image_path: The NC-specific default image path.
+        tr: Empire-specific rank data for TR.
+        tr_image_path: The TR-specific default image path.
+
+    """
 
     collection = 'experience_rank'
     data: ExperienceRankData

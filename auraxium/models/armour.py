@@ -16,16 +16,6 @@ class ArmourInfoData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
-
-    Attributes:
-        armor_info_id: The unique ID of this entry.
-        armor_facing_id: The enum value the facing direction this entry
-            provides armour data for.
-        armor_percent: Damage reduction in percent.
-        armor_amount: A flat damage absorption applied to the damage
-            effect; generally unused.
-        description: A description for this entry.
-
     """
 
     armor_info_id: int

@@ -29,6 +29,16 @@ class ArmourInfo(Cached, cache_size=100, cache_ttu=60.0):
     Note that any given entity may have multiple :class:`ArmourInfo`
     instances associated with it, one for each :class:`ArmourFacing`
     value.
+
+    Attributes:
+        armor_info_id: The unique ID of this entry.
+        armor_facing_id: The enum value the facing direction this entry
+            provides armour data for.
+        armor_percent: Damage reduction in percent.
+        armor_amount: A flat damage absorption applied to the damage
+            effect; generally unused.
+        description: A description for this entry.
+
     """
 
     collection = 'armor_info'

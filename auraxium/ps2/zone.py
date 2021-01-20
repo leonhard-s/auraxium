@@ -21,6 +21,14 @@ class Zone(Named, cache_size=20, cache_ttu=3600.0):
     Note that some dynamic zones are not resolvable via this object.
     Dynamic zones include Sanctuary, the tutorial zones, and the outfit
     wars desolation maps.
+
+    Attributes:
+        zone_id: The unique ID of this zone.
+        code: The internal code used to represent this zone.
+        hex_size: The map size for this zone.
+        name: The localised name of this zone.
+        description: The localised name of this zone.
+
     """
 
     collection = 'zone'

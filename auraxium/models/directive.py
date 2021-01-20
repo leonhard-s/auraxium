@@ -20,19 +20,6 @@ class DirectiveData(Ps2Data, ImageData):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
-
-    Attributes:
-        directive_id: The unique ID of this directive.
-        directive_tree_id: The directive tree of this directive.
-        directive_tier_id: The directive tier of this directive.
-        objective_set_id: The objective set contributing towards this
-            directive.
-        qualify_requirement_id: An item that must be unlocked for this
-            directive to be available.
-        name: The localised name of the directive.
-        name: The localised description of the directive.
-
-
     """
 
     directive_id: int
@@ -49,19 +36,6 @@ class DirectiveTierData(Ps2Data, ImageData):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
-
-    Attributes:
-        directive_tier_id: The unique ID of the directive tier.
-        directive_tree_id: The directive tree this directive belongs
-            to.
-        reward_set_id: The reward set awarded upon completion of this
-            directive tier.
-        directive_points: The directive points awarded upon completion
-            of this directive tier.
-        completion_count: The number of directives that must be
-            completed for completion of this directive tier.
-        name: The localised name of the directive tier.
-
     """
 
     directive_tier_id: int
@@ -77,13 +51,6 @@ class DirectiveTreeData(Ps2Data, ImageData):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
-
-    Attributes:
-        directive_tree_id: The unique ID of the directive tree.
-        directive_tree_category_id: The category of the directive tree.
-        name: The localised name of the directive tree.
-        description: The localised description of the directive tree.
-
     """
 
     directive_tree_id: int
@@ -97,12 +64,6 @@ class DirectiveTreeCategoryData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
-
-    Attributes:
-        directive_tree_category_id: The unique ID of the directive tree
-            category.
-        name: The localised name of the directive tree category.
-
     """
 
     directive_tree_category_id: int

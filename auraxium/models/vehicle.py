@@ -18,14 +18,6 @@ class VehicleAttachmentData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
-
-    Attributes:
-        item_id: The item that is being attached.
-        vehicle_id: The vehicle the item may be attached to.
-        faction_id: The faction for which this attachment is available.
-        description: A description of the attachment.
-        slot_id: The slot the attachment goes into.
-
     """
 
     item_id: int
@@ -40,16 +32,6 @@ class VehicleData(Ps2Data, ImageData):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
-
-    Attributes:
-        vehicle_id: The unique ID of this vehicle.
-        name: The localised name of the vehicle.
-        description: The localised description of the vehicle.
-        type_id: The type of vehicle.
-        type_name: The name of the type of vehicle.
-        cost: The cost of the vehicle.
-        cost_resource_id: The ID of the resource the cost is in.
-
     """
 
     vehicle_id: int

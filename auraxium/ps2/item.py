@@ -23,6 +23,11 @@ class ItemCategory(Named, cache_size=32, cache_ttu=3600.0):
 
     This represents the item filter views used in the in-game depot,
     such as "Infantry Gear", "Weapon Camo" or "Vehicle Weapons".
+
+    Attributes:
+        item_category_id: The unique ID of this item category.
+        name: The localised name of the category.
+
     """
 
     collection = 'item_category'
@@ -43,6 +48,12 @@ class ItemType(Cached, cache_size=10, cache_ttu=60.0):
     consumables, cosmetics, implants, as well as abstract item-like
     utilities like loadout slots, server transfers, or name change
     tokens.
+
+    Attributes:
+        item_type_id: The unique ID of this item type.
+        name: The identifying name of this item type.
+        code: The internal code used to describe this item type.
+
     """
 
     collection = 'item_type'
@@ -62,6 +73,28 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     This includes the item component of weapons, which is extended by
     weapon specific data in the associated
     :class:`auraxium.ps2.weapon.Weapon` instance.
+
+    Attributes:
+        item_id: The unique ID of this item.
+        item_type_id: The ID of the item type for this item.
+        item_category_id: The ID of the item category for this item.
+        activatable_ability_id: (Not yet documented)
+        passive_ability_id: (Not yet documented)
+        is_vehicle_weapon: Whether this item is a vehicle weapon.
+        name: Localised name of the item.
+        description: Localised description of the item.
+        faction_id: The faction that has access to this item.
+        max_stack_size: The stack size for stackable items such as
+            grenades.
+        skill_set_id: The skill set associated with this item. This is
+            used for upgradable items like the Medical Applicator or
+            Repair Tool.
+        is_default_attachment: Default attachments are generally not
+            visible to the user and are used whenever nothing is
+            selected. Examples include the default iron sights, or the
+            regular ammo type for weapon supporting non-standard
+            ammo types.
+
     """
 
     collection = 'item'

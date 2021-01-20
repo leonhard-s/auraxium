@@ -6,7 +6,16 @@ from ..types import LocaleData
 
 
 class Currency(Cached, cache_size=10, cache_ttu=3600.0):
-    """A currency obtainable by characters."""
+    """A currency obtainable by characters.
+
+    Attributes:
+        currency_id: The unique ID of this currency entry.
+        name: The localised name of this currency.
+        icon_id: The image ID of the currency icon image asset.
+        inventory_cap: The maximum amount of this currency a character
+            may hold.
+
+    """
 
     collection = 'currency'
     data: CurrencyData

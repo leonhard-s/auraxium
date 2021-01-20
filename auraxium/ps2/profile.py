@@ -22,6 +22,11 @@ class Profile(Cached, cache_size=200, cache_ttu=60.0):
     Profiles include faction-specific classes, vehicles, facility
     infrastructure such as turrets, generators or shields, as well as
     other non-static entities such as Cortium nodes or pumpkins.
+
+    Attributes:
+        profile_id: The unique ID of this profile.
+        description: The description of the profile.
+
     """
 
     collection = 'profile_2'
@@ -77,7 +82,15 @@ def _get_fallback(id_: int) -> CensusData:
 
 
 class Loadout(Cached, FallbackMixin, cache_size=20, cache_ttu=3600.0):
-    """Represents a faction-specific infantry class."""
+    """Represents a faction-specific infantry class.
+
+    Attributes:
+        loadout_id: The unique ID of this loadout.
+        profile_id: The ID of the associated profile.
+        faction_id: The faction for this loadout.
+        code_name: A string describing the loadout.
+
+    """
 
     collection = 'loadout'
     data: LoadoutData

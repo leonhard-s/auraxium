@@ -27,6 +27,32 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
 
     This can be treated as an extension to the
     :class:`auraxium.ps2.item.Item` class.
+
+    Attributes:
+        weapon_id: The unique ID of this weapon.
+        weapon_group_id: Used to group upgradable weapons together and
+            track them as a single entity, such as the Infiltrator's
+            Recon Dart Device or the Engineer's Repair Tool.
+        turn_modifier: Turn speed modifier to apply while the weapon is
+            equipped.
+        move_modifier: Move speed modifier to apply while the weapon is
+            equipped.
+        sprint_recovery_ms: Recovery time to allow firing or ADS after
+            the player stopped sprinting.
+        equip_ms: The weapon equip time in milliseconds.
+        unequip_ms: The weapon unequip time in milliseconds.
+        to_iron_sights_ms: The ADS enter time in milliseconds.
+        from_iron_sights_ms: The ADS exit time in milliseconds.
+        heat_capacity: The heat capacity of the weapon. Generally
+            identical to :attr:`~auraxium.ps2.FireMode.heat_threshold`,
+            but this only uses the first fire mode of the weapon.
+        heat_bleed_off_rate: The rate at which the weapon will cool
+            down after firing stops.
+        heat_overheat_penalty_ms: The overheat penalty imposed if the
+            user overheats the weapon.
+        melee_detect_width: The hitbox width for melee weapons.
+        melee_detect_height: The hitbox height for melee weapons.
+
     """
 
     collection = 'weapon'

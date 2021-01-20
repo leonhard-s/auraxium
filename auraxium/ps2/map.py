@@ -12,7 +12,13 @@ from .zone import Zone
 
 
 class FacilityType(Cached, cache_size=10, cache_ttu=3600.0):
-    """A type of base/facility found in the game."""
+    """A type of base/facility found in the game.
+
+    Attributes:
+        facility_type_id: The unique ID of this facility type.
+        description: The description of this facility type.
+
+    """
 
     collection = 'facility_type'
     data: FacilityTypeData
@@ -25,7 +31,19 @@ class FacilityType(Cached, cache_size=10, cache_ttu=3600.0):
 
 
 class MapHex(Cached, cache_size=100, cache_ttu=60.0):
-    """An individual territory hex in the map."""
+    """An individual territory hex in the map.
+
+    Attributes:
+        zone_id: The ID of the zone (or continent) containing this hex.
+        map_region_id: The ID of the map region associated with this
+            hex.
+        x: The X map position of the hex.
+        y: The Y map position of the hex.
+        hex_type: The type of map hex. Refer to :attr:`type_name` for
+            details.
+        type_name: The name of the hex' type.
+
+    """
 
     collection = 'map_hex'
     data: MapHexData
@@ -48,7 +66,22 @@ class MapHex(Cached, cache_size=100, cache_ttu=60.0):
 
 
 class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
-    """A facility on the continent map."""
+    """A facility on the continent map.
+
+    Attributes:
+        map_region_id: The unique ID of this map region.
+        zone_id: The ID of the zone (i.e. continent) this region is in.
+        facility_id: The ID of the associated facility.
+        facility_name: The name of the associated facility.
+        facility_type_id: The type ID of the associated facility.
+        facility_type: The type name of the associated facility.
+        location_x: The X world position of the facility.
+        location_y: The Y world position of the facility.
+        location_z: The Z world position of the facility.
+        reward_amount: (Unused)
+        reward_currency_id: (Unused)
+
+    """
 
     collection = 'map_region'
     data: MapRegionData
@@ -107,7 +140,15 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
 
 
 class Region(Named, cache_size=100, cache_ttu=60.0):
-    """A map region or facility."""
+    """A map region or facility.
+
+    Attributes:
+        region_id: The unique ID of the map region.
+        zone_id: The ID of the zone (i.e. continent) the region is in.
+        initial_faction_id: (Unused)
+        name: The localised name of the map region.
+
+    """
 
     collection = 'region'
     data: RegionData

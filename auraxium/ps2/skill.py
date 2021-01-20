@@ -12,7 +12,18 @@ from .item import Item
 
 
 class SkillSet(Named, ImageMixin, cache_size=100, cache_ttu=60.0):
-    """A skill set for a particular vehicle or class."""
+    """A skill set for a particular vehicle or class.
+
+    Attributes:
+        skill_set_id: The unique ID of this skill set.
+        skill_points: (Not yet documented)
+        required_item_id: The item required to unlock this skill set.
+            Used to prevent buying upgrades for items the player has
+            not unlocked yet.
+        name: The localised name of the skill set.
+        description: The localised description of the skill set.
+
+    """
 
     collection = 'skill_set'
     data: SkillSetData
@@ -53,6 +64,17 @@ class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
 
     Skill categories are groups like "Passive Systems" or "Performance
     Slot".
+
+    Attributes:
+        skill_category_id: The unique ID of this skill category.
+        skill_set_id: The :class:`SkillCategory` this category belongs
+            to.
+        skill_set_index: The position of this category in the
+            associated skill category.
+        skill_points: The unlock cost for this skill category.
+        name: The localised name of this skill category.
+        description: The localised description for this skill category.
+
     """
 
     collection = 'skill_category'
@@ -89,7 +111,19 @@ class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
 
 
 class SkillLine(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
-    """A series of skills or certifications."""
+    """A series of skills or certifications.
+
+    Attributes:
+        skill_line_id: The unique ID for this skill line.
+        skill_points: The unlock cost for this skill line.
+        skill_category_id: The :class:`SkillCategory` this skill line
+            belongs to.
+        skill_category_index: The index of this skill line in its
+            containing skill category.
+        name: The localised name of this skill line.
+        description: The localised description for this skill line.
+
+    """
 
     collection = 'skill_line'
     data: SkillLineData
@@ -128,7 +162,19 @@ class SkillLine(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
 
 
 class Skill(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
-    """A skill or certification unlockable by a character."""
+    """A skill or certification unlockable by a character.
+
+    Attributes:
+        skill_id: The unique ID of this skill.
+        skill_line_id: The ID of the associated :class:`SkillLine`.
+        skill_line_index: The position of the skill in its skill line.
+        skill_points: The unlock cost of the skill.
+        grant_item_id: The :class:`~auraxium.ps2.Item` granted by this
+            skill, if any.
+        name: The localised name of this skill.
+        description: The localised description for this skill.
+
+    """
 
     collection = 'skill'
     data: SkillData
