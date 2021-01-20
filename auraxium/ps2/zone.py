@@ -8,7 +8,7 @@ __all__ = [
     'Zone'
 ]
 
-_KNOWN_ZONES = [
+_STATIC_ZONES = [
     2,  # Indar
     4,  # Hossin
     6,  # Amerish
@@ -54,4 +54,4 @@ class Zone(Named, cache_size=20, cache_ttu=3600.0):
         Dynamic zones are spun up for individual players as needed,
         such as the tutorial or Sanctuary.
         """
-        return self.id not in _KNOWN_ZONES
+        return self.id not in _STATIC_ZONES
