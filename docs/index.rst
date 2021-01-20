@@ -23,16 +23,28 @@ Documentation Contents
 ======================
 
 .. toctree::
+   :caption: Basic usage
 
    The Auraxium Client <core>
+
+.. toctree::
+   :caption: API Reference
+
    Event Streaming <ess>
    The Census Module <census>
 
-.. note::
+.. toctree::
+   :caption: PlanetSide 2 Object Model
 
-   Due to the object model currently undergoing regular updates, there is no static documentation yet.
-   
-   Please refer to introspection of the :mod:`auraxium.ps2` module for the time being.
+   Characters and Players <ps2/character>
+   Items and Bundles <ps2/items>
+   Game Mechanics and Damage Resistance <ps2/mechanics>
+   Events and Alertrs <ps2/metagame>
+   Outfits and Members <ps2/outfit>
+   Player Progression and Directives <ps2/progression>
+   Vehicles <ps2/vehicle>
+   Weapons and Fire Modes <ps2/weapons>
+   Servers and Continents <ps2/world>
 
 Indices and Tables
 ------------------
