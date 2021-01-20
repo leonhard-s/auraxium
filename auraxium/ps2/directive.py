@@ -1,14 +1,22 @@
 """Directive class definitions."""
 
-from typing import Final
+from typing import Final, Optional
 
 from ..base import ImageMixin, Named
 from ..census import Query
 from ..models import (DirectiveData, DirectiveTierData,
                       DirectiveTreeCategoryData, DirectiveTreeData)
 from ..proxy import InstanceProxy, SequenceProxy
+from ..types import LocaleData
 
 from .objective import Objective
+
+__all__ = [
+    'Directive',
+    'DirectiveTier',
+    'DirectiveTree',
+    'DirectiveTreeCategory'
+]
 
 
 class DirectiveTreeCategory(Named, ImageMixin, cache_size=10, cache_ttu=300.0):
@@ -16,12 +24,22 @@ class DirectiveTreeCategory(Named, ImageMixin, cache_size=10, cache_ttu=300.0):
 
     Directive tree category are the topmost directive categorisation,
     e.g. "Infantry".
+
+    Attributes:
+        directive_tree_category_id: The unique ID of the directive tree
+            category.
+        name: The localised name of the directive tree category.
+
     """
 
     collection = 'directive_tree_category'
     data: DirectiveTreeCategoryData
     dataclass = DirectiveTreeCategoryData
     id_field = 'directive_tree_category_id'
+
+    # Type hints for data class fallback attributes
+    directive_tree_category_id: int
+    name: LocaleData
 
     def trees(self) -> SequenceProxy['DirectiveTree']:
         """Return the trees in the category.
@@ -39,12 +57,25 @@ class DirectiveTree(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
 
     Directive trees are a chain of related directive, e.g.
     "Heavy Assault".
+
+    Attributes:
+        directive_tree_id: The unique ID of the directive tree.
+        directive_tree_category_id: The category of the directive tree.
+        name: The localised name of the directive tree.
+        description: The localised description of the directive tree.
+
     """
 
     collection = 'directive_tree'
     data: DirectiveTreeData
     dataclass = DirectiveTreeData
     id_field = 'directive_tree_id'
+
+    # Type hints for data class fallback attributes
+    directive_tree_id: int
+    directive_tree_category_id: int
+    name: LocaleData
+    description: Optional[LocaleData]
 
     def category(self) -> InstanceProxy[DirectiveTreeCategory]:
         """Return the category of the directive tree.
@@ -81,12 +112,33 @@ class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     """A directive tier.
 
     Container for related directives, e.g. "Combat Medic: Adept".
+
+    Attributes:
+        directive_tier_id: The unique ID of the directive tier.
+        directive_tree_id: The directive tree this directive belongs
+            to.
+        reward_set_id: The reward set awarded upon completion of this
+            directive tier.
+        directive_points: The directive points awarded upon completion
+            of this directive tier.
+        completion_count: The number of directives that must be
+            completed for completion of this directive tier.
+        name: The localised name of the directive tier.
+
     """
 
     collection = 'directive_tier'
     data: DirectiveTierData
     dataclass = DirectiveTierData
     id_field = 'directive_tier_id'
+
+    # Type hints for data class fallback attributes
+    directive_tier_id: int
+    directive_tree_id: int
+    reward_set_id: Optional[int]
+    directive_points: int
+    completion_count: int
+    name: LocaleData
 
     def directives(self) -> SequenceProxy['Directive']:
         """Return the list of directives in this tier.
@@ -110,12 +162,34 @@ class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
 
 
 class Directive(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
-    """A directive a character may complete."""
+    """A directive a character may complete.
+
+    Attributes:
+        directive_id: The unique ID of this directive.
+        directive_tree_id: The directive tree of this directive.
+        directive_tier_id: The directive tier of this directive.
+        objective_set_id: The objective set contributing towards this
+            directive.
+        qualify_requirement_id: An item that must be unlocked for this
+            directive to be available.
+        name: The localised name of the directive.
+        name: The localised description of the directive.
+
+    """
 
     collection = 'directive'
     data: DirectiveData
     dataclass = DirectiveData
     id_field = 'directive_id'
+
+    # Type hints for data class fallback attributes
+    directive_id: int
+    directive_tree_id: int
+    directive_tier_id: int
+    objective_set_id: int
+    qualify_requirement_id: Optional[int]
+    name: LocaleData
+    description: Optional[LocaleData]
 
     def objectives(self) -> SequenceProxy[Objective]:
         """Return the objectives for this directive.

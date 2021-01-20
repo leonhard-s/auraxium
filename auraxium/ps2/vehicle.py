@@ -7,10 +7,16 @@ from ..census import Query
 from ..client import Client
 from ..models import VehicleAttachmentData, VehicleData
 from ..proxy import InstanceProxy, SequenceProxy
+from ..types import LocaleData
 
 from .faction import Faction
 from .item import Item
 from .skill import SkillSet
+
+__all__ = [
+    'Vehicle',
+    'VehicleAttachment'
+]
 
 
 class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
@@ -18,12 +24,31 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
 
     This includes aircraft and ground vehicles, as well as mountable
     turrets and constructible.
+
+    Attributes:
+        vehicle_id: The unique ID of this vehicle.
+        name: The localised name of the vehicle.
+        description: The localised description of the vehicle.
+        type_id: The type of vehicle.
+        type_name: The name of the type of vehicle.
+        cost: The cost of the vehicle.
+        cost_resource_id: The ID of the resource the cost is in.
+
     """
 
     collection = 'vehicle'
     data: VehicleData
     dataclass = VehicleData
     id_field = 'vehicle_id'
+
+    # Type hints for data class fallback attributes
+    vehicle_id: int
+    name: LocaleData
+    description: Optional[LocaleData]
+    type_id: int
+    type_name: str
+    cost: Optional[int]
+    cost_resource_id: Optional[int]
 
     def factions(self) -> SequenceProxy[Faction]:
         """Return the factions that have access to this vehicle.
@@ -77,12 +102,28 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
 
 
 class VehicleAttachment(Cached, cache_size=250, cache_ttu=180.0):
-    """Links vehicles to the items and attachments they support."""
+    """Links vehicles to the items and attachments they support.
+
+    Attributes:
+        item_id: The item that is being attached.
+        vehicle_id: The vehicle the item may be attached to.
+        faction_id: The faction for which this attachment is available.
+        description: A description of the attachment.
+        slot_id: The slot the attachment goes into.
+
+    """
 
     collection = 'vehicle_attachment'
     data: VehicleAttachmentData
     dataclass = VehicleAttachmentData
     id_field = 'vehicle_attachment_id'
+
+    # Type hints for data class fallback attributes
+    item_id: int
+    vehicle_id: int
+    faction_id: int
+    description: str
+    slot_id: int
 
     def faction(self) -> InstanceProxy[Faction]:
         """Return the faction this attachment is available to.

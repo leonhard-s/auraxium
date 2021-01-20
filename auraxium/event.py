@@ -21,10 +21,10 @@ from .client import Client
 from .types import CensusData
 from .utils import expo_scaled
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     # This is only imported during static type checking to resolve the forward
     # references. This avoids a circular import at runtime.
-    from .ps2 import Character, World  # pragma: no cover
+    from .ps2 import Character, World
 
 __all__ = [
     'ESS_ENDPOINT',

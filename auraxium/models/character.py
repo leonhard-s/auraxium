@@ -51,21 +51,6 @@ class CharacterData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
-
-    Attributes:
-        character_id: The unique name of the character.
-        name: The name of the player.
-        faction_id: The faction the character belongs to.
-        head_id: The head model for this character.
-        title_id: The current title selected for this character. May be
-            zero.
-        times: Play and login time data for the character.
-        certs: Certification data for the character.
-        battle_rank: Battle rank data for the character.
-        profile_id: The last profile the character used.
-        daily_ribbon: Daily ribbon data for the character.
-        prestige_level: The ASP rank of the character.
-
     """
 
     class BattleRank(Ps2Data):
@@ -194,20 +179,8 @@ class CharacterDirective(Ps2Data):
 class TitleData(Ps2Data):
     """Data class for :class:`auraxium.ps2.character.Title`.
 
-    .. important::
-        Unlike most other forms of API data, the ID used by titles is
-        **not** unique.
-
-        This is due to the ASP system re-using the same title IDs while
-        introducing a different name ("A.S.P. Operative" for ``en``).
-
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
-
-    Attributes:
-        title_id: The ID of this title.
-        name: The localised name of this title.
-
     """
 
     title_id: int

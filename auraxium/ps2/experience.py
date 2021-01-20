@@ -11,27 +11,69 @@ from ..errors import PayloadError
 from ..models import ExperienceData, ExperienceRankData
 from ..types import CensusData
 
-if TYPE_CHECKING:
-    from ..ps2 import Faction  # pragma: no cover
+if TYPE_CHECKING:  # pragma: no cover
+    # This is only imported during static type checking to resolve the forward
+    # references. This avoids import issues at runtime.
+    from ..ps2 import Faction
+
+__all__ = [
+    'Experience',
+    'ExperienceRank'
+]
 
 log = logging.getLogger('auraxium.ps2')
 
 
 class Experience(Cached, cache_size=100, cache_ttu=3600.0):
-    """A type of experience tick."""
+    """A type of experience tick.
+
+    Attributes:
+        experience_id: The unique ID of this experience tick.
+        description: A description of when this experience reward is
+            granted.
+        xp: The amount of experience points awarded.
+
+    """
 
     collection = 'experience'
     data: ExperienceData
     dataclass = ExperienceData
     id_field = 'experience_id'
 
+    # Type hints for data class fallback attributes
+    experience_id: int
+    description: str
+    xp: int
+
 
 class ExperienceRank:
-    """A type of experience tick."""
+    """A type of experience tick.
+
+    Attributes:
+        rank: The battle rank value represented by this rank name.
+        xp_max: (Not yet documented)
+        vs: Empire-specific rank data for VS.
+        vs_image_path: The VS-specific default image path.
+        nc: Empire-specific rank data for NC.
+        nc_image_path: The NC-specific default image path.
+        tr: Empire-specific rank data for TR.
+        tr_image_path: The TR-specific default image path.
+
+    """
 
     collection = 'experience_rank'
     data: ExperienceRankData
     dataclass = ExperienceRankData
+
+    # Type hints for data class fallback attributes
+    rank: int
+    xp_max: int
+    vs: ExperienceRankData.EmpireData
+    vs_image_path: str
+    nc: ExperienceRankData.EmpireData
+    nc_image_path: str
+    tr: ExperienceRankData.EmpireData
+    tr_image_path: str
 
     def __init__(self, data: CensusData, client: Client) -> None:
         """Initialise the object.

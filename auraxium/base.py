@@ -20,10 +20,10 @@ from .errors import PayloadError, NotFoundError
 from .request import extract_payload, extract_single
 from .types import CensusData
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     # This is only imported during static type checking to resolve the 'Client'
     # forward reference. This avoids a circular import at runtime.
-    from .client import Client  # pragma: no cover
+    from .client import Client
 
 __all__ = [
     'Ps2Data',
@@ -138,6 +138,22 @@ class Ps2Object(metaclass=abc.ABCMeta):
         if not isinstance(value, self.__class__):
             return False
         return self.id == value.id
+
+    def __getattr__(self, name: str) -> Any:
+        """Fallback for missing attributes.
+
+        This allows missing attribute in the :class:`Ps2Object`
+        instance to fall back to its corresponding data class.
+
+        If the attribute cannot be found there either, an
+        :class:`AttributeError` is raised as normal.
+
+        """
+        # Re-raising or propagating the inner exception would only clutter up
+        # the exception traceback, so we raise one "from scratch" instead.
+        if hasattr(self.data, name):
+            return getattr(self.data, name)
+        raise AttributeError(name)
 
     def __hash__(self) -> int:
         return hash((self.__class__, self.id))

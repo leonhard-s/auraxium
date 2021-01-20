@@ -15,14 +15,6 @@ class ZoneData(Ps2Data):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
-
-    Attributes:
-        zone_id: The unique ID of this zone.
-        code: The internal code used to represent this zone.
-        hex_size: The map size for this zone.
-        name: The localised name of this zone.
-        description: The localised name of this zone.
-
     """
 
     zone_id: int

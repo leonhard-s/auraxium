@@ -1,20 +1,27 @@
 """Item and item attachment class definitions."""
 
-from typing import Final, TYPE_CHECKING
+from typing import Final, Optional, TYPE_CHECKING
 
 from ..base import Cached, ImageMixin, Named
 from ..census import Query
 from ..models import ItemCategoryData, ItemData, ItemTypeData
 from ..request import extract_single
 from ..proxy import InstanceProxy, SequenceProxy
+from ..types import LocaleData
 
 from .faction import Faction
 from .profile import Profile
 
-if TYPE_CHECKING:
+if TYPE_CHECKING:  # pragma: no cover
     # This is only imported during static type checking to resolve the forward
     # references. This avoids a circular import at runtime.
-    from .weapon import Weapon, WeaponDatasheet  # pragma: no cover
+    from .weapon import Weapon, WeaponDatasheet
+
+__all__ = [
+    'Item',
+    'ItemCategory',
+    'ItemType'
+]
 
 
 class ItemCategory(Named, cache_size=32, cache_ttu=3600.0):
@@ -22,12 +29,21 @@ class ItemCategory(Named, cache_size=32, cache_ttu=3600.0):
 
     This represents the item filter views used in the in-game depot,
     such as "Infantry Gear", "Weapon Camo" or "Vehicle Weapons".
+
+    Attributes:
+        item_category_id: The unique ID of this item category.
+        name: The localised name of the category.
+
     """
 
     collection = 'item_category'
     data: ItemCategoryData
     dataclass = ItemCategoryData
     id_field = 'item_category_id'
+
+    # Type hints for data class fallback attributes
+    item_category_id: int
+    name: LocaleData
 
 
 class ItemType(Cached, cache_size=10, cache_ttu=60.0):
@@ -38,12 +54,23 @@ class ItemType(Cached, cache_size=10, cache_ttu=60.0):
     consumables, cosmetics, implants, as well as abstract item-like
     utilities like loadout slots, server transfers, or name change
     tokens.
+
+    Attributes:
+        item_type_id: The unique ID of this item type.
+        name: The identifying name of this item type.
+        code: The internal code used to describe this item type.
+
     """
 
     collection = 'item_type'
     data: ItemTypeData
     dataclass = ItemTypeData
     id_field = 'item_type_id'
+
+    # Type hints for data class fallback attributes
+    item_type_id: int
+    name: str
+    code: str
 
 
 class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
@@ -52,12 +79,48 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     This includes the item component of weapons, which is extended by
     weapon specific data in the associated
     :class:`auraxium.ps2.weapon.Weapon` instance.
+
+    Attributes:
+        item_id: The unique ID of this item.
+        item_type_id: The ID of the item type for this item.
+        item_category_id: The ID of the item category for this item.
+        activatable_ability_id: (Not yet documented)
+        passive_ability_id: (Not yet documented)
+        is_vehicle_weapon: Whether this item is a vehicle weapon.
+        name: Localised name of the item.
+        description: Localised description of the item.
+        faction_id: The faction that has access to this item.
+        max_stack_size: The stack size for stackable items such as
+            grenades.
+        skill_set_id: The skill set associated with this item. This is
+            used for upgradable items like the Medical Applicator or
+            Repair Tool.
+        is_default_attachment: Default attachments are generally not
+            visible to the user and are used whenever nothing is
+            selected. Examples include the default iron sights, or the
+            regular ammo type for weapon supporting non-standard
+            ammo types.
+
     """
 
     collection = 'item'
     data: ItemData
     dataclass = ItemData
     id_field = 'item_id'
+
+    # Type hints for data class fallback attributes
+    item_id: int
+    item_type_id: Optional[int]
+    item_category_id: Optional[int]
+    activatable_ability_id: Optional[int]
+    passive_ability_id: Optional[int]
+    is_vehicle_weapon: bool
+    name: LocaleData
+    description: Optional[LocaleData]
+    faction_id: Optional[int]
+    max_stack_size: int
+    skill_set_id: Optional[int]
+    is_default_attachment: bool
 
     def attachments(self) -> SequenceProxy['Item']:
         """Return the attachment options for this item.
@@ -84,16 +147,6 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
         query.add_term(
             field=ItemCategory.id_field, value=self.data.item_category_id)
         return InstanceProxy(ItemCategory, query, client=self._client)
-
-    def description(self, locale: str = 'en') -> str:
-        """Return the description of this item in the given locale.
-
-        This will return "Missing String" if no string has been set for
-        the selected locale.
-        """
-        if hasattr(self.data.description, locale):
-            return str(getattr(self.data.description, locale))
-        return 'Missing String'
 
     def faction(self) -> InstanceProxy[Faction]:
         """Return the faction that has access to this item.
