@@ -66,7 +66,11 @@ class EventClientTest(unittest.IsolatedAsyncioTestCase):
             flag.set()
 
         self.client.trigger(auraxium.EventType.DEATH)(on_death)
-        await flag.wait()
+        try:
+            await asyncio.wait_for(flag.wait(), 30.0)
+        except asyncio.TimeoutError:
+            self.skipTest('no game event received after 30 seconds, '
+                          'is the game in maintenance?')
         self.assertEqual(len(self.client.triggers), 1)
         self.client.remove_trigger('on_death')
         self.assertEqual(len(self.client.triggers), 0)
@@ -82,5 +86,9 @@ class EventClientTest(unittest.IsolatedAsyncioTestCase):
 
         trigger.action = wait_for
         self.client.add_trigger(trigger)
-        await flag.wait()
+        try:
+            await asyncio.wait_for(flag.wait(), 30.0)
+        except asyncio.TimeoutError:
+            self.skipTest('no game event received after 30 seconds, '
+                          'is the game in maintenance?')
         self.assertEqual(len(self.client.triggers), 0)
