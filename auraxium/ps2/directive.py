@@ -11,6 +11,13 @@ from ..types import LocaleData
 
 from .objective import Objective
 
+__all__ = [
+    'Directive',
+    'DirectiveTier',
+    'DirectiveTree',
+    'DirectiveTreeCategory'
+]
+
 
 class DirectiveTreeCategory(Named, ImageMixin, cache_size=10, cache_ttu=300.0):
     """A directive category.

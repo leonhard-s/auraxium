@@ -6,6 +6,11 @@ from ..census import Query
 from ..models import ResistInfoData, ResistTypeData
 from ..proxy import InstanceProxy
 
+__all__ = [
+    'ResistInfo',
+    'ResistType'
+]
+
 
 class ResistType(Cached, cache_size=100, cache_ttu=60.0):
     """A type of resistance a profile may hold.

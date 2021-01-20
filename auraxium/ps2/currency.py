@@ -4,6 +4,10 @@ from ..base import Cached
 from ..models import CurrencyData
 from ..types import LocaleData
 
+__all__ = [
+    'Currency'
+]
+
 
 class Currency(Cached, cache_size=10, cache_ttu=3600.0):
     """A currency obtainable by characters.

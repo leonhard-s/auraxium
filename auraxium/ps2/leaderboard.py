@@ -12,7 +12,13 @@ from ..request import extract_payload, extract_single
 from .character import Character
 from .world import World
 
-__all__ = ['by_char', 'by_char_multi', 'Period', 'Stat', 'top']
+__all__ = [
+    'by_char',
+    'by_char_multi',
+    'Period',
+    'Stat',
+    'top'
+]
 
 
 class Period(enum.Enum):

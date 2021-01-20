@@ -10,6 +10,13 @@ from ..types import LocaleData
 
 from .zone import Zone
 
+__all__ = [
+    'FacilityType',
+    'MapHex',
+    'MapRegion',
+    'Region'
+]
+
 
 class FacilityType(Cached, cache_size=10, cache_ttu=3600.0):
     """A type of base/facility found in the game.

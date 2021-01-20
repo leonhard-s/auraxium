@@ -13,6 +13,12 @@ from ..types import LocaleData
 from .projectile import Projectile
 from .states import PlayerState, PlayerStateGroup
 
+__all__ = [
+    'FireGroup',
+    'FireMode',
+    'FireModeType'
+]
+
 
 class FireModeType(enum.IntEnum):
     """A type of fire mode.

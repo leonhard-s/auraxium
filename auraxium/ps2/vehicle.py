@@ -13,6 +13,11 @@ from .faction import Faction
 from .item import Item
 from .skill import SkillSet
 
+__all__ = [
+    'Vehicle',
+    'VehicleAttachment'
+]
+
 
 class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
     """A mountable vehicle in PlanetSide 2.

@@ -6,6 +6,11 @@ from typing import Optional
 from ..base import Cached
 from ..models import ProjectileData
 
+__all__ = [
+    'Projectile',
+    'ProjectileFlightType'
+]
+
 
 class ProjectileFlightType(enum.IntEnum):
     """A projectile flight type."""

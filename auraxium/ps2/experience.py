@@ -14,6 +14,11 @@ from ..types import CensusData
 if TYPE_CHECKING:
     from ..ps2 import Faction  # pragma: no cover
 
+__all__ = [
+    'Experience',
+    'ExperienceRank'
+]
+
 log = logging.getLogger('auraxium.ps2')
 
 

@@ -6,6 +6,11 @@ from ..census import Query
 from ..models import ObjectiveData, ObjectiveTypeData
 from ..proxy import InstanceProxy
 
+__all__ = [
+    'Objective',
+    'ObjectiveType'
+]
+
 
 class ObjectiveType(Cached, cache_size=10, cache_ttu=60.0):
     """A type of objective.

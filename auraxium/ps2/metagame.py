@@ -7,6 +7,11 @@ from ..base import Cached
 from ..models import MetagameEventData
 from ..types import LocaleData
 
+__all__ = [
+    'MetagameEvent',
+    'MetagameEventState'
+]
+
 
 class MetagameEventState(enum.IntEnum):
     """The state of a :class:`auraxium.ps2.metagame.MetagameEvent`."""

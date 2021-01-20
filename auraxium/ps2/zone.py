@@ -4,6 +4,10 @@ from ..base import Named
 from ..models import ZoneData
 from ..types import LocaleData
 
+__all__ = [
+    'Zone'
+]
+
 _KNOWN_ZONES = [
     2,  # Indar
     4,  # Hossin

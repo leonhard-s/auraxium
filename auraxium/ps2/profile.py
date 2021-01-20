@@ -12,6 +12,11 @@ from .armour import ArmourInfo
 from .faction import Faction
 from .resist import ResistInfo
 
+__all__ = [
+    'Loadout',
+    'Profile'
+]
+
 
 class Profile(Cached, cache_size=200, cache_ttu=60.0):
     """An entity in the game world.

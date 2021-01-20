@@ -7,6 +7,10 @@ from ..base import ImageMixin, Named
 from ..models import AchievementData
 from ..types import LocaleData
 
+__all__ = [
+    'Achievement'
+]
+
 
 class Achievement(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     """An achievement a player may pursue.

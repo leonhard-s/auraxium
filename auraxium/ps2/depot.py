@@ -11,6 +11,11 @@ from ..types import LocaleData
 
 from .item import Item
 
+__all__ = [
+    'MarketingBundle',
+    'MarketingBundleSingle'
+]
+
 
 class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
     """A marketing bundle containing one or more items.

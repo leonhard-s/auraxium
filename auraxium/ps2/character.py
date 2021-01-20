@@ -19,6 +19,11 @@ from .outfit import Outfit, OutfitMember
 from .profile import Profile
 from .world import World
 
+__all__ = [
+    'Character',
+    'Title'
+]
+
 log = logging.getLogger('auraxium.ps2')
 
 

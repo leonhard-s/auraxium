@@ -4,6 +4,10 @@ from ..base import ImageMixin, Named
 from ..models import FactionData
 from ..types import LocaleData
 
+__all__ = [
+    'Faction'
+]
+
 
 class Faction(Named, ImageMixin, cache_size=10):
     """A faction in PS2.

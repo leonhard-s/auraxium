@@ -7,6 +7,13 @@ from ..census import Query
 from ..models import AbilityData, AbilityTypeData, ResourceTypeData
 from ..proxy import InstanceProxy
 
+__all__ = [
+    'Ability',
+    'AbilityData',
+    'AbilityType',
+    'ResourceType'
+]
+
 
 class ResourceType(Cached, cache_size=50, cache_ttu=3600.0):
     """A type of resource consumed by an ability.

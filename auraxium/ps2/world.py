@@ -12,6 +12,10 @@ from ..types import CensusData, LocaleData
 
 from .zone import Zone
 
+__all__ = [
+    'World'
+]
+
 
 class World(Named, cache_size=20, cache_ttu=3600.0):
     """A world (or server) in the game.

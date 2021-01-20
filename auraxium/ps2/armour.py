@@ -6,6 +6,11 @@ from typing import Optional
 from ..base import Cached
 from ..models import ArmourInfoData
 
+__all__ = [
+    'ArmourFacing',
+    'ArmourInfo'
+]
+
 
 class ArmourFacing(enum.IntEnum):
     """Enumerator for armour facing directions.

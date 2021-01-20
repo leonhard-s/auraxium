@@ -17,6 +17,11 @@ if TYPE_CHECKING:
     # 'Character' forward reference. This avoids a circular import at runtime.
     from .character import Character  # pragma: no cover
 
+__all__ = [
+    'Outfit',
+    'OutfitMember'
+]
+
 log = logging.getLogger('auraxium.ps2')
 
 

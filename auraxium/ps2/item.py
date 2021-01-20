@@ -17,6 +17,12 @@ if TYPE_CHECKING:
     # references. This avoids a circular import at runtime.
     from .weapon import Weapon, WeaponDatasheet  # pragma: no cover
 
+__all__ = [
+    'Item',
+    'ItemCategory',
+    'ItemType'
+]
+
 
 class ItemCategory(Named, cache_size=32, cache_ttu=3600.0):
     """A category of item.

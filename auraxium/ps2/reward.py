@@ -8,6 +8,11 @@ from ..client import Client
 from ..models import RewardData, RewardTypeData
 from ..proxy import InstanceProxy, SequenceProxy
 
+__all__ = [
+    'Reward',
+    'RewardType'
+]
+
 
 class RewardType(Cached, cache_size=10, cache_ttu=3600.0):
     """A type of reward.

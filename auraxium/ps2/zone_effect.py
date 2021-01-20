@@ -8,6 +8,11 @@ from ..proxy import InstanceProxy
 
 from .ability import Ability
 
+__all__ = [
+    'ZoneEffect',
+    'ZoneEffectType'
+]
+
 
 class ZoneEffectType(Cached, cache_size=20, cache_ttu=60.0):
     """A type of zone effect.
