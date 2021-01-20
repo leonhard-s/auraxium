@@ -48,12 +48,13 @@ class MapRegionData(Ps2Data):
     use its attributes as keys in filters or queries.
     """
 
+    # NOTE: "SWG" stands for "The Shattered Warpgate" on Esamir
     map_region_id: int
     zone_id: int
-    facility_id: Optional[int]  # Only missing for the shattered warpgate
+    facility_id: Optional[int] = None  # Only missing for SWG
     facility_name: str
-    facility_type_id: Optional[int]  # Only missing for the shattered warpgate
-    facility_type: Optional[str]  # Only missing for the shattered warpgate
+    facility_type_id: Optional[int] = None  # Only missing for SWG
+    facility_type: Optional[str] = None  # Only missing for SWG
     location_x: Optional[float] = None
     location_y: Optional[float] = None
     location_z: Optional[float] = None
