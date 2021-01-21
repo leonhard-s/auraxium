@@ -2,10 +2,10 @@
 
 from typing import Optional
 
-from ..base import ImageMixin, Named
+from .._base import ImageMixin, Named
 from ..census import Query
 from ..models import SkillData, SkillCategoryData, SkillLineData, SkillSetData
-from ..proxy import InstanceProxy, SequenceProxy
+from .._proxy import InstanceProxy, SequenceProxy
 from ..types import LocaleData
 
 from .item import Item

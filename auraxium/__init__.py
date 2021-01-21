@@ -15,9 +15,9 @@ project's repository at https://github.com/leonhard-s/auraxium.
 from . import census
 from . import errors
 from . import ps2
-from .base import Cached, Named, Ps2Object
-from .client import Client
-from .event import Event, EventClient, EventType, Trigger
+from ._base import Cached, Named, Ps2Data, Ps2Object
+from ._client import Client
+from ._event import Event, EventClient, EventType, Trigger
 
 __all__ = [
     'Cached',
@@ -29,6 +29,7 @@ __all__ = [
     'EventType',
     'Named',
     'ps2',
+    'Ps2Data',
     'Ps2Object',
     'Trigger'
 ]

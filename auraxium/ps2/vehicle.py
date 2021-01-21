@@ -2,11 +2,11 @@
 
 from typing import Final, List, Optional, Union
 
-from ..base import Cached, ImageMixin, Named
+from .._base import Cached, ImageMixin, Named
 from ..census import Query
-from ..client import Client
+from .._client import Client
 from ..models import VehicleAttachmentData, VehicleData
-from ..proxy import InstanceProxy, SequenceProxy
+from .._proxy import InstanceProxy, SequenceProxy
 from ..types import LocaleData
 
 from .faction import Faction

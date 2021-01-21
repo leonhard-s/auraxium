@@ -3,11 +3,11 @@
 import enum
 from typing import Dict, Final, Optional
 
-from ..base import Cached
+from .._base import Cached
 from ..census import Query
 from ..models import FireGroupData, FireModeData
-from ..proxy import InstanceProxy, SequenceProxy
-from ..request import extract_payload
+from .._proxy import InstanceProxy, SequenceProxy
+from .._request import extract_payload
 from ..types import LocaleData
 
 from .projectile import Projectile

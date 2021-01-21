@@ -12,8 +12,11 @@ import warnings
 
 import aiohttp
 import yarl
+
 # pylint: disable=import-error
-from auraxium import errors, request
+from auraxium import errors
+import auraxium._request as request
+
 from tests.utils import DATA
 
 PAYLOADS = os.path.join(DATA, 'rest')

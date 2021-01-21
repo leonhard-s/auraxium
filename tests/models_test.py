@@ -6,8 +6,7 @@ import unittest
 from typing import Any, Dict, List, Optional, Type
 
 # pylint: disable=import-error
-from auraxium.base import Ps2Data, Ps2Object
-from auraxium import ps2
+from auraxium import ps2, Ps2Data, Ps2Object
 from tests.utils import DATA
 
 PAYLOAD_DIRECTORY = os.path.join(DATA, 'rest')

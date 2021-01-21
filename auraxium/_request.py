@@ -28,7 +28,7 @@ from .errors import (PayloadError, BadRequestSyntaxError, CensusError,
                      ResponseError, ServerError, ServiceUnavailableError,
                      UnknownCollectionError)
 from .types import CensusData
-from .utils import expo_scaled
+from ._utils import expo_scaled
 
 __all__ = [
     'extract_payload',

@@ -3,11 +3,11 @@
 import datetime
 from typing import Any, Final, List, Optional, Tuple, Type, Union, cast
 
-from ..base import Named, NamedT
+from .._base import Named, _NamedT
 from ..census import Query
-from ..client import Client
+from .._client import Client
 from ..models import WorldData
-from ..request import extract_payload, extract_single
+from .._request import extract_payload, extract_single
 from ..types import CensusData, LocaleData
 
 from .zone import Zone
@@ -55,8 +55,8 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
         return data
 
     @classmethod
-    async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
-                          client: Client) -> Optional[NamedT]:
+    async def get_by_name(cls: Type[_NamedT], name: str, *, locale: str = 'en',
+                          client: Client) -> Optional[_NamedT]:
         """Retrieve a world by name.
 
         This query is always case-insensitive.
@@ -65,7 +65,7 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
         # due to API limitations. This method works around this by first
         # retrieving all worlds, then looking the returned list up by name.
         data = await cls.find(20, client=client)
-        data = cast(List[NamedT], data)
+        data = cast(List[_NamedT], data)
         if data and not isinstance(data[0], cls):
             raise RuntimeError(
                 f'Expected {cls} instance, got {type(data[0])} instead, '

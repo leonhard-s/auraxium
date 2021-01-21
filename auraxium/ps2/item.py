@@ -2,11 +2,11 @@
 
 from typing import Final, Optional, TYPE_CHECKING
 
-from ..base import Cached, ImageMixin, Named
+from .._base import Cached, ImageMixin, Named
 from ..census import Query
 from ..models import ItemCategoryData, ItemData, ItemTypeData
-from ..request import extract_single
-from ..proxy import InstanceProxy, SequenceProxy
+from .._request import extract_single
+from .._proxy import InstanceProxy, SequenceProxy
 from ..types import LocaleData
 
 from .faction import Faction

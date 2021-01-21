@@ -3,15 +3,15 @@
 import logging
 from typing import Any, ClassVar, Final, List, Optional, Tuple, Type, Union
 
-from ..base import Named, NamedT
+from .._base import Named, _NamedT
 from ..cache import TLRUCache
 from ..census import Query
-from ..client import Client
+from .._client import Client
 from ..errors import NotFoundError
 from ..models import CharacterAchievement, TitleData, CharacterData
-from ..proxy import InstanceProxy, SequenceProxy
-from ..request import extract_payload, extract_single
-from ..types import CensusData, LocaleData
+from .._proxy import InstanceProxy, SequenceProxy
+from .._request import extract_payload, extract_single
+from ..types import CensusData
 
 from .faction import Faction
 from .item import Item
@@ -215,8 +215,8 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         return characters
 
     @classmethod
-    async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
-                          client: Client) -> Optional[NamedT]:
+    async def get_by_name(cls: Type[_NamedT], name: str, *, locale: str = 'en',
+                          client: Client) -> Optional[_NamedT]:
         """Retrieve an object by its unique name.
 
         This query is always case-insensitive.

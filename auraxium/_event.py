@@ -17,9 +17,9 @@ from typing import (Any, Awaitable, Callable, Coroutine, Dict, Iterable,
 
 import websockets
 
-from .client import Client
+from ._client import Client
 from .types import CensusData
-from .utils import expo_scaled
+from ._utils import expo_scaled
 
 if TYPE_CHECKING:  # pragma: no cover
     # This is only imported during static type checking to resolve the forward
@@ -36,10 +36,10 @@ __all__ = [
 
 # The websocket endpoint to connect to
 ESS_ENDPOINT = 'wss://push.planetside2.com/streaming'
-log = logging.getLogger('auraxium.ess')
+_log = logging.getLogger('auraxium.ess')
 
 # Pylance is more strict regarding typing of synchronous vs. asynchronous code
-Callback = Callable[['Event'], Union[Coroutine[Any, Any, None], None]]
+_Callback = Callable[['Event'], Union[Coroutine[Any, Any, None], None]]
 
 
 class EventType(enum.IntEnum):
@@ -443,13 +443,13 @@ class EventClient(Client):
             trigger: The trigger to add.
 
         """
-        log.debug('Adding trigger %s', trigger)
+        _log.debug('Adding trigger %s', trigger)
         self.triggers.append(trigger)
         subscription = trigger.generate_subscription()
         self._send_queue.append(subscription)
         # Only queue the connect() method if it is not already running
         if self.websocket is None and not self._connect_lock.locked():
-            log.debug('Websocket not connected, scheduling connection')
+            _log.debug('Websocket not connected, scheduling connection')
             self.loop.create_task(self.connect())
 
     def find_trigger(self, name: str) -> Trigger:
@@ -496,7 +496,7 @@ class EventClient(Client):
         """
         if not isinstance(trigger, Trigger):
             trigger = self.find_trigger(trigger)
-        log.debug('Removing trigger %s', trigger)
+        _log.debug('Removing trigger %s', trigger)
         try:
             self.triggers.remove(trigger)
         except ValueError as err:
@@ -504,7 +504,7 @@ class EventClient(Client):
                                'this client') from err
         # If this was the only trigger registered, close the websocket
         if not keep_websocket_alive and not self.triggers:
-            log.info('All triggers have been removed, closing websocket')
+            _log.info('All triggers have been removed, closing websocket')
             self.loop.create_task(self.close())
 
     async def close(self) -> None:
@@ -538,15 +538,15 @@ class EventClient(Client):
         # NOTE: When multiple triggers are added to the bot without an active
         # websocket connection, this function may be scheduled multiple times.
         if self._connect_lock.locked():
-            log.debug('Websocket already running')
+            _log.debug('Websocket already running')
             return
         await self._connect_lock.acquire()
 
-        log.info('Connecting to websocket endpoint...')
+        _log.info('Connecting to websocket endpoint...')
         url = f'{ESS_ENDPOINT}?environment=ps2&service-id={self.service_id}'
         async with websockets.connect(url) as websocket:
             self.websocket = websocket
-            log.info(
+            _log.info(
                 'Connected to %s?environment=ps2&service-id=XXX', ESS_ENDPOINT)
             self._connected = True
 
@@ -560,16 +560,16 @@ class EventClient(Client):
                 try:
                     await self._handle_websocket()
                 except websockets.exceptions.ConnectionClosed as err:
-                    log.info('Websocket connection closed (%d, %s)',
-                             err.code, err.reason)  # type: ignore
+                    _log.info('Websocket connection closed (%d, %s)',
+                              err.code, err.reason)  # type: ignore
                     await self.disconnect()
                     # NOTE: This will increment the reconnect delay each time,
                     # until one connection attempt is successful.
                     delay = next(self._reconnect_backoff)
-                    log.info(
+                    _log.info(
                         'Next reconnection attempt in %.2f seconds', delay)
                     await asyncio.sleep(delay)
-                    log.info('Attempting to reconnect...')
+                    _log.info('Attempting to reconnect...')
                     self.loop.create_task(self.connect())
 
     async def disconnect(self) -> None:
@@ -581,7 +581,7 @@ class EventClient(Client):
         """
         if self.websocket is None:
             return
-        log.info('Closing websocket connection')
+        _log.info('Closing websocket connection')
         if self.websocket.open:
             await self.websocket.close()
         with contextlib.suppress(RuntimeError):
@@ -612,14 +612,14 @@ class EventClient(Client):
         """
         # Check for appropriate triggers
         for trigger in self.triggers:
-            log.debug('Checking trigger %s', trigger)
+            _log.debug('Checking trigger %s', trigger)
             if trigger.check(event):
-                log.debug('Scheduling trigger %s', trigger)
+                _log.debug('Scheduling trigger %s', trigger)
                 self.loop.create_task(trigger.run(event))
                 # Single-shot triggers self-unload as soon as their call-back
                 # is scheduled
                 if trigger.single_shot:
-                    log.info('Removing single-shot trigger %s', trigger)
+                    _log.info('Removing single-shot trigger %s', trigger)
                     self.remove_trigger(trigger)
 
     async def _handle_websocket(self, timeout: float = 0.1) -> None:
@@ -644,17 +644,17 @@ class EventClient(Client):
             # received.
             pass
         else:
-            log.debug('Received response: %s', response)
+            _log.debug('Received response: %s', response)
             self._process_payload(response)
         finally:
             if self._send_queue:
                 msg = self._send_queue.pop(0)
-                log.info('Sending message: %s', msg)
+                _log.info('Sending message: %s', msg)
                 await self.websocket.send(msg)
 
     def trigger(self, event: Union[str, EventType],
                 *args: Union[str, EventType], name: Optional[str] = None,
-                **kwargs: Any) -> Callable[[Callback], None]:
+                **kwargs: Any) -> Callable[[_Callback], None]:
         """Create and add a trigger for the given action.
 
         If no name is specified, the call-back function's name will be
@@ -678,7 +678,7 @@ class EventClient(Client):
         """
         trigger = Trigger(event, *args, name=name, **kwargs)
 
-        def wrapper(func: Callback) -> None:
+        def wrapper(func: _Callback) -> None:
             trigger.action = func
             # If the trigger name has not been specified, use the call-back
             # function's name instead
@@ -709,25 +709,25 @@ class EventClient(Client):
         if service == 'event':
             if data['type'] == 'serviceMessage':
                 event = Event(data['payload'])
-                log.debug('%s event received, dispatching...', event.type)
+                _log.debug('%s event received, dispatching...', event.type)
                 self.dispatch(event)
             elif data['type'] == 'heartbeat':
-                log.debug('Heartbeat received: %s', data)
+                _log.debug('Heartbeat received: %s', data)
         # Subscription echo
         elif 'subscription' in data:
-            log.debug('Subscription echo: %s', data)
+            _log.debug('Subscription echo: %s', data)
         # Service state
         elif data.get('type') == 'serviceStateChange':
-            log.info('Service state change: %s', data)
+            _log.info('Service state change: %s', data)
         # Push service
         elif service == 'push':
-            log.debug('Ignoring push message: %s', data)
+            _log.debug('Ignoring push message: %s', data)
         # Help message
         elif 'send this for help' in data:
-            log.info('ESS welcome message: %s', data)
+            _log.info('ESS welcome message: %s', data)
         # Other
         else:
-            log.warning('Unhandled message: %s', data)
+            _log.warning('Unhandled message: %s', data)
 
     @staticmethod
     def _reset_backoff() -> Iterator[float]:

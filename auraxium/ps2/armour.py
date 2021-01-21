@@ -3,7 +3,7 @@
 import enum
 from typing import Optional
 
-from ..base import Cached
+from .._base import Cached
 from ..models import ArmourInfoData
 
 __all__ = [

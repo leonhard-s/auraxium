@@ -1,6 +1,6 @@
 """Zone class definition."""
 
-from ..base import Named
+from .._base import Named
 from ..models import ZoneData
 from ..types import LocaleData
 

@@ -1,10 +1,10 @@
 """Ability and ability type class definitions."""
 
 from typing import Optional
-from ..base import Cached
+from .._base import Cached
 from ..census import Query
 from ..models import ZoneEffectData, ZoneEffectTypeData
-from ..proxy import InstanceProxy
+from .._proxy import InstanceProxy
 
 from .ability import Ability
 

@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from ..base import ImageData, Ps2Data
+from .._base import ImageData, Ps2Data
 from ..types import LocaleData
 
 __all__ = [

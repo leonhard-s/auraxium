@@ -1,6 +1,6 @@
 """Data classes for :mod:`auraxium.ps2.outfit`."""
 
-from ..base import Ps2Data
+from .._base import Ps2Data
 
 __all__ = [
     'OutfitData',
