@@ -12,9 +12,11 @@ Auraxium is an object-oriented Python wrapper for the `PlanetSide 2 <https://www
 It provides a comprehensive object model respresentation of the API data that facilitates the creation of bots and utilities without requiring deep knowledge of the API and its idiosyncrasies.
 
 Useful links:
-   `Repository <https://github.com/leonhard-s/auraxium>`_
+   `Release notes <https://github.com/leonhard-s/auraxium/releases>`_
    •
    `Issue tracker <https://github.com/leonhard-s/auraxium/issues>`_
+   •
+   `Repository <https://github.com/leonhard-s/auraxium>`_
    •
    `PyPI <https://pypi.org/project/auraxium/>`_
 
