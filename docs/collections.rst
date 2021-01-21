@@ -77,7 +77,7 @@ Census Collection                      Auraxium                                 
 ``objective_type``                     :class:`auraxium.ps2.ObjetiveType`                                  --
 ``outfit``                             :class:`auraxium.ps2.Outfit`                                        --
 ``outfit_member``                      :class:`auraxium.ps2.OutfitMember`                                  --
-``outfit_member_extended``             --                                                                  Join of ``outfit_member`` and ``outfit`
+``outfit_member_extended``             --                                                                  Join of ``outfit_member`` and ``outfit``
 ``outfit_rank``                        :meth:`auraxium.ps2.Outfit.ranks`                                   --
 ``player_state``                       :class:`auraxium.ps2.PlayerState`                                   --
 ``player_state_group``                 --                                                                  Superceded by ``player_state_group_2``
