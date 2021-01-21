@@ -14,7 +14,7 @@ __all__ = [
 
 
 class MetagameEventState(enum.IntEnum):
-    """The state of a :class:`auraxium.ps2.metagame.MetagameEvent`."""
+    """The state of a :class:`auraxium.ps2.MetagameEvent`."""
 
     STARTED = 135
     RESTARTED = 136

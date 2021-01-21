@@ -64,8 +64,8 @@ class EffectType(Cached, cache_size=20, cache_ttu=60.0):
 class Effect(Cached, cache_size=10, cache_ttu=60.0):
     """An effect acting on a character.
 
-    Access the corresponding :class:`auraxium.ps2.effect.EffectType`
-    instance via the :meth:`type` method for information on generic
+    Access the corresponding :class:`auraxium.ps2.EffectType` instance
+    via the :meth:`Effect.type` method for information on generic
     parameters.
 
     Attributes:

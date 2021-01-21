@@ -29,7 +29,7 @@ class OutfitMember(Cached, cache_size=100, cache_ttu=300.0):
     """A member of an outfit.
 
     This class can be treated as an extension of the
-    :class:`auraxium.ps2.character.Character` class.
+    :class:`auraxium.ps2.Character` class.
 
     Attributes:
         outfit_id: The ID of the outfit this member is a part of.
@@ -60,7 +60,7 @@ class OutfitMember(Cached, cache_size=100, cache_ttu=300.0):
     def character(self) -> InstanceProxy['Character']:
         """Return the character associated with this member.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         # NOTE: This is required due to OutfitMember effectively being an
         # extension of Character.
@@ -73,7 +73,7 @@ class OutfitMember(Cached, cache_size=100, cache_ttu=300.0):
     def outfit(self) -> InstanceProxy['Outfit']:
         """Return the character associated with this member.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(Outfit.collection, service_id=self._client.service_id)
         query.add_term(field=Outfit.id_field, value=self.data.outfit_id)
@@ -160,7 +160,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
     def leader(self) -> InstanceProxy[OutfitMember]:
         """Return the current leader of the outfit.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(
             OutfitMember.collection, service_id=self._client.service_id)
@@ -171,7 +171,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
     def members(self) -> SequenceProxy[OutfitMember]:
         """Return the members of the outfit.
 
-        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        This returns a :class:`auraxium.SequenceProxy`.
         """
         query = Query(
             OutfitMember.collection, service_id=self._client.service_id)

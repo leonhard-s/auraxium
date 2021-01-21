@@ -45,7 +45,7 @@ class SkillSet(Named, ImageMixin, cache_size=100, cache_ttu=60.0):
     def categories(self) -> SequenceProxy['SkillCategory']:
         """Return the skill categories in this skill set.
 
-        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        This returns a :class:`auraxium.SequenceProxy`.
         """
         query = Query(
             SkillCategory.collection, service_id=self._client.service_id)
@@ -56,7 +56,7 @@ class SkillSet(Named, ImageMixin, cache_size=100, cache_ttu=60.0):
     def required_item(self) -> InstanceProxy[Item]:
         """Return the item required for access to this skill set.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         item_id = self.data.required_item_id or -1
         query = Query(Item.collection, service_id=self._client.service_id)
@@ -96,7 +96,7 @@ class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     def skill_lines(self) -> SequenceProxy['SkillLine']:
         """Return the skill lines contained in this category.
 
-        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        This returns a :class:`auraxium.SequenceProxy`.
         """
         query = Query(SkillLine.collection, service_id=self._client.service_id)
         query.add_term(field=SkillCategory.id_field, value=self.id)
@@ -106,7 +106,7 @@ class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     def skill_set(self) -> InstanceProxy['SkillSet']:
         """Return the skill set for this category.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(SkillSet.collection, service_id=self._client.service_id)
         query.add_term(field=SkillSet.id_field, value=self.data.skill_set_id)
@@ -142,7 +142,7 @@ class SkillLine(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     def category(self) -> InstanceProxy[SkillCategory]:
         """Return the category this skill line belongs to.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         category_id = self.data.skill_category_id or -1
         query = Query(
@@ -153,7 +153,7 @@ class SkillLine(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     def skills(self) -> SequenceProxy['Skill']:
         """Return the skills contained in this skill line in order.
 
-        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        This returns a :class:`auraxium.SequenceProxy`.
         """
         query = Query(Skill.collection, service_id=self._client.service_id)
         query.add_term(field=SkillLine.id_field, value=self.id)
@@ -192,7 +192,7 @@ class Skill(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     def grant_item(self) -> InstanceProxy[Item]:
         """Return the item unlocked by this skill.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         item_id = self.data.grant_item_id or -1
         query = Query(Item.collection, service_id=self._client.service_id)
@@ -202,7 +202,7 @@ class Skill(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     def skill_line(self) -> InstanceProxy[SkillLine]:
         """Return the skill line containing this skill.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(SkillLine.collection, service_id=self._client.service_id)
         query.add_term(field=SkillLine.id_field, value=self.data.skill_line_id)

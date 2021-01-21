@@ -48,8 +48,9 @@ class ZoneEffect(Cached, cache_size=10, cache_ttu=60.0):
     """An effect or buff applied by a zone.
 
     Access the corresponding
-    :class:`auraxium.ps2.zone_effect.ZoneEffectType` instance via the
-    :meth:`type` method for information on generic parameters.
+    :class:`auraxium.ps2.ZoneEffectType` instance via the
+    :meth:`ZoneEffect.type` method for information on generic
+    parameters.
 
     Attributes:
         zone_effect_id: The unique ID of this zone effect.

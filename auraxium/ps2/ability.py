@@ -82,8 +82,8 @@ class AbilityType(Cached, cache_size=20, cache_ttu=60.0):
 class Ability(Cached, cache_size=10, cache_ttu=60.0):
     """An ability cast by a character.
 
-    Access the corresponding :class:`auraxium.ps2.ability.AbilityType`
-    instance via the :meth:`type` method for information on generic
+    Access the corresponding :class:`auraxium.ps2.AbilityType` instance
+    via the :meth:`Ability.type` method for information on generic
     parameters.
 
     Attributes:

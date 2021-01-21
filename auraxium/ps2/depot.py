@@ -110,7 +110,7 @@ class MarketingBundleSingle(Cached, cache_size=100, cache_ttu=60.0):
     def item(self) -> InstanceProxy[Item]:
         """Return the item unlocked by the bundle.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(Item.collection, service_id=self._client.service_id)
         query.add_term(field=Item.id_field, value=self.data.item_id)

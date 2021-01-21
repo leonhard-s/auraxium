@@ -74,7 +74,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
 
     This includes the item component of weapons, which is extended by
     weapon specific data in the associated
-    :class:`auraxium.ps2.weapon.Weapon` instance.
+    :class:`auraxium.ps2.Weapon` instance.
 
     Attributes:
         item_id: The unique ID of this item.
@@ -119,7 +119,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     def attachments(self) -> SequenceProxy['Item']:
         """Return the attachment options for this item.
 
-        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        This returns a :class:`auraxium.SequenceProxy`.
         """
         collection: Final[str] = 'item_attachment'
         query = Query(collection, service_id=self._client.service_id)
@@ -132,7 +132,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     def category(self) -> InstanceProxy[ItemCategory]:
         """Return the category of the item.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         if self.data.item_category_id is None:
             raise ValueError(f'{self} does not define a category')
@@ -145,7 +145,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     def faction(self) -> InstanceProxy[Faction]:
         """Return the faction that has access to this item.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         value = self.data.faction_id or -1
         query = Query(Faction.collection, service_id=self._client.service_id)
@@ -166,7 +166,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     def profiles(self) -> SequenceProxy[Profile]:
         """Return the profiles the item is available to.
 
-        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        This returns a :class:`auraxium.SequenceProxy`.
         """
         collection: Final[str] = 'item_profile'
         query = Query(collection, service_id=self._client.service_id)
@@ -179,7 +179,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     def type(self) -> InstanceProxy[ItemType]:
         """Return the type of item.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         if self.data.item_type_id is None:
             raise ValueError(f'{self} does not define a type')
@@ -190,7 +190,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     def weapon(self) -> InstanceProxy['Weapon']:
         """Return the weapon associated with this item, if any.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         from .weapon import Weapon  # pylint: disable=import-outside-toplevel
         collection: Final[str] = 'item_to_weapon'

@@ -139,7 +139,7 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
     def zone(self) -> InstanceProxy[Zone]:
         """Return the zone/continent of the region.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(Zone.collection, service_id=self._client.service_id)
         query.add_term(field=Zone.id_field, value=self.data.zone_id)
@@ -169,7 +169,7 @@ class Region(Named, cache_size=100, cache_ttu=60.0):
     def map_region(self) -> InstanceProxy[MapRegion]:
         """Return the map region associated with this region.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(MapRegion.collection, service_id=self._client.service_id)
         query.add_term(field=MapRegion.id_field, value=self.id)
@@ -178,7 +178,7 @@ class Region(Named, cache_size=100, cache_ttu=60.0):
     def zone(self) -> InstanceProxy[Zone]:
         """Return the zone/continent of the region.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(Zone.collection, service_id=self._client.service_id)
         query.add_term(field=Zone.id_field, value=self.data.zone_id)

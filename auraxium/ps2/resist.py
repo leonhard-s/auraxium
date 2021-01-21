@@ -66,7 +66,7 @@ class ResistInfo(Cached, cache_size=100, cache_ttu=60.0):
     def type(self) -> InstanceProxy[ResistType]:
         """Return the resist type for this entry.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(
             ResistType.collection, service_id=self._client.service_id)

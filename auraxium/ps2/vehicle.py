@@ -51,7 +51,7 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
     def factions(self) -> SequenceProxy[Faction]:
         """Return the factions that have access to this vehicle.
 
-        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        This returns a :class:`auraxium.SequenceProxy`.
         """
         collection: Final[str] = 'vehicle_faction'
         query = Query(collection, service_id=self._client.service_id)
@@ -84,7 +84,7 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
         To avoid duplicates, either generate a set from the returned
         proxy, or specify the faction to resolve skill sets for.
 
-        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        This returns a :class:`auraxium.SequenceProxy`.
         """
         collection: Final[str] = 'vehicle_skill_set'
         query = Query(collection, service_id=self._client.service_id)
@@ -126,7 +126,7 @@ class VehicleAttachment(Cached, cache_size=250, cache_ttu=180.0):
     def faction(self) -> InstanceProxy[Faction]:
         """Return the faction this attachment is available to.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(Faction.collection, service_id=self._client.service_id)
         query.add_term(field=Faction.id_field, value=self.data.faction_id)
@@ -135,7 +135,7 @@ class VehicleAttachment(Cached, cache_size=250, cache_ttu=180.0):
     def item(self) -> InstanceProxy[Item]:
         """Return the attachable item for the vehicle.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(Item.collection, service_id=self._client.service_id)
         query.add_term(field=Item.id_field, value=self.data.item_id)
@@ -144,7 +144,7 @@ class VehicleAttachment(Cached, cache_size=250, cache_ttu=180.0):
     def vehicle(self) -> InstanceProxy[Vehicle]:
         """Return the vehicle the item may be attached to.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(Vehicle.collection, service_id=self._client.service_id)
         query.add_term(field=Vehicle.id_field, value=self.data.vehicle_id)

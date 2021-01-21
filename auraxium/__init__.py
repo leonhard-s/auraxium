@@ -16,6 +16,7 @@ from . import census, errors, ps2
 from ._base import Cached, Named, Ps2Data, Ps2Object
 from ._client import Client
 from ._event import Event, EventClient, EventType, Trigger
+from ._proxy import InstanceProxy, SequenceProxy
 
 __all__ = [
     'Cached',
@@ -25,10 +26,12 @@ __all__ = [
     'Event',
     'EventClient',
     'EventType',
+    'InstanceProxy',
     'Named',
     'ps2',
     'Ps2Data',
     'Ps2Object',
+    'SequenceProxy',
     'Trigger'
 ]
 
