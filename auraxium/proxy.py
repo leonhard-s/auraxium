@@ -6,10 +6,10 @@ import warnings
 from typing import (Any, Dict, Generator, Generic, Iterator, List, Optional,
                     Type, TypeVar)
 
-from .base import Ps2Object
+from ._base import Ps2Object
 from .census import JoinedQuery, Query
 from .client import Client
-from .request import extract_payload
+from ._request import extract_payload
 
 __all__ = [
     'InstanceProxy',
@@ -17,10 +17,10 @@ __all__ = [
     'SequenceProxy'
 ]
 
-Ps2ObjectT = TypeVar('Ps2ObjectT', bound=Ps2Object)
+_Ps2ObjectT = TypeVar('_Ps2ObjectT', bound=Ps2Object)
 
 
-class Proxy(Generic[Ps2ObjectT]):
+class Proxy(Generic[_Ps2ObjectT]):
     """Base class for any proxy objects.
 
     The query object passed must specify the parent field name for all
@@ -34,7 +34,7 @@ class Proxy(Generic[Ps2ObjectT]):
 
     """
 
-    def __init__(self, type_: Type[Ps2ObjectT], query: Query,
+    def __init__(self, type_: Type[_Ps2ObjectT], query: Query,
                  client: Client, lifetime: float = 60.0) -> None:
         """Initialise the proxy.
 
@@ -53,7 +53,7 @@ class Proxy(Generic[Ps2ObjectT]):
         self.query = query
         self._client = client
         self._ttu = lifetime
-        self._data: List[Ps2ObjectT]
+        self._data: List[_Ps2ObjectT]
         self._index: int
         self._lock = asyncio.Lock()
         self._last_fetched = datetime.datetime.utcfromtimestamp(0)
@@ -136,18 +136,18 @@ class Proxy(Generic[Ps2ObjectT]):
         return data
 
 
-class SequenceProxy(Proxy[Ps2ObjectT]):
+class SequenceProxy(Proxy[_Ps2ObjectT]):
     """Proxy for lists of results.
 
     Use this is your joins are returning a list of objects.
 
     """
 
-    def __aiter__(self) -> 'SequenceProxy[Ps2ObjectT]':
+    def __aiter__(self) -> 'SequenceProxy[_Ps2ObjectT]':
         self._index = -1
         return self
 
-    async def __anext__(self) -> Ps2ObjectT:
+    async def __anext__(self) -> _Ps2ObjectT:
         age = datetime.datetime.now() - self._last_fetched
         if age.total_seconds() > self._ttu:
             if self._index > -1:
@@ -159,10 +159,10 @@ class SequenceProxy(Proxy[Ps2ObjectT]):
         except IndexError as err:
             raise StopAsyncIteration from err
 
-    def __await__(self) -> Iterator[List[Ps2ObjectT]]:
+    def __await__(self) -> Iterator[List[_Ps2ObjectT]]:
         return self.flatten().__await__()
 
-    async def flatten(self) -> List[Ps2ObjectT]:
+    async def flatten(self) -> List[_Ps2ObjectT]:
         """Retrieve all elements in the response as a list.
 
         Returns:
@@ -172,17 +172,17 @@ class SequenceProxy(Proxy[Ps2ObjectT]):
         return [e async for e in self]
 
 
-class InstanceProxy(Proxy[Ps2ObjectT]):
+class InstanceProxy(Proxy[_Ps2ObjectT]):
     """Proxy for a single result.
 
     Use this is your joins are returning a single object.
 
     """
 
-    def __await__(self) -> Generator[Any, None, Optional[Ps2ObjectT]]:
+    def __await__(self) -> Generator[Any, None, Optional[_Ps2ObjectT]]:
         return self.resolve().__await__()
 
-    async def resolve(self) -> Optional[Ps2ObjectT]:
+    async def resolve(self) -> Optional[_Ps2ObjectT]:
         """Return the proxy object.
 
         Returns:

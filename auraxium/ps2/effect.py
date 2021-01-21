@@ -3,7 +3,7 @@
 import enum
 from typing import Optional
 
-from ..base import Cached
+from .._base import Cached
 from ..census import Query
 from ..models import EffectData, EffectTypeData
 from ..proxy import InstanceProxy

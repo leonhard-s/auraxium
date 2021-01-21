@@ -1,6 +1,6 @@
 """Currency class definition."""
 
-from ..base import Cached
+from .._base import Cached
 from ..models import CurrencyData
 from ..types import LocaleData
 

@@ -3,12 +3,12 @@
 import logging
 from typing import Final, List, Optional
 
-from ..base import Cached
+from .._base import Cached
 from ..client import Client
 from ..census import Query
 from ..models import WeaponAmmoSlot, WeaponData, WeaponDatasheet
 from ..proxy import InstanceProxy, SequenceProxy
-from ..request import extract_payload, extract_single
+from .._request import extract_payload, extract_single
 
 from .fire import FireGroup
 from .item import Item

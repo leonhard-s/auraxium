@@ -2,7 +2,7 @@
 
 from typing import Final, Optional
 
-from ..base import ImageMixin, Named
+from .._base import ImageMixin, Named
 from ..census import Query
 from ..models import (DirectiveData, DirectiveTierData,
                       DirectiveTreeCategoryData, DirectiveTreeData)

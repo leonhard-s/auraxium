@@ -2,7 +2,7 @@
 
 from typing import Final
 
-from ..base import Cached, FallbackMixin
+from .._base import Cached, FallbackMixin
 from ..census import Query
 from ..models import LoadoutData, ProfileData
 from ..proxy import InstanceProxy, SequenceProxy

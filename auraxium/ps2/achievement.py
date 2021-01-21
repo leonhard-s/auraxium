@@ -3,7 +3,7 @@
 Achievements include weapon medals and service ribbons.
 """
 
-from ..base import ImageMixin, Named
+from .._base import ImageMixin, Named
 from ..models import AchievementData
 from ..types import LocaleData
 

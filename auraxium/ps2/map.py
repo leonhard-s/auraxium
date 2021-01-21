@@ -2,7 +2,7 @@
 
 from typing import Final, Optional, Set
 
-from ..base import Cached, Named
+from .._base import Cached, Named
 from ..census import Query
 from ..models import FacilityTypeData, MapHexData, MapRegionData, RegionData
 from ..proxy import InstanceProxy, SequenceProxy

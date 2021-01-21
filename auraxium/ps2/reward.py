@@ -2,7 +2,7 @@
 
 from typing import Final, Optional
 
-from ..base import Cached
+from .._base import Cached
 from ..census import Query
 from ..client import Client
 from ..models import RewardData, RewardTypeData

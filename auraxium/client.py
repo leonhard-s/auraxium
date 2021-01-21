@@ -15,22 +15,22 @@ from types import TracebackType
 import aiohttp
 
 from .census import Query
-from .request import run_query
+from ._request import run_query
 from .types import CensusData
 
 if TYPE_CHECKING:  # pragma: no cover
     # This is only imported during static type checking to resolve the forward
     # references. This avoids a circular import at runtime.
-    from .base import Named, Ps2Object
+    from ._base import Named, Ps2Object
 
 __all__ = [
     'Client'
 ]
 
-ClientT = TypeVar('ClientT', bound='Client')
-NamedT = TypeVar('NamedT', bound='Named')
-Ps2ObjectT = TypeVar('Ps2ObjectT', bound='Ps2Object')
-log = logging.getLogger('auraxium.client')
+_ClientT = TypeVar('_ClientT', bound='Client')
+_NamedT = TypeVar('_NamedT', bound='Named')
+_Ps2ObjectT = TypeVar('_Ps2ObjectT', bound='Ps2Object')
+_log = logging.getLogger('auraxium.client')
 
 
 class Client:
@@ -76,7 +76,7 @@ class Client:
         self.service_id = service_id
         self.session = aiohttp.ClientSession()
 
-    async def __aenter__(self: ClientT) -> ClientT:
+    async def __aenter__(self: _ClientT) -> _ClientT:
         """Enter the context manager and return the client."""
         return self
 
@@ -122,7 +122,7 @@ class Client:
         Call this to clean up before the client object is destroyed.
 
         """
-        log.info('Shutting down client')
+        _log.info('Shutting down client')
         await self.session.close()
 
     async def count(self, type_: Type['Ps2Object'], **kwargs: Any) -> int:
@@ -138,9 +138,10 @@ class Client:
         """
         return await type_.count(client=self, **kwargs)
 
-    async def find(self, type_: Type[Ps2ObjectT], results: int = 10,
+    async def find(self, type_: Type[_Ps2ObjectT], results: int = 10,
                    offset: int = 0, promote_exact: bool = False,
-                   check_case: bool = True, **kwargs: Any) -> List[Ps2ObjectT]:
+                   check_case: bool = True, **kwargs: Any
+                   ) -> List[_Ps2ObjectT]:
         """Return a list of entries matching the given terms.
 
         This returns up to as many entries as indicated by the results
@@ -168,15 +169,15 @@ class Client:
                                 promote_exact=promote_exact,
                                 check_case=check_case,
                                 client=self, **kwargs)
-        data = cast(List[Ps2ObjectT], data)
+        data = cast(List[_Ps2ObjectT], data)
         if data and not isinstance(data[0], type_):
             raise RuntimeError(
                 f'Expected {type_} instance, got {type(data[0])} '
                 f'instead, please report this bug to the project maintainers')
         return data
 
-    async def get(self, type_: Type[Ps2ObjectT], check_case: bool = True,
-                  **kwargs: Any) -> Optional[Ps2ObjectT]:
+    async def get(self, type_: Type[_Ps2ObjectT], check_case: bool = True,
+                  **kwargs: Any) -> Optional[_Ps2ObjectT]:
         """Return the first entry matching the given terms.
 
         Like :meth:`Client.find()`, but will only return one item.
@@ -193,15 +194,15 @@ class Client:
 
         """
         data = await type_.get(check_case=check_case, client=self, **kwargs)
-        data = cast(Optional[Ps2ObjectT], data)
+        data = cast(Optional[_Ps2ObjectT], data)
         if data is not None and not isinstance(data, type_):
             raise RuntimeError(
                 f'Expected {type_} instance, got {type(data)} instead, '
                 'please report this bug to the project maintainers')
         return data  # type: ignore
 
-    async def get_by_id(self, type_: Type[Ps2ObjectT], id_: int
-                        ) -> Optional[Ps2ObjectT]:
+    async def get_by_id(self, type_: Type[_Ps2ObjectT], id_: int
+                        ) -> Optional[_Ps2ObjectT]:
         """Retrieve an object by its unique Census ID.
 
         Like :meth:`Client.get()`, but checks the local cache before
@@ -216,15 +217,15 @@ class Client:
 
         """
         data = await type_.get_by_id(id_, client=self)
-        data = cast(Optional[Ps2ObjectT], data)
+        data = cast(Optional[_Ps2ObjectT], data)
         if data is not None and not isinstance(data, type_):
             raise RuntimeError(
                 f'Expected {type_} instance, got {type(data)} instead, '
                 'please report this bug to the project maintainers')
         return data  # type: ignore
 
-    async def get_by_name(self, type_: Type[NamedT], name: str, *,
-                          locale: str = 'en') -> Optional[NamedT]:
+    async def get_by_name(self, type_: Type[_NamedT], name: str, *,
+                          locale: str = 'en') -> Optional[_NamedT]:
         """Retrieve an object by its unique name.
 
         Depending on the ``type_`` specified, this may retrieve a
@@ -247,7 +248,7 @@ class Client:
 
         """
         data = await type_.get_by_name(name, locale=locale, client=self)
-        data = cast(Optional[NamedT], data)
+        data = cast(Optional[_NamedT], data)
         if data is not None and not isinstance(data, type_):
             raise RuntimeError(
                 f'Expected {type_} instance, got {type(data)} instead, '
@@ -279,10 +280,10 @@ class Client:
         data = await run_query(query, verb=verb, session=self.session)
         if self.profiling and verb == 'get':
             timing = data.pop('timing')
-            if log.level <= logging.DEBUG:
+            if _log.level <= logging.DEBUG:
                 url = query.url()
-                log.debug('Query times for "%s?%s": %s',
-                          '/'.join(url.parts[-2:]), url.query_string,
-                          ', '.join([f'{k}: {v}' for k, v in timing.items()]))
+                _log.debug('Query times for "%s?%s": %s',
+                           '/'.join(url.parts[-2:]), url.query_string,
+                           ', '.join([f'{k}: {v}' for k, v in timing.items()]))
             self._timing_cache.append(float(timing['total-ms']))
         return data

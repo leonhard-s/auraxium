@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from ..base import Cached
+from .._base import Cached
 from ..census import Query
 from ..models import AbilityData, AbilityTypeData, ResourceTypeData
 from ..proxy import InstanceProxy

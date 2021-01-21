@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from ..base import Ps2Data
+from .._base import Ps2Data
 
 __all__ = [
     'RewardData',

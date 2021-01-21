@@ -3,14 +3,14 @@
 import logging
 from typing import ClassVar, Final, List, Optional, TYPE_CHECKING, Type, Union
 
-from ..base import Cached, Named, NamedT
+from .._base import Cached, Named, NamedT
 from ..cache import TLRUCache
 from ..census import Query
 from ..client import Client
 from ..errors import NotFoundError
 from ..models import OutfitData, OutfitMemberData, OutfitRankData
 from ..proxy import InstanceProxy, SequenceProxy
-from ..request import extract_payload, extract_single
+from .._request import extract_payload, extract_single
 
 if TYPE_CHECKING:  # pragma: no cover
     # This is only imported during static type checking to resolve the

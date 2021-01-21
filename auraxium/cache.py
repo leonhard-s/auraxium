@@ -20,7 +20,7 @@ __all__ = [
 
 _K = TypeVar('_K', bound=Hashable)
 _V = TypeVar('_V', bound=Any)
-log = logging.getLogger('auraxium.cache')
+_log = logging.getLogger('auraxium.cache')
 
 
 @dataclasses.dataclass()
@@ -116,8 +116,8 @@ class TLRUCache(Generic[_K, _V]):
 
         """
         now = datetime.datetime.now()
-        log.debug('%s: Adding %s instance under key %d',
-                  self.name, item.__class__.__name__, key)
+        _log.debug('%s: Adding %s instance under key %d',
+                   self.name, item.__class__.__name__, key)
         self.free(count=1)
         self._data[key] = CacheItem(item, 0, now, now)
 
@@ -141,22 +141,22 @@ class TLRUCache(Generic[_K, _V]):
         now = datetime.datetime.now()
         data = {k: CacheItem(v, 0, now, now) for k, v in items}
         if not data:
-            log.debug('%s: add_many called with empty iterable', self.name)
+            _log.debug('%s: add_many called with empty iterable', self.name)
             return
         count = len(data)
-        if log.isEnabledFor(logging.DEBUG):
+        if _log.isEnabledFor(logging.DEBUG):
             item = next(iter(data.values()))
-            log.debug('%s: Adding %d %s instances',
-                      self.name, count, item.value.__class__.__name__)
+            _log.debug('%s: Adding %d %s instances',
+                       self.name, count, item.value.__class__.__name__)
         self.free(count=count)
         self._data.update(data)
 
     def clear(self) -> None:
         """Clear the cache, removing all items."""
-        if log.isEnabledFor(logging.DEBUG):
+        if _log.isEnabledFor(logging.DEBUG):
             count = len(self._data)
-            log.debug('%s: Clearing cache: %d item%s will be removed',
-                      self.name, count, 's' if count > 1 else '')
+            _log.debug('%s: Clearing cache: %d item%s will be removed',
+                       self.name, count, 's' if count > 1 else '')
         self._data.clear()
 
     def footprint(self) -> int:
@@ -198,9 +198,9 @@ class TLRUCache(Generic[_K, _V]):
             raise ValueError(f'Unable to provide {count} available slots, '
                              f'{self.name} can only hold {self.size} items')
         available = self.size - len(self._data)
-        if log.isEnabledFor(logging.DEBUG):
-            log.debug('%s: %d slot%s requested (available: %d)',
-                      self.name, count, 's' if count > 1 else '', available)
+        if _log.isEnabledFor(logging.DEBUG):
+            _log.debug('%s: %d slot%s requested (available: %d)',
+                       self.name, count, 's' if count > 1 else '', available)
         if self.ttu > 0:
             available += self.remove_expired()
         if available >= count:
@@ -224,21 +224,21 @@ class TLRUCache(Generic[_K, _V]):
         try:
             item = self._data[key]
         except KeyError:
-            log.debug('%s: Key %s not found', self.name, key)
+            _log.debug('%s: Key %s not found', self.name, key)
             return None
         item.access_counter += 1
         if self.ttu > 0:
             age = now - item.first_added
             if age.total_seconds() > self.ttu:
-                log.debug(
+                _log.debug(
                     '%s: Key %d expired, age: %.1f sec. (max: %.1f sec.)',
                     self.name, key, age.total_seconds(), self.ttu)
                 del self._data[key]
                 return None
         else:
-            log.debug('%s: Skipping expiration check (TTU %d)',
-                      self.name, self.ttu)
-        log.debug('%s: Key %d found, moving to top', self.name, key)
+            _log.debug('%s: Skipping expiration check (TTU %d)',
+                       self.name, self.ttu)
+        _log.debug('%s: Key %d found, moving to top', self.name, key)
         self._data.move_to_end(key, last=True)
         item.last_accessed = now
         self._data[key] = item
@@ -307,7 +307,7 @@ class TLRUCache(Generic[_K, _V]):
                 keys_to_remove.append(key)
         _ = [self._data.pop(k) for k in keys_to_remove]
         count = len(keys_to_remove)
-        log.debug('%s: Removed %d expired items', self.name, count)
+        _log.debug('%s: Removed %d expired items', self.name, count)
         return count
 
     def remove_lru(self, count: int = 1) -> None:
@@ -332,7 +332,7 @@ class TLRUCache(Generic[_K, _V]):
             raise ValueError(f'Unable to remove {count} items from '
                              f'{self.name}, cache size is set to {self.size} '
                              'items')
-        log.debug('%s: Removing %d LRU items', self.name, count)
+        _log.debug('%s: Removing %d LRU items', self.name, count)
         for _ in range(count):
             _ = self._data.popitem(last=True)
 

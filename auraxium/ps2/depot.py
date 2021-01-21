@@ -2,11 +2,11 @@
 
 from typing import Final, List, Optional, Tuple
 
-from ..base import Named, Cached
+from .._base import Named, Cached
 from ..census import Query
 from ..models import MarketingBundleData, MarketingBundleSingleData
 from ..proxy import InstanceProxy
-from ..request import extract_payload
+from .._request import extract_payload
 from ..types import LocaleData
 
 from .item import Item
