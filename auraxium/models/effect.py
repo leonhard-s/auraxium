@@ -13,7 +13,7 @@ __all__ = [
 
 
 class EffectData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.effect.Effect`.
+    """Data class for :class:`auraxium.ps2.Effect`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -42,7 +42,7 @@ class EffectData(Ps2Data):
 
 
 class EffectTypeData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.effect.EffectType`.
+    """Data class for :class:`auraxium.ps2.EffectType`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.

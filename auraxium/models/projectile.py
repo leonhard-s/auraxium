@@ -12,7 +12,7 @@ __all__ = [
 
 
 class ProjectileData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.projectile.Projectile`.
+    """Data class for :class:`auraxium.ps2.Projectile`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.

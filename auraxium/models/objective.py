@@ -13,7 +13,7 @@ __all__ = [
 
 
 class ObjectiveData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.ability.Objective`.
+    """Data class for :class:`auraxium.ps2.Objective`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -34,7 +34,7 @@ class ObjectiveData(Ps2Data):
 
 
 class ObjectiveTypeData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.ability.ObjectiveType`.
+    """Data class for :class:`auraxium.ps2.ObjectiveType`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.

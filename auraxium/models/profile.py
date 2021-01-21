@@ -11,7 +11,7 @@ __all__ = [
 
 
 class LoadoutData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.ability.Loadout`.
+    """Data class for :class:`auraxium.ps2.Loadout`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -24,7 +24,7 @@ class LoadoutData(Ps2Data):
 
 
 class ProfileData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.profile.Profile`.
+    """Data class for :class:`auraxium.ps2.Profile`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.

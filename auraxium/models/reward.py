@@ -13,7 +13,7 @@ __all__ = [
 
 
 class RewardData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.ability.Reward`.
+    """Data class for :class:`auraxium.ps2.Reward`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -31,7 +31,7 @@ class RewardData(Ps2Data):
 
 
 class RewardTypeData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.ability.ResourceType`.
+    """Data class for :class:`auraxium.ps2.RewardType`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.

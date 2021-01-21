@@ -13,7 +13,7 @@ __all__ = [
 
 
 class MetagameEventData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.metagame.MetagameEvent`.
+    """Data class for :class:`auraxium.ps2.MetagameEvent`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.

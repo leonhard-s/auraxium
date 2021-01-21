@@ -13,7 +13,7 @@ __all__ = [
 
 
 class ZoneEffectData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.zone_effect.ZoneEffectData`.
+    """Data class for :class:`auraxium.ps2.ZoneEffectData`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -31,7 +31,7 @@ class ZoneEffectData(Ps2Data):
 
 
 class ZoneEffectTypeData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.zone_effect.ZoneEffectType`.
+    """Data class for :class:`auraxium.ps2.ZoneEffectType`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.

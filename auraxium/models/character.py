@@ -47,7 +47,7 @@ class CharacterAchievement(Ps2Data):
 
 
 class CharacterData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.character.Character`.
+    """Data class for :class:`auraxium.ps2.Character`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -177,7 +177,7 @@ class CharacterDirective(Ps2Data):
 
 
 class TitleData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.character.Title`.
+    """Data class for :class:`auraxium.ps2.Title`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.

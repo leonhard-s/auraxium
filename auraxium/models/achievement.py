@@ -11,11 +11,10 @@ __all__ = [
 
 
 class AchievementData(Ps2Data, ImageData):
-    """Data class for :class:`auraxium.ps2.achievement.Achievement`.
+    """Data class for :class:`auraxium.ps2.Achievement`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
-
     """
 
     achievement_id: int

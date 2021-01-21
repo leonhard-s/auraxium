@@ -16,7 +16,7 @@ __all__ = [
 
 
 class DirectiveData(Ps2Data, ImageData):
-    """Data class for :class:`auraxium.ps2.directive.Directive`.
+    """Data class for :class:`auraxium.ps2.Directive`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -32,7 +32,7 @@ class DirectiveData(Ps2Data, ImageData):
 
 
 class DirectiveTierData(Ps2Data, ImageData):
-    """Data class for :class:`auraxium.ps2.directive.DirectiveTier`.
+    """Data class for :class:`auraxium.ps2.DirectiveTier`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -47,7 +47,7 @@ class DirectiveTierData(Ps2Data, ImageData):
 
 
 class DirectiveTreeData(Ps2Data, ImageData):
-    """Data class for :class:`auraxium.ps2.directive.DirectiveTree`.
+    """Data class for :class:`auraxium.ps2.DirectiveTree`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -60,7 +60,7 @@ class DirectiveTreeData(Ps2Data, ImageData):
 
 
 class DirectiveTreeCategoryData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.directive.DirectiveTreeCategory`.
+    """Data class for :class:`auraxium.ps2.DirectiveTreeCategory`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.

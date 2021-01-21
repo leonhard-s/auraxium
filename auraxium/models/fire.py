@@ -14,7 +14,7 @@ __all__ = [
 
 
 class FireModeData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.ability.FireMode`.
+    """Data class for :class:`auraxium.ps2.FireMode`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -111,7 +111,7 @@ class FireModeData(Ps2Data):
 
 
 class FireGroupData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.ability.FireGroup`.
+    """Data class for :class:`auraxium.ps2.FireGroup`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.

@@ -14,7 +14,7 @@ __all__ = [
 
 
 class MarketingBundleData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.depot.MarketingBundle`.
+    """Data class for :class:`auraxium.ps2.MarketingBundle`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -30,7 +30,7 @@ class MarketingBundleData(Ps2Data):
 
 
 class MarketingBundleSingleData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.depot.MarketingBundleSingle`.
+    """Data class for :class:`auraxium.ps2.MarketingBundleSingle`.
 
     This is generally used for the single-item "bundles" in the depot,
     i.e. any single weapon or cosmetic purchasable on its own.

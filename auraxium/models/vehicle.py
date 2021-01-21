@@ -14,7 +14,7 @@ __all__ = [
 
 
 class VehicleAttachmentData(Ps2Data):
-    """Data class for :class:`auraxium.ps2.vehicle.VehicleAttachment`.
+    """Data class for :class:`auraxium.ps2.VehicleAttachment`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -28,7 +28,7 @@ class VehicleAttachmentData(Ps2Data):
 
 
 class VehicleData(Ps2Data, ImageData):
-    """Data class for :class:`auraxium.ps2.vehicle.Vehicle`.
+    """Data class for :class:`auraxium.ps2.Vehicle`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
