@@ -35,7 +35,6 @@ __all__ = [
 _T = TypeVar('_T')
 _CachedT = TypeVar('_CachedT', bound='Cached')
 _NamedT = TypeVar('_NamedT', bound='Named')
-_Ps2DataT = TypeVar('_Ps2DataT', bound='Ps2Data')
 _Ps2ObjectT = TypeVar('_Ps2ObjectT', bound='Ps2Object')
 _log = logging.getLogger('auraxium.ps2')
 
@@ -78,6 +77,9 @@ class Ps2Data(pydantic.BaseModel, metaclass=abc.ABCMeta):
         ``Optional[int] = None``, which is why they are silently
         converted into ``None`` before any parsing takes place.
         """
+        # NOTE: Making this a static method is not possible due to the way
+        # pydantic validators are registered, hence the unused class attribute.
+        _ = cls
         if value == 'NULL':
             return None
         return value
