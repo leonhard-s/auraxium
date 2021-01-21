@@ -40,7 +40,7 @@ class EffectType(Cached, cache_size=20, cache_ttu=60.0):
 
     collection = 'effect_type'
     data: EffectTypeData
-    dataclass = EffectTypeData
+    _dataclass = EffectTypeData
     id_field = 'effect_type_id'
 
     # Type hints for data class fallback attributes
@@ -85,7 +85,7 @@ class Effect(Cached, cache_size=10, cache_ttu=60.0):
 
     collection = 'effect'
     data: EffectData
-    dataclass = EffectData
+    _dataclass = EffectData
     id_field = 'effect_id'
 
     # Type hints for data class fallback attributes

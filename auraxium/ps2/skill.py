@@ -33,7 +33,7 @@ class SkillSet(Named, ImageMixin, cache_size=100, cache_ttu=60.0):
 
     collection = 'skill_set'
     data: SkillSetData
-    dataclass = SkillSetData
+    _dataclass = SkillSetData
     id_field = 'skill_set_id'
 
     # Type hints for data class fallback attributes
@@ -83,7 +83,7 @@ class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
 
     collection = 'skill_category'
     data: SkillCategoryData
-    dataclass = SkillCategoryData
+    _dataclass = SkillCategoryData
     id_field = 'skill_category_id'
 
     # Type hints for data class fallback attributes
@@ -129,7 +129,7 @@ class SkillLine(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
 
     collection = 'skill_line'
     data: SkillLineData
-    dataclass = SkillLineData
+    _dataclass = SkillLineData
     id_field = 'skill_line_id'
 
     # Type hints for data class fallback attributes
@@ -178,7 +178,7 @@ class Skill(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
 
     collection = 'skill'
     data: SkillData
-    dataclass = SkillData
+    _dataclass = SkillData
     id_field = 'skill_id'
 
     # Type hints for data class fallback attributes

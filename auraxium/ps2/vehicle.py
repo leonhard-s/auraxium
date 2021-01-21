@@ -37,7 +37,7 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
 
     collection = 'vehicle'
     data: VehicleData
-    dataclass = VehicleData
+    _dataclass = VehicleData
     id_field = 'vehicle_id'
 
     # Type hints for data class fallback attributes
@@ -113,7 +113,7 @@ class VehicleAttachment(Cached, cache_size=250, cache_ttu=180.0):
 
     collection = 'vehicle_attachment'
     data: VehicleAttachmentData
-    dataclass = VehicleAttachmentData
+    _dataclass = VehicleAttachmentData
     id_field = 'vehicle_attachment_id'
 
     # Type hints for data class fallback attributes

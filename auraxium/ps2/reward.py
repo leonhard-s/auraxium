@@ -32,7 +32,7 @@ class RewardType(Cached, cache_size=10, cache_ttu=3600.0):
 
     collection = 'reward_type'
     data: RewardTypeData
-    dataclass = RewardTypeData
+    _dataclass = RewardTypeData
     id_field = 'reward_type_id'
 
     # Type hints for data class fallback attributes
@@ -66,7 +66,7 @@ class Reward(Cached, cache_size=50, cache_ttu=60.0):
 
     collection = 'reward'
     data: RewardData
-    dataclass = RewardData
+    _dataclass = RewardData
     id_field = 'reward_id'
 
     # Type hints for data class fallback attributes

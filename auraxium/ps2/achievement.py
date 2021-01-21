@@ -33,7 +33,7 @@ class Achievement(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
 
     collection = 'achievement'
     data: AchievementData
-    dataclass = AchievementData
+    _dataclass = AchievementData
     id_field = 'achievement_id'
 
     # Type hints for data class fallback attributes

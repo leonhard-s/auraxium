@@ -45,7 +45,7 @@ class Title(Named, cache_size=300, cache_ttu=300.0):
 
     collection = 'title'
     data: TitleData
-    dataclass = TitleData
+    _dataclass = TitleData
     id_field = 'title_id'
 
     # Type hints for data class fallback attributes
@@ -73,7 +73,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     _cache: ClassVar[TLRUCache[Union[int, str], 'Character']]
     collection = 'character'
     data: CharacterData
-    dataclass = CharacterData
+    _dataclass = CharacterData
     id_field = 'character_id'
 
     # Type hints for data class fallback attributes

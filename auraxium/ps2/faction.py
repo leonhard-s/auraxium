@@ -21,7 +21,7 @@ class Faction(Named, ImageMixin, cache_size=10):
 
     collection = 'faction'
     data: FactionData
-    dataclass = FactionData
+    _dataclass = FactionData
     id_field = 'faction_id'
 
     # Type hints for data class fallback attributes

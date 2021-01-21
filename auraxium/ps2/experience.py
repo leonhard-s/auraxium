@@ -37,7 +37,7 @@ class Experience(Cached, cache_size=100, cache_ttu=3600.0):
 
     collection = 'experience'
     data: ExperienceData
-    dataclass = ExperienceData
+    _dataclass = ExperienceData
     id_field = 'experience_id'
 
     # Type hints for data class fallback attributes
@@ -63,7 +63,7 @@ class ExperienceRank:
 
     collection = 'experience_rank'
     data: ExperienceRankData
-    dataclass = ExperienceRankData
+    _dataclass = ExperienceRankData
 
     # Type hints for data class fallback attributes
     rank: int

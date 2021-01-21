@@ -46,7 +46,7 @@ class OutfitMember(Cached, cache_size=100, cache_ttu=300.0):
 
     collection = 'outfit_member'
     data: OutfitMemberData
-    dataclass = OutfitMemberData
+    _dataclass = OutfitMemberData
     id_field = 'character_id'
 
     # Type hints for data class fallback attributes
@@ -103,7 +103,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
     _cache: ClassVar[TLRUCache[Union[int, str], 'Outfit']]
     collection = 'outfit'
     data: OutfitData
-    dataclass = OutfitData
+    _dataclass = OutfitData
     id_field = 'outfit_id'
 
     # Type hints for data class fallback attributes

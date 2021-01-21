@@ -27,7 +27,7 @@ class ResourceType(Cached, cache_size=50, cache_ttu=3600.0):
 
     collection = 'resource_type'
     data: ResourceTypeData
-    dataclass = ResourceTypeData
+    _dataclass = ResourceTypeData
     id_field = 'resource_type_id'
 
     # Type hints for data class fallback attributes
@@ -53,7 +53,7 @@ class AbilityType(Cached, cache_size=20, cache_ttu=60.0):
 
     collection = 'ability_type'
     data: AbilityTypeData
-    dataclass = AbilityTypeData
+    _dataclass = AbilityTypeData
     id_field = 'ability_type_id'
 
     # Type hints for data class fallback attributes
@@ -108,7 +108,7 @@ class Ability(Cached, cache_size=10, cache_ttu=60.0):
 
     collection = 'ability'
     data: AbilityData
-    dataclass = AbilityData
+    _dataclass = AbilityData
     id_field = 'ability_id'
 
     # Type hints for data class fallback attributes

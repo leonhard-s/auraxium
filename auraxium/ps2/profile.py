@@ -36,7 +36,7 @@ class Profile(Cached, cache_size=200, cache_ttu=60.0):
 
     collection = 'profile_2'
     data: ProfileData
-    dataclass = ProfileData
+    _dataclass = ProfileData
     id_field = 'profile_id'
 
     # Type hints for data class fallback attributes
@@ -99,7 +99,7 @@ class Loadout(Cached, FallbackMixin, cache_size=20, cache_ttu=3600.0):
 
     collection = 'loadout'
     data: LoadoutData
-    dataclass = LoadoutData
+    _dataclass = LoadoutData
     id_field = 'loadout_id'
     _fallback = {k: _get_fallback(k) for k in (*range(28, 33), 45)}
 

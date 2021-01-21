@@ -40,7 +40,7 @@ class TestModels(unittest.TestCase):
                 if not hasattr(type_, 'collection'):
                     continue
                 if type_.collection == collection:
-                    cls_ = type_.dataclass
+                    cls_ = type_._dataclass
             assert cls_ is not None, (
                 f'Type for collection "{collection}" not found')
             # Instantiate any payloads found

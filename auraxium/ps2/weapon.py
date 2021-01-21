@@ -57,7 +57,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
 
     collection = 'weapon'
     data: WeaponData
-    dataclass = WeaponData
+    _dataclass = WeaponData
     id_field = 'weapon_id'
 
     # Type hints for data class fallback attributes

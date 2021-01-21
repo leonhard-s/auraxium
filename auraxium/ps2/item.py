@@ -37,7 +37,7 @@ class ItemCategory(Named, cache_size=32, cache_ttu=3600.0):
 
     collection = 'item_category'
     data: ItemCategoryData
-    dataclass = ItemCategoryData
+    _dataclass = ItemCategoryData
     id_field = 'item_category_id'
 
     # Type hints for data class fallback attributes
@@ -61,7 +61,7 @@ class ItemType(Cached, cache_size=10, cache_ttu=60.0):
 
     collection = 'item_type'
     data: ItemTypeData
-    dataclass = ItemTypeData
+    _dataclass = ItemTypeData
     id_field = 'item_type_id'
 
     # Type hints for data class fallback attributes
@@ -100,7 +100,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
 
     collection = 'item'
     data: ItemData
-    dataclass = ItemData
+    _dataclass = ItemData
     id_field = 'item_id'
 
     # Type hints for data class fallback attributes

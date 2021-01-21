@@ -33,7 +33,7 @@ class DirectiveTreeCategory(Named, ImageMixin, cache_size=10, cache_ttu=300.0):
 
     collection = 'directive_tree_category'
     data: DirectiveTreeCategoryData
-    dataclass = DirectiveTreeCategoryData
+    _dataclass = DirectiveTreeCategoryData
     id_field = 'directive_tree_category_id'
 
     # Type hints for data class fallback attributes
@@ -65,7 +65,7 @@ class DirectiveTree(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
 
     collection = 'directive_tree'
     data: DirectiveTreeData
-    dataclass = DirectiveTreeData
+    _dataclass = DirectiveTreeData
     id_field = 'directive_tree_id'
 
     # Type hints for data class fallback attributes
@@ -124,7 +124,7 @@ class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
 
     collection = 'directive_tier'
     data: DirectiveTierData
-    dataclass = DirectiveTierData
+    _dataclass = DirectiveTierData
     id_field = 'directive_tier_id'
 
     # Type hints for data class fallback attributes
@@ -172,7 +172,7 @@ class Directive(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
 
     collection = 'directive'
     data: DirectiveData
-    dataclass = DirectiveData
+    _dataclass = DirectiveData
     id_field = 'directive_id'
 
     # Type hints for data class fallback attributes

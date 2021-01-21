@@ -36,7 +36,7 @@ class Zone(Named, cache_size=20, cache_ttu=3600.0):
 
     collection = 'zone'
     data: ZoneData
-    dataclass = ZoneData
+    _dataclass = ZoneData
     id_field = 'zone_id'
 
     # Type hints for data class fallback attributes

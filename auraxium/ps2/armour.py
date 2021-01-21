@@ -48,7 +48,7 @@ class ArmourInfo(Cached, cache_size=100, cache_ttu=60.0):
 
     collection = 'armor_info'
     data: ArmourInfoData
-    dataclass = ArmourInfoData
+    _dataclass = ArmourInfoData
     id_field = 'armor_info_id'
 
     # Type hints for data class fallback attributes

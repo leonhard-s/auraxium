@@ -36,7 +36,7 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
 
     collection = 'marketing_bundle'
     data: MarketingBundleData
-    dataclass = MarketingBundleData
+    _dataclass = MarketingBundleData
     id_field = 'marketing_bundle_id'
 
     # Type hints for data class fallback attributes
@@ -96,7 +96,7 @@ class MarketingBundleSingle(Cached, cache_size=100, cache_ttu=60.0):
 
     collection = 'marketing_bundle_with_1_item'
     data: MarketingBundleSingleData
-    dataclass = MarketingBundleSingleData
+    _dataclass = MarketingBundleSingleData
     id_field = 'marketing_bundle_id'
 
     # Type hints for data class fallback attributes
