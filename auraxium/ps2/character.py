@@ -281,17 +281,18 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         This will always return the capitalised version of the name.
         Use the built-int str.lower() method for a lowercase version.
         """
+        _ = locale
         return str(self.data.name.first)
 
-    async def name_long(self) -> str:
+    async def name_long(self, locale: str = 'en') -> str:
         """Return the full name of the player.
 
         This includes an optional player title if the player has
         selected one.
         """
-        if (title := await self.title()) is not None:
-            return f'{title.name()} {self.name()}'
-        return self.name()
+        if self.title_id == 0:
+            return self.name(locale)
+        return f'{(await self.title()).name(locale)} {self.name(locale)}'
 
     async def online_status(self) -> int:
         """Return the online status of the character.
