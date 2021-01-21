@@ -5,7 +5,7 @@ from typing import Dict, Iterable, List, Optional, Tuple, Union
 
 import yarl
 
-from .support import JoinedQueryData, QueryData
+from ._support import JoinedQueryData, QueryData
 
 __all__ = [
     'generate_url',

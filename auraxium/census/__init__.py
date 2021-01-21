@@ -54,8 +54,8 @@ Example:
 
 """
 
-from .query import JoinedQuery, Query, QueryBase
-from .support import SearchModifier, SearchTerm
+from ._query import JoinedQuery, Query, QueryBase
+from ._support import SearchModifier, SearchTerm
 
 __all__ = [
     'JoinedQuery',
