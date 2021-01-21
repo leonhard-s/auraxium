@@ -22,7 +22,7 @@ __all__ = [
     'OutfitMember'
 ]
 
-log = logging.getLogger('auraxium.ps2')
+_log = logging.getLogger('auraxium.ps2')
 
 
 class OutfitMember(Cached, cache_size=100, cache_ttu=300.0):
@@ -124,12 +124,12 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         This query is always case-insensitive.
 
         """
-        log.debug('%s "%s"[%s] requested', cls.__name__, name, locale)
+        _log.debug('%s "%s"[%s] requested', cls.__name__, name, locale)
         if (instance := cls._cache.get(f'_{name.lower()}')) is not None:
-            log.debug('%r restored from cache', instance)
+            _log.debug('%r restored from cache', instance)
             return instance
-        log.debug('%s "%s"[%s] not cached, generating API query...',
-                  cls.__name__, name, locale)
+        _log.debug('%s "%s"[%s] not cached, generating API query...',
+                   cls.__name__, name, locale)
         query = Query(cls.collection, service_id=client.service_id,
                       name_lower=name.lower()).limit(1)
         data = await client.request(query)
@@ -146,8 +146,8 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         This query is always case-insensitive.
 
         """
-        log.debug('%s with tag "%s" requested, generating API query...',
-                  cls.__name__, tag)
+        _log.debug('%s with tag "%s" requested, generating API query...',
+                   cls.__name__, tag)
         query = Query(cls.collection, service_id=client.service_id,
                       alias_lower=tag.lower()).limit(1)
         data = await client.request(query)

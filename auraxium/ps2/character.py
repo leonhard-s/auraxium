@@ -24,7 +24,7 @@ __all__ = [
     'Title'
 ]
 
-log = logging.getLogger('auraxium.ps2')
+_log = logging.getLogger('auraxium.ps2')
 
 
 class Title(Named, cache_size=300, cache_ttu=300.0):
@@ -221,12 +221,12 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
         This query is always case-insensitive.
         """
-        log.debug('%s "%s"[%s] requested', cls.__name__, name, locale)
+        _log.debug('%s "%s"[%s] requested', cls.__name__, name, locale)
         if (instance := cls._cache.get(f'_{name.lower()}')) is not None:
-            log.debug('%r restored from cache', instance)
+            _log.debug('%r restored from cache', instance)
             return instance
-        log.debug('%s "%s"[%s] not cached, generating API query...',
-                  cls.__name__, name, locale)
+        _log.debug('%s "%s"[%s] not cached, generating API query...',
+                   cls.__name__, name, locale)
         query = Query(cls.collection, service_id=client.service_id,
                       name__first_lower=name.lower()).limit(1)
         data = await client.request(query)
@@ -242,7 +242,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         """Retrieve the characters that are online from a list."""
         char_ids = [id_]
         char_ids.extend(args)
-        log.debug('Retrieving online status for %s characters', len(char_ids))
+        _log.debug('Retrieving online status for %s characters', len(char_ids))
         query = Query(cls.collection, service_id=client.service_id,
                       character_id=','.join(str(c) for c in char_ids))
         query.limit(len(char_ids)).resolve('online_status')

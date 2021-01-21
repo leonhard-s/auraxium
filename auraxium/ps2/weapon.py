@@ -1,6 +1,5 @@
 """Weapon class definition."""
 
-import logging
 from typing import Final, List, Optional
 
 from .._base import Cached
@@ -18,8 +17,6 @@ __all__ = [
     'WeaponAmmoSlot',
     'WeaponDatasheet'
 ]
-
-log = logging.getLogger('auraxium')
 
 
 class Weapon(Cached, cache_size=128, cache_ttu=3600.0):

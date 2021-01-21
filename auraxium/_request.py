@@ -36,7 +36,7 @@ __all__ = [
     'run_query'
 ]
 
-log = logging.getLogger('auraxium.http')
+_log = logging.getLogger('auraxium.http')
 
 
 def get_components(url: yarl.URL) -> Tuple[str, Optional[str]]:
@@ -106,7 +106,7 @@ async def response_to_dict(response: aiohttp.ClientResponse) -> CensusData:
             # error propagate.
             raise ResponseError(
                 f'Received a non-JSON response: {text}') from err
-        log.info(
+        _log.info(
             'Received a plain text response containing JSON data: %s', text)
         return data
     return data
@@ -339,27 +339,27 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
 
     """
     url = query.url(verb=verb)
-    log.debug('Performing %s request: %s', verb.upper(), url)
+    _log.debug('Performing %s request: %s', verb.upper(), url)
 
     def on_success(details: Dict[str, Any]) -> None:
         """Called when a query is successful."""
         if (tries := details['tries']) > 1:
-            log.debug('Query successful after %d tries: %s',
-                      tries, url)
+            _log.debug('Query successful after %d tries: %s',
+                       tries, url)
 
     def on_backoff(details: Dict[str, Any]) -> None:
         """Called when a query failed and is backed off."""
         wait = details['wait']
         tries = details['tries']
-        log.debug('Backing off %.2f seconds after %d attempts: %s',
-                  wait, tries, url)
+        _log.debug('Backing off %.2f seconds after %d attempts: %s',
+                   wait, tries, url)
 
     def on_giveup(details: Dict[str, Any]) -> None:
         """Called when giving up on a query."""
         elapsed: float = details['elapsed']
         tries: int = details['tries']
-        log.warning('Giving up on query and re-raising exception after %.2f '
-                    'seconds and %d attempts: %s', elapsed, tries, url)
+        _log.warning('Giving up on query and re-raising exception after %.2f '
+                     'seconds and %d attempts: %s', elapsed, tries, url)
         _, exc_value, _ = sys.exc_info()
         assert exc_value is not None
         raise exc_value

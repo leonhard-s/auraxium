@@ -21,7 +21,7 @@ __all__ = [
     'ExperienceRank'
 ]
 
-log = logging.getLogger('auraxium.ps2')
+_log = logging.getLogger('auraxium.ps2')
 
 
 class Experience(Cached, cache_size=100, cache_ttu=3600.0):
@@ -81,8 +81,8 @@ class ExperienceRank:
         This populates the object using the provided payload.
         """
         rank = int(data['rank'])
-        log.debug('Instantiating <%s:%d> using payload: %s',
-                  self.__class__.__name__, rank, data)
+        _log.debug('Instantiating <%s:%d> using payload: %s',
+                   self.__class__.__name__, rank, data)
         self._client = client
         try:
             self.data = ExperienceRankData(**data)
