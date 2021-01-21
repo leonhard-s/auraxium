@@ -12,9 +12,7 @@ For additional information, bug reports or feature requests, visit the
 project's repository at https://github.com/leonhard-s/auraxium.
 """
 
-from . import census
-from . import errors
-from . import ps2
+from . import census, errors, ps2
 from ._base import Cached, Named, Ps2Data, Ps2Object
 from ._client import Client
 from ._event import Event, EventClient, EventType, Trigger
