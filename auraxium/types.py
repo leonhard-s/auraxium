@@ -1,16 +1,13 @@
 """Custom types used by the auraxium module."""
 
-from typing import Any, Callable, Dict, Optional, TypeVar
+from typing import Any, Dict, Optional
 
 import pydantic
 
 __all__ = [
     'CensusData',
-    'LocaleData',
-    'optional'
+    'LocaleData'
 ]
-
-_T = TypeVar('_T')
 
 
 # NOTE: The inner dict's value is typed as "Any" due to Mypy not supporting
@@ -48,28 +45,3 @@ class LocaleData(pydantic.BaseModel):
         localised string field is ``NULL``.
         """
         return cls()
-
-
-def optional(data: CensusData, key: str,
-             cast: Callable[[Any], _T]) -> Optional[_T]:
-    """Cast an optional dictionary value to a given type.
-
-    This is a helper method that acts much like :meth:`dict.get()`, but
-    also casts the retrieved value to the given type if it is not None.
-
-    Arguments:
-        data: The dictionary to process.
-        key: The key to access.
-        cast: The type to cast the value to if it exists.
-
-    Returns:
-        The cast value retrieved from the dictionary, or None.
-
-    """
-    raw: Optional[_T]
-    if (raw := data.pop(key, None)) is not None:
-        if raw == 'NULL':
-            raw = None
-        else:
-            raw = cast(raw)
-    return raw
