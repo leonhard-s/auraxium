@@ -6,7 +6,7 @@ from typing import List, TYPE_CHECKING, Union
 import pydantic
 
 from .._base import Cached
-from ..client import Client
+from .._client import Client
 from ..errors import PayloadError
 from ..models import ExperienceData, ExperienceRankData
 from ..types import CensusData

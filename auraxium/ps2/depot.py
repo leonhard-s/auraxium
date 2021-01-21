@@ -5,7 +5,7 @@ from typing import Final, List, Optional, Tuple
 from .._base import Named, Cached
 from ..census import Query
 from ..models import MarketingBundleData, MarketingBundleSingleData
-from ..proxy import InstanceProxy
+from .._proxy import InstanceProxy
 from .._request import extract_payload
 from ..types import LocaleData
 

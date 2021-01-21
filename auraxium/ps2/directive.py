@@ -6,7 +6,7 @@ from .._base import ImageMixin, Named
 from ..census import Query
 from ..models import (DirectiveData, DirectiveTierData,
                       DirectiveTreeCategoryData, DirectiveTreeData)
-from ..proxy import InstanceProxy, SequenceProxy
+from .._proxy import InstanceProxy, SequenceProxy
 from ..types import LocaleData
 
 from .objective import Objective

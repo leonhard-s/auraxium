@@ -17,7 +17,7 @@ from typing import (Any, Awaitable, Callable, Coroutine, Dict, Iterable,
 
 import websockets
 
-from .client import Client
+from ._client import Client
 from .types import CensusData
 from ._utils import expo_scaled
 

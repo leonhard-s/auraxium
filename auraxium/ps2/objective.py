@@ -4,7 +4,7 @@ from typing import Optional
 from .._base import Cached
 from ..census import Query
 from ..models import ObjectiveData, ObjectiveTypeData
-from ..proxy import InstanceProxy
+from .._proxy import InstanceProxy
 
 __all__ = [
     'Objective',

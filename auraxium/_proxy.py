@@ -8,7 +8,7 @@ from typing import (Any, Dict, Generator, Generic, Iterator, List, Optional,
 
 from ._base import Ps2Object
 from .census import JoinedQuery, Query
-from .client import Client
+from ._client import Client
 from ._request import extract_payload
 
 __all__ = [

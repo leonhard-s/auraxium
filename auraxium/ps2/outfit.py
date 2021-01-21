@@ -3,13 +3,13 @@
 import logging
 from typing import ClassVar, Final, List, Optional, TYPE_CHECKING, Type, Union
 
-from .._base import Cached, Named, NamedT
+from .._base import Cached, Named, _NamedT
 from ..cache import TLRUCache
 from ..census import Query
-from ..client import Client
+from .._client import Client
 from ..errors import NotFoundError
 from ..models import OutfitData, OutfitMemberData, OutfitRankData
-from ..proxy import InstanceProxy, SequenceProxy
+from .._proxy import InstanceProxy, SequenceProxy
 from .._request import extract_payload, extract_single
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -117,8 +117,8 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
     member_count: int
 
     @classmethod
-    async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
-                          client: Client) -> Optional[NamedT]:
+    async def get_by_name(cls: Type[_NamedT], name: str, *, locale: str = 'en',
+                          client: Client) -> Optional[_NamedT]:
         """Retrieve an outfit by its unique name.
 
         This query is always case-insensitive.

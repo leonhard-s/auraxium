@@ -6,10 +6,10 @@ from typing import Any, ClassVar, Final, List, Optional, Tuple, Type, Union
 from .._base import Named, _NamedT
 from ..cache import TLRUCache
 from ..census import Query
-from ..client import Client
+from .._client import Client
 from ..errors import NotFoundError
 from ..models import CharacterAchievement, TitleData, CharacterData
-from ..proxy import InstanceProxy, SequenceProxy
+from .._proxy import InstanceProxy, SequenceProxy
 from .._request import extract_payload, extract_single
 from ..types import CensusData
 
