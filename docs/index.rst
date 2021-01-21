@@ -46,6 +46,11 @@ Documentation Contents
    Weapons and Fire Modes <ps2/weapons>
    Servers and Continents <ps2/world>
 
+.. toctree::
+   :caption: Manuals
+   
+   Collection Reference <collections>
+
 Indices and Tables
 ------------------
 
