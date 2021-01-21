@@ -50,8 +50,8 @@ class RewardType(Cached, cache_size=10, cache_ttu=3600.0):
 class Reward(Cached, cache_size=50, cache_ttu=60.0):
     """A reward awarded to a player.
 
-    Access the corresponding :class:`auraxium.ps2.RewardType`
-    instance via the :meth:`type` method for information on generic
+    Access the corresponding :class:`auraxium.ps2.RewardType` instance
+    via the :meth:`Reward.type` method for information on generic
     parameters.
 
     Attributes:
