@@ -28,25 +28,13 @@ Documentation Contents
    :caption: Basic usage
 
    The Auraxium Client <core>
+   Event Streaming <ess>
+   URL Generation <census>
 
 .. toctree::
    :caption: API Reference
 
-   Event Streaming <ess>
-   The Census Module <census>
-
-.. toctree::
-   :caption: PlanetSide 2 Object Model
-
-   Characters and Players <ps2/character>
-   Items and Bundles <ps2/items>
-   Game Mechanics and Damage Resistance <ps2/mechanics>
-   Events and Alertrs <ps2/metagame>
-   Outfits and Members <ps2/outfit>
-   Player Progression and Directives <ps2/progression>
-   Vehicles <ps2/vehicle>
-   Weapons and Fire Modes <ps2/weapons>
-   Servers and Continents <ps2/world>
+   PlanetSide 2 Object Reference <ps2>
 
 .. toctree::
    :caption: Manuals
