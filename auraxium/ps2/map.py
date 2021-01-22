@@ -6,7 +6,6 @@ from .._base import Cached, Named
 from ..census import Query
 from ..models import FacilityTypeData, MapHexData, MapRegionData, RegionData
 from .._proxy import InstanceProxy, SequenceProxy
-from ..types import LocaleData
 
 from .zone import Zone
 

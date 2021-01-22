@@ -2,7 +2,6 @@
 
 from .._base import ImageMixin, Named
 from ..models import FactionData
-from ..types import LocaleData
 
 __all__ = [
     'Faction'
