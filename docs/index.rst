@@ -42,7 +42,7 @@ Documentation Contents
    Collection Reference <collections>
 
 Indices and Tables
-------------------
+==================
 
 * :ref:`genindex`
 * :ref:`search`
