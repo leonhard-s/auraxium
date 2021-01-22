@@ -1,3 +1,7 @@
+# type: ignore
+# pylint: disable=unused-variable
+"""Print whenever any player receives a new battle rank."""
+
 import asyncio
 import auraxium
 
@@ -8,7 +12,7 @@ async def main():
     client = auraxium.EventClient(service_id='s:example')
 
     @client.trigger(auraxium.EventType.BATTLE_RANK_UP)
-    async def print_levelup(event):
+    async def print_levelup(event: auraxium.Event):
         char_id = int(event.payload['character_id'])
         char = await client.get_by_id(auraxium.Character, char_id)
 
