@@ -350,8 +350,9 @@ class Trigger:
                 return False
         # Check custom trigger conditions
         for condition in self.conditions:
-            if callable(condition):
-                if not condition(payload):
+            if (callable(condition)
+                    and not asyncio.iscoroutinefunction(condition)):
+                if not condition(event):
                     return False
             elif not condition:
                 return False
