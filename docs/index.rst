@@ -25,7 +25,7 @@ Documentation Contents
 ======================
 
 .. toctree::
-   :caption: Basic usage
+   :caption: Basic Usage
 
    The Auraxium Client <core>
    Event Streaming <ess>
@@ -37,7 +37,7 @@ Documentation Contents
    PlanetSide 2 Object Reference <ps2>
 
 .. toctree::
-   :caption: Manuals
+   :caption: Miscellaneous
    
    Collection Reference <collections>
 
