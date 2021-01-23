@@ -47,6 +47,9 @@ exclude_patterns = ['_build']
 # The documentation master file
 master_doc = 'index'
 
+# Add parentheses to any function and method references
+add_function_parentheses = True
+
 
 # -- Options for HTML output -------------------------------------------------
 
