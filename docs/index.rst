@@ -11,6 +11,8 @@ Auraxium is an object-oriented Python wrapper for the `PlanetSide 2 <https://www
 
 It provides a comprehensive object model respresentation of the API data that facilitates the creation of bots and utilities without requiring deep knowledge of the API and its idiosyncrasies.
 
+=====
+
 Useful links:
    `Release notes <https://github.com/leonhard-s/auraxium/releases>`_
    •
@@ -26,15 +28,30 @@ Documentation Contents
 
 .. toctree::
    :caption: Basic Usage
+   :maxdepth: 1
 
-   The Auraxium Client <core>
-   Event Streaming <ess>
-   URL Generation <census>
+   getting-started
+   quickstart
+   event
+
+.. toctree::
+   :caption: Advanced Features
+   :maxdepth: 1
+
+   usage/advanced/queries
+   usage/advanced/statistics
+   usage/advanced/reports
+   usage/advanced/caching
 
 .. toctree::
    :caption: API Reference
+   :maxdepth: 1
 
-   PlanetSide 2 Object Reference <ps2>
+   api/census
+   api/cache
+   api/errors
+   api/types
+   api/ps2
 
 .. toctree::
    :caption: Miscellaneous
