@@ -4,7 +4,7 @@ Object Caching
 
 .. currentmodule:: auraxium
 
-Most objects accessible through the PlanetSide 2 API are fairly static, meaning that the data returned will remain the same between polls.
+Most objects accessible through the PlanetSide 2 API are static, meaning that the data returned will remain the same between polls.
 
 Auraxium uses a caching system to reduce API load by keeping objects in memory past their initial lifetime. The next time this item is accessed, it is instead restored from cache without incurring any network traffic.
 
