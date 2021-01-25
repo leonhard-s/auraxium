@@ -90,6 +90,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         alias: The alias (or tag) of the outfit.
         alias_lower: Lowercase version of :attr:`alias`. Useful for
             optimising case-insensitive searches.
+        name: Name of the outfit. Not localised.
         time_created: The creation date of the outfit as a UTC
             timestamp.
         time_created_date: Human-readable version of
@@ -108,13 +109,17 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
 
     # Type hints for data class fallback attributes
     outfit_id: int
-    name_lower: str
     alias: str
-    alias_lower: str
     time_created: int
     time_created_date: str
     leader_character_id: int
     member_count: int
+    name: str
+
+    @property
+    def tag(self) -> str:
+        """Alias of :attr:`Outfit.alias`."""
+        return self.alias
 
     @classmethod
     async def get_by_name(cls: Type[_NamedT], name: str, *, locale: str = 'en',
@@ -178,18 +183,6 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         query.add_term(field=self.id_field, value=self.id)
         query.limit(5000)
         return SequenceProxy(OutfitMember, query, client=self._client)
-
-    def name(self, locale: str = 'en') -> str:
-        """Return the name of the outfit.
-
-        Since outfit names are not localised, the "locale" keyword
-        argument is ignored.
-
-        This will always return the capitalised version of the name.
-        Use the built-int str.lower() method for a lowercase version.
-        """
-        _ = locale
-        return str(self.data.name)
 
     async def ranks(self) -> List[OutfitRankData]:
         """Return the list of ranks for the outfit."""

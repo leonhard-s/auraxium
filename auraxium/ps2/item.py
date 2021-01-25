@@ -32,6 +32,7 @@ class ItemCategory(Named, cache_size=32, cache_ttu=3600.0):
 
     Attributes:
         item_category_id: The unique ID of this item category.
+        name: Localised name of the item category.
 
     """
 
@@ -42,6 +43,7 @@ class ItemCategory(Named, cache_size=32, cache_ttu=3600.0):
 
     # Type hints for data class fallback attributes
     item_category_id: int
+    name: LocaleData
 
 
 class ItemType(Cached, cache_size=10, cache_ttu=60.0):
@@ -87,6 +89,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
         faction_id: The faction that has access to this item.
         max_stack_size: The stack size for stackable items such as
             grenades.
+        name: Localised name of the item.
         skill_set_id: The skill set associated with this item. This is
             used for upgradable items like the Medical Applicator or
             Repair Tool.
@@ -113,6 +116,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     description: Optional[LocaleData]
     faction_id: Optional[int]
     max_stack_size: int
+    name: LocaleData
     skill_set_id: Optional[int]
     is_default_attachment: bool
 

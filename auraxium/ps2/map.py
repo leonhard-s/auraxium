@@ -6,6 +6,7 @@ from .._base import Cached, Named
 from ..census import Query
 from ..models import FacilityTypeData, MapHexData, MapRegionData, RegionData
 from .._proxy import InstanceProxy, SequenceProxy
+from ..types import LocaleData
 
 from .zone import Zone
 
@@ -149,6 +150,7 @@ class Region(Named, cache_size=100, cache_ttu=60.0):
     """A map region or facility.
 
     Attributes:
+        name: Localised name of the region.
         region_id: The unique ID of the map region.
         zone_id: The ID of the zone (i.e. continent) the region is in.
         initial_faction_id: (Unused)
@@ -164,6 +166,7 @@ class Region(Named, cache_size=100, cache_ttu=60.0):
     region_id: int
     zone_id: int
     initial_faction_id: int
+    name: LocaleData
 
     def map_region(self) -> InstanceProxy[MapRegion]:
         """Return the map region associated with this region.

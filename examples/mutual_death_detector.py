@@ -62,7 +62,7 @@ async def main() -> None:
                 server = await victim.world()
 
                 print(f'{now}: [{server}] - Mutual death between '
-                      f'{victim.name()} and {killer.name()}')
+                      f'{victim.name} and {killer.name}')
 
                 # Remove cache item as it was "consumed" for this mutual death
                 del cache[cache_killer]

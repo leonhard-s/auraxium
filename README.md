@@ -110,7 +110,7 @@ async def main():
     async with auraxium.Client() as client:
 
         char = await client.get_by_name(ps2.Character, 'auroram')
-        print(char.name())
+        print(char.name)
         print(char.data.prestige_level)
 
         # NOTE: Any methods that might incur network traffic are asynchronous.
@@ -229,7 +229,7 @@ See the [Caching](#caching) section for details on the caching system.
 
 #### Named Objects
 
-Named objects are based off the `Named` class and always cached. This base class adds the [`.name(locale='en')`](https://auraxium.readthedocs.io/en/latest/ps2.html#auraxium.Cached.name) method and adds the [`.get_by_name()`](https://auraxium.readthedocs.io/en/latest/ps2.html#auraxium.) method, which is also cached.
+Named objects are based off the `Named` class and always cached. This base class adds the [`.get_by_name()`](https://auraxium.readthedocs.io/en/latest/ps2.html#auraxium.Named.get_by_name) method, which is also cached.
 
 This caching strategy is almost identical to the one used for IDs, except that it uses a string constructed of the lower-case name and locale identifier to store objects (e.g. `'en_sunderer'`).
 

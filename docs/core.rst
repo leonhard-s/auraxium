@@ -38,7 +38,7 @@ Here is an example script that prints various character properties:
         async with auraxium.Client() as client:
 
             char = await client.get_by_name(ps2.Character, 'auroram')
-            print(char.name())
+            print(char.name))
             print(char.data.prestige_level)
 
             # NOTE: Any methods that might incur network traffic are asynchronous.

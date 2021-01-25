@@ -11,7 +11,7 @@ from ..errors import NotFoundError
 from ..models import CharacterAchievement, TitleData, CharacterData
 from .._proxy import InstanceProxy, SequenceProxy
 from .._request import extract_payload, extract_single
-from ..types import CensusData
+from ..types import CensusData, LocaleData
 
 from .faction import Faction
 from .item import Item
@@ -40,6 +40,7 @@ class Title(Named, cache_size=300, cache_ttu=300.0):
 
     Attributes:
         title_id: The ID of this title.
+        name: Localised name of the title.
 
     """
 
@@ -50,6 +51,7 @@ class Title(Named, cache_size=300, cache_ttu=300.0):
 
     # Type hints for data class fallback attributes
     title_id: int
+    name: LocaleData
 
 
 class Character(Named, cache_size=256, cache_ttu=30.0):
@@ -87,6 +89,15 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     profile_id: int
     daily_ribbon: CharacterData.DailyRibbon
     prestige_level: int
+
+    @property
+    def name(self) -> str:
+        """Return the name of the character.
+
+        This is identical to the ``name.first`` key in the Census API
+        payload.
+        """
+        return self.data.name.first
 
     async def achievements(self, **kwargs: Any) -> List[CharacterAchievement]:
         """Return the achievement status for a character."""
@@ -268,27 +279,18 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         """Return whether the given character is online."""
         return bool(int(await self.online_status()))
 
-    def name(self, locale: str = 'en') -> str:
-        """Return the unique name of the player.
-
-        Since character names are not localised, the "locale" keyword
-        argument is ignored.
-
-        This will always return the capitalised version of the name.
-        Use the built-int str.lower() method for a lowercase version.
-        """
-        _ = locale
-        return str(self.data.name.first)
-
-    async def name_long(self) -> str:
+    async def name_long(self, locale: str = 'en') -> str:
         """Return the full name of the player.
 
         This includes an optional player title if the player has
         selected one.
         """
         if (title := await self.title()) is not None:
-            return f'{title.name()} {self.name()}'
-        return self.name()
+            try:
+                return f'{getattr(title.name, locale)} {self.name}'
+            except AttributeError as err:
+                raise AttributeError(f'Unknown locale: {err}') from err
+        return self.name
 
     async def online_status(self) -> int:
         """Return the online status of the character.

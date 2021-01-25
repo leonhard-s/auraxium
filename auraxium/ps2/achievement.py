@@ -22,6 +22,7 @@ class Achievement(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
         item_id: The item associated with this achievement. An item ID
             of ``0`` signifies that this achievement is a ribbon not
             tied to any weapon.
+        name: Localised name of the achievement.
         objective_group_id: The objective group tied to this
             achievement.
         reward_id: The reward granted when this achievement is earned.
@@ -39,6 +40,7 @@ class Achievement(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     # Type hints for data class fallback attributes
     achievement_id: int
     item_id: int
+    name: LocaleData
     objective_group_id: int
     reward_id: int
     repeatable: bool

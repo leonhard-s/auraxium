@@ -2,6 +2,7 @@
 
 from .._base import ImageMixin, Named
 from ..models import FactionData
+from ..types import LocaleData
 
 __all__ = [
     'Faction'
@@ -14,6 +15,7 @@ class Faction(Named, ImageMixin, cache_size=10):
     Attributes:
         faction_id: The unique ID of this faction.
         code_tag: The canonical tag representation of the faction.
+        name: Localised name of the faction.
         user_selectable: Whether this faction is playable.
 
     """
@@ -26,6 +28,7 @@ class Faction(Named, ImageMixin, cache_size=10):
     # Type hints for data class fallback attributes
     faction_id: int
     code_tag: str
+    name: LocaleData
     user_selectable: bool
 
     def __repr__(self) -> str:

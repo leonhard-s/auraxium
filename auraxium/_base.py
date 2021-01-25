@@ -478,7 +478,7 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
         """
         super().__init__(*args, **kwargs)
         if locale is not None:
-            key = f'{locale}_{self.name(locale=locale).lower()}'
+            key = f'{locale}_{getattr(self.name, locale).lower()}'
             self._cache.add(key, self)
 
     def __repr__(self) -> str:
@@ -492,19 +492,25 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
 
         """
         return (f'<{self.__class__.__name__}:{self.id}:'
-                f'\'{self.name(locale="en")}\'>')
+                f'\'{str(self)}\'>')
 
     def __str__(self) -> str:
         """Return the string representation of this object.
 
-        This calls the :meth:``Named.name()`` method for the English
+        For localised names, this will return the English language
         locale.
 
         Returns:
             A string representation of the object.
 
         """
-        return self.name(locale='en')
+        try:
+            name = self.name.en
+        except AttributeError:
+            return self.name
+        if name is None:
+            return super().__str__(self)
+        return name
 
     @classmethod
     async def get_by_name(cls: Type[_NamedT], name: str, *, locale: str = 'en',
@@ -541,30 +547,6 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
         except NotFoundError:
             return None
         return cls(payload, locale=locale, client=client)
-
-    def name(self, locale: str = 'en') -> str:
-        """Return the localised name of the object.
-
-        Some subclasses may not have a localised name field. In these
-        cases, the ``locale`` argument will be ignored.
-
-        Arguments:
-            locale (optional): The locale identifier to return.
-                Defaults to ``'en'``.
-
-        Raises:
-            ValueError: Raised if the given locale is unknown.
-
-        Returns:
-            The localised name of the object.
-
-        """
-        data = self.data
-        assert hasattr(data, 'name')
-        try:
-            return str(getattr(data.name, locale))  # type: ignore
-        except AttributeError as err:
-            raise ValueError(f'Invalid locale: {locale}') from err
 
 
 class ImageMixin(Ps2Object, metaclass=abc.ABCMeta):

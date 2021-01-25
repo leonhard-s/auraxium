@@ -28,6 +28,7 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
     Attributes:
         vehicle_id: The unique ID of this vehicle.
         description: The localised description of the vehicle.
+        name: Localised name of the vehicle.
         type_id: The type of vehicle.
         type_name: The name of the type of vehicle.
         cost: The cost of the vehicle.
@@ -43,6 +44,7 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
     # Type hints for data class fallback attributes
     vehicle_id: int
     description: Optional[LocaleData]
+    name: LocaleData
     type_id: int
     type_name: str
     cost: Optional[int]

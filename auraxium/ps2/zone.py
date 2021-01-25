@@ -31,6 +31,7 @@ class Zone(Named, cache_size=20, cache_ttu=3600.0):
         code: The internal code used to represent this zone.
         hex_size: The map size for this zone.
         description: The localised name of this zone.
+        name: Localised name of the zone.
 
     """
 
@@ -44,6 +45,7 @@ class Zone(Named, cache_size=20, cache_ttu=3600.0):
     code: str
     hex_size: int
     description: LocaleData
+    name: LocaleData
 
     @property
     def is_dynamic(self) -> bool:

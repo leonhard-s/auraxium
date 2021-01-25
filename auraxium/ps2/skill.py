@@ -23,6 +23,7 @@ class SkillSet(Named, ImageMixin, cache_size=100, cache_ttu=60.0):
 
     Attributes:
         skill_set_id: The unique ID of this skill set.
+        name: Localised name of the skill set.
         skill_points: (Not yet documented)
         required_item_id: The item required to unlock this skill set.
             Used to prevent buying upgrades for items the player has
@@ -38,6 +39,7 @@ class SkillSet(Named, ImageMixin, cache_size=100, cache_ttu=60.0):
 
     # Type hints for data class fallback attributes
     skill_set_id: int
+    name: LocaleData
     skill_points: Optional[int]
     required_item_id: Optional[int]
     description: Optional[LocaleData]
@@ -72,6 +74,7 @@ class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
 
     Attributes:
         skill_category_id: The unique ID of this skill category.
+        name: Localised name of the skill category.
         skill_set_id: The :class:`SkillCategory` this category belongs
             to.
         skill_set_index: The position of this category in the
@@ -88,6 +91,7 @@ class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
 
     # Type hints for data class fallback attributes
     skill_category_id: int
+    name: LocaleData
     skill_set_id: int
     skill_set_index: int
     skill_points: int
@@ -118,6 +122,7 @@ class SkillLine(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
 
     Attributes:
         skill_line_id: The unique ID for this skill line.
+        name: Localised name of the skill line.
         skill_points: The unlock cost for this skill line.
         skill_category_id: The :class:`SkillCategory` this skill line
             belongs to.
@@ -134,6 +139,7 @@ class SkillLine(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
 
     # Type hints for data class fallback attributes
     skill_line_id: int
+    name: LocaleData
     skill_points: int
     skill_category_id: Optional[int]
     skill_category_index: Optional[int]
@@ -167,6 +173,7 @@ class Skill(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
 
     Attributes:
         skill_id: The unique ID of this skill.
+        name: Localised name of the skill.
         skill_line_id: The ID of the associated :class:`SkillLine`.
         skill_line_index: The position of the skill in its skill line.
         skill_points: The unlock cost of the skill.
@@ -183,6 +190,7 @@ class Skill(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
 
     # Type hints for data class fallback attributes
     skill_id: int
+    name: LocaleData
     skill_line_id: int
     skill_line_index: int
     skill_points: int

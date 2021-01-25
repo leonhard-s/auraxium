@@ -22,6 +22,7 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
 
     Attributes:
         world_id: The unique ID of the world.
+        name: Localised name of the world.
         state: The current state (i.e. online status) of the world.
         description: A description of the world's server region.
 
@@ -34,6 +35,7 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
 
     # Type hints for data class fallback attributes
     world_id: int
+    name: LocaleData
     state: str
     description: Optional[LocaleData]
 
@@ -72,7 +74,7 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
                 'please report this bug to the project maintainers')
         name = name.lower()
         for world in data:
-            if world.name(locale=locale).lower() == name:
+            if str(getattr(world.name, locale)).lower() == name:
                 return world
         return None
 
