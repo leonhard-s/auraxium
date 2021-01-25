@@ -26,7 +26,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
     :class:`auraxium.ps2.Item` class.
 
     Attributes:
-        weapon_id: The unique ID of this weapon.
+        id: The unique ID of this weapon.
         weapon_group_id: Used to group upgradable weapons together and
             track them as a single entity, such as the Infiltrator's
             Recon Dart Device or the Engineer's Repair Tool.
@@ -58,7 +58,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
     id_field = 'weapon_id'
 
     # Type hints for data class fallback attributes
-    weapon_id: int
+    id: int
     weapon_group_id: Optional[int]
     turn_modifier: float
     move_modifier: float

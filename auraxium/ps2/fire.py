@@ -49,7 +49,7 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
     representation in the object model.
 
     Attributes:
-        fire_mode_id: The unique ID of this fire mode.
+        id: The unique ID of this fire mode.
         fire_mode_type_id: The type of fire mode as a value of the
             :class:`FireModeType` enumerator.
         ability_id: (Not yet documented)
@@ -197,7 +197,7 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
     id_field = 'fire_mode_id'
 
     # Type hints for data class fallback attributes
-    fire_mode_id: int
+    id: int
     fire_mode_type_id: int
     ability_id: Optional[int]
     ammo_slot: Optional[int]
@@ -324,7 +324,7 @@ class FireGroup(Cached, cache_size=10, cache_ttu=60.0):
     implement auxiliary fire modes such as under-barrel launchers.
 
     Attributes:
-        fire_group_id: The unique ID of this fire group.
+        id: The unique ID of this fire group.
         chamber_duration_ms: The rechamber time for weapons in this
             group.
         transition_duration_ms: (Not yet documented)
@@ -345,7 +345,7 @@ class FireGroup(Cached, cache_size=10, cache_ttu=60.0):
     id_field = 'fire_group_id'
 
     # Type hints for data class fallback attributes
-    fire_group_id: int
+    id: int
     chamber_duration_ms: Optional[int]
     transition_duration_ms: Optional[int]
     spool_up_ms: Optional[int]

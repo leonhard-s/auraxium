@@ -38,7 +38,7 @@ class DirectiveTreeCategory(Named, ImageMixin, cache_size=10, cache_ttu=300.0):
     id_field = 'directive_tree_category_id'
 
     # Type hints for data class fallback attributes
-    directive_tree_category_id: int
+    id: int
     name: LocaleData
 
     def trees(self) -> SequenceProxy['DirectiveTree']:
@@ -59,7 +59,7 @@ class DirectiveTree(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     "Heavy Assault".
 
     Attributes:
-        directive_tree_id: The unique ID of the directive tree.
+        id: The unique ID of the directive tree.
         directive_tree_category_id: The category of the directive tree.
         description: The localised description of the directive tree.
         name: Localised name of the directive tree.
@@ -72,7 +72,7 @@ class DirectiveTree(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     id_field = 'directive_tree_id'
 
     # Type hints for data class fallback attributes
-    directive_tree_id: int
+    id: int
     directive_tree_category_id: int
     description: Optional[LocaleData]
     name: LocaleData
@@ -114,7 +114,7 @@ class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     Container for related directives, e.g. "Combat Medic: Adept".
 
     Attributes:
-        directive_tier_id: The unique ID of the directive tier.
+        id: The unique ID of the directive tier.
         directive_tree_id: The directive tree this directive belongs
             to.
         reward_set_id: The reward set awarded upon completion of this
@@ -133,7 +133,7 @@ class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     id_field = 'directive_tier_id'
 
     # Type hints for data class fallback attributes
-    directive_tier_id: int
+    id: int
     directive_tree_id: int
     name: LocaleData
     reward_set_id: Optional[int]
@@ -165,7 +165,7 @@ class Directive(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     """A directive a character may complete.
 
     Attributes:
-        directive_id: The unique ID of this directive.
+        id: The unique ID of this directive.
         directive_tree_id: The directive tree of this directive.
         directive_tier_id: The directive tier of this directive.
         objective_set_id: The objective set contributing towards this
@@ -183,7 +183,7 @@ class Directive(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     id_field = 'directive_id'
 
     # Type hints for data class fallback attributes
-    directive_id: int
+    id: int
     directive_tree_id: int
     directive_tier_id: int
     name: LocaleData

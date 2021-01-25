@@ -24,7 +24,7 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
     multiple items at once.
 
     Attributes:
-        marketing_bundle_id: The unique ID of this bundle.
+        id: The unique ID of this bundle.
         description: The description text for this bundle.
         image_id: The image asset ID for this bundle.
         cert_price: The unlock price in certification points, if any.
@@ -41,7 +41,7 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
     id_field = 'marketing_bundle_id'
 
     # Type hints for data class fallback attributes
-    marketing_bundle_id: int
+    id: int
     description: LocaleData
     image_id: int
     cert_price: Optional[int]
@@ -86,7 +86,7 @@ class MarketingBundleSingle(Cached, cache_size=100, cache_ttu=60.0):
     information.
 
     Attributes:
-        marketing_bundle_id: The unique ID of this bundle.
+        id: The unique ID of this bundle.
         item_id: The item unlocked by this bundle.
         item_quantity: The number of items received.
         name: Localised name of the bundle.
@@ -103,7 +103,7 @@ class MarketingBundleSingle(Cached, cache_size=100, cache_ttu=60.0):
     id_field = 'marketing_bundle_id'
 
     # Type hints for data class fallback attributes
-    marketing_bundle_id: int
+    id: int
     item_id: int
     item_quantity: int
     name: LocaleData

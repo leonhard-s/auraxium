@@ -18,7 +18,7 @@ class Achievement(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     Achievements include weapon medals and service ribbons.
 
     Attributes:
-        achievement_id: The unique ID of this achievement.
+        id: The unique ID of this achievement.
         item_id: The item associated with this achievement. An item ID
             of ``0`` signifies that this achievement is a ribbon not
             tied to any weapon.
@@ -38,7 +38,7 @@ class Achievement(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     id_field = 'achievement_id'
 
     # Type hints for data class fallback attributes
-    achievement_id: int
+    id: int
     item_id: int
     name: LocaleData
     objective_group_id: int

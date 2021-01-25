@@ -33,7 +33,7 @@ class OutfitMember(Cached, cache_size=100, cache_ttu=300.0):
 
     Attributes:
         outfit_id: The ID of the outfit this member is a part of.
-        character_id: The ID of the associated character.
+        id: The ID of the associated character.
         member_since: The date the character joined the outfit at as
             a UTC timestamp.
         member_since_date: Human-readable version of
@@ -51,7 +51,7 @@ class OutfitMember(Cached, cache_size=100, cache_ttu=300.0):
 
     # Type hints for data class fallback attributes
     outfit_id: int
-    character_id: int
+    id: int
     member_since: int
     member_since_date: str
     rank: str
@@ -84,7 +84,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
     """A player-run outfit.
 
     Attributes:
-        outfit_id: The unique ID of the outfit.
+        id: The unique ID of the outfit.
         name_lower: Lowercase version of :attr`name`. Useful for
             optimising case-insensitive searches.
         alias: The alias (or tag) of the outfit.
@@ -108,7 +108,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
     id_field = 'outfit_id'
 
     # Type hints for data class fallback attributes
-    outfit_id: int
+    id: int
     alias: str
     time_created: int
     time_created_date: str

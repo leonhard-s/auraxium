@@ -18,7 +18,7 @@ class ObjectiveType(Cached, cache_size=10, cache_ttu=60.0):
     This class mostly specifies the purpose of any generic parameters.
 
     Attributes:
-        objective_type_id: The unique ID of the objective type.
+        id: The unique ID of the objective type.
         description: A description of what the objective type is used
             for.
         param*: Descriptions of what the corresponding parameter is
@@ -32,7 +32,7 @@ class ObjectiveType(Cached, cache_size=10, cache_ttu=60.0):
     id_field = 'objective_type_id'
 
     # Type hints for data class fallback attributes
-    objective_type_id: int
+    id: int
     description: str
     param1: Optional[str]
     param2: Optional[str]
@@ -49,7 +49,7 @@ class Objective(Cached, cache_size=10, cache_ttu=60.0):
     """A objective presented to a character.
 
     Attributes:
-        objective_id: The unique ID of this objective.
+        id: The unique ID of this objective.
         objective_type_id: The associated objective type for this
             objective.
         objective_group_id: The objective group this objective
@@ -65,7 +65,7 @@ class Objective(Cached, cache_size=10, cache_ttu=60.0):
     id_field = 'objective_id'
 
     # Type hints for data class fallback attributes
-    objective_id: int
+    id: int
     objective_type_id: int
     objective_group_id: int
     param1: Optional[str]

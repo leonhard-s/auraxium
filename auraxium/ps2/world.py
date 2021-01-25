@@ -21,7 +21,7 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
     """A world (or server) in the game.
 
     Attributes:
-        world_id: The unique ID of the world.
+        id: The unique ID of the world.
         name: Localised name of the world.
         state: The current state (i.e. online status) of the world.
         description: A description of the world's server region.
@@ -34,7 +34,7 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
     id_field = 'world_id'
 
     # Type hints for data class fallback attributes
-    world_id: int
+    id: int
     name: LocaleData
     state: str
     description: Optional[LocaleData]

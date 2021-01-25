@@ -39,7 +39,7 @@ class Title(Named, cache_size=300, cache_ttu=300.0):
 
 
     Attributes:
-        title_id: The ID of this title.
+        id: The ID of this title.
         name: Localised name of the title.
 
     """
@@ -50,7 +50,7 @@ class Title(Named, cache_size=300, cache_ttu=300.0):
     id_field = 'title_id'
 
     # Type hints for data class fallback attributes
-    title_id: int
+    id: int
     name: LocaleData
 
 
@@ -58,7 +58,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     """A player-controlled fighter.
 
     Attributes:
-        character_id: The unique name of the character.
+        id: The unique name of the character.
         faction_id: The faction the character belongs to.
         head_id: The head model for this character.
         title_id: The current title selected for this character. May be
@@ -79,7 +79,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     id_field = 'character_id'
 
     # Type hints for data class fallback attributes
-    character_id: int
+    id: int
     faction_id: int
     head_id: int
     title_id: int

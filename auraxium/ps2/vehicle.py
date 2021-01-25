@@ -26,7 +26,7 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
     turrets and constructible.
 
     Attributes:
-        vehicle_id: The unique ID of this vehicle.
+        id: The unique ID of this vehicle.
         description: The localised description of the vehicle.
         name: Localised name of the vehicle.
         type_id: The type of vehicle.
@@ -42,7 +42,7 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
     id_field = 'vehicle_id'
 
     # Type hints for data class fallback attributes
-    vehicle_id: int
+    id: int
     description: Optional[LocaleData]
     name: LocaleData
     type_id: int
@@ -105,7 +105,7 @@ class VehicleAttachment(Cached, cache_size=250, cache_ttu=180.0):
     """Links vehicles to the items and attachments they support.
 
     Attributes:
-        item_id: The item that is being attached.
+        id: The item that is being attached.
         vehicle_id: The vehicle the item may be attached to.
         faction_id: The faction for which this attachment is available.
         description: A description of the attachment.
@@ -119,7 +119,7 @@ class VehicleAttachment(Cached, cache_size=250, cache_ttu=180.0):
     id_field = 'vehicle_attachment_id'
 
     # Type hints for data class fallback attributes
-    item_id: int
+    id: int
     vehicle_id: int
     faction_id: int
     description: str

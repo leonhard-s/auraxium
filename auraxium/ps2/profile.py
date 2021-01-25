@@ -29,7 +29,7 @@ class Profile(Cached, cache_size=200, cache_ttu=60.0):
     other non-static entities such as Cortium nodes or pumpkins.
 
     Attributes:
-        profile_id: The unique ID of this profile.
+        id: The unique ID of this profile.
         description: The description of the profile.
 
     """
@@ -40,7 +40,7 @@ class Profile(Cached, cache_size=200, cache_ttu=60.0):
     id_field = 'profile_id'
 
     # Type hints for data class fallback attributes
-    profile_id: int
+    id: int
     description: str
 
     def armour_info(self) -> SequenceProxy[ArmourInfo]:
@@ -90,7 +90,7 @@ class Loadout(Cached, FallbackMixin, cache_size=20, cache_ttu=3600.0):
     """Represents a faction-specific infantry class.
 
     Attributes:
-        loadout_id: The unique ID of this loadout.
+        id: The unique ID of this loadout.
         profile_id: The ID of the associated profile.
         faction_id: The faction for this loadout.
         code_name: A string describing the loadout.
@@ -104,7 +104,7 @@ class Loadout(Cached, FallbackMixin, cache_size=20, cache_ttu=3600.0):
     _fallback = {k: _get_fallback(k) for k in (*range(28, 33), 45)}
 
     # Type hints for data class fallback attributes
-    loadout_id: int
+    id: int
     profile_id: int
     faction_id: int
     code_name: str

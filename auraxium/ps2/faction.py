@@ -13,7 +13,7 @@ class Faction(Named, ImageMixin, cache_size=10):
     """A faction in PS2.
 
     Attributes:
-        faction_id: The unique ID of this faction.
+        id: The unique ID of this faction.
         code_tag: The canonical tag representation of the faction.
         name: Localised name of the faction.
         user_selectable: Whether this faction is playable.
@@ -26,7 +26,7 @@ class Faction(Named, ImageMixin, cache_size=10):
     id_field = 'faction_id'
 
     # Type hints for data class fallback attributes
-    faction_id: int
+    id: int
     code_tag: str
     name: LocaleData
     user_selectable: bool

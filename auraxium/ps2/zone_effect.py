@@ -20,7 +20,7 @@ class ZoneEffectType(Cached, cache_size=20, cache_ttu=60.0):
     This class mostly specifies the purpose of any generic parameters.
 
     Attributes:
-        zone_effect_type_id: The unique ID of this zone effect type.
+        id: The unique ID of this zone effect type.
         description: A description of what this zone effect type is
             used for.
         param*: Descriptions of what the corresponding parameter is
@@ -34,7 +34,7 @@ class ZoneEffectType(Cached, cache_size=20, cache_ttu=60.0):
     id_field = 'zone_effect_type_id'
 
     # Type hints for data class fallback attributes
-    zone_effect_type_id: int
+    id: int
     description: str
     param1: Optional[str]
     param2: Optional[str]
@@ -53,7 +53,7 @@ class ZoneEffect(Cached, cache_size=10, cache_ttu=60.0):
     parameters.
 
     Attributes:
-        zone_effect_id: The unique ID of this zone effect.
+        id: The unique ID of this zone effect.
         zone_effect_type_id: The ID of the associated
             :class:`ZoneEffectType`.
         ability_id: The :class:`~auraxium.ps2.Ability` associated with
@@ -69,7 +69,7 @@ class ZoneEffect(Cached, cache_size=10, cache_ttu=60.0):
     id_field = 'zone_effect_id'
 
     # Type hints for data class fallback attributes
-    zone_effect_id: int
+    id: int
     zone_effect_type_id: int
     ability_id: int
     param1: Optional[str]

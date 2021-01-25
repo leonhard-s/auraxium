@@ -31,7 +31,7 @@ class ItemCategory(Named, cache_size=32, cache_ttu=3600.0):
     such as "Infantry Gear", "Weapon Camo" or "Vehicle Weapons".
 
     Attributes:
-        item_category_id: The unique ID of this item category.
+        id: The unique ID of this item category.
         name: Localised name of the item category.
 
     """
@@ -42,7 +42,7 @@ class ItemCategory(Named, cache_size=32, cache_ttu=3600.0):
     id_field = 'item_category_id'
 
     # Type hints for data class fallback attributes
-    item_category_id: int
+    id: int
     name: LocaleData
 
 
@@ -56,7 +56,7 @@ class ItemType(Cached, cache_size=10, cache_ttu=60.0):
     tokens.
 
     Attributes:
-        item_type_id: The unique ID of this item type.
+        id: The unique ID of this item type.
         code: The internal code used to describe this item type.
 
     """
@@ -67,7 +67,7 @@ class ItemType(Cached, cache_size=10, cache_ttu=60.0):
     id_field = 'item_type_id'
 
     # Type hints for data class fallback attributes
-    item_type_id: int
+    id: int
     code: str
 
 
@@ -79,7 +79,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     :class:`auraxium.ps2.Weapon` instance.
 
     Attributes:
-        item_id: The unique ID of this item.
+        id: The unique ID of this item.
         item_type_id: The ID of the item type for this item.
         item_category_id: The ID of the item category for this item.
         activatable_ability_id: (Not yet documented)
@@ -107,7 +107,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     id_field = 'item_id'
 
     # Type hints for data class fallback attributes
-    item_id: int
+    id: int
     item_type_id: Optional[int]
     item_category_id: Optional[int]
     activatable_ability_id: Optional[int]
