@@ -179,6 +179,18 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         query.limit(5000)
         return SequenceProxy(OutfitMember, query, client=self._client)
 
+    def name(self, locale: str = 'en') -> str:
+        """Return the name of the outfit.
+
+        Since outfit names are not localised, the "locale" keyword
+        argument is ignored.
+
+        This will always return the capitalised version of the name.
+        Use the built-int str.lower() method for a lowercase version.
+        """
+        _ = locale
+        return str(self.data.name)
+
     async def ranks(self) -> List[OutfitRankData]:
         """Return the list of ranks for the outfit."""
         collection: Final[str] = 'outfit_rank'

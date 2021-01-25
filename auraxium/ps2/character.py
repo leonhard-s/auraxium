@@ -277,6 +277,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         This will always return the capitalised version of the name.
         Use the built-int str.lower() method for a lowercase version.
         """
+        _ = locale
         return str(self.data.name.first)
 
     async def name_long(self) -> str:
