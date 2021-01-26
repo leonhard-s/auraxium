@@ -270,6 +270,8 @@ class Trigger:
                      Union[Iterable['Character'], Iterable[int]]] = None,
                  worlds: Optional[
                      Union[Iterable['World'], Iterable[int]]] = None,
+                 conditions: Optional[
+                     List[Union[bool, Callable[[CensusData], bool]]]] = None,
                  action: Optional[
                      Callable[[Event], Union[None, Awaitable[None]]]] = None,
                  name: Optional[str] = None,
@@ -278,7 +280,8 @@ class Trigger:
         self.characters: List[int] = (
             [] if characters is None else [c if isinstance(c, int) else c.id
                                            for c in characters])
-        self.conditions: List[Union[bool, Callable[[CensusData], bool]]] = []
+        self.conditions: List[Union[bool, Callable[[CensusData], bool]]] = (
+            [] if conditions is None else conditions)
         self.events: Set[Union[EventType, str]] = set((event, *args))
         self.last_run: Optional[datetime.datetime] = None
         self.name = name
