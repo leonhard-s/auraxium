@@ -455,13 +455,13 @@ class EventClient(Client):
             log.debug('Websocket not connected, scheduling connection')
             self.loop.create_task(self.connect())
 
-    def find_trigger(self, name: str) -> Trigger:
+    def get_trigger(self, name: str) -> Trigger:
         """Retrieve a registered event trigger by name.
 
         If the trigger cannot be found, a :class:`KeyError` is raised.
 
         Arguments:
-            name: [description]
+            name: The name of the trigger to return.
 
         Raises:
             KeyError: Raised if no trigger with the given name is
@@ -498,7 +498,7 @@ class EventClient(Client):
 
         """
         if not isinstance(trigger, Trigger):
-            trigger = self.find_trigger(trigger)
+            trigger = self.get_trigger(trigger)
         log.debug('Removing trigger %s', trigger)
         try:
             self.triggers.remove(trigger)
