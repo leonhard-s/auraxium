@@ -67,7 +67,6 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         certs: Certification data for the character.
         battle_rank: Battle rank data for the character.
         profile_id: The last profile the character used.
-        daily_ribbon: Daily ribbon data for the character.
         prestige_level: The ASP rank of the character.
 
     """
@@ -87,7 +86,6 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     certs: CharacterData.Certs
     battle_rank: CharacterData.BattleRank
     profile_id: int
-    daily_ribbon: CharacterData.DailyRibbon
     prestige_level: int
 
     @property
