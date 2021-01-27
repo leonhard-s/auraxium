@@ -175,30 +175,10 @@ To achieve this, another join is added to the friends list, which will contain t
 
 This now returns a list of payloads compatible with the ``character`` collection. We can therefore feed these payloads directly into the :class:`auraxium.ps2.Character` class's constructor:
 
-.. code-block:: python3
+.. literalinclude:: ../../../examples/get_online_friends.py
+    :start-at: async def
+    :end-at: return
     :emphasize-lines: 3,21
-
-    async def get_online_friends(char: auraxium.ps2.Character,
-                                 client: auraxium.Client
-                                 ) -> List[auraxium.ps2.Character]:
-        """Return the online friends of the given character."""
-        query = char.query()
-
-        # Join the characters' friends
-        join = query.create_join('characters_friend')
-        join.set_inject_at('friends')
-
-        # Join the friends' character
-        char_join = join.create_join('character')
-        char_join.set_fields('friend_list.character_id', 'character_id')
-        char_join.set_inject_at('character')
-
-        data = await client.request(query)
-        friends_data = data['character_list'][0]['friends']['friend_list']
-        online_friends = [
-            f['character'] for f in friends_data if int(f['online']) != 0]
-
-        return [auraxium.ps2.Character(d, client) for d in online_friends]
 
 That's it - this method now behaves exactly the same as any built-in utility methods and will play nicely with any other methods using the object model.
 
