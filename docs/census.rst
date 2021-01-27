@@ -38,22 +38,3 @@ This example retrieves a character by name and joins their online status.
 
    print(url)
    # https://census.daybreakgames.com/s:example/get/ps2:v2/character?c:limit=20&c:join=characters_online_status
-
-API Reference
--------------
-
-.. autoclass:: auraxium.census.Query
-   :members:
-
-.. autoclass:: auraxium.census.JoinedQuery
-   :members:
-
-.. autoclass:: auraxium.census.QueryBase
-   :members:
-
-.. autoclass:: auraxium.census.SearchModifier
-   :members:
-
-.. autoclass:: auraxium.census.SearchTerm
-   :members:
-   
