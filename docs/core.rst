@@ -52,7 +52,7 @@ Here is an example script that prints various character properties:
             # The online status is never cached as it is bound to change at any
             # moment.
             print(await char.is_online())
-            
+
     asyncio.get_event_loop().run_until_complete(main())
 
 API Reference

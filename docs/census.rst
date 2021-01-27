@@ -6,9 +6,9 @@ The Census module, located at :mod:`auraxium.census`, is responsible for generat
 This module does not perform any queries; it only dynamically generates the URLs required. Use an HTTP library of your choice to handle the network side.
 
 .. note::
-   
+
    When selecting an HTTP library, keep in mind that some API collections, like ``character`` and ``outfit_member``, can have access times in excess of several seconds.
-   
+
    For bots and most other use-cases, it is therefore advisable to use an asynchronous library like :mod:`aiohttp` to prevent your program from locking up while waiting for the server to respond.
 
 Usage

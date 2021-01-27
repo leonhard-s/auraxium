@@ -7,9 +7,9 @@ Most components of Auraxium log their status via the :mod:`logging` Python modul
 The following snippet will, if placed before your application code, log all but the most spammy messages to your console:
 
 .. code-block:: python3
-    
+
     import logging
-    
+
     logging.basicConfnig(level=logging.INFO)
 
 Theis is an example of a more comprehensive logging setup, moving any warnings and errors into the console while still logging to disk at full resolution, useful for troubleshooting:

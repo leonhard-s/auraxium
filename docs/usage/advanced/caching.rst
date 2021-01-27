@@ -15,7 +15,7 @@ Additionally, cache items have a maximum lifetime to force updates for regularly
 .. note::
 
     Restoring items from cache is currently only supported when using :meth:`Ps2Object.get_by_id`.
-    
+
     For :class:`Named` sub classes, the :meth:`Named.get_by_name` method is similarly cached by locale. This means that looking up the same name in two different locales will create two separate cache entries.
 
 Customising Caches

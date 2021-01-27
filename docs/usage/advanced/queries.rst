@@ -2,14 +2,14 @@
 Optimising With Custom Queries
 ==============================
 
-This document covers how to improve performance for expensive requests that slow down your application. 
+This document covers how to improve performance for expensive requests that slow down your application.
 
 It is therefore highly advisable to read the `Census API Primer`_ in the repository Wiki before continuing, as well as the usage instructions for Auraxium's :doc:`URL Generator <../../census>`.
 
 .. note::
 
     The optimisations explained herein are likely not needed unless you are sending out hundreds of requests a second and are already running into bottle necks.
-    
+
 Motivation
 ==========
 
@@ -32,7 +32,7 @@ You can generate a :class:`Query <auraxium.census.Query>` representation for any
     client = auraxium.Client()
     char = await client.get_by_name(auraxium.ps2.Character, 'Higby')
     char_query = char.query()
-   
+
     print(char_query)
     # https://census.daybreakgames.com/s:example/get/ps2:v2/character?character_id=5428072203494645969
 
@@ -47,7 +47,7 @@ This query can now be customised as per the :mod:`auraxium.census` module API.
 For the purposes of this example, we will return the online status of all of a character's friends; an operation that is not possible in a single operation when using the object model:
 
 .. code-block:: python3
-    
+
     def get_online_friends(char: auraxium.ps2.Character) -> yarl.URL:
         """Return the online friends of the given character."""
         query = char.query()
@@ -66,7 +66,7 @@ This requires us to switch to a coroutine, as well as pass the client instance t
 
 .. code-block:: python3
     :emphasize-lines: 1-2,10
-    
+
     async def get_online_friends(char: auraxium.ps2.Character,
                                  client: auraxium.Client) -> Dict[str, Any]:
         """Return the online friends of the given character."""

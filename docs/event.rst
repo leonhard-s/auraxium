@@ -20,13 +20,13 @@ To gain access to event streaming functionality in Auraxium, you must use the :c
                 ...
 
             # This block is left immediately, shutting the client
-        
+
    You can mitigate this by using an :class:`asyncio.Event` or a similar asynchronous flag to keep the control flow within the context manager until you are ready to shut it down.
 
    Alternatively, you can use :meth:`asyncio.AbstractEventLoop.run_forever()` to keep the event loop running even after the enclosing method finishes:
 
    .. code-block:: python3
-   
+
         loop = asyncio.get_event_loop()
         loop.create_task(main())
         loop.run_forever()
@@ -39,7 +39,7 @@ Auraxium wraps the real-time event endpoint of the PlanetSide 2 API in an event 
 .. note::
 
    Users familiar with the `discord.py <https://github.com/Rapptz/discord.py>`_ package can skip ahead to `Event Types`_ section.
-   
+
    The system used to define event listeners and commands in d.py is very similar to Auraxium's trigger system, with `trigger conditions <conditions>`_ being comparable to d.py's checks.
 
    Usage examples and the trigger definition syntax are covered further below.
@@ -75,13 +75,13 @@ Example:
       client = auraxium.EventClient()
 
       my_trigger = auraxium.Trigger(auraxium.EventType.DEATH)
-      
+
       @my_trigger.action
       async def print_death(event):
          ...  # Do stuff
 
       client.add_trigger(my_trigger)
-   
+
 Conditions
 ----------
 
