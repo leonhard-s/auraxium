@@ -12,17 +12,16 @@ import json
 import logging
 import warnings
 from typing import (Any, Awaitable, Callable, Coroutine, Dict, Iterable,
-                    Iterator, List, Optional, Set, TYPE_CHECKING, Union, Literal, TypeVar)
+                    Iterator, List, Optional, Set, TYPE_CHECKING, Union, Literal, TypeVar, Type)
 
 import websockets
 from pydantic import Field
 
 from .base import Ps2Data
 from .client import Client
-from .event_util import EventType
 from .models.character_event import AchievementEarned, BattleRankUp, SkillAdded, PlayerLogout, Death, \
     GainExperience, ItemAdded, PlayerFacilityCapture, PlayerFacilityDefend, PlayerLogin, VehicleDestroy
-from .models.eventmodel import EventMessage, SubscriptionMessage, HeartbeatMessage, \
+from .models.eventmodel import EventType, EventMessage, SubscriptionMessage, HeartbeatMessage, \
     ServiceStateChangedMessage, PushMessage, HelpMessage, Event
 from .models.world_event import MetagameEvent, ContinentLock, ContinentUnlock, FacilityControl
 from .types import CensusData
@@ -220,16 +219,9 @@ class Trigger:
 
     def generate_subscription(self) -> str:
         """Generate the appropriate subscription for this trigger."""
-        event_names = []
-        for e in self.events:
-            if isinstance(e, (EventType, Event)):
-                event_names.append(e.get_event_name())
-            else:
-                event_names.append(e)
-
         json_data: Dict[str, Union[str, List[str]]] = {
             'action': 'subscribe',
-            'eventNames': [e.get_event_name() if isinstance(e, EventType) else e
+            'eventNames': [e if isinstance(e, str) else e.get_event_name()
                            for e in self.events],
             'service': 'event'}
         if self.characters:
@@ -520,8 +512,8 @@ class EventClient(Client):
                 log.info('Sending message: %s', msg)
                 await self.websocket.send(msg)
 
-    def trigger(self, event: Union[EventT, str, EventType],
-                *args: Union[str, EventType], name: Optional[str] = None,
+    def trigger(self, event: Union[Type[EventT], str, EventType],
+                *args: Union[Type[EventT], str, EventType], name: Optional[str] = None,
                 **kwargs: Any) -> Callable[[Callback], None]:
         """Create and add a trigger for the given action.
 

@@ -16,8 +16,7 @@ from . import census, errors, ps2
 from .base import Cached, Named, Ps2Object
 from .client import Client
 from .event import EventClient, Trigger
-from .event_util import EventType
-from .models.eventmodel import Event
+from .models.eventmodel import Event, EventType
 
 __all__ = [
     'Cached',
