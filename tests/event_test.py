@@ -62,7 +62,7 @@ class EventClientTest(unittest.IsolatedAsyncioTestCase):
         flag = asyncio.Event()
 
         async def on_death(event: auraxium.Event) -> None:
-            self.assertIsInstance(event, auraxium.Event, 'non-event returned')
+            self.assertIsInstance(event, auraxium.event.Death, 'non-event returned')
             flag.set()
 
         self.client.trigger(auraxium.EventType.DEATH)(on_death)

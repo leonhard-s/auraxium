@@ -8,16 +8,23 @@ trigger system.
 import asyncio
 import contextlib
 import datetime
-import enum
 import json
 import logging
 import warnings
 from typing import (Any, Awaitable, Callable, Coroutine, Dict, Iterable,
-                    Iterator, List, Optional, Set, TYPE_CHECKING, Union)
+                    Iterator, List, Optional, Set, TYPE_CHECKING, Union, Literal, TypeVar)
 
 import websockets
+from pydantic import Field
 
+from .base import Ps2Data
 from .client import Client
+from .event_util import EventType
+from .models.character_event import AchievementEarned, BattleRankUp, SkillAdded, PlayerLogout, Death, \
+    GainExperience, ItemAdded, PlayerFacilityCapture, PlayerFacilityDefend, PlayerLogin, VehicleDestroy
+from .models.eventmodel import EventMessage, SubscriptionMessage, HeartbeatMessage, \
+    ServiceStateChangedMessage, PushMessage, HelpMessage, Event
+from .models.world_event import MetagameEvent, ContinentLock, ContinentUnlock, FacilityControl
 from .types import CensusData
 from .utils import expo_scaled
 
@@ -30,7 +37,7 @@ __all__ = [
     'ESS_ENDPOINT',
     'Event',
     'EventClient',
-    'EventType',
+    'Event',
     'Trigger'
 ]
 
@@ -38,202 +45,51 @@ __all__ = [
 ESS_ENDPOINT = 'wss://push.planetside2.com/streaming'
 log = logging.getLogger('auraxium.ess')
 
+EventT = TypeVar('EventT',
+                 AchievementEarned,
+                 BattleRankUp,
+                 ContinentLock,
+                 ContinentUnlock,
+                 Death,
+                 FacilityControl,
+                 GainExperience,
+                 ItemAdded,
+                 MetagameEvent,
+                 PlayerFacilityCapture,
+                 PlayerFacilityDefend,
+                 PlayerLogin,
+                 PlayerLogout,
+                 SkillAdded,
+                 VehicleDestroy)
+
 # Pylance is more strict regarding typing of synchronous vs. asynchronous code
-Callback = Callable[['Event'], Union[Coroutine[Any, Any, None], None]]
+Callback = Callable[['EventT'], Union[Coroutine[Any, Any, None], None]]
 
 
-class EventType(enum.IntEnum):
-    """A type of event returned by the websocket."""
-
-    # NOTE: IDs 1 through 19 are reserved for character-centric events,
-    # IDs 20 through 29 are both character-centric and world-centric, and
-    # IDs 30 and up are reserved for world-centric events.
-
-    #: Fall-back value for unknown event types.
-    UNKNOWN = 0
-
-    # Character-centric events
-
-    #: A character has earned a new achievement (medal or service ribbon).
-    ACHIEVEMENT_EARNED = 1
-    #: A character has achieved a new battle rank.
-    BATTLE_RANK_UP = 2
-    #: A character has been killed.
-    DEATH = 3
-    #: A character has been granted a new item.
-    ITEM_ADDED = 4
-    #: A character has been granted a new skill (certification/ASP skill).
-    SKILL_ADDED = 5
-    #: A character's vehicle has been destroyed.
-    VEHICLE_DESTROY = 6
-    #: A character has received an experience tick. The field ``other_id`` may
-    # may refer to another player, vehicle, or entity.
-    # Note that this is a very common event that can break your app if used on
-    # large character groups.
-    # Use :meth:`EventType.filter_experience()` to filter by experience ID.
-    GAIN_EXPERIENCE = 7
-    #: A character has participated in the capture of a facility.
-    PLAYER_FACILITY_CAPTURE = 8
-    #: A character has participated in the defence of a facility.
-    PLAYER_FACILITY_DEFEND = 9
-
-    # Character-centric and world-centric events
-
-    #: A character has logged in.
-    PLAYER_LOGIN = 20
-    #: A character has logged out.
-    PLAYER_LOGOUT = 21
-
-    # World-centric events
-
-    #: A continent has been locked.
-    CONTINENT_LOCK = 30
-    #: A continent has been unlocked. Note that this event is not working as of
-    # July 2020.
-    CONTINENT_UNLOCK = 31
-    #: A facility has changed ownership (i.e. being captured).
-    FACILITY_CONTROL = 32
-    #: An alert has started or ended.
-    METAGAME_EVENT = 33
-
-    @classmethod
-    def from_event_name(cls, event_name: str) -> 'EventType':
-        """Return the appropriate enum value for the given name.
-
-        The event name is case-insensitive here, but not in general.
-
-        Returns:
-            The event type for the given event payload, or
-            :attr:`EventType.UNKNOWN`.
-
-        """
-        conversion_dict: Dict[str, int] = {
-            'AchievementEarned': 1,
-            'BattleRankUp': 2,
-            'Death': 3,
-            'ItemAdded': 4,
-            'SkillAdded': 5,
-            'VehicleDestroy': 6,
-            'GainExperience': 7,
-            'PlayerFacilityCapture': 8,
-            'PlayerFacilityDefend': 9,
-            'PlayerLogin': 20,
-            'PlayerLogout': 21,
-            'ContinentLock': 30,
-            'ContinentUnlock': 31,
-            'FacilityControl': 32,
-            'MetagameEvent': 33}
-        try:
-            return cls(conversion_dict[event_name])
-        except KeyError:
-            # Fall-back for case-insensitive event names
-            for name, id_ in conversion_dict.items():
-                if name.lower() == event_name.lower():
-                    return cls(id_)
-            return cls(0)
-
-    @classmethod
-    def filter_experience(cls, experience_id: int) -> str:
-        """Return a dynamic event matching events by experience ID.
-
-        This works like :attr:`EventType.GAIN_EXPERIENCE`, but allows
-        subscribing to only the experience IDs you are interested in.
-
-        This reduces the bandwidth requirements as the number of
-        GAIN_EXPERIENCE events can be excessively high for large groups
-        of players.
-
-        This returns a string that can be passed to both
-        :meth:`EventClient.trigger()` and the :class:`Trigger` class's
-        initialiser in place of the enum value itself.
-
-        Arguments:
-            experience_id: The experience ID to filter by.
-
-        Returns:
-            The event name filtering for the given experience ID.
-
-        """
-        event_name = cls.GAIN_EXPERIENCE.to_event_name()
-        return f'{event_name}_experience_id_{experience_id}'
-
-    @classmethod
-    def from_payload(cls, payload: CensusData) -> 'EventType':
-        """Return the appropriate enum value for the event.
-
-        Returns:
-            The event type for the given event payload, or
-            :attr:`EventType.UNKNOWN`.
-
-        """
-        event_name = payload.get('event_name', 'NULL')
-        return cls.from_event_name(event_name)
-
-    def to_event_name(self) -> str:
-        """Return the event name for the given enum value.
-
-        This is mostly to dynamically subscribe to events.
-
-        Raises:
-            ValueError: Raised when calling this method on
-                :attr:`EventType.UNKNOWN`.
-
-        Returns:
-            The string representing this event.
-
-        """
-        conversion_dict: Dict[int, str] = {
-            1: 'AchievementEarned',
-            2: 'BattleRankUp',
-            3: 'Death',
-            4: 'ItemAdded',
-            5: 'SkillAdded',
-            6: 'VehicleDestroy',
-            7: 'GainExperience',
-            8: 'PlayerFacilityCapture',
-            9: 'PlayerFacilityDefend',
-            20: 'PlayerLogin',
-            21: 'PlayerLogout',
-            30: 'ContinentLock',
-            31: 'ContinentUnlock',
-            32: 'FacilityControl',
-            33: 'MetagameEvent'}
-        try:
-            return conversion_dict[self.value]
-        except KeyError as err:
-            raise ValueError(
-                'Cannot convert EventType.UNKNOWN to event name') from err
-
-
-class Event:
+class EventWrapper(EventMessage):
     """An event returned via the ESS websocket connection.
 
     The raw response returned through the API is accessible through the
     :attr:`payload` attribute.
 
     """
+    message_type: Literal['serviceMessage'] = Field(..., alias='type')
 
-    def __init__(self, payload: CensusData) -> None:
-        self.timestamp: datetime.datetime = datetime.datetime.utcfromtimestamp(
-            int(payload['timestamp']))
-        self.payload: CensusData = payload
+    payload: Union[EventT]
 
-    @property
-    def age(self) -> float:
-        """The age of the event in seconds."""
-        now = datetime.datetime.now()
-        return (self.timestamp - now).total_seconds()
 
-    @property
-    def type(self) -> EventType:
-        """The type of event."""
-        return EventType.from_payload(self.payload)
+WebsocketDataT = TypeVar('WebsocketDataT', EventWrapper, HeartbeatMessage, ServiceStateChangedMessage, PushMessage,
+                         HelpMessage, SubscriptionMessage)
+
+
+class WebsocketData(Ps2Data):
+    message: WebsocketDataT
 
 
 class Trigger:
     """An event trigger for the client's websocket connection.
 
-    Event triggers encapsulate both the event type to trigger on, as
+    EventWrapper triggers encapsulate both the event type to trigger on, as
     well as the action to perform when the event is encountered.
 
     They are also used to dynamically generate the subscription payload
@@ -264,8 +120,8 @@ class Trigger:
 
     """
 
-    def __init__(self, event: Union[EventType, str],
-                 *args: Union[EventType, str],
+    def __init__(self, event: Union[EventT, EventType, str],
+                 *args: Union[EventT, EventType, str],
                  characters: Optional[
                      Union[Iterable['Character'], Iterable[int]]] = None,
                  worlds: Optional[
@@ -273,7 +129,7 @@ class Trigger:
                  conditions: Optional[
                      List[Union[bool, Callable[[CensusData], bool]]]] = None,
                  action: Optional[
-                     Callable[[Event], Union[None, Awaitable[None]]]] = None,
+                     Callable[[EventT], Union[None, Awaitable[None]]]] = None,
                  name: Optional[str] = None,
                  single_shot: bool = False) -> None:
         self.action = action
@@ -282,7 +138,7 @@ class Trigger:
                                            for c in characters])
         self.conditions: List[Union[bool, Callable[[CensusData], bool]]] = (
             [] if conditions is None else conditions)
-        self.events: Set[Union[EventType, str]] = set((event, *args))
+        self.events: Set[Union[EventT, EventType, str]] = {event, *args}
         self.last_run: Optional[datetime.datetime] = None
         self.name = name
         self.single_shot = single_shot
@@ -290,7 +146,7 @@ class Trigger:
             [] if worlds is None else [w if isinstance(w, int) else w.id
                                        for w in worlds])
 
-    def callback(self, func: Callable[[Event], None]) -> None:
+    def callback(self, func: Callable[[EventT], None]) -> None:
         """Set the given function as the trigger action.
 
         The action may be a regular callable or a coroutine.
@@ -314,7 +170,7 @@ class Trigger:
         """
         self.action = func
 
-    def check(self, event: Event) -> bool:
+    def check(self, event: EventT) -> bool:
         """Return whether the given trigger should fire.
 
         This only returns whether the trigger should fire, the trigger
@@ -328,11 +184,13 @@ class Trigger:
             Whether this trigger should run for the given event.
 
         """
-        if (event.type not in self.events
-                and event.type.to_event_name() not in self.events):
+        if (type(event) not in self.events
+                and event.type not in self.events
+                and event.type.get_event_name() not in self.events):
             # Extra check for the dynamically generated experience ID events
-            if event.type == EventType.GAIN_EXPERIENCE:
-                id_ = int(event.payload['experience_id'])
+            if isinstance(event, GainExperience):
+                # if event.payload.type == EventType.GAIN_EXPERIENCE:
+                id_ = event.experience_id
                 for event_name in self.events:
                     if event_name == EventType.filter_experience(id_):
                         break
@@ -340,16 +198,16 @@ class Trigger:
                     return False  # Dynamic event but non-matching ID
             else:
                 return False
-        payload = event.payload
+        payload = event
         # Check character ID requirements
         if self.characters:
-            char_id = int(payload.get('character_id', 0))
-            other_id = int(payload.get('attacker_character_id', 0))
+            char_id = getattr(payload, 'character_id', 0)
+            other_id = getattr(payload, 'attacker_character_id', 0)
             if not (char_id in self.characters or other_id in self.characters):
                 return False
         # Check world ID requirements
         if self.worlds:
-            if int(payload.get('world_id', 0)) not in self.worlds:
+            if getattr(payload, 'world_id', 0) not in self.worlds:
                 return False
         # Check custom trigger conditions
         for condition in self.conditions:
@@ -362,9 +220,16 @@ class Trigger:
 
     def generate_subscription(self) -> str:
         """Generate the appropriate subscription for this trigger."""
+        event_names = []
+        for e in self.events:
+            if isinstance(e, (EventType, Event)):
+                event_names.append(e.get_event_name())
+            else:
+                event_names.append(e)
+
         json_data: Dict[str, Union[str, List[str]]] = {
             'action': 'subscribe',
-            'eventNames': [e.to_event_name() if isinstance(e, EventType) else e
+            'eventNames': [e.get_event_name() if isinstance(e, EventType) else e
                            for e in self.events],
             'service': 'event'}
         if self.characters:
@@ -377,7 +242,7 @@ class Trigger:
             json_data['worlds'] = ['all']
         return json.dumps(json_data)
 
-    async def run(self, event: Event) -> None:
+    async def run(self, event: EventT) -> None:
         """Perform the action associated with this trigger.
 
         Arguments:
@@ -592,7 +457,7 @@ class EventClient(Client):
         self.websocket = None
         self._connected = False
 
-    def dispatch(self, event: Event) -> None:
+    def dispatch(self, event: EventT) -> None:
         """Dispatch an event to the appropriate event triggers.
 
         This goes through the list of triggers registered for this
@@ -655,7 +520,7 @@ class EventClient(Client):
                 log.info('Sending message: %s', msg)
                 await self.websocket.send(msg)
 
-    def trigger(self, event: Union[str, EventType],
+    def trigger(self, event: Union[EventT, str, EventType],
                 *args: Union[str, EventType], name: Optional[str] = None,
                 **kwargs: Any) -> Callable[[Callback], None]:
         """Create and add a trigger for the given action.
@@ -706,29 +571,29 @@ class EventClient(Client):
             response: The plain text response received through the ESS.
 
         """
-        data: CensusData = json.loads(response)
-        service = data.get('service')
-        # Event messages
-        if service == 'event':
-            if data['type'] == 'serviceMessage':
-                event = Event(data['payload'])
-                log.debug('%s event received, dispatching...', event.type)
-                self.dispatch(event)
-            elif data['type'] == 'heartbeat':
-                log.debug('Heartbeat received: %s', data)
-        # Subscription echo
-        elif 'subscription' in data:
-            log.debug('Subscription echo: %s', data)
-        # Service state
-        elif data.get('type') == 'serviceStateChange':
+        # data: WebsocketDataT = WebsocketData(message={**json.loads(response)}).message  # TODO which one looks better?
+        data: WebsocketDataT = WebsocketData.parse_obj({'message': json.loads(response)}).message
+
+        if isinstance(data, EventWrapper):
+            event = data.payload
+            log.debug('%s event received, dispatching...', event.type)
+            self.dispatch(event)
+
+        elif isinstance(data, HeartbeatMessage):
+            log.debug('Heartbeat received: %s', data)
+
+        elif isinstance(data, SubscriptionMessage):
             log.info('Service state change: %s', data)
-        # Push service
-        elif service == 'push':
+
+        elif isinstance(data, ServiceStateChangedMessage):
+            log.info('Service state change: %s', data)
+
+        elif isinstance(data, PushMessage):
             log.debug('Ignoring push message: %s', data)
-        # Help message
-        elif 'send this for help' in data:
+
+        elif isinstance(data, HelpMessage):
             log.info('ESS welcome message: %s', data)
-        # Other
+
         else:
             log.warning('Unhandled message: %s', data)
 
@@ -738,7 +603,7 @@ class EventClient(Client):
         return expo_scaled(factor=0.1, max_=30.0)()
 
     async def wait_for(self, trigger: Trigger, *args: Trigger,
-                       timeout: Optional[float] = None) -> Event:
+                       timeout: Optional[float] = None) -> EventT:
         """Wait for one or more triggers to fire.
 
         This method will wait until any of the given triggers have
@@ -766,12 +631,12 @@ class EventClient(Client):
         # fires or expires. Think of it as an asynchronous flag.
         async_flag = asyncio.Event()
         # Used to store the event received
-        received_event: Optional[Event] = None
+        received_event: Optional[EventT] = None
 
         triggers: List[Trigger] = [trigger]
         triggers.extend(args)
 
-        def callback(event: Event) -> None:
+        def callback(event: EventT) -> None:
             # Store the received event
             nonlocal received_event
             received_event = event

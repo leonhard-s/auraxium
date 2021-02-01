@@ -28,9 +28,9 @@ async def main() -> None:
     @client.trigger(auraxium.EventType.DEATH)
     async def on_death(event: auraxium.Event) -> None:
         """Run whenever a death event is received."""
-        now = event.timestamp
-        victim_id = int(event.payload['character_id'])
-        killer_id = int(event.payload['attacker_character_id'])
+        now = datetime.datetime.fromtimestamp(event.timestamp)
+        victim_id = event.character_id
+        killer_id = event.attacker_character_id
 
         # Ignore deaths not caused by enemy players
         if killer_id == 0 or victim_id == killer_id:
