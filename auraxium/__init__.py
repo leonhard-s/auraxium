@@ -25,7 +25,7 @@ __all__ = [
     'errors',
     'Event',
     'EventClient',
-    'EventType'
+    'EventType',
     'Named',
     'ps2',
     'Ps2Object',

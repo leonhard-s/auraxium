@@ -563,7 +563,6 @@ class EventClient(Client):
             response: The plain text response received through the ESS.
 
         """
-        # data: WebsocketDataT = WebsocketData(message={**json.loads(response)}).message  # TODO which one looks better?
         data: WebsocketDataT = WebsocketData.parse_obj({'message': json.loads(response)}).message
 
         if isinstance(data, EventWrapper):
