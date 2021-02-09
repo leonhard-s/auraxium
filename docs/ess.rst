@@ -91,12 +91,12 @@ Here is an example trigger setup:
 
         @client.trigger(auraxium.EventType.BATTLE_RANK_UP)
         async def print_levelup(event):
-            char_id = int(event.payload['character_id'])
+            char_id = event.character_id
             char = await client.get_by_id(ps2.Character, char_id)
 
             # NOTE: This value is likely different from char.data.battle_rank as
             # the REST API tends to lag by a few minutes.
-            new_battle_rank = int(event.payload['battle_rank'])
+            new_battle_rank = event.battle_rank
 
             print(f'{await char.name_long()} has reached BR {new_battle_rank}!')
 

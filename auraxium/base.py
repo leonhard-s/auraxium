@@ -67,7 +67,7 @@ class Ps2Data(pydantic.BaseModel, metaclass=abc.ABCMeta):
 
     @pydantic.validator('*', pre=True)
     @classmethod
-    def convert_null(cls: Type['Ps2Data'], value: AnyT) -> Optional[AnyT]:
+    def _convert_null(cls: Type['Ps2Data'], value: AnyT) -> Optional[AnyT]:
         """Handle NULL string return values.
 
         This converts any NULL strings to equal ``None`` instead.

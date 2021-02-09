@@ -17,6 +17,7 @@ from typing import (Any, Awaitable, Callable, Coroutine, Dict, Iterable,
 
 import websockets
 
+from .base import Ps2Data
 from .client import Client
 from .types import CensusData
 from .utils import expo_scaled
@@ -205,18 +206,12 @@ class EventType(enum.IntEnum):
                 'Cannot convert EventType.UNKNOWN to event name') from err
 
 
-class Event:
-    """An event returned via the ESS websocket connection.
+class Event(Ps2Data):
+    """An event returned via the ESS websocket connection."""
 
-    The raw response returned through the API is accessible through the
-    :attr:`payload` attribute.
-
-    """
-
-    def __init__(self, payload: CensusData) -> None:
-        self.timestamp: datetime.datetime = datetime.datetime.utcfromtimestamp(
-            int(payload['timestamp']))
-        self.payload: CensusData = payload
+    event_name: str
+    timestamp: datetime.datetime
+    world_id: int
 
     @property
     def age(self) -> float:
@@ -227,7 +222,7 @@ class Event:
     @property
     def type(self) -> EventType:
         """The type of event."""
-        return EventType.from_payload(self.payload)
+        return EventType.from_event_name(self.event_name)
 
 
 class Trigger:
@@ -271,7 +266,7 @@ class Trigger:
                  worlds: Optional[
                      Union[Iterable['World'], Iterable[int]]] = None,
                  conditions: Optional[
-                     List[Union[bool, Callable[[CensusData], bool]]]] = None,
+                     List[Union[bool, Callable[[Event], bool]]]] = None,
                  action: Optional[
                      Callable[[Event], Union[None, Awaitable[None]]]] = None,
                  name: Optional[str] = None,
@@ -280,7 +275,7 @@ class Trigger:
         self.characters: List[int] = (
             [] if characters is None else [c if isinstance(c, int) else c.id
                                            for c in characters])
-        self.conditions: List[Union[bool, Callable[[CensusData], bool]]] = (
+        self.conditions: List[Union[bool, Callable[[Event], bool]]] = (
             [] if conditions is None else conditions)
         self.events: Set[Union[EventType, str]] = set((event, *args))
         self.last_run: Optional[datetime.datetime] = None
@@ -304,7 +299,7 @@ class Trigger:
             my_trigger = Trigger('Death')
             @my_trigger.callback
             def pay_respect(event):
-                char = event.payload['character_id']
+                char = event.character_id
                 print('F ({char})')
 
         Arguments:
@@ -322,7 +317,7 @@ class Trigger:
         :meth:`Trigger.run()` is called.
 
         Arguments:
-            event: The payload to check.
+            event: The event to check.
 
         Returns:
             Whether this trigger should run for the given event.
@@ -332,7 +327,7 @@ class Trigger:
                 and event.type.to_event_name() not in self.events):
             # Extra check for the dynamically generated experience ID events
             if event.type == EventType.GAIN_EXPERIENCE:
-                id_ = int(event.payload['experience_id'])
+                id_ = event.experience_id
                 for event_name in self.events:
                     if event_name == EventType.filter_experience(id_):
                         break
@@ -340,21 +335,20 @@ class Trigger:
                     return False  # Dynamic event but non-matching ID
             else:
                 return False
-        payload = event.payload
         # Check character ID requirements
         if self.characters:
-            char_id = int(payload.get('character_id', 0))
-            other_id = int(payload.get('attacker_character_id', 0))
+            char_id = event.character_id
+            other_id = event.attacker_character_id
             if not (char_id in self.characters or other_id in self.characters):
                 return False
         # Check world ID requirements
         if self.worlds:
-            if int(payload.get('world_id', 0)) not in self.worlds:
+            if event.world_id not in self.worlds:
                 return False
         # Check custom trigger conditions
         for condition in self.conditions:
             if callable(condition):
-                if not condition(payload):
+                if not condition(event):
                     return False
             elif not condition:
                 return False
@@ -711,7 +705,7 @@ class EventClient(Client):
         # Event messages
         if service == 'event':
             if data['type'] == 'serviceMessage':
-                event = Event(data['payload'])
+                event = Event(**data['payload'])
                 log.debug('%s event received, dispatching...', event.type)
                 self.dispatch(event)
             elif data['type'] == 'heartbeat':
