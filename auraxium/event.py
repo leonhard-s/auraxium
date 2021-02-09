@@ -317,7 +317,7 @@ class Trigger:
         :meth:`Trigger.run()` is called.
 
         Arguments:
-            event: The payload to check.
+            event: The event to check.
 
         Returns:
             Whether this trigger should run for the given event.
@@ -327,7 +327,7 @@ class Trigger:
                 and event.type.to_event_name() not in self.events):
             # Extra check for the dynamically generated experience ID events
             if event.type == EventType.GAIN_EXPERIENCE:
-                id_ = int(event.payload['experience_id'])
+                id_ = event.experience_id
                 for event_name in self.events:
                     if event_name == EventType.filter_experience(id_):
                         break
@@ -335,21 +335,20 @@ class Trigger:
                     return False  # Dynamic event but non-matching ID
             else:
                 return False
-        payload = event.payload
         # Check character ID requirements
         if self.characters:
-            char_id = int(payload.get('character_id', 0))
-            other_id = int(payload.get('attacker_character_id', 0))
+            char_id = event.character_id
+            other_id = event.attacker_character_id
             if not (char_id in self.characters or other_id in self.characters):
                 return False
         # Check world ID requirements
         if self.worlds:
-            if int(payload.get('world_id', 0)) not in self.worlds:
+            if event.world_id not in self.worlds:
                 return False
         # Check custom trigger conditions
         for condition in self.conditions:
             if callable(condition):
-                if not condition(payload):
+                if not condition(event):
                     return False
             elif not condition:
                 return False
