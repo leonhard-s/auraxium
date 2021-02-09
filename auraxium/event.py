@@ -299,7 +299,7 @@ class Trigger:
             my_trigger = Trigger('Death')
             @my_trigger.callback
             def pay_respect(event):
-                char = event.payload['character_id']
+                char = event.character_id
                 print('F ({char})')
 
         Arguments:
