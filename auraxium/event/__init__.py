@@ -17,26 +17,26 @@ from typing import (Any, Awaitable, Callable, Coroutine, Dict, Iterable,
 import websockets
 from pydantic import Field
 
-from .base import Ps2Data
-from .client import Client
-from .models.character_event import AchievementEarned, BattleRankUp, SkillAdded, PlayerLogout, Death, \
+from ..base import Ps2Data
+from ..client import Client
+from ..models.character_event import AchievementEarned, BattleRankUp, SkillAdded, PlayerLogout, Death, \
     GainExperience, ItemAdded, PlayerFacilityCapture, PlayerFacilityDefend, PlayerLogin, VehicleDestroy
-from .models.eventmodel import EventType, EventMessage, SubscriptionMessage, HeartbeatMessage, \
+from .eventmodel import EventType, EventMessage, SubscriptionMessage, HeartbeatMessage, \
     ServiceStateChangedMessage, PushMessage, HelpMessage, Event
-from .models.world_event import MetagameEvent, ContinentLock, ContinentUnlock, FacilityControl
-from .types import CensusData
-from .utils import expo_scaled
+from ..models.world_event import MetagameEvent, ContinentLock, ContinentUnlock, FacilityControl
+from ..types import CensusData
+from ..utils import expo_scaled
 
 if TYPE_CHECKING:  # pragma: no cover
     # This is only imported during static type checking to resolve the forward
     # references. This avoids a circular import at runtime.
-    from .ps2 import Character, World
+    from ..ps2 import Character, World
 
 __all__ = [
     'ESS_ENDPOINT',
     'Event',
     'EventClient',
-    'Event',
+    'EventType',
     'Trigger'
 ]
 

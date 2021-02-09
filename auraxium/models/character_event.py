@@ -14,7 +14,7 @@ __all__ = [
     "VehicleDestroy"
 ]
 
-from auraxium.models.eventmodel import Event
+from ..event import Event
 
 
 class AchievementEarned(Event):

@@ -1,5 +1,7 @@
 from typing import Literal
 
+from pydantic import Field, validator
+
 from ..event import Event
 
 __all__ = [
@@ -47,5 +49,17 @@ class MetagameEvent(Event):
     faction_nc: float  # Percentage of territory captured, as far as I can tell
     faction_tr: float
     faction_vs: float
-    # metagame_event_id: int    # TODO deal with this in subclasses
+    metagame_event_id: int
     metagame_event_state: int
+    zone_id = Field(default=-1)
+
+    @validator('zone_id')
+    def generate_zone_id(cls, zone_id):
+        if zone_id == -1:
+            return zone_id_from_event_id(0) # TODO this doesn't work because we don't have access to metagame event id
+
+
+def zone_id_from_event_id(metagame_event_id: int):
+    pass
+
+
