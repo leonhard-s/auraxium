@@ -17,6 +17,7 @@ from typing import (Any, Awaitable, Callable, Coroutine, Dict, Iterable,
 
 import websockets
 
+from .base import Ps2Data
 from .client import Client
 from .types import CensusData
 from .utils import expo_scaled
@@ -205,18 +206,12 @@ class EventType(enum.IntEnum):
                 'Cannot convert EventType.UNKNOWN to event name') from err
 
 
-class Event:
-    """An event returned via the ESS websocket connection.
+class Event(Ps2Data):
+    """An event returned via the ESS websocket connection."""
 
-    The raw response returned through the API is accessible through the
-    :attr:`payload` attribute.
-
-    """
-
-    def __init__(self, payload: CensusData) -> None:
-        self.timestamp: datetime.datetime = datetime.datetime.utcfromtimestamp(
-            int(payload['timestamp']))
-        self.payload: CensusData = payload
+    event_name: str
+    timestamp: datetime.datetime
+    world_id: int
 
     @property
     def age(self) -> float:
@@ -227,7 +222,7 @@ class Event:
     @property
     def type(self) -> EventType:
         """The type of event."""
-        return EventType.from_payload(self.payload)
+        return EventType.from_event_name(self.event_name)
 
 
 class Trigger:
@@ -271,7 +266,7 @@ class Trigger:
                  worlds: Optional[
                      Union[Iterable['World'], Iterable[int]]] = None,
                  conditions: Optional[
-                     List[Union[bool, Callable[[CensusData], bool]]]] = None,
+                     List[Union[bool, Callable[[Event], bool]]]] = None,
                  action: Optional[
                      Callable[[Event], Union[None, Awaitable[None]]]] = None,
                  name: Optional[str] = None,
@@ -280,7 +275,7 @@ class Trigger:
         self.characters: List[int] = (
             [] if characters is None else [c if isinstance(c, int) else c.id
                                            for c in characters])
-        self.conditions: List[Union[bool, Callable[[CensusData], bool]]] = (
+        self.conditions: List[Union[bool, Callable[[Event], bool]]] = (
             [] if conditions is None else conditions)
         self.events: Set[Union[EventType, str]] = set((event, *args))
         self.last_run: Optional[datetime.datetime] = None
@@ -711,7 +706,7 @@ class EventClient(Client):
         # Event messages
         if service == 'event':
             if data['type'] == 'serviceMessage':
-                event = Event(data['payload'])
+                event = Event(**data['payload'])
                 log.debug('%s event received, dispatching...', event.type)
                 self.dispatch(event)
             elif data['type'] == 'heartbeat':
