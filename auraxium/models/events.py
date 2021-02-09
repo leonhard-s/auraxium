@@ -27,6 +27,24 @@ __all__ = [
 
 # pylint: disable=too-few-public-methods
 
+# Backup mapping of metagame_event_id to zone_id
+_EVENT_TO_ZONE: Dict[int, int] = {
+    # VS meltdown
+    157: 2, 154: 4, 148: 6, 151: 8,
+    # VS unstable meltdown
+    189: 2, 187: 4, 188: 6, 186: 8,
+    # NC meltdown
+    158: 2, 155: 4, 149: 6, 152: 8,
+    # NC unstable meltdown
+    179: 2, 177: 4, 178: 6, 176: 8,
+    # TR meltdown
+    156: 2, 153: 4, 147: 6, 150: 8,
+    # TR unstable meltdown
+    193: 2, 191: 4, 192: 6, 190: 8,
+    # Warpgates stabilizing
+    160: 2, 162: 4, 159: 6, 161: 8
+}
+
 
 class AchievementAdded(Event):
     """A character has earned a new achievement.
@@ -124,7 +142,36 @@ class MetagameEvent(Event):
     faction_vs: float
     metagame_event_id: int
     metagame_event_state: int
-    zone_id: int  # missing
+    # This default value is a sentinel to inform the validator that this field
+    # has not been provided.
+    zone_id: int = -1
+
+    @pydantic.root_validator
+    @classmethod
+    def _insert_zone_id(cls, values: Dict[str, Any]) -> Dict[str, Any]:
+        """Restore the missing ``zone_id`` field.
+
+        As of creating this module, the ``zone_id`` field has been
+        missing from payloads for years. This validator restores it
+        using the :attr:`metagame_event_id` field of the payload.
+
+        This is hard-coded and prone to breaking with updates, which is
+        why this validator will always try to use the provided value
+        and only use the local lookup table if it wasn't found.
+
+        If the local table does not support the given
+        :attr:`metagame_event_id`, a warning is raised and ``zone_id``
+        set to ``0``.
+        """
+        if values['zone_id'] < 0:
+            event_id = int(values['metagame_event_id'])
+            try:
+                values['zone_id'] = _EVENT_TO_ZONE[event_id]
+            except KeyError:
+                values['zone_id'] = 0
+                warnings.warn('Unable to infer zone_id from unknown alert '
+                              f'type {event_id}, zone_id has been set to 0')
+        return values
 
 
 class PlayerFacilityCapture(Event):
