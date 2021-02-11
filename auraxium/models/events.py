@@ -5,7 +5,7 @@ from typing import Any, Dict
 
 import pydantic
 
-from ..event import Event
+from ..event._model import CharacterEvent, Event, WorldEvent
 
 __all__ = [
     'AchievementAdded',
@@ -46,7 +46,7 @@ _EVENT_TO_ZONE: Dict[int, int] = {
 }
 
 
-class AchievementAdded(Event):
+class AchievementAdded(Event, CharacterEvent):
     """A character has earned a new achievement.
 
     Achievements are either weapon medals or service ribbons.
@@ -57,7 +57,7 @@ class AchievementAdded(Event):
     zone_id: int
 
 
-class BattleRankUp(Event):
+class BattleRankUp(Event, CharacterEvent):
     """A character has earned a new battle rank.
 
     Note that this may not reflect the characters actual new battle
@@ -69,7 +69,7 @@ class BattleRankUp(Event):
     zone_id: int
 
 
-class Death(Event):
+class Death(Event, CharacterEvent):
     """A character has been killed.
 
     If the attacker and victim ID are identical, the character has
@@ -92,7 +92,7 @@ class Death(Event):
     zone_id: int
 
 
-class FacilityControl(Event):
+class FacilityControl(Event, WorldEvent):
     """A facility has switched factions.
 
     This is generally due to hostile takeover, but is also dispatched
@@ -108,7 +108,7 @@ class FacilityControl(Event):
     zone_id: int
 
 
-class GainExperience(Event):
+class GainExperience(Event, CharacterEvent):
     """A character has gained a tick of experience."""
 
     amount: int
@@ -119,7 +119,7 @@ class GainExperience(Event):
     zone_id: int
 
 
-class ItemAdded(Event):
+class ItemAdded(Event, CharacterEvent):
     """A character has been granted an item.
 
     This includes internal flags and invisible items used to control
@@ -133,7 +133,7 @@ class ItemAdded(Event):
     zone_id: int
 
 
-class MetagameEvent(Event):
+class MetagameEvent(Event, WorldEvent):
     """A metagame event (i.e. alert) has changed state."""
 
     experience_bonus: int
@@ -174,7 +174,7 @@ class MetagameEvent(Event):
         return values
 
 
-class PlayerFacilityCapture(Event):
+class PlayerFacilityCapture(Event, CharacterEvent):
     """A player has participated in capturing a facility."""
 
     character_id: int
@@ -183,7 +183,7 @@ class PlayerFacilityCapture(Event):
     zone_id: int
 
 
-class PlayerFacilityDefend(Event):
+class PlayerFacilityDefend(Event, CharacterEvent):
     """A player has participated in defending a facility."""
 
     character_id: int
@@ -192,20 +192,20 @@ class PlayerFacilityDefend(Event):
     zone_id: int
 
 
-class PlayerLogin(Event):
+class PlayerLogin(Event, CharacterEvent, WorldEvent):
     """A player has logged into the game."""
 
     character_id: int
 
 
-class PlayerLogout(Event):
+class PlayerLogout(Event, CharacterEvent, WorldEvent):
     """A player has logged out."""
 
     character_id: int
     event_name: str
 
 
-class SkillAdded(Event):
+class SkillAdded(Event, CharacterEvent):
     """A player has unlocked a skill (i.e. certification or ASP)."""
 
     character_id: int
@@ -213,7 +213,7 @@ class SkillAdded(Event):
     zone_id: int
 
 
-class VehicleDestroy(Event):
+class VehicleDestroy(Event, CharacterEvent):
     """A player's vehicle has been destroyed."""
 
     attacker_character_id: int
@@ -227,8 +227,9 @@ class VehicleDestroy(Event):
     zone_id: int
 
 
-class ContinentLock(Event):
+class ContinentLock(Event, WorldEvent):
     """A continent has been locked."""
+
     zone_id: int
     triggering_faction: int
     previous_faction: int
@@ -239,8 +240,9 @@ class ContinentLock(Event):
     event_type: int
 
 
-class ContinentUnlock(Event):
+class ContinentUnlock(Event, WorldEvent):
     """A continent has been unlocked."""
+
     zone_id: int
     triggering_faction: int
     previous_faction: int

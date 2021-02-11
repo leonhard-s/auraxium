@@ -25,7 +25,7 @@ async def main() -> None:
     # This dictionary is used to track recent deaths
     cache: Dict[int, Tuple[int, datetime.datetime]] = {}
 
-    @client.trigger(auraxium.EventType.DEATH)
+    @client.trigger(auraxium.event.Death)
     async def on_death(event: auraxium.Event) -> None:
         """Run whenever a death event is received."""
         now = event.timestamp
