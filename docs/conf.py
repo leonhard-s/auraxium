@@ -16,7 +16,9 @@
 import os
 import sys
 
-sys.path.insert(0, os.path.abspath('../..'))
+sys.path.insert(0, os.path.abspath('..'))
+
+import auraxium
 
 
 # -- Project information -----------------------------------------------------
@@ -24,7 +26,7 @@ sys.path.insert(0, os.path.abspath('../..'))
 project = 'Auraxium'
 copyright = '2020, Leonhard S.'
 author = 'Leonhard S.'
-version = '0.1.0a5'
+version = auraxium.__version__
 
 
 # -- General configuration ---------------------------------------------------
