@@ -1,4 +1,4 @@
-"""Request handling and response checking for Auraxium.
+"""REST API interface and response checking for Auraxium.
 
 This module is responsible for performing the HTTP requests themselves,
 handling any HTTP-related errors, and converting the returned data into
@@ -11,11 +11,14 @@ All requests are buffered, allowing up to five HTTP-related errors
 before giving up and letting the error propagate outwards.
 """
 
+import asyncio
+import copy
 import json
 import logging
 import sys
 import warnings
-from typing import Any, Dict, List, Optional, Tuple
+from typing import Any, Dict, Literal, List, Optional, Tuple, Type, TypeVar
+from types import TracebackType
 
 import aiohttp
 import backoff
@@ -31,12 +34,110 @@ from .types import CensusData
 from .utils import expo_scaled
 
 __all__ = [
+    'RESTInterface',
     'extract_payload',
     'extract_single',
     'run_query'
 ]
 
-log = logging.getLogger('auraxium.http')
+_T = TypeVar('_T')
+
+_log = logging.getLogger('auraxium.http')
+
+
+class RequestClient:
+    """The REST request handler for Auraxium."""
+
+    def __init__(self, loop: Optional[asyncio.AbstractEventLoop] = None,
+                 service_id: str = 's:example', profiling: bool = False
+                 ) -> None:
+        self.loop = loop or asyncio.get_event_loop()
+        self.profiling = profiling
+        self.service_id = service_id
+        self.session = aiohttp.ClientSession()
+        self._timing_cache: List[float] = []
+
+    async def __aenter__(self: _T) -> _T:
+        """Enter the context manager and return the client."""
+        return self
+
+    async def __aexit__(self, exc_type: Optional[Type[BaseException]],
+                        exc_value: Optional[BaseException],
+                        traceback: Optional[TracebackType]) -> Literal[False]:
+        """Exit the context manager.
+
+        This closes the internal HTTP session before exiting, no error
+        handling will be performed.
+
+        Arguments:
+            exc_type: The type of exception that was raised.
+            exc_value: The exception value that was raised.
+            traceback: The traceback type of the exception.
+
+        Returns:
+            Always False, i.e. no error suppression.
+
+        """
+        await self.close()
+        return False  # Do not suppress any exceptions
+
+    @property
+    def latency(self) -> float:
+        """Return the average request latency for the client.
+
+        This averages up to the last 100 query times. Use the logging
+        utility to gain more insight into which queries take the most
+        time.
+
+        """
+        if not self._timing_cache:
+            return -1.0
+        return sum(self._timing_cache) / len(self._timing_cache)
+
+    async def close(self) -> None:
+        """Shut down the client.
+
+        This will end the HTTP session used for requests to the REST
+        API.
+
+        Call this to clean up before the client object is destroyed.
+
+        """
+        _log.info('Shutting down client')
+        await self.session.close()
+
+    async def request(self, query: Query, verb: str = 'get') -> CensusData:
+        """Perform a REST API request.
+
+        This performs the query and performs error checking to ensure
+        the query is valid.
+
+        Refer to the :meth:`auraxium.request.raise_for_dict()` method
+        for a list of exceptions raised from API errors.
+
+        Arguments:
+            query: The query to perform.
+            verb (optional): The query verb to utilise.
+                Defaults to ``'get'``.
+
+        Returns:
+            The API response payload received.
+
+        """
+        if self.profiling:
+            # Create a copy of the query before modifying it
+            query = copy.copy(query)
+            query.timing(True)
+        data = await run_query(query, verb=verb, session=self.session)
+        if self.profiling and verb == 'get':
+            timing = data.pop('timing')
+            if _log.level <= logging.DEBUG:
+                url = query.url()
+                _log.debug('Query times for "%s?%s": %s',
+                           '/'.join(url.parts[-2:]), url.query_string,
+                           ', '.join([f'{k}: {v}' for k, v in timing.items()]))
+            self._timing_cache.append(float(timing['total-ms']))
+        return data
 
 
 def get_components(url: yarl.URL) -> Tuple[str, Optional[str]]:
@@ -106,7 +207,7 @@ async def response_to_dict(response: aiohttp.ClientResponse) -> CensusData:
             # error propagate.
             raise ResponseError(
                 f'Received a non-JSON response: {text}') from err
-        log.info(
+        _log.info(
             'Received a plain text response containing JSON data: %s', text)
         return data
     return data
@@ -339,27 +440,27 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
 
     """
     url = query.url(verb=verb)
-    log.debug('Performing %s request: %s', verb.upper(), url)
+    _log.debug('Performing %s request: %s', verb.upper(), url)
 
     def on_success(details: Dict[str, Any]) -> None:
         """Called when a query is successful."""
         if (tries := details['tries']) > 1:
-            log.debug('Query successful after %d tries: %s',
-                      tries, url)
+            _log.debug('Query successful after %d tries: %s',
+                       tries, url)
 
     def on_backoff(details: Dict[str, Any]) -> None:
         """Called when a query failed and is backed off."""
         wait = details['wait']
         tries = details['tries']
-        log.debug('Backing off %.2f seconds after %d attempts: %s',
-                  wait, tries, url)
+        _log.debug('Backing off %.2f seconds after %d attempts: %s',
+                   wait, tries, url)
 
     def on_giveup(details: Dict[str, Any]) -> None:
         """Called when giving up on a query."""
         elapsed: float = details['elapsed']
         tries: int = details['tries']
-        log.warning('Giving up on query and re-raising exception after %.2f '
-                    'seconds and %d attempts: %s', elapsed, tries, url)
+        _log.warning('Giving up on query and re-raising exception after %.2f '
+                     'seconds and %d attempts: %s', elapsed, tries, url)
         _, exc_value, _ = sys.exc_info()
         assert exc_value is not None
         raise exc_value
