@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from ..base import Ps2Data
+from ._base import RESTPayload
 
 __all__ = [
     'PlayerStateGroup'
@@ -11,7 +11,7 @@ __all__ = [
 # pylint: disable=too-few-public-methods
 
 
-class PlayerStateGroup(Ps2Data):
+class PlayerStateGroup(RESTPayload):
     """A fire-mode-specific state group.
 
     This class mirrors the payload data returned by the API, you may

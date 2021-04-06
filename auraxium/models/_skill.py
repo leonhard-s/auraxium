@@ -2,9 +2,10 @@
 
 from typing import Optional
 
-from ..base import ImageData, Ps2Data
+from ..base import ImageData
 from ..types import LocaleData
 
+from ._base import RESTPayload
 
 __all__ = [
     'SkillData',
@@ -16,7 +17,7 @@ __all__ = [
 # pylint: disable=too-few-public-methods
 
 
-class SkillData(Ps2Data, ImageData):
+class SkillData(RESTPayload, ImageData):
     """Data class for :class:`auraxium.ps2.skill.Skill`.
 
     This class mirrors the payload data returned by the API, you may
@@ -32,7 +33,7 @@ class SkillData(Ps2Data, ImageData):
     description: Optional[LocaleData] = None
 
 
-class SkillCategoryData(Ps2Data, ImageData):
+class SkillCategoryData(RESTPayload, ImageData):
     """Data class for :class:`auraxium.ps2.skill.SkillCategory`.
 
     This class mirrors the payload data returned by the API, you may
@@ -47,7 +48,7 @@ class SkillCategoryData(Ps2Data, ImageData):
     description: Optional[LocaleData] = None
 
 
-class SkillLineData(Ps2Data, ImageData):
+class SkillLineData(RESTPayload, ImageData):
     """Data class for :class:`auraxium.ps2.skill.SkillLine`.
 
     This class mirrors the payload data returned by the API, you may
@@ -62,7 +63,7 @@ class SkillLineData(Ps2Data, ImageData):
     description: Optional[LocaleData] = None
 
 
-class SkillSetData(Ps2Data, ImageData):
+class SkillSetData(RESTPayload, ImageData):
     """Data class for :class:`auraxium.ps2.skill.SkillSet`.
 
     This class mirrors the payload data returned by the API, you may

@@ -1,6 +1,6 @@
 """Data classes for :mod:`auraxium.ps2.experience`."""
 
-from ..base import Ps2Data
+from ._base import RESTPayload
 from ..types import LocaleData
 
 __all__ = [
@@ -11,7 +11,7 @@ __all__ = [
 # pylint: disable=too-few-public-methods
 
 
-class ExperienceData(Ps2Data):
+class ExperienceData(RESTPayload):
     """Data class for :class:`auraxium.ps2.experience.Experience`.
 
     This class mirrors the payload data returned by the API, you may
@@ -23,14 +23,14 @@ class ExperienceData(Ps2Data):
     xp: int
 
 
-class ExperienceRankData(Ps2Data):
+class ExperienceRankData(RESTPayload):
     """Data class for :class:`auraxium.ps2.experience.Experience`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
     """
 
-    class EmpireData(Ps2Data):
+    class EmpireData(RESTPayload):
         """Object representation of an empire-specific sub-key.
 
         Attributes:

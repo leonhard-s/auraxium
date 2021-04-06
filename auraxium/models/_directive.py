@@ -2,8 +2,10 @@
 
 from typing import Optional
 
-from ..base import ImageData, Ps2Data
+from ..base import ImageData
 from ..types import LocaleData
+
+from ._base import RESTPayload
 
 __all__ = [
     'DirectiveData',
@@ -15,7 +17,7 @@ __all__ = [
 # pylint: disable=too-few-public-methods
 
 
-class DirectiveData(Ps2Data, ImageData):
+class DirectiveData(RESTPayload, ImageData):
     """Data class for :class:`auraxium.ps2.directive.Directive`.
 
     This class mirrors the payload data returned by the API, you may
@@ -31,7 +33,7 @@ class DirectiveData(Ps2Data, ImageData):
     description: Optional[LocaleData] = None
 
 
-class DirectiveTierData(Ps2Data, ImageData):
+class DirectiveTierData(RESTPayload, ImageData):
     """Data class for :class:`auraxium.ps2.directive.DirectiveTier`.
 
     This class mirrors the payload data returned by the API, you may
@@ -46,7 +48,7 @@ class DirectiveTierData(Ps2Data, ImageData):
     name: LocaleData
 
 
-class DirectiveTreeData(Ps2Data, ImageData):
+class DirectiveTreeData(RESTPayload, ImageData):
     """Data class for :class:`auraxium.ps2.directive.DirectiveTree`.
 
     This class mirrors the payload data returned by the API, you may
@@ -59,7 +61,7 @@ class DirectiveTreeData(Ps2Data, ImageData):
     description: Optional[LocaleData] = None
 
 
-class DirectiveTreeCategoryData(Ps2Data):
+class DirectiveTreeCategoryData(RESTPayload):
     """Data class for :class:`auraxium.ps2.directive.DirectiveTreeCategory`.
 
     This class mirrors the payload data returned by the API, you may

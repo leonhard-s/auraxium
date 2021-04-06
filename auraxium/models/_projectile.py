@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from ..base import Ps2Data
+from ._base import RESTPayload
 
 __all__ = [
     'ProjectileData'
@@ -11,7 +11,7 @@ __all__ = [
 # pylint: disable=too-few-public-methods
 
 
-class ProjectileData(Ps2Data):
+class ProjectileData(RESTPayload):
     """Data class for :class:`auraxium.ps2.projectile.Projectile`.
 
     This class mirrors the payload data returned by the API, you may

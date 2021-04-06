@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from ..base import Ps2Data
+from ._base import RESTPayload
 from ..types import LocaleData
 
 __all__ = [
@@ -12,7 +12,7 @@ __all__ = [
 # pylint: disable=too-few-public-methods
 
 
-class WorldData(Ps2Data):
+class WorldData(RESTPayload):
     """Data class for :class:`auraxium.ps2.world.World`.
 
     This class mirrors the payload data returned by the API, you may

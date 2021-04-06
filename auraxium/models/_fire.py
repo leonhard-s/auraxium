@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from ..base import Ps2Data
+from ._base import RESTPayload
 from ..types import LocaleData
 
 __all__ = [
@@ -13,7 +13,7 @@ __all__ = [
 # pylint: disable=too-few-public-methods
 
 
-class FireModeData(Ps2Data):
+class FireModeData(RESTPayload):
     """Data class for :class:`auraxium.ps2.ability.FireMode`.
 
     This class mirrors the payload data returned by the API, you may
@@ -110,7 +110,7 @@ class FireModeData(Ps2Data):
     description: LocaleData
 
 
-class FireGroupData(Ps2Data):
+class FireGroupData(RESTPayload):
     """Data class for :class:`auraxium.ps2.ability.FireGroup`.
 
     This class mirrors the payload data returned by the API, you may

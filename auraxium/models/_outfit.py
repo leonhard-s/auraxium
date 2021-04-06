@@ -1,6 +1,6 @@
 """Data classes for :mod:`auraxium.ps2.outfit`."""
 
-from ..base import Ps2Data
+from ._base import RESTPayload
 
 __all__ = [
     'OutfitData',
@@ -11,7 +11,7 @@ __all__ = [
 # pylint: disable=too-few-public-methods
 
 
-class OutfitData(Ps2Data):
+class OutfitData(RESTPayload):
     """Data class for :class:`auraxium.ps2.outfit.Outfit`.
 
     This class mirrors the payload data returned by the API, you may
@@ -29,7 +29,7 @@ class OutfitData(Ps2Data):
     member_count: int
 
 
-class OutfitMemberData(Ps2Data):
+class OutfitMemberData(RESTPayload):
     """Data class for :class:`auraxium.ps2.outfit.OutfitMember`.
 
     This class mirrors the payload data returned by the API, you may
@@ -44,7 +44,7 @@ class OutfitMemberData(Ps2Data):
     rank_ordinal: int
 
 
-class OutfitRankData(Ps2Data):
+class OutfitRankData(RESTPayload):
     """Data class for :class:`auraxium.ps2.outfit.OutfitRank`.
 
     This class mirrors the payload data returned by the API, you may

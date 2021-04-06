@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from ..base import Ps2Data
+from ._base import RESTPayload
 
 __all__ = [
     'RewardData',
@@ -12,7 +12,7 @@ __all__ = [
 # pylint: disable=too-few-public-methods
 
 
-class RewardData(Ps2Data):
+class RewardData(RESTPayload):
     """Data class for :class:`auraxium.ps2.ability.Reward`.
 
     This class mirrors the payload data returned by the API, you may
@@ -30,7 +30,7 @@ class RewardData(Ps2Data):
     param5: Optional[str] = None
 
 
-class RewardTypeData(Ps2Data):
+class RewardTypeData(RESTPayload):
     """Data class for :class:`auraxium.ps2.ability.ResourceType`.
 
     This class mirrors the payload data returned by the API, you may

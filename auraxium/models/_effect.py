@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from ..base import Ps2Data
+from ._base import RESTPayload
 
 __all__ = [
     'EffectData',
@@ -12,7 +12,7 @@ __all__ = [
 # pylint: disable=too-few-public-methods
 
 
-class EffectData(Ps2Data):
+class EffectData(RESTPayload):
     """Data class for :class:`auraxium.ps2.effect.Effect`.
 
     This class mirrors the payload data returned by the API, you may
@@ -41,7 +41,7 @@ class EffectData(Ps2Data):
     param13: Optional[str]
 
 
-class EffectTypeData(Ps2Data):
+class EffectTypeData(RESTPayload):
     """Data class for :class:`auraxium.ps2.effect.EffectType`.
 
     This class mirrors the payload data returned by the API, you may

@@ -1,6 +1,6 @@
 """Data classes for :mod:`auraxium.ps2.zone`."""
 
-from ..base import Ps2Data
+from ._base import RESTPayload
 from ..types import LocaleData
 
 __all__ = [
@@ -10,7 +10,7 @@ __all__ = [
 # pylint: disable=too-few-public-methods
 
 
-class ZoneData(Ps2Data):
+class ZoneData(RESTPayload):
     """Data class for :class:`auraxium.ps2.zone.Zone`.
 
     This class mirrors the payload data returned by the API, you may

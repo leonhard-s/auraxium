@@ -2,8 +2,10 @@
 
 from typing import Optional
 
-from ..base import ImageData, Ps2Data
+from ..base import ImageData
 from ..types import LocaleData
+
+from ._base import RESTPayload
 
 __all__ = [
     'ItemCategoryData',
@@ -14,7 +16,7 @@ __all__ = [
 # pylint: disable=too-few-public-methods
 
 
-class ItemCategoryData(Ps2Data):
+class ItemCategoryData(RESTPayload):
     """Data class for :class:`auraxium.ps2.item.ItemCategory`.
 
     This class mirrors the payload data returned by the API, you may
@@ -25,7 +27,7 @@ class ItemCategoryData(Ps2Data):
     name: LocaleData
 
 
-class ItemData(Ps2Data, ImageData):
+class ItemData(RESTPayload, ImageData):
     """Data class for :class:`auraxium.ps2.item.Item`.
 
     This class mirrors the payload data returned by the API, you may
@@ -46,7 +48,7 @@ class ItemData(Ps2Data, ImageData):
     is_default_attachment: bool
 
 
-class ItemTypeData(Ps2Data):
+class ItemTypeData(RESTPayload):
     """Data class for :class:`auraxium.ps2.item.ItemType`.
 
     This class mirrors the payload data returned by the API, you may

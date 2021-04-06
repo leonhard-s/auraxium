@@ -5,7 +5,7 @@ from typing import Any, Dict
 
 import pydantic
 
-from ..event._model import CharacterEvent, Event, WorldEvent
+from ._base import ESSPayload, CharacterEvent, WorldEvent
 
 __all__ = [
     'AchievementAdded',
@@ -46,7 +46,7 @@ _EVENT_TO_ZONE: Dict[int, int] = {
 }
 
 
-class AchievementAdded(Event, CharacterEvent):
+class AchievementAdded(ESSPayload, CharacterEvent):
     """A character has earned a new achievement.
 
     Achievements are either weapon medals or service ribbons.
@@ -57,7 +57,7 @@ class AchievementAdded(Event, CharacterEvent):
     zone_id: int
 
 
-class BattleRankUp(Event, CharacterEvent):
+class BattleRankUp(ESSPayload, CharacterEvent):
     """A character has earned a new battle rank.
 
     Note that this may not reflect the characters actual new battle
@@ -69,7 +69,7 @@ class BattleRankUp(Event, CharacterEvent):
     zone_id: int
 
 
-class Death(Event, CharacterEvent):
+class Death(ESSPayload, CharacterEvent):
     """A character has been killed.
 
     If the attacker and victim ID are identical, the character has
@@ -92,7 +92,7 @@ class Death(Event, CharacterEvent):
     zone_id: int
 
 
-class FacilityControl(Event, WorldEvent):
+class FacilityControl(ESSPayload, WorldEvent):
     """A facility has switched factions.
 
     This is generally due to hostile takeover, but is also dispatched
@@ -108,7 +108,7 @@ class FacilityControl(Event, WorldEvent):
     zone_id: int
 
 
-class GainExperience(Event, CharacterEvent):
+class GainExperience(ESSPayload, CharacterEvent):
     """A character has gained a tick of experience."""
 
     amount: int
@@ -119,7 +119,7 @@ class GainExperience(Event, CharacterEvent):
     zone_id: int
 
 
-class ItemAdded(Event, CharacterEvent):
+class ItemAdded(ESSPayload, CharacterEvent):
     """A character has been granted an item.
 
     This includes internal flags and invisible items used to control
@@ -133,7 +133,7 @@ class ItemAdded(Event, CharacterEvent):
     zone_id: int
 
 
-class MetagameEvent(Event, WorldEvent):
+class MetagameEvent(ESSPayload, WorldEvent):
     """A metagame event (i.e. alert) has changed state."""
 
     experience_bonus: int
@@ -174,7 +174,7 @@ class MetagameEvent(Event, WorldEvent):
         return values
 
 
-class PlayerFacilityCapture(Event, CharacterEvent):
+class PlayerFacilityCapture(ESSPayload, CharacterEvent):
     """A player has participated in capturing a facility."""
 
     character_id: int
@@ -183,7 +183,7 @@ class PlayerFacilityCapture(Event, CharacterEvent):
     zone_id: int
 
 
-class PlayerFacilityDefend(Event, CharacterEvent):
+class PlayerFacilityDefend(ESSPayload, CharacterEvent):
     """A player has participated in defending a facility."""
 
     character_id: int
@@ -192,20 +192,20 @@ class PlayerFacilityDefend(Event, CharacterEvent):
     zone_id: int
 
 
-class PlayerLogin(Event, CharacterEvent, WorldEvent):
+class PlayerLogin(ESSPayload, CharacterEvent, WorldEvent):
     """A player has logged into the game."""
 
     character_id: int
 
 
-class PlayerLogout(Event, CharacterEvent, WorldEvent):
+class PlayerLogout(ESSPayload, CharacterEvent, WorldEvent):
     """A player has logged out."""
 
     character_id: int
     event_name: str
 
 
-class SkillAdded(Event, CharacterEvent):
+class SkillAdded(ESSPayload, CharacterEvent):
     """A player has unlocked a skill (i.e. certification or ASP)."""
 
     character_id: int
@@ -213,7 +213,7 @@ class SkillAdded(Event, CharacterEvent):
     zone_id: int
 
 
-class VehicleDestroy(Event, CharacterEvent):
+class VehicleDestroy(ESSPayload, CharacterEvent):
     """A player's vehicle has been destroyed."""
 
     attacker_character_id: int
@@ -227,7 +227,7 @@ class VehicleDestroy(Event, CharacterEvent):
     zone_id: int
 
 
-class ContinentLock(Event, WorldEvent):
+class ContinentLock(ESSPayload, WorldEvent):
     """A continent has been locked."""
 
     zone_id: int
@@ -240,7 +240,7 @@ class ContinentLock(Event, WorldEvent):
     event_type: int
 
 
-class ContinentUnlock(Event, WorldEvent):
+class ContinentUnlock(ESSPayload, WorldEvent):
     """A continent has been unlocked."""
 
     zone_id: int

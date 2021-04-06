@@ -1,7 +1,9 @@
 """Data classes for :mod:`auraxium.ps2.achievement`."""
 
-from ..base import ImageData, Ps2Data
+from ..base import ImageData
 from ..types import LocaleData
+
+from ._base import RESTPayload
 
 __all__ = [
     'AchievementData'
@@ -10,7 +12,7 @@ __all__ = [
 # pylint: disable=too-few-public-methods
 
 
-class AchievementData(Ps2Data, ImageData):
+class AchievementData(RESTPayload, ImageData):
     """Data class for :class:`auraxium.ps2.achievement.Achievement`.
 
     This class mirrors the payload data returned by the API, you may

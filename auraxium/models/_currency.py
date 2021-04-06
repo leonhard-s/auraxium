@@ -1,6 +1,6 @@
 """Data classes for :mod:`auraxium.ps2.currency`."""
 
-from ..base import Ps2Data
+from ._base import RESTPayload
 from ..types import LocaleData
 
 __all__ = [
@@ -10,7 +10,7 @@ __all__ = [
 # pylint: disable=too-few-public-methods
 
 
-class CurrencyData(Ps2Data):
+class CurrencyData(RESTPayload):
     """Data class for :class:`auraxium.ps2.currency.Currency`.
 
     This class mirrors the payload data returned by the API, you may

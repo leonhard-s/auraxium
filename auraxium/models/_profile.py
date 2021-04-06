@@ -1,6 +1,6 @@
 """Data classes for :mod:`auraxium.ps2.profile`."""
 
-from ..base import Ps2Data
+from ._base import RESTPayload
 
 __all__ = [
     'LoadoutData',
@@ -10,7 +10,7 @@ __all__ = [
 # pylint: disable=too-few-public-methods
 
 
-class LoadoutData(Ps2Data):
+class LoadoutData(RESTPayload):
     """Data class for :class:`auraxium.ps2.ability.Loadout`.
 
     This class mirrors the payload data returned by the API, you may
@@ -23,7 +23,7 @@ class LoadoutData(Ps2Data):
     code_name: str
 
 
-class ProfileData(Ps2Data):
+class ProfileData(RESTPayload):
     """Data class for :class:`auraxium.ps2.profile.Profile`.
 
     This class mirrors the payload data returned by the API, you may

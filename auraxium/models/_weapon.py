@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from ..base import Ps2Data
+from ._base import RESTPayload
 from ..types import LocaleData
 
 __all__ = [
@@ -14,7 +14,7 @@ __all__ = [
 # pylint: disable=too-few-public-methods
 
 
-class WeaponAmmoSlot(Ps2Data):
+class WeaponAmmoSlot(RESTPayload):
     """Data class for weapon ammo slot data.
 
     This class mirrors the payload data returned by the API, you may
@@ -42,7 +42,7 @@ class WeaponAmmoSlot(Ps2Data):
     refill_ammo_delay_ms: Optional[int] = None
 
 
-class WeaponData(Ps2Data):
+class WeaponData(RESTPayload):
     """Data class for :class:`auraxium.ps2.ability.Weapon`.
 
     This class mirrors the payload data returned by the API, you may
@@ -65,7 +65,7 @@ class WeaponData(Ps2Data):
     melee_detect_height: Optional[float] = None
 
 
-class WeaponDatasheet(Ps2Data):
+class WeaponDatasheet(RESTPayload):
     """Data class for weapon datasheets.
 
     This class mirrors the payload data returned by the API, you may

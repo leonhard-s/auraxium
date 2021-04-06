@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from ..base import Ps2Data
+from ._base import RESTPayload
 
 __all__ = [
     'ResistInfoData',
@@ -12,7 +12,7 @@ __all__ = [
 # pylint: disable=too-few-public-methods
 
 
-class ResistInfoData(Ps2Data):
+class ResistInfoData(RESTPayload):
     """Data class for :class:`auraxium.ps2.armour.ResistInfo`.
 
     This class mirrors the payload data returned by the API, you may
@@ -27,7 +27,7 @@ class ResistInfoData(Ps2Data):
     description: str
 
 
-class ResistTypeData(Ps2Data):
+class ResistTypeData(RESTPayload):
     """Data class for :class:`auraxium.ps2.armour.ResistType`.
 
     This class mirrors the payload data returned by the API, you may

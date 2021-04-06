@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from ..base import Ps2Data
+from ._base import RESTPayload
 from ..types import LocaleData
 
 __all__ = [
@@ -15,7 +15,7 @@ __all__ = [
 # pylint: disable=too-few-public-methods
 
 
-class CharacterAchievement(Ps2Data):
+class CharacterAchievement(RESTPayload):
     """Data container for a character's achievement status.
 
     Attributes:
@@ -46,14 +46,14 @@ class CharacterAchievement(Ps2Data):
     last_save_date: str
 
 
-class CharacterData(Ps2Data):
+class CharacterData(RESTPayload):
     """Data class for :class:`auraxium.ps2.character.Character`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
     """
 
-    class BattleRank(Ps2Data):
+    class BattleRank(RESTPayload):
         """Object representation of the "battle_rank" sub-key.
 
         Attributes:
@@ -65,7 +65,7 @@ class CharacterData(Ps2Data):
         value: int
         percent_to_next: float
 
-    class Certs(Ps2Data):
+    class Certs(RESTPayload):
         """Object representation of the "certs" sub-key.
 
         Attributes:
@@ -87,7 +87,7 @@ class CharacterData(Ps2Data):
         available_points: int
         percent_to_next: float
 
-    class DailyRibbon(Ps2Data):
+    class DailyRibbon(RESTPayload):
         """Object representation of the "daily_ribbon" sub-key.
 
         Attributes:
@@ -101,7 +101,7 @@ class CharacterData(Ps2Data):
         time: Optional[int] = None
         date: Optional[str] = None
 
-    class Name(Ps2Data):
+    class Name(RESTPayload):
         """Object representation of the "name" sub-key.
 
         Attributes:
@@ -113,7 +113,7 @@ class CharacterData(Ps2Data):
         first: str
         first_lower: str
 
-    class Times(Ps2Data):
+    class Times(RESTPayload):
         """Object representation of the "times" sub-key.
 
         Attributes:
@@ -155,7 +155,7 @@ class CharacterData(Ps2Data):
     prestige_level: int
 
 
-class CharacterDirective(Ps2Data):
+class CharacterDirective(RESTPayload):
     """Data container for a character's directive status.
 
     Attributes:
@@ -176,7 +176,7 @@ class CharacterDirective(Ps2Data):
     completion_time_date: str
 
 
-class TitleData(Ps2Data):
+class TitleData(RESTPayload):
     """Data class for :class:`auraxium.ps2.character.Title`.
 
     This class mirrors the payload data returned by the API, you may

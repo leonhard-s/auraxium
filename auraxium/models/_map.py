@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from ..base import Ps2Data
+from ._base import RESTPayload
 from ..types import LocaleData
 
 __all__ = [
@@ -15,7 +15,7 @@ __all__ = [
 # pylint: disable=too-few-public-methods
 
 
-class FacilityTypeData(Ps2Data):
+class FacilityTypeData(RESTPayload):
     """Data class for :class:`auraxium.ps2.map.FacilityType`.
 
     This class mirrors the payload data returned by the API, you may
@@ -26,7 +26,7 @@ class FacilityTypeData(Ps2Data):
     description: str
 
 
-class MapHexData(Ps2Data):
+class MapHexData(RESTPayload):
     """Data class for :class:`auraxium.ps2.map.MapHex`.
 
     This class mirrors the payload data returned by the API, you may
@@ -41,7 +41,7 @@ class MapHexData(Ps2Data):
     type_name: str
 
 
-class MapRegionData(Ps2Data):
+class MapRegionData(RESTPayload):
     """Data class for :class:`auraxium.ps2.map.MapHex`.
 
     This class mirrors the payload data returned by the API, you may
@@ -62,7 +62,7 @@ class MapRegionData(Ps2Data):
     reward_currency_id: Optional[int] = None
 
 
-class RegionData(Ps2Data):
+class RegionData(RESTPayload):
     """Data class for :class:`auraxium.ps2.map.Region`.
 
     This class mirrors the payload data returned by the API, you may

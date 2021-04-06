@@ -3,6 +3,7 @@
 from ._ability import AbilityData, AbilityTypeData, ResourceTypeData
 from ._achievement import AchievementData
 from ._armour import ArmourInfoData
+from ._base import CharacterEvent, ESSPayload, WorldEvent
 from ._character import (CharacterAchievement, CharacterData,
                          CharacterDirective, TitleData)
 from ._currency import CurrencyData
@@ -45,6 +46,7 @@ __all__ = [
     'CharacterAchievement',
     'CharacterData',
     'CharacterDirective',
+    'CharacterEvent',
     'ContinentLock',
     'ContinentUnlock',
     'CurrencyData',
@@ -57,6 +59,7 @@ __all__ = [
     'EffectTypeData',
     'ExperienceData',
     'ExperienceRankData',
+    'ESSPayload',
     'FacilityControl',
     'FacilityTypeData',
     'FactionData',
@@ -105,6 +108,7 @@ __all__ = [
     'WeaponData',
     'WeaponDatasheet',
     'WorldData',
+    'WorldEvent',
     'ZoneData',
     'ZoneEffectData',
     'ZoneEffectTypeData'

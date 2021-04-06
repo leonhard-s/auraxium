@@ -1,7 +1,9 @@
 """Data classes for :mod:`auraxium.ps2.faction`."""
 
-from ..base import ImageData, Ps2Data
+from ..base import ImageData
 from ..types import LocaleData
+
+from ._base import RESTPayload
 
 __all__ = [
     'FactionData'
@@ -10,7 +12,7 @@ __all__ = [
 # pylint: disable=too-few-public-methods
 
 
-class FactionData(Ps2Data, ImageData):
+class FactionData(RESTPayload, ImageData):
     """Data class for :class:`auraxium.ps2.faction.Faction`.
 
     This class mirrors the payload data returned by the API, you may

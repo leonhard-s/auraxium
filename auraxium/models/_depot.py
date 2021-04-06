@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from ..base import Ps2Data
+from ._base import RESTPayload
 from ..types import LocaleData
 
 __all__ = [
@@ -13,7 +13,7 @@ __all__ = [
 # pylint: disable=too-few-public-methods
 
 
-class MarketingBundleData(Ps2Data):
+class MarketingBundleData(RESTPayload):
     """Data class for :class:`auraxium.ps2.depot.MarketingBundle`.
 
     This class mirrors the payload data returned by the API, you may
@@ -29,7 +29,7 @@ class MarketingBundleData(Ps2Data):
     release_time: int
 
 
-class MarketingBundleSingleData(Ps2Data):
+class MarketingBundleSingleData(RESTPayload):
     """Data class for :class:`auraxium.ps2.depot.MarketingBundleSingle`.
 
     This is generally used for the single-item "bundles" in the depot,
