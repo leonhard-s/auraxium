@@ -1,39 +1,39 @@
 """Python representations of PlanetSide 2 payloads."""
 
-from .ability import AbilityData, AbilityTypeData, ResourceTypeData
-from .achievement import AchievementData
-from .armour import ArmourInfoData
-from .character import (CharacterAchievement, CharacterData,
-                        CharacterDirective, TitleData)
-from .currency import CurrencyData
-from .depot import MarketingBundleData, MarketingBundleSingleData
-from .directive import (DirectiveData, DirectiveTierData,
-                        DirectiveTreeCategoryData, DirectiveTreeData)
-from .effect import EffectData, EffectTypeData
-from .events import (AchievementAdded, BattleRankUp, Death, FacilityControl,
-                     GainExperience, ItemAdded, MetagameEvent,
-                     PlayerFacilityCapture, PlayerFacilityDefend, PlayerLogin,
-                     PlayerLogout, SkillAdded, VehicleDestroy, ContinentLock,
-                     ContinentUnlock)
-from .experience import ExperienceData, ExperienceRankData
-from .faction import FactionData
-from .fire import FireGroupData, FireModeData
-from .item import ItemCategoryData, ItemData, ItemTypeData
-from .map import FacilityTypeData, MapHexData, MapRegionData, RegionData
-from .metagame import MetagameEventData
-from .objective import ObjectiveData, ObjectiveTypeData
-from .outfit import OutfitData, OutfitMemberData, OutfitRankData
-from .profile import LoadoutData, ProfileData
-from .projectile import ProjectileData
-from .resist import ResistInfoData, ResistTypeData
-from .reward import RewardData, RewardTypeData
-from .skill import SkillData, SkillCategoryData, SkillLineData, SkillSetData
-from .states import PlayerStateGroup
-from .vehicle import VehicleAttachmentData, VehicleData
-from .weapon import WeaponAmmoSlot, WeaponData, WeaponDatasheet
-from .world import WorldData
-from .zone import ZoneData
-from .zone_effect import ZoneEffectData, ZoneEffectTypeData
+from ._ability import AbilityData, AbilityTypeData, ResourceTypeData
+from ._achievement import AchievementData
+from ._armour import ArmourInfoData
+from ._character import (CharacterAchievement, CharacterData,
+                         CharacterDirective, TitleData)
+from ._currency import CurrencyData
+from ._depot import MarketingBundleData, MarketingBundleSingleData
+from ._directive import (DirectiveData, DirectiveTierData,
+                         DirectiveTreeCategoryData, DirectiveTreeData)
+from ._effect import EffectData, EffectTypeData
+from ._events import (AchievementAdded, BattleRankUp, Death, FacilityControl,
+                      GainExperience, ItemAdded, MetagameEvent,
+                      PlayerFacilityCapture, PlayerFacilityDefend, PlayerLogin,
+                      PlayerLogout, SkillAdded, VehicleDestroy, ContinentLock,
+                      ContinentUnlock)
+from ._experience import ExperienceData, ExperienceRankData
+from ._faction import FactionData
+from ._fire import FireGroupData, FireModeData
+from ._item import ItemCategoryData, ItemData, ItemTypeData
+from ._map import FacilityTypeData, MapHexData, MapRegionData, RegionData
+from ._metagame import MetagameEventData
+from ._objective import ObjectiveData, ObjectiveTypeData
+from ._outfit import OutfitData, OutfitMemberData, OutfitRankData
+from ._profile import LoadoutData, ProfileData
+from ._projectile import ProjectileData
+from ._resist import ResistInfoData, ResistTypeData
+from ._reward import RewardData, RewardTypeData
+from ._skill import SkillData, SkillCategoryData, SkillLineData, SkillSetData
+from ._states import PlayerStateGroup
+from ._vehicle import VehicleAttachmentData, VehicleData
+from ._weapon import WeaponAmmoSlot, WeaponData, WeaponDatasheet
+from ._world import WorldData
+from ._zone import ZoneData
+from ._zone_effect import ZoneEffectData, ZoneEffectTypeData
 
 __all__ = [
     'AbilityData',
