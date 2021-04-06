@@ -26,5 +26,8 @@
     // ReStructured text linter
     "restructuredtext.linter.extraArgs": [
         "--ignore-directives autoclass,automodule"
-    ]
+    ],
+    "python.analysis.typeCheckingMode": "strict",
+    "python.analysis.diagnosticMode": "workspace",
+    "python.analysis.stubPath": "../../typings"
 }
