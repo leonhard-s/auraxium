@@ -80,7 +80,7 @@ class EventClientTest(unittest.IsolatedAsyncioTestCase):
         trigger = auraxium.Trigger(auraxium.event.Death, single_shot=True)
         flag = asyncio.Event()
 
-        async def wait_for(event: auraxium.Event) -> None:
+        async def wait_for(event: auraxium.event.Event) -> None:
             _ = event
             flag.set()
 

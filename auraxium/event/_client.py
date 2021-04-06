@@ -7,9 +7,10 @@ from typing import (Any, Callable, Coroutine, Iterator, List, Optional, Union)
 import websockets
 
 from ..client import Client
+from ..models import Event
 from ..types import CensusData
 from ..utils import expo_scaled
-from ._model import Event
+
 from ._trigger import Trigger
 
 __all__ = [
@@ -341,8 +342,9 @@ class EventClient(Client):
         # Event messages
         if service == 'event':
             if data['type'] == 'serviceMessage':
-                event = Event(**data['payload'])
-                log.debug('%s event received, dispatching...', event.type)
+                event = _event_factory(data['payload'])
+                log.debug('%s event received, dispatching...',
+                           event.event_name)
                 self.dispatch(event)
             elif data['type'] == 'heartbeat':
                 log.debug('Heartbeat received: %s', data)
@@ -456,3 +458,25 @@ class EventClient(Client):
             return
         while not self._connected:
             await asyncio.sleep(interval)
+
+
+def _event_factory(data: CensusData) -> Event:
+    """Return the appropriate event type for the given payload.
+
+    This will return the appropriate :class:`Event` subclass, or the
+    base class itself if no matching subclass could be found. This can
+    happen if new event types are introduced but not yet supported by
+    the object model.
+
+    Arguments:
+        data: The "payload" sub-key of an event stream message.
+
+    Returns:
+        A dataclass representing the given event.
+
+    """
+    # TODO: Check for bad `data` passed
+    for subclass in Event.__subclasses__():
+        if subclass.event_name == data['event_name']:
+            return subclass(**data)
+    return Event(**data)

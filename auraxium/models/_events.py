@@ -5,7 +5,7 @@ from typing import Any, Dict
 
 import pydantic
 
-from ._base import ESSPayload, CharacterEvent, WorldEvent
+from ._base import Event, CharacterEvent, WorldEvent
 
 __all__ = [
     'AchievementAdded',
@@ -46,7 +46,7 @@ _EVENT_TO_ZONE: Dict[int, int] = {
 }
 
 
-class AchievementAdded(ESSPayload, CharacterEvent):
+class AchievementAdded(Event, CharacterEvent):
     """A character has earned a new achievement.
 
     Achievements are either weapon medals or service ribbons.
@@ -57,7 +57,7 @@ class AchievementAdded(ESSPayload, CharacterEvent):
     zone_id: int
 
 
-class BattleRankUp(ESSPayload, CharacterEvent):
+class BattleRankUp(Event, CharacterEvent):
     """A character has earned a new battle rank.
 
     Note that this may not reflect the characters actual new battle
@@ -69,7 +69,7 @@ class BattleRankUp(ESSPayload, CharacterEvent):
     zone_id: int
 
 
-class Death(ESSPayload, CharacterEvent):
+class Death(Event, CharacterEvent):
     """A character has been killed.
 
     If the attacker and victim ID are identical, the character has
@@ -92,7 +92,7 @@ class Death(ESSPayload, CharacterEvent):
     zone_id: int
 
 
-class FacilityControl(ESSPayload, WorldEvent):
+class FacilityControl(Event, WorldEvent):
     """A facility has switched factions.
 
     This is generally due to hostile takeover, but is also dispatched
@@ -108,7 +108,7 @@ class FacilityControl(ESSPayload, WorldEvent):
     zone_id: int
 
 
-class GainExperience(ESSPayload, CharacterEvent):
+class GainExperience(Event, CharacterEvent):
     """A character has gained a tick of experience."""
 
     amount: int
@@ -118,8 +118,13 @@ class GainExperience(ESSPayload, CharacterEvent):
     other_id: int
     zone_id: int
 
+    @classmethod
+    def filter_experience(cls, id_: int) -> str:
+        """Factory for custom, experience ID specific events."""
+        return f'{cls.__name__}_experience_id_{id_}'
 
-class ItemAdded(ESSPayload, CharacterEvent):
+
+class ItemAdded(Event, CharacterEvent):
     """A character has been granted an item.
 
     This includes internal flags and invisible items used to control
@@ -133,7 +138,7 @@ class ItemAdded(ESSPayload, CharacterEvent):
     zone_id: int
 
 
-class MetagameEvent(ESSPayload, WorldEvent):
+class MetagameEvent(Event, WorldEvent):
     """A metagame event (i.e. alert) has changed state."""
 
     experience_bonus: int
@@ -174,7 +179,7 @@ class MetagameEvent(ESSPayload, WorldEvent):
         return values
 
 
-class PlayerFacilityCapture(ESSPayload, CharacterEvent):
+class PlayerFacilityCapture(Event, CharacterEvent):
     """A player has participated in capturing a facility."""
 
     character_id: int
@@ -183,7 +188,7 @@ class PlayerFacilityCapture(ESSPayload, CharacterEvent):
     zone_id: int
 
 
-class PlayerFacilityDefend(ESSPayload, CharacterEvent):
+class PlayerFacilityDefend(Event, CharacterEvent):
     """A player has participated in defending a facility."""
 
     character_id: int
@@ -192,20 +197,20 @@ class PlayerFacilityDefend(ESSPayload, CharacterEvent):
     zone_id: int
 
 
-class PlayerLogin(ESSPayload, CharacterEvent, WorldEvent):
+class PlayerLogin(Event, CharacterEvent, WorldEvent):
     """A player has logged into the game."""
 
     character_id: int
 
 
-class PlayerLogout(ESSPayload, CharacterEvent, WorldEvent):
+class PlayerLogout(Event, CharacterEvent, WorldEvent):
     """A player has logged out."""
 
     character_id: int
     event_name: str
 
 
-class SkillAdded(ESSPayload, CharacterEvent):
+class SkillAdded(Event, CharacterEvent):
     """A player has unlocked a skill (i.e. certification or ASP)."""
 
     character_id: int
@@ -213,7 +218,7 @@ class SkillAdded(ESSPayload, CharacterEvent):
     zone_id: int
 
 
-class VehicleDestroy(ESSPayload, CharacterEvent):
+class VehicleDestroy(Event, CharacterEvent):
     """A player's vehicle has been destroyed."""
 
     attacker_character_id: int
@@ -227,7 +232,7 @@ class VehicleDestroy(ESSPayload, CharacterEvent):
     zone_id: int
 
 
-class ContinentLock(ESSPayload, WorldEvent):
+class ContinentLock(Event, WorldEvent):
     """A continent has been locked."""
 
     zone_id: int
@@ -240,7 +245,7 @@ class ContinentLock(ESSPayload, WorldEvent):
     event_type: int
 
 
-class ContinentUnlock(ESSPayload, WorldEvent):
+class ContinentUnlock(Event, WorldEvent):
     """A continent has been unlocked."""
 
     zone_id: int

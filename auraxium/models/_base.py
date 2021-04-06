@@ -43,7 +43,7 @@ class RESTPayload(Payload):
         return value
 
 
-class ESSPayload(Payload):
+class Event(Payload):
     """An event returned via the ESS websocket connection."""
 
     event_name: str
@@ -64,7 +64,7 @@ class CharacterEvent:
     ID.
     """
 
-    # NOTE: This may not inherit from ``ESSPayload`` as this would cause an
+    # NOTE: This may not inherit from ``Event`` as this would cause an
     # ambiguous MRO for "PlayerLogin"/"-Logout" events, which are both
     # character- and world-centric.
 
@@ -75,6 +75,6 @@ class WorldEvent:
     Events inheriting from this class support subscription by world ID.
     """
 
-    # NOTE: This may not inherit from ``ESSPayload`` as this would cause an
+    # NOTE: This may not inherit from ``Event`` as this would cause an
     # ambiguous MRO for "PlayerLogin"/"-Logout" events, which are both
     # character- and world-centric.

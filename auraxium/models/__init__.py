@@ -3,7 +3,7 @@
 from ._ability import AbilityData, AbilityTypeData, ResourceTypeData
 from ._achievement import AchievementData
 from ._armour import ArmourInfoData
-from ._base import CharacterEvent, ESSPayload, WorldEvent
+from ._base import CharacterEvent, Event, WorldEvent
 from ._character import (CharacterAchievement, CharacterData,
                          CharacterDirective, TitleData)
 from ._currency import CurrencyData
@@ -59,7 +59,7 @@ __all__ = [
     'EffectTypeData',
     'ExperienceData',
     'ExperienceRankData',
-    'ESSPayload',
+    'Event',
     'FacilityControl',
     'FacilityTypeData',
     'FactionData',

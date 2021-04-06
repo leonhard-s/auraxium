@@ -16,7 +16,6 @@ from . import census, errors, event, ps2
 from .base import Cached, Named, Ps2Object
 from .client import Client
 from .event import EventClient, Trigger
-from .models.events import Event
 
 __all__ = [
     'Cached',
@@ -24,7 +23,6 @@ __all__ = [
     'Client',
     'errors',
     'event',
-    'Event',
     'EventClient',
     'Named',
     'ps2',

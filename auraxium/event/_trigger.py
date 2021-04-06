@@ -5,7 +5,7 @@ import warnings
 from typing import (Awaitable, Callable, Dict, Iterable, List, Optional, Set,
                     TYPE_CHECKING, Union)
 
-from ..models.events import Event
+from ..models import Event, GainExperience
 
 if TYPE_CHECKING:  # pragma: no cover
     # This is only imported during static type checking to resolve the forward
@@ -114,10 +114,10 @@ class Trigger:
         if (event not in self.events
                 and event.__class__.__name__ not in self.events):
             # Extra check for the dynamically generated experience ID events
-            if event.__class__.__name__ == 'GainExperience':
+            if isinstance(event, GainExperience):
                 id_ = event.experience_id
                 for event_name in self.events:
-                    if event_name == Event.filter_experience(id_):
+                    if event_name == GainExperience.filter_experience(id_):
                         break
                 else:
                     return False  # Dynamic event but non-matching ID
@@ -125,10 +125,15 @@ class Trigger:
                 return False
         # Check character ID requirements
         if self.characters:
-            char_id = event.character_id
-            other_id = event.attacker_character_id
-            if not (char_id in self.characters or other_id in self.characters):
-                return False
+            try:
+                char_id = int(getattr(event, 'character_id'))
+                other_id = int(getattr(event, 'attacker_character_id'))
+            except AttributeError:
+                pass
+            else:
+                if not (char_id in self.characters
+                        or other_id in self.characters):
+                    return False
         # Check world ID requirements
         if self.worlds:
             if event.world_id not in self.worlds:
