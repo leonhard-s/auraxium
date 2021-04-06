@@ -15,13 +15,16 @@ from ..models import (AchievementAdded, BattleRankUp, Death, Event,
                       ContinentUnlock)
 
 __all__ = [
+    'Event',
+    'EventClient',
+    'Trigger',
+
+    # Event subclasses
     'AchievementAdded',
     'BattleRankUp',
     'ContinentLock',
     'ContinentUnlock',
     'Death',
-    'Event',
-    'EventClient',
     'FacilityControl',
     'GainExperience',
     'ItemAdded',
@@ -31,6 +34,5 @@ __all__ = [
     'PlayerLogin',
     'PlayerLogout',
     'SkillAdded',
-    'Trigger',
     'VehicleDestroy'
 ]

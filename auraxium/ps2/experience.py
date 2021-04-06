@@ -1,7 +1,7 @@
 """Experience and rank class definitions."""
 
 import logging
-from typing import List, TYPE_CHECKING, Union
+from typing import List, Union
 
 import pydantic
 
@@ -11,10 +11,7 @@ from ..errors import PayloadError
 from ..models import ExperienceData, ExperienceRankData
 from ..types import CensusData
 
-if TYPE_CHECKING:  # pragma: no cover
-    # This is only imported during static type checking to resolve the forward
-    # references. This avoids import issues at runtime.
-    from ..ps2 import Faction
+from .faction import Faction
 
 __all__ = [
     'Experience',
@@ -91,9 +88,8 @@ class ExperienceRank:
                 f'Unable to populate {self.__class__.__name__} due to a '
                 f'missing key: {err.args[0]}', data) from err
 
-    def image(self, faction: Union[int, 'Faction']) -> str:
+    def image(self, faction: Union[int, Faction]) -> str:
         """Return the default image for this type."""
-        from ..ps2 import Faction  # pylint: disable=import-outside-toplevel
         if isinstance(faction, Faction):
             faction = faction.id
         internal_tag: List[str] = ['null', 'vs', 'nc', 'tr', 'nso']
