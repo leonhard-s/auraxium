@@ -6,7 +6,7 @@ to be performed as part of this module.
 
 import unittest
 import warnings
-from typing import List
+from typing import Dict, List
 
 import yarl
 from auraxium import census  # pylint: disable=import-error
@@ -687,7 +687,7 @@ class TestURLsQueryCommands(unittest.TestCase):
         self.assertIn('c:tree', dict(url.query),
                       'Missing query key: c:tree')
         tree_pairs = url.query['c:tree'].split('^')
-        tree_dict = {}
+        tree_dict: Dict[str, str] = {}
         for pair in tree_pairs:
             try:
                 key, value = pair.split(':')

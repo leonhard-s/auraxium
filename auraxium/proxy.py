@@ -1,6 +1,7 @@
 """Define the proxy object system."""
 
 import asyncio
+import copy
 import datetime
 import warnings
 from typing import (Any, Dict, Generator, Generic, Iterator, List, Optional,
@@ -127,10 +128,10 @@ class Proxy(Generic[Ps2ObjectT]):
         data = extract_payload(payload, self.query.data.collection)
         # Resolve any joins
         if self.query.joins:
-            parent = data
+            parent = copy.copy(data)
             # If any joins were defined, resolve each of the joins and merge
             # their outputs before returning
-            data = []
+            data.clear()
             for join in self.query.joins:
                 data.extend(resolve_join(join, parent))
         return data
