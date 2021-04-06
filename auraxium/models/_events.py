@@ -5,7 +5,7 @@ from typing import Any, Dict
 
 import pydantic
 
-from ._base import Event, CharacterEvent, WorldEvent
+from .base import Event, CharacterEvent, WorldEvent
 
 __all__ = [
     'AchievementAdded',

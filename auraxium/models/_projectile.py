@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from ._base import RESTPayload
+from .base import RESTPayload
 
 __all__ = [
     'ProjectileData'

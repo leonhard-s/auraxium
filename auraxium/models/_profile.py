@@ -1,6 +1,6 @@
 """Data classes for :mod:`auraxium.ps2.profile`."""
 
-from ._base import RESTPayload
+from .base import RESTPayload
 
 __all__ = [
     'LoadoutData',

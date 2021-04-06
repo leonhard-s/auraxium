@@ -14,6 +14,7 @@ import warnings
 
 import pydantic
 
+from .models.base import RESTPayload
 from .cache import TLRUCache
 from .census import Query
 from .errors import PayloadError, NotFoundError
@@ -106,7 +107,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
     """
 
     collection: ClassVar[str] = 'bogus'
-    dataclass: ClassVar[Type[Ps2Data]]
+    dataclass: ClassVar[Type[RESTPayload]]
     id_field: ClassVar[str] = 'bogus_id'
 
     def __init__(self, data: CensusData, client: 'Client') -> None:

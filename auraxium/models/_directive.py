@@ -5,7 +5,7 @@ from typing import Optional
 from ..base import ImageData
 from ..types import LocaleData
 
-from ._base import RESTPayload
+from .base import RESTPayload
 
 __all__ = [
     'DirectiveData',
