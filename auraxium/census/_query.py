@@ -9,9 +9,9 @@ from typing import Any, List, Optional, Tuple, Type, TypeVar, Union
 
 import yarl
 
-from .support import (CensusValue, JoinedQueryData, QueryBaseData, QueryData,
-                      SearchModifier, SearchTerm)
-from .urlgen import generate_url
+from ._support import (CensusValue, JoinedQueryData, QueryBaseData, QueryData,
+                       SearchModifier, SearchTerm)
+from ._urlgen import generate_url
 
 __all__ = [
     'JoinedQuery',

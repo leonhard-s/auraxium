@@ -5,14 +5,14 @@ from typing import Dict, Iterable, List, Optional, Tuple, Union
 
 import yarl
 
-from .support import JoinedQueryData, QueryData
+from ._support import JoinedQueryData, QueryData
 
 __all__ = [
     'generate_url',
     'process_join',
 ]
 
-REST_ENDPOINT = 'https://census.daybreakgames.com'
+_REST_ENDPOINT = 'https://census.daybreakgames.com'
 
 
 def generate_url(query: QueryData, verb: str, validate: bool = True) -> yarl.URL:
@@ -36,7 +36,7 @@ def generate_url(query: QueryData, verb: str, validate: bool = True) -> yarl.URL
     # components.
 
     # Census endpoint
-    url = yarl.URL(REST_ENDPOINT)
+    url = yarl.URL(_REST_ENDPOINT)
     # Service ID
     url /= query.service_id
     if validate and query.service_id == 's:example':
@@ -60,7 +60,7 @@ def generate_url(query: QueryData, verb: str, validate: bool = True) -> yarl.URL
     # Top-level query terms
     url = url.with_query([t.as_tuple() for t in query.terms])
     # Process query commands
-    url = url.update_query(process_query_commands(query, validate=validate))
+    url = url.update_query(_process_query_commands(query, validate=validate))
     return url
 
 
@@ -111,8 +111,8 @@ def process_join(data: JoinedQueryData, verbose: bool) -> str:
     return string
 
 
-def process_query_commands(data: QueryData,
-                           validate: bool = True) -> Dict[str, str]:
+def _process_query_commands(data: QueryData,
+                            validate: bool = True) -> Dict[str, str]:
     """Process any query commands defined for the given query.
 
     This also recursively processes any joins defined.

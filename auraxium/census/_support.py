@@ -13,11 +13,12 @@ __all__ = [
     'SearchTerm'
 ]
 
-CensusValue = Union[float, int, str]
 # This list connects the string literals to the enum values. The index of the
 # list element must match the corresponding enum value.
-conversion_list: List[str] = ['', '<', '[', '>', ']', '^', '*', '!']
-QueryBaseDataT = TypeVar('QueryBaseDataT', bound='QueryBaseData')
+_MODIFIER_LITERALS: List[str] = ['', '<', '[', '>', ']', '^', '*', '!']
+
+CensusValue = Union[float, int, str]
+_QueryBaseDataT = TypeVar('_QueryBaseDataT', bound='QueryBaseData')
 
 
 class SearchModifier(enum.Enum):
@@ -67,7 +68,7 @@ class SearchModifier(enum.Enum):
             return cls(cls.EQUAL_TO)
         # For strings, return the corresponding enum value
         try:
-            return cls(conversion_list.index(value[0]))
+            return cls(_MODIFIER_LITERALS.index(value[0]))
         except ValueError:
             return cls(cls.EQUAL_TO)
 
@@ -95,7 +96,7 @@ class SearchModifier(enum.Enum):
         assert isinstance(enum_value, int)
         # Return the appropriate string literal
         try:
-            return conversion_list[enum_value]
+            return _MODIFIER_LITERALS[enum_value]
         except IndexError as err:
             raise ValueError(f'Invalid enum value {enum_value}') from err
 
@@ -201,8 +202,8 @@ class QueryBaseData:
     terms: List[SearchTerm] = dataclasses.field(default_factory=list)
 
     @classmethod
-    def from_base(cls: Type[QueryBaseDataT],
-                  data: 'QueryBaseData') -> QueryBaseDataT:
+    def from_base(cls: Type[_QueryBaseDataT],
+                  data: 'QueryBaseData') -> _QueryBaseDataT:
         """Helper used to copy the base query data components."""
         return cls(**data.__dict__)
 
