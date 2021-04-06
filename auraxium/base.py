@@ -9,7 +9,7 @@ import abc
 import dataclasses
 import logging
 from typing import (Any, ClassVar, Dict, List, Optional, Type, TYPE_CHECKING,
-                    TypeVar, Union, cast)
+                    TypeVar, Union)
 import warnings
 
 import pydantic
@@ -262,7 +262,6 @@ class Ps2Object(metaclass=abc.ABCMeta):
             if len(data) > 1:
                 warnings.warn(f'Ps2Object.get() got {len(data)} results, all '
                               'but the first will be discarded')
-            data = cast(List[Ps2ObjectT], data)
             return data[0]
         return None
 
@@ -281,7 +280,6 @@ class Ps2Object(metaclass=abc.ABCMeta):
         """
         filters: CensusData = {cls.id_field: id_}
         data = await cls.find(client=client, results=1, **filters)
-        data = cast(List[Ps2ObjectT], data)
         if data and not isinstance(data[0], cls):
             raise RuntimeError(
                 f'Expected {cls} instance, got {type(data[0])} instead, '

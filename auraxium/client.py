@@ -9,7 +9,7 @@ streaming service (ESS).
 import asyncio
 import copy
 import logging
-from typing import Any, List, Literal, Optional, Type, TYPE_CHECKING, TypeVar, cast
+from typing import Any, List, Literal, Optional, Type, TYPE_CHECKING, TypeVar
 from types import TracebackType
 
 import aiohttp
@@ -168,7 +168,6 @@ class Client:
                                 promote_exact=promote_exact,
                                 check_case=check_case,
                                 client=self, **kwargs)
-        data = cast(List[Ps2ObjectT], data)
         if data and not isinstance(data[0], type_):
             raise RuntimeError(
                 f'Expected {type_} instance, got {type(data[0])} '
@@ -193,7 +192,6 @@ class Client:
 
         """
         data = await type_.get(check_case=check_case, client=self, **kwargs)
-        data = cast(Optional[Ps2ObjectT], data)
         if data is not None and not isinstance(data, type_):
             raise RuntimeError(
                 f'Expected {type_} instance, got {type(data)} instead, '
@@ -216,7 +214,6 @@ class Client:
 
         """
         data = await type_.get_by_id(id_, client=self)
-        data = cast(Optional[Ps2ObjectT], data)
         if data is not None and not isinstance(data, type_):
             raise RuntimeError(
                 f'Expected {type_} instance, got {type(data)} instead, '
@@ -247,7 +244,6 @@ class Client:
 
         """
         data = await type_.get_by_name(name, locale=locale, client=self)
-        data = cast(Optional[NamedT], data)
         if data is not None and not isinstance(data, type_):
             raise RuntimeError(
                 f'Expected {type_} instance, got {type(data)} instead, '
