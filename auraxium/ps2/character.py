@@ -273,27 +273,19 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         """Return whether the given character is online."""
         return bool(int(await self.online_status()))
 
-    def name(self, locale: str = 'en') -> str:
-        """Return the unique name of the player.
-
-        Since character names are not localised, the "locale" keyword
-        argument is ignored.
-
-        This will always return the capitalised version of the name.
-        Use the built-int str.lower() method for a lowercase version.
-        """
-        _ = locale
-        return str(self.data.name.first)
-
     async def name_long(self, locale: str = 'en') -> str:
         """Return the full name of the player.
 
         This includes an optional player title if the player has
         selected one.
         """
-        if self.title_id == 0:
-            return self.name(locale)
-        return f'{(await self.title()).name(locale)} {self.name(locale)}'
+        if self.title_id != 0:
+            title = await self.title()
+            if title is not None:
+                title_name = getattr(title.name, locale, None)
+                if title_name is not None:
+                    return f'{title_name} {self.name.first}'
+        return self.name.first
 
     async def online_status(self) -> int:
         """Return the online status of the character.

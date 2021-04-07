@@ -35,6 +35,9 @@ class LocaleData(pydantic.BaseModel):
     fr: Optional[str] = None
     it: Optional[str] = None
 
+    def __str__(self) -> str:
+        return self.en or repr(self)
+
     @classmethod
     def empty(cls) -> 'LocaleData':
         """Return an empty :class:`LocaleData` instance.

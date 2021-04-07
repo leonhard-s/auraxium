@@ -74,7 +74,7 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
                 'please report this bug to the project maintainers')
         name = name.lower()
         for world in data:
-            if world.name(locale=locale).lower() == name:
+            if getattr(world.name, locale.lower(), '') == name:
                 return world
         return None
 
