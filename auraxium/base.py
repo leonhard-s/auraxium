@@ -33,11 +33,11 @@ __all__ = [
     'Named'
 ]
 
-AnyT = TypeVar('AnyT')
 CachedT = TypeVar('CachedT', bound='Cached')
 NamedT = TypeVar('NamedT', bound='Named')
 Ps2ObjectT = TypeVar('Ps2ObjectT', bound='Ps2Object')
-log = logging.getLogger('auraxium.ps2')
+
+_log = logging.getLogger('auraxium.ps2')
 
 
 class FallbackMixin:
@@ -80,8 +80,8 @@ class Ps2Object(metaclass=abc.ABCMeta):
 
         """
         id_ = int(data[self.id_field])
-        log.debug('Instantiating <%s:%d> using payload: %s',
-                  self.__class__.__name__, id_, data)
+        _log.debug('Instantiating <%s:%d> using payload: %s',
+                   self.__class__.__name__, id_, data)
         self.id = id_
         self._client = client
         try:
@@ -251,20 +251,20 @@ class Ps2Object(metaclass=abc.ABCMeta):
             # pylint: disable=no-member
             data_fallback: Dict[int, CensusData] = (
                 cls._fallback)  # type: ignore
-            log.debug('Fallback attribute found for type "%s", checking ID...',
-                      cls.__name__)
+            _log.debug('Fallback attribute found for type "%s", checking ID...',
+                       cls.__name__)
             if (fallback := data_fallback.get(id_)) is not None:
-                log.debug('Instantiating "%s" with ID %d through local copy',
-                          cls.__name__, id_)
+                _log.debug('Instantiating "%s" with ID %d through local copy',
+                           cls.__name__, id_)
                 if data:
                     # Log the fact that the local copy is not required
-                    log.info('Type "%s" provides a local fallback for ID %d '
-                             'despite this type being available on-line',
-                             cls.__name__, id_)
+                    _log.info('Type "%s" provides a local fallback for ID %d '
+                              'despite this type being available on-line',
+                              cls.__name__, id_)
                     return data[0]
                 # Return a locally instantiated copy
                 return cls(fallback, client=client)
-            log.debug('No matching fallback instance found for ID %d', id_)
+            _log.debug('No matching fallback instance found for ID %d', id_)
 
         elif data:
             # If no fallback value was provided, return the first item found
@@ -338,8 +338,8 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
 
         """
         super().__init_subclass__()
-        log.debug('Setting up cache for %s (size: %d, ttu: %.1f sec.)',
-                  cls.__name__, cache_size, cache_ttu)
+        _log.debug('Setting up cache for %s (size: %d, ttu: %.1f sec.)',
+                   cls.__name__, cache_size, cache_ttu)
         cls._cache = TLRUCache(size=cache_size, ttu=cache_ttu,
                                name=f'{cls.__name__}_Cache')
 
@@ -400,12 +400,12 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
             was found.
 
         """
-        log.debug('<%s:%d> requested', cls.__name__, id_)
+        _log.debug('<%s:%d> requested', cls.__name__, id_)
         if (instance := cls._cache.get(id_)) is not None:
-            log.debug('%r restored from cache', instance)
+            _log.debug('%r restored from cache', instance)
             return instance  # type: ignore
-        log.debug('<%s:%d> not cached, generating API query...',
-                  cls.__name__, id_)
+        _log.debug('<%s:%d> not cached, generating API query...',
+                   cls.__name__, id_)
         return await super().get_by_id(id_, client=client)  # type: ignore
 
 
@@ -486,12 +486,12 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
 
         """
         key = f'{locale}_{name.lower()}'
-        log.debug('%s "%s"[%s] requested', cls.__name__, name, locale)
+        _log.debug('%s "%s"[%s] requested', cls.__name__, name, locale)
         if (instance := cls._cache.get(key)) is not None:
-            log.debug('%r restored from cache', instance)
+            _log.debug('%r restored from cache', instance)
             return instance  # type: ignore
-        log.debug('%s "%s"[%s] not cached, generating API query...',
-                  cls.__name__, name, locale)
+        _log.debug('%s "%s"[%s] not cached, generating API query...',
+                   cls.__name__, name, locale)
         query = Query(cls.collection, service_id=client.service_id)
         query.case(False).add_term(field=f'name.{locale}', value=name)
         payload = await client.request(query)
