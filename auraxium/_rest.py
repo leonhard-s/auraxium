@@ -17,7 +17,7 @@ import json
 import logging
 import sys
 import warnings
-from typing import Any, Dict, Literal, List, Optional, Tuple, Type, TypeVar
+from typing import Any, Dict, Literal, List, Optional, Tuple, Type, TypeVar, cast
 from types import TracebackType
 
 import aiohttp
@@ -34,7 +34,7 @@ from .types import CensusData
 from ._support import expo_scaled
 
 __all__ = [
-    'RESTInterface',
+    'RequestClient',
     'extract_payload',
     'extract_single',
     'run_query'
@@ -130,13 +130,13 @@ class RequestClient:
             query.timing(True)
         data = await run_query(query, verb=verb, session=self.session)
         if self.profiling and verb == 'get':
-            timing = data.pop('timing')
+            timing = cast(CensusData, data.pop('timing'))
             if _log.level <= logging.DEBUG:
                 url = query.url()
                 _log.debug('Query times for "%s?%s": %s',
                            '/'.join(url.parts[-2:]), url.query_string,
                            ', '.join([f'{k}: {v}' for k, v in timing.items()]))
-            self._timing_cache.append(float(timing['total-ms']))
+            self._timing_cache.append(float(cast(str, timing['total-ms'])))
         return data
 
 
@@ -229,7 +229,7 @@ def extract_payload(data: CensusData, collection: str) -> List[CensusData]:
 
     """
     try:
-        list_: List[CensusData] = data[f'{collection}_list']
+        list_ = cast(List[CensusData], data[f'{collection}_list'])
     except KeyError as err:
         raise PayloadError(
             f'Unable to extract list of results due to missing key '
@@ -302,7 +302,7 @@ def raise_for_dict(data: CensusData, url: yarl.URL) -> None:
 
     """
     # Syntax parser and namespace dispatching
-    if (msg := data.get('error')) is not None:
+    if (msg := str(data.get('error'))) is not None:
         if msg == 'No data found.':
             namespace, collection = get_components(url)
             # NOTE: This error is returned if either the namespace or
@@ -337,8 +337,8 @@ def raise_for_dict(data: CensusData, url: yarl.URL) -> None:
                 'Wait 60 seconds or apply for your own service ID at '
                 'http://census.daybreakgames.com/#devSignup', url)
     # Collection field and query command parsing
-    if (code := data.get('errorCode')) is not None:
-        if (msg := data.get('errorMessage')) is not None:
+    if (code := str(data.get('errorCode'))) is not None:
+        if (msg := str(data.get('errorMessage'))) is not None:
             if code == 'SERVER_ERROR':
                 if msg.startswith('INVALID_SEARCH_TERM'):
                     _process_invalid_search_term(msg, url)

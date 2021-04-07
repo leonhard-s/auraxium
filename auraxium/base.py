@@ -77,7 +77,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
                 performed via this object. Defaults to ``None``.
 
         """
-        id_ = int(data[self.id_field])
+        id_ = int(cast(str, data[self.id_field]))
         _log.debug('Instantiating <%s:%d> using payload: %s',
                    self.__class__.__name__, id_, data)
         self.id = id_
@@ -142,7 +142,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
         query = Query(cls.collection, service_id=service_id, **kwargs)
         result = await client.request(query, verb='count')
         try:
-            return int(result['count'])
+            return int(cast(str, result['count']))
         except KeyError as err:
             raise PayloadError(
                 'Missing key "count" in API response', result) from err

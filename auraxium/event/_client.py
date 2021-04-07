@@ -2,7 +2,8 @@ import asyncio
 import contextlib
 import json
 import logging
-from typing import (Any, Callable, Coroutine, Iterator, List, Optional, Union)
+from typing import (Any, Callable, Coroutine, Iterator, List, Optional, Union,
+                    cast)
 
 import websockets
 
@@ -339,7 +340,7 @@ class EventClient(Client):
         # Event messages
         if service == 'event':
             if data['type'] == 'serviceMessage':
-                event = _event_factory(data['payload'])
+                event = _event_factory(cast(CensusData, data['payload']))
                 _log.debug('%s event received, dispatching...',
                            event.event_name)
                 self.dispatch(event)

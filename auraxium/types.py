@@ -1,6 +1,6 @@
 """Custom types used by the auraxium module."""
 
-from typing import Dict, Optional, Union
+from typing import Dict, List, Optional, Union
 
 import pydantic
 
@@ -9,7 +9,8 @@ __all__ = [
     'LocaleData'
 ]
 
-CensusData = Dict[str, Union[str, int, float, 'CensusData']]
+CensusData = Dict[
+    str, Union[str, int, float, 'CensusData', List['CensusData']]]
 
 
 class LocaleData(pydantic.BaseModel):
