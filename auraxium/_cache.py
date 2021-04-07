@@ -3,7 +3,6 @@
 This defines a generic cache that can be used to keep local copies of
 remote data. This is especially useful for small but expensive queries
 like character name resolution.
-
 """
 
 import dataclasses
@@ -11,7 +10,7 @@ import datetime
 import logging
 import sys
 from collections import OrderedDict
-from typing import (Any, Dict, Generic, Hashable, Iterable, Iterator, List,
+from typing import (Dict, Generic, Hashable, Iterable, Iterator, List,
                     Optional, Tuple, TypeVar)
 
 __all__ = [
@@ -19,12 +18,12 @@ __all__ = [
 ]
 
 _K = TypeVar('_K', bound=Hashable)
-_V = TypeVar('_V', bound=Any)
+_V = TypeVar('_V')
 log = logging.getLogger('auraxium.cache')
 
 
 @dataclasses.dataclass()
-class CacheItem(Generic[_V]):
+class _CacheItem(Generic[_V]):
     """Small dataclass for cache items.
 
     This can be thought of as a mutable named tuple.
@@ -81,7 +80,7 @@ class TLRUCache(Generic[_K, _V]):
         """
         # NOTE: Mypy currently does not support type hinting the OrderedDict
         # object in-code, hence the string literal type.
-        self._data: 'OrderedDict[_K, CacheItem[_V]]' = OrderedDict()
+        self._data: 'OrderedDict[_K, _CacheItem[_V]]' = OrderedDict()
         self.name = name or 'TLRUCache'
         self.size = size
         self.ttu = ttu
@@ -119,7 +118,7 @@ class TLRUCache(Generic[_K, _V]):
         log.debug('%s: Adding %s instance under key %d',
                   self.name, item.__class__.__name__, key)
         self.free(count=1)
-        self._data[key] = CacheItem(item, 0, now, now)
+        self._data[key] = _CacheItem(item, 0, now, now)
 
     def add_many(self, items: Iterable[Tuple[_K, _V]]) -> None:
         """Add multiple items to the cache.
@@ -139,7 +138,7 @@ class TLRUCache(Generic[_K, _V]):
 
         """
         now = datetime.datetime.now()
-        data = {k: CacheItem(v, 0, now, now) for k, v in items}
+        data = {k: _CacheItem(v, 0, now, now) for k, v in items}
         if not data:
             log.debug('%s: add_many called with empty iterable', self.name)
             return
