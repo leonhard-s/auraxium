@@ -11,6 +11,7 @@ from ..errors import NotFoundError
 from ..models import OutfitData, OutfitMemberData, OutfitRankData
 from ..proxy import InstanceProxy, SequenceProxy
 from ..request import extract_payload, extract_single
+from ..utils import deprecated
 
 if TYPE_CHECKING:  # pragma: no cover
     # This is only imported during static type checking to resolve the
@@ -118,6 +119,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
     leader_character_id: int
     member_count: int
 
+    @deprecated('0.3', replacement='Client.get()')
     @classmethod
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
                           client: Client) -> Optional[NamedT]:
@@ -141,6 +143,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
             return None
         return cls(payload, client=client)
 
+    @deprecated('0.3', replacement='Client.get()')
     @classmethod
     async def get_by_tag(cls, tag: str, client: Client) -> Optional['Outfit']:
         """Return an outfit by its unique tag.

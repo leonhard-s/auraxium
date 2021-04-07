@@ -12,6 +12,7 @@ from ..models import CharacterAchievement, TitleData, CharacterData
 from ..proxy import InstanceProxy, SequenceProxy
 from ..request import extract_payload, extract_single
 from ..types import CensusData, LocaleData
+from ..utils import deprecated
 
 from .faction import Faction
 from .item import Item
@@ -218,6 +219,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
             character_id=','.join(character_ids))
         return characters
 
+    @deprecated('0.3', replacement='Client.get()')
     @classmethod
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
                           client: Client) -> Optional[NamedT]:

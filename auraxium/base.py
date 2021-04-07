@@ -20,6 +20,7 @@ from .census import Query
 from .errors import PayloadError, NotFoundError
 from .request import extract_payload, extract_single
 from .types import CensusData
+from .utils import deprecated
 
 if TYPE_CHECKING:  # pragma: no cover
     # This is only imported during static type checking to resolve the 'Client'
@@ -171,6 +172,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
         """
         return f'<{self.__class__.__name__}:{self.id}>'
 
+    @deprecated('0.3', replacement='Client.count()')
     @classmethod
     async def count(cls: Type['Ps2Object'], client: 'Client',
                     **kwargs: Any) -> int:
@@ -196,6 +198,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
             raise PayloadError(
                 f'Invalid count: {result["count"]}', result) from err
 
+    @deprecated('0.3', replacement='Client.find()')
     @classmethod
     async def find(cls: Type[Ps2ObjectT], results: int = 10, *,
                    offset: int = 0, promote_exact: bool = False,
@@ -235,6 +238,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
         return [cls(i, client=client) for i in extract_payload(
             matches, cls.collection)]
 
+    @deprecated('0.3', replacement='Client.get()')
     @classmethod
     async def get(cls: Type[Ps2ObjectT], client: 'Client',
                   check_case: bool = True, **kwargs: Any
@@ -266,6 +270,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
             return data[0]
         return None
 
+    @deprecated('0.3', replacement='Client.get())')
     @classmethod
     async def get_by_id(cls: Type[Ps2ObjectT], id_: int, *, client: 'Client'
                         ) -> Optional[Ps2ObjectT]:
@@ -422,6 +427,7 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
         """
         return cls._cache.get(id_)
 
+    @deprecated('0.3', replacement='Client.get()')
     @classmethod
     async def get_by_id(cls: Type[CachedT], id_: int, *,  # type: ignore
                         client: 'Client') -> Optional[CachedT]:
@@ -503,6 +509,7 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
         """
         return self.name(locale='en')
 
+    @deprecated('0.3', replacement='Client.get()')
     @classmethod
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
                           client: 'Client') -> Optional[NamedT]:
