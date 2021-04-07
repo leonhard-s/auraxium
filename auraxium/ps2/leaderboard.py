@@ -2,7 +2,7 @@
 
 import enum
 import warnings
-from typing import Dict, Final, List, Optional, Tuple, Union
+from typing import Dict, Final, List, Optional, Tuple, Union, cast
 
 from ..census import Query
 from ..errors import NotFoundError
@@ -60,7 +60,7 @@ async def by_char(stat: Stat, character: Union[int, Character],
         data = extract_single(payload, collection)
     except NotFoundError:
         return None
-    return int(data['rank']), int(data['value'])
+    return int(cast(str, data['rank'])), int(cast(str, data['value']))
 
 
 async def by_char_multi(stat: Stat, character: Union[int, Character],
@@ -83,8 +83,9 @@ async def by_char_multi(stat: Stat, character: Union[int, Character],
     data = extract_payload(payload, collection)
     return_: Dict[int, Tuple[int, int]] = {i: (-1, -1) for i in char_ids}
     for row in data:
-        id_ = int(row['character_id'])
-        return_[id_] = int(row['rank']), int(row['value'])
+        id_ = int(cast(str, row['character_id']))
+        return_[id_] = (int(cast(str, row['rank'])),
+                        int(cast(str, row['value'])))
     return [return_[i] for i in char_ids]
 
 
@@ -113,7 +114,7 @@ async def top(stat: Stat, period: Period = Period.FOREVER, matches: int = 10,
     join.set_fields(Character.id_field)
     payload = await client.request(query)
     key = 'character_id_join_character'
-    return [(int(d['value']), Character(d[key], client=client))
+    return [(int(cast(str, d['value'])), Character(d[key], client=client))
             for d in extract_payload(payload, collection=collection)]
 
 

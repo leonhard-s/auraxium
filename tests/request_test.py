@@ -7,13 +7,16 @@ not been set.
 import json
 import os
 import unittest
-from typing import Any, Dict
+from typing import Any, Dict, cast
 import warnings
 
 import aiohttp
 import yarl
+
 # pylint: disable=import-error
 from auraxium import errors, _rest as request
+from auraxium.types import CensusData
+
 from tests.utils import DATA
 
 PAYLOADS = os.path.join(DATA, 'rest')
@@ -193,8 +196,8 @@ class TestPayloadParsing(unittest.IsolatedAsyncioTestCase):
             ((issubclass(warning.category, UserWarning)
               and 'The dictionary passed' in str(warning))), 'Missing warning')
         # Assert no warning with single-payloads
-        first = data['character_list'][0]
-        single = {'character_list': [first], 'returned': 1}
+        first = cast(CensusData, data['character_list'][0])
+        single: CensusData = {'character_list': [first], 'returned': 1}
         with warnings.catch_warnings(record=True) as caught:
             assert caught is not None
             data = request.extract_single(single, 'character')
