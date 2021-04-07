@@ -19,7 +19,7 @@ from .census import Query
 from .errors import PayloadError, NotFoundError
 from ._rest import RequestClient, extract_payload, extract_single
 from .types import CensusData
-from .utils import deprecated
+from ._support import deprecated
 
 __all__ = [
     'Ps2Object',

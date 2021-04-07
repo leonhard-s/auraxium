@@ -10,7 +10,7 @@ from ..errors import NotFoundError
 from ..models import OutfitData, OutfitMemberData, OutfitRankData
 from ..proxy import InstanceProxy, SequenceProxy
 from .._rest import RequestClient, extract_payload, extract_single
-from ..utils import deprecated
+from .._support import deprecated
 
 if TYPE_CHECKING:  # pragma: no cover
     # This is only imported during static type checking to resolve the

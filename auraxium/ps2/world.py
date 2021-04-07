@@ -8,7 +8,7 @@ from ..census import Query
 from ..models import WorldData
 from .._rest import RequestClient, extract_payload, extract_single
 from ..types import CensusData, LocaleData
-from ..utils import deprecated
+from .._support import deprecated
 
 from .zone import Zone
 

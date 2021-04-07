@@ -9,7 +9,7 @@ import websockets
 from .._client import Client
 from ..models import Event
 from ..types import CensusData
-from ..utils import expo_scaled
+from .._support import expo_scaled
 
 from ._trigger import Trigger
 

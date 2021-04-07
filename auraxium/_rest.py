@@ -31,7 +31,7 @@ from .errors import (PayloadError, BadRequestSyntaxError, CensusError,
                      ResponseError, ServerError, ServiceUnavailableError,
                      UnknownCollectionError)
 from .types import CensusData
-from .utils import expo_scaled
+from ._support import expo_scaled
 
 __all__ = [
     'RESTInterface',

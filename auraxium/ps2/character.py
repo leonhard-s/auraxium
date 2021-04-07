@@ -11,7 +11,7 @@ from ..models import CharacterAchievement, TitleData, CharacterData
 from ..proxy import InstanceProxy, SequenceProxy
 from .._rest import RequestClient, extract_payload, extract_single
 from ..types import CensusData, LocaleData
-from ..utils import deprecated
+from .._support import deprecated
 
 from .faction import Faction
 from .item import Item

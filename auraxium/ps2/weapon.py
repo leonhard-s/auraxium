@@ -8,7 +8,7 @@ from ..census import Query
 from ..models import WeaponAmmoSlot, WeaponData, WeaponDatasheet
 from ..proxy import InstanceProxy, SequenceProxy
 from .._rest import RequestClient, extract_payload, extract_single
-from ..utils import deprecated
+from .._support import deprecated
 
 from .fire import FireGroup
 from .item import Item
