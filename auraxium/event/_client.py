@@ -2,7 +2,7 @@ import asyncio
 import contextlib
 import json
 import logging
-from typing import (Any, Callable, Coroutine, Iterator, List, Optional, Union,
+from typing import (Any, Callable, Coroutine, Iterator, List, Optional, Type, Union,
                     cast)
 
 import websockets
@@ -284,8 +284,8 @@ class EventClient(Client):
                 _log.info('Sending message: %s', msg)
                 await self.websocket.send(msg)
 
-    def trigger(self, event: Union[str, Event],
-                *args: Union[str, Event], name: Optional[str] = None,
+    def trigger(self, event: Union[str, Type[Event]],
+                *args: Union[str, Type[Event]], name: Optional[str] = None,
                 **kwargs: Any) -> Callable[[_Callback], None]:
         """Create and add a trigger for the given action.
 
