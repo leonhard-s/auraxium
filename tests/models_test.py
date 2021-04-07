@@ -6,7 +6,8 @@ import unittest
 from typing import Any, Dict, List, Optional, Type
 
 # pylint: disable=import-error
-from auraxium.base import Ps2Data, Ps2Object
+from auraxium.base import Ps2Object
+from auraxium.models.base import RESTPayload
 from auraxium import ps2
 from tests.utils import DATA
 
@@ -35,7 +36,7 @@ class TestModels(unittest.TestCase):
             collection = list(payload.keys())[0][:-5]
             # Find the appropriate class for this collection
             type_: Ps2Object
-            cls_: Optional[Type[Ps2Data]] = None
+            cls_: Optional[Type[RESTPayload]] = None
             for name in ps2.__dict__['__all__']:
                 type_ = getattr(ps2, name)
                 if not hasattr(type_, 'collection'):
@@ -47,7 +48,7 @@ class TestModels(unittest.TestCase):
             # Instantiate any payloads found
             for data in payload[f'{collection}_list']:
                 instance = cls_(**data)
-                self.assertIsInstance(instance, Ps2Data)
+                self.assertIsInstance(instance, RESTPayload)
 
     def test_enum_datatypes(self) -> None:
         """Compare the hard-coded enum values to their API counterparts."""
