@@ -133,7 +133,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
         query.limit(100)
         join = query.create_join(self.collection)
         join.set_fields('attachment_item_id', self.id_field)
-        return SequenceProxy(self.__class__, query, client=self._client)
+        return SequenceProxy(Item, query, client=self._client)
 
     def category(self) -> InstanceProxy[ItemCategory]:
         """Return the category of the item.

@@ -1,7 +1,7 @@
 """Character class definition."""
 
 import logging
-from typing import Any, ClassVar, Final, List, Optional, Tuple, Type, Union
+from typing import Any, ClassVar, Final, List, Optional, Tuple, Type, Union, cast
 
 from ..base import Named, NamedT
 from .._cache import TLRUCache
@@ -116,7 +116,8 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.add_term(field=self.id_field, value=self.id)
         payload = await self._client.request(query)
         data = extract_single(payload, collection)
-        return int(data['quantity']), int(data['prestige_currency'])
+        return (int(cast(str, data['quantity'])),
+                int(cast(str, data['prestige_currency'])))
 
     async def directive(self, results: int = 1,
                         **kwargs: Any) -> List[CensusData]:
@@ -212,7 +213,8 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         payload = await self._client.request(query)
         data = extract_single(payload, collection)
         character_ids: List[str] = [
-            str(d['character_id']) for d in data['friend_list']]
+            str(d['character_id'])
+            for d in cast(List[CensusData], data['friend_list'])]
         characters = await Character.find(
             results=len(character_ids), client=self._client,
             character_id=','.join(character_ids))
@@ -254,7 +256,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         data = await client.request(query)
         payload = extract_payload(data, cls.collection)
         return [cls(c, client=client) for c in payload
-                if int(c['online_status'])]
+                if int(cast(str, c['online_status']))]
 
     def items(self) -> SequenceProxy[Item]:
         """Return the items available to the character.
@@ -298,7 +300,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.add_term(field=self.id_field, value=self.id)
         payload = await self._client.request(query)
         data = extract_single(payload, collection)
-        return int(data['online_status'])
+        return int(cast(str, data['online_status']))
 
     def outfit(self) -> InstanceProxy[Outfit]:
         """Return the outfit of the character, if any.

@@ -1,7 +1,7 @@
 """World class definition."""
 
 import datetime
-from typing import Any, Final, List, Optional, Tuple, Type, Union
+from typing import Any, Final, List, Optional, Tuple, Type, Union, cast
 
 from ..base import Named, NamedT
 from ..census import Query
@@ -106,5 +106,5 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
         payload = await self._client.request(query)
         data = extract_single(payload, 'game_server_status')
         status = str(data['last_reported_state'])
-        last_updated = int(data['last_reported_time'])
+        last_updated = int(cast(str, data['last_reported_time']))
         return status, datetime.datetime.utcfromtimestamp(last_updated)
