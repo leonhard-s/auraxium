@@ -116,8 +116,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.add_term(field=self.id_field, value=self.id)
         payload = await self._client.request(query)
         data = extract_single(payload, collection)
-        return (int(cast(str, data['quantity'])),
-                int(cast(str, data['prestige_currency'])))
+        return int(str(data['quantity'])), int(str(data['prestige_currency']))
 
     async def directive(self, results: int = 1,
                         **kwargs: Any) -> List[CensusData]:
@@ -256,7 +255,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         data = await client.request(query)
         payload = extract_payload(data, cls.collection)
         return [cls(c, client=client) for c in payload
-                if int(cast(str, c['online_status']))]
+                if int(str(c['online_status']))]
 
     def items(self) -> SequenceProxy[Item]:
         """Return the items available to the character.
@@ -300,7 +299,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.add_term(field=self.id_field, value=self.id)
         payload = await self._client.request(query)
         data = extract_single(payload, collection)
-        return int(cast(str, data['online_status']))
+        return int(str(data['online_status']))
 
     def outfit(self) -> InstanceProxy[Outfit]:
         """Return the outfit of the character, if any.

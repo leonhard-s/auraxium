@@ -8,7 +8,7 @@ streaming service (ESS).
 
 import logging
 import warnings
-from typing import Any, Callable, List, Optional, Type, TypeVar, cast
+from typing import Any, Callable, List, Optional, Type, TypeVar
 
 from .base import Named, Ps2Object
 from .census import Query
@@ -59,7 +59,7 @@ class Client(RequestClient):
         query = Query(type_.collection, service_id=self.service_id, **kwargs)
         result = await self.request(query, verb='count')
         try:
-            return int(cast(str, result['count']))
+            return int(str(result['count']))
         except KeyError as err:
             raise PayloadError(
                 'Missing key "count" in API response', result) from err

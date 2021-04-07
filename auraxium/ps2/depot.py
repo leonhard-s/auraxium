@@ -1,6 +1,6 @@
 """Bundles and special offer class definitions."""
 
-from typing import Final, List, Optional, Tuple, cast
+from typing import Final, List, Optional, Tuple
 
 from ..base import Named, Cached
 from ..census import Query
@@ -73,7 +73,7 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
         items: List[Tuple[Item, int]] = []
         for item_data in data:
             item = Item(item_data[key_name], client=self._client)
-            count = int(cast(str, item_data['quantity']))
+            count = int(str(item_data['quantity']))
             items.append((item, count))
         return items
 

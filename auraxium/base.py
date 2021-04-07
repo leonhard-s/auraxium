@@ -8,7 +8,7 @@ throughout the PlanetSide 2 object model.
 import abc
 import dataclasses
 import logging
-from typing import Any, ClassVar, List, Optional, Type, TypeVar, Union, cast
+from typing import Any, ClassVar, List, Optional, Type, TypeVar, Union
 
 import pydantic
 
@@ -75,7 +75,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
                 performed via this object. Defaults to ``None``.
 
         """
-        id_ = int(cast(str, data[self.id_field]))
+        id_ = int(str(data[self.id_field]))
         _log.debug('Instantiating <%s:%d> using payload: %s',
                    self.__class__.__name__, id_, data)
         self.id = id_

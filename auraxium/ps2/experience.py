@@ -1,7 +1,7 @@
 """Experience and rank class definitions."""
 
 import logging
-from typing import List, Union, cast
+from typing import List, Union
 
 import pydantic
 
@@ -77,7 +77,7 @@ class ExperienceRank:
 
         This populates the object using the provided payload.
         """
-        rank = int(cast(str, data['rank']))
+        rank = int(str(data['rank']))
         log.debug('Instantiating <%s:%d> using payload: %s',
                   self.__class__.__name__, rank, data)
         self._client = client

@@ -136,7 +136,7 @@ class RequestClient:
                 _log.debug('Query times for "%s?%s": %s',
                            '/'.join(url.parts[-2:]), url.query_string,
                            ', '.join([f'{k}: {v}' for k, v in timing.items()]))
-            self._timing_cache.append(float(cast(str, timing['total-ms'])))
+            self._timing_cache.append(float(str(timing['total-ms'])))
         return data
 
 
