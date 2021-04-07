@@ -4,8 +4,8 @@ from typing import Final, List, Optional, Union
 
 from ..base import Cached, ImageMixin, Named
 from ..census import Query
-from ..client import Client
 from ..models import VehicleAttachmentData, VehicleData
+from .._rest import RequestClient
 from ..proxy import InstanceProxy, SequenceProxy
 from ..types import LocaleData
 
@@ -63,7 +63,7 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
 
     @classmethod
     async def get_by_faction(cls, faction: Union[Faction, int], *,
-                             client: Client) -> List['Vehicle']:
+                             client: RequestClient) -> List['Vehicle']:
         """Return all vehicles available to the given faction."""
         collection: Final[str] = 'vehicle_faction'
         faction_id = faction.id if isinstance(faction, Faction) else faction

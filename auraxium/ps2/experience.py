@@ -6,9 +6,9 @@ from typing import List, Union
 import pydantic
 
 from ..base import Cached
-from ..client import Client
 from ..errors import PayloadError
 from ..models import ExperienceData, ExperienceRankData
+from .._rest import RequestClient,
 from ..types import CensusData
 
 from .faction import Faction
@@ -72,7 +72,7 @@ class ExperienceRank:
     tr: ExperienceRankData.EmpireData
     tr_image_path: str
 
-    def __init__(self, data: CensusData, client: Client) -> None:
+    def __init__(self, data: CensusData, client: RequestClient) -> None:
         """Initialise the object.
 
         This populates the object using the provided payload.

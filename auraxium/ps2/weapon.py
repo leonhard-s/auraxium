@@ -4,11 +4,10 @@ import logging
 from typing import Final, List, Optional
 
 from ..base import Cached
-from ..client import Client
 from ..census import Query
 from ..models import WeaponAmmoSlot, WeaponData, WeaponDatasheet
 from ..proxy import InstanceProxy, SequenceProxy
-from .._rest import extract_payload, extract_single
+from .._rest import RequestClient, extract_payload, extract_single
 from ..utils import deprecated
 
 from .fire import FireGroup
@@ -140,7 +139,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
     @deprecated('0.3', replacement='Client.get()')
     @classmethod
     async def get_by_name(cls, name: str, *, locale: str = 'en',
-                          client: Client) -> Optional['Weapon']:
+                          client: RequestClient) -> Optional['Weapon']:
         """Retrieve a weapon by name.
 
         This is a helper method provided as weapons themselves do not

@@ -5,9 +5,8 @@ from typing import Any, Final, List, Optional, Tuple, Type, Union
 
 from ..base import Named, NamedT
 from ..census import Query
-from ..client import Client
 from ..models import WorldData
-from .._rest import extract_payload, extract_single
+from .._rest import RequestClient, extract_payload, extract_single
 from ..types import CensusData, LocaleData
 from ..utils import deprecated
 
@@ -60,7 +59,7 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
     @deprecated('0.3', replacement='Client.get()')
     @classmethod
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
-                          client: Client) -> Optional[NamedT]:
+                          client: RequestClient) -> Optional[NamedT]:
         """Retrieve a world by name.
 
         This query is always case-insensitive.

@@ -6,8 +6,7 @@ from typing import Dict, Final, List, Optional, Tuple, Union
 
 from ..census import Query
 from ..errors import NotFoundError
-from ..client import Client
-from .._rest import extract_payload, extract_single
+from .._rest import RequestClient, extract_payload, extract_single
 
 from .character import Character
 from .world import World
@@ -42,7 +41,7 @@ class Stat(enum.Enum):
 
 async def by_char(stat: Stat, character: Union[int, Character],
                   period: Period = Period.FOREVER,
-                  *, client: Client) -> Optional[Tuple[int, int]]:
+                  *, client: RequestClient) -> Optional[Tuple[int, int]]:
     """Return the rank of the player on the leaderboard.
 
     Note that only the top 10'000 players are tracked by the
@@ -67,7 +66,7 @@ async def by_char(stat: Stat, character: Union[int, Character],
 async def by_char_multi(stat: Stat, character: Union[int, Character],
                         *args: Union[int, Character],
                         period: Period = Period.FOREVER,
-                        client: Client) -> List[Tuple[int, int]]:
+                        client: RequestClient) -> List[Tuple[int, int]]:
     """Return the rank of the players on the leaderboard.
 
     Like by_char, but takes any number of arguments.
@@ -91,7 +90,7 @@ async def by_char_multi(stat: Stat, character: Union[int, Character],
 
 async def top(stat: Stat, period: Period = Period.FOREVER, matches: int = 10,
               offset: int = 0, world: Optional[Union[int, World]] = None,
-              *, client: Client) -> List[Tuple[int, Character]]:
+              *, client: RequestClient) -> List[Tuple[int, Character]]:
     """Retrieve the top entries on the leaderboard for the given stat.
 
     Note that only the top 10'000 players are tracked by the

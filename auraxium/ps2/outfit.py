@@ -6,11 +6,10 @@ from typing import ClassVar, Final, List, Optional, TYPE_CHECKING, Type, Union
 from ..base import Cached, Named, NamedT
 from .._cache import TLRUCache
 from ..census import Query
-from ..client import Client
 from ..errors import NotFoundError
 from ..models import OutfitData, OutfitMemberData, OutfitRankData
 from ..proxy import InstanceProxy, SequenceProxy
-from .._rest import extract_payload, extract_single
+from .._rest import RequestClient, extract_payload, extract_single
 from ..utils import deprecated
 
 if TYPE_CHECKING:  # pragma: no cover
@@ -122,7 +121,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
     @deprecated('0.3', replacement='Client.get()')
     @classmethod
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
-                          client: Client) -> Optional[NamedT]:
+                          client: RequestClient) -> Optional[NamedT]:
         """Retrieve an outfit by its unique name.
 
         This query is always case-insensitive.
@@ -145,7 +144,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
 
     @deprecated('0.3', replacement='Client.get()')
     @classmethod
-    async def get_by_tag(cls, tag: str, client: Client) -> Optional['Outfit']:
+    async def get_by_tag(cls, tag: str, client: RequestClient) -> Optional['Outfit']:
         """Return an outfit by its unique tag.
 
         This query is always case-insensitive.
