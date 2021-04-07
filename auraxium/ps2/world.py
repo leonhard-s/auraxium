@@ -1,7 +1,7 @@
 """World class definition."""
 
 import datetime
-from typing import Any, Final, List, Optional, Tuple, Type, Union, cast
+from typing import Any, Final, List, Optional, Tuple, Type, Union
 
 from ..base import Named, NamedT
 from ..census import Query
@@ -69,7 +69,6 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
         # due to API limitations. This method works around this by first
         # retrieving all worlds, then looking the returned list up by name.
         data = await cls.find(20, client=client)
-        data = cast(List[NamedT], data)
         if data and not isinstance(data[0], cls):
             raise RuntimeError(
                 f'Expected {cls} instance, got {type(data[0])} instead, '
