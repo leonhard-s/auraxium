@@ -28,7 +28,6 @@ if TYPE_CHECKING:  # pragma: no cover
     from .client import Client
 
 __all__ = [
-    'Ps2Data',
     'Ps2Object',
     'Cached',
     'Named'
@@ -37,52 +36,8 @@ __all__ = [
 AnyT = TypeVar('AnyT')
 CachedT = TypeVar('CachedT', bound='Cached')
 NamedT = TypeVar('NamedT', bound='Named')
-Ps2DataT = TypeVar('Ps2DataT', bound='Ps2Data')
 Ps2ObjectT = TypeVar('Ps2ObjectT', bound='Ps2Object')
 log = logging.getLogger('auraxium.ps2')
-
-
-class Ps2Data(pydantic.BaseModel, metaclass=abc.ABCMeta):
-    """Base class for PlanetSide 2 data classes.
-
-    This class is based on :class:`pydantic.BaseModel` and will
-    automatically cast any kwargs provided into the set of attributes
-    defined for the current subclass.
-
-    Extraneous kwargs are silently discarded. Any values equal to the
-    string ``'NULL'`` are converted to ``None`` before the parsing is
-    performed.
-
-    This does support compound type declarations like
-    :class:`typing.Union` or :class:`typing.Optional`.
-    """
-    # pylint: disable=too-few-public-methods
-
-    class Config:
-        """Pydantic model configuration.
-
-        This inner class is used to namespace the pydantic
-        configuration options.
-        """
-        allow_mutation = False
-        anystr_strip_whitespace = True
-
-    @pydantic.validator('*', pre=True)
-    @classmethod
-    def _convert_null(cls: Type['Ps2Data'], value: AnyT) -> Optional[AnyT]:
-        """Handle NULL string return values.
-
-        This converts any NULL strings to equal ``None`` instead.
-
-        By default, the API will omit any NULL fields in the response,
-        unless the ``c:includeNull`` flag is set.
-        This value being a string would break type annotations like
-        ``Optional[int] = None``, which is why they are silently
-        converted into ``None`` before any parsing takes place.
-        """
-        if value == 'NULL':
-            return None
-        return value
 
 
 class FallbackMixin:
