@@ -7,7 +7,7 @@ from ..base import Named, NamedT
 from ..census import Query
 from ..client import Client
 from ..models import WorldData
-from ..request import extract_payload, extract_single
+from .._rest import extract_payload, extract_single
 from ..types import CensusData, LocaleData
 from ..utils import deprecated
 

@@ -4,13 +4,13 @@ import logging
 from typing import Any, ClassVar, Final, List, Optional, Tuple, Type, Union
 
 from ..base import Named, NamedT
-from ..cache import TLRUCache
+from .._cache import TLRUCache
 from ..census import Query
 from ..client import Client
 from ..errors import NotFoundError
 from ..models import CharacterAchievement, TitleData, CharacterData
 from ..proxy import InstanceProxy, SequenceProxy
-from ..request import extract_payload, extract_single
+from .._rest import extract_payload, extract_single
 from ..types import CensusData, LocaleData
 from ..utils import deprecated
 

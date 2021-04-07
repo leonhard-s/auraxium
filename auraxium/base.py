@@ -15,10 +15,10 @@ import warnings
 import pydantic
 
 from .models.base import RESTPayload
-from .cache import TLRUCache
+from ._cache import TLRUCache
 from .census import Query
 from .errors import PayloadError, NotFoundError
-from .request import extract_payload, extract_single
+from ._rest import extract_payload, extract_single
 from .types import CensusData
 from .utils import deprecated
 

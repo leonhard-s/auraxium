@@ -6,7 +6,7 @@ from ..base import Named, Cached
 from ..census import Query
 from ..models import MarketingBundleData, MarketingBundleSingleData
 from ..proxy import InstanceProxy
-from ..request import extract_payload
+from .._rest import extract_payload
 from ..types import LocaleData
 
 from .item import Item
