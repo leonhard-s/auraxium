@@ -2,9 +2,10 @@
 
 from typing import Final
 
-from ..base import Cached, FallbackMixin
+from ..base import Cached
 from ..census import Query
 from ..models import LoadoutData, ProfileData
+from ..models.base import FallbackMixin
 from ..proxy import InstanceProxy, SequenceProxy
 from ..types import CensusData
 

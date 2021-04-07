@@ -1,6 +1,6 @@
 """Data classes for :mod:`auraxium.ps2.achievement`."""
 
-from ..base import ImageData
+from .base import ImageData
 from ..types import LocaleData
 
 from .base import RESTPayload

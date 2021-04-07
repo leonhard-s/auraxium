@@ -1,9 +1,13 @@
 """Shared base classes for API data model implementations."""
 
+import abc
+import dataclasses
 import datetime
 from typing import Optional, TypeVar
 
 import pydantic
+
+from ..types import CensusData
 
 # pylint: disable=too-few-public-methods
 
@@ -25,8 +29,8 @@ class Payload(pydantic.BaseModel):
 class RESTPayload(Payload):
 
     @pydantic.validator('*', pre=True)
-    @staticmethod
-    def _convert_null(value: _T) -> Optional[_T]:
+    @classmethod
+    def _convert_null(cls, value: _T) -> Optional[_T]:
         """Replace any "NULL" string inputs with :obj:`None`.
 
         This is a pre-validator; it is run before any other validation
@@ -38,9 +42,34 @@ class RESTPayload(Payload):
         values can be type-hinted with :obj:`typing.Optional` without
         risk of errors.
         """
+        _ = cls
         if value == 'NULL':
             return None
         return value
+
+
+class FallbackMixin(metaclass=abc.ABCMeta):
+    """A mixin class used to provide hard-coded fallback instances.
+
+    Some collections are out of date and do not contain all required
+    data. This mixin provides a hook to insert this missing data into
+    data types while not causing issues if the API ends up being
+    updated to include these missing types.
+    """
+
+    @staticmethod
+    @abc.abstractmethod
+    def fallback_hook(id_: int) -> CensusData:
+        ...
+
+
+@dataclasses.dataclass(frozen=True)
+class ImageData:
+    """Mixin dataclass for types supporting image access."""
+
+    image_id: Optional[int] = None
+    image_set_id: Optional[int] = None
+    image_path: Optional[str] = None
 
 
 class Event(Payload):

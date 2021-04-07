@@ -6,7 +6,6 @@ throughout the PlanetSide 2 object model.
 """
 
 import abc
-import dataclasses
 import logging
 from typing import Any, ClassVar, List, Optional, Type, TypeVar, Union
 
@@ -31,21 +30,6 @@ NamedT = TypeVar('NamedT', bound='Named')
 Ps2ObjectT = TypeVar('Ps2ObjectT', bound='Ps2Object')
 
 _log = logging.getLogger('auraxium.ps2')
-
-
-class FallbackMixin(metaclass=abc.ABCMeta):
-    """A mixin class used to provide hard-coded fallback instances.
-
-    Some collections are out of date and do not contain all required
-    data. This mixin provides a hook to insert this missing data into
-    data types while not causing issues if the API ends up being
-    updated to include these missing types.
-    """
-
-    @staticmethod
-    @abc.abstractmethod
-    def fallback_hook(id_: int) -> CensusData:
-        ...
 
 
 class Ps2Object(metaclass=abc.ABCMeta):
@@ -450,12 +434,3 @@ class ImageMixin(Ps2Object, metaclass=abc.ABCMeta):
         """Return the URL for a given image ID."""
         url = 'https://census.daybreakgames.com/files/ps2/images/static/'
         return url + f'{image_id}.png'
-
-
-@dataclasses.dataclass(frozen=True)
-class ImageData:
-    """Mixin dataclass for types supporting image access."""
-
-    image_id: Optional[int] = None
-    image_set_id: Optional[int] = None
-    image_path: Optional[str] = None

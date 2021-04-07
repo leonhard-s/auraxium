@@ -2,7 +2,7 @@
 
 from typing import Optional
 
-from ..base import ImageData
+from .base import ImageData
 from ..types import LocaleData
 
 from .base import RESTPayload
