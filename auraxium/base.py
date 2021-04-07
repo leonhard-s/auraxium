@@ -8,17 +8,15 @@ throughout the PlanetSide 2 object model.
 import abc
 import dataclasses
 import logging
-import warnings
-from typing import (Any, Callable, ClassVar, List, Optional, Type, TypeVar,
-                    Union, cast)
+from typing import Any, ClassVar, List, Optional, Type, TypeVar, Union, cast
 
 import pydantic
 
 from .models.base import RESTPayload
 from ._cache import TLRUCache
 from .census import Query
-from .errors import PayloadError, NotFoundError
-from ._rest import RequestClient, extract_payload, extract_single
+from .errors import PayloadError
+from ._rest import RequestClient
 from .types import CensusData
 from ._support import deprecated
 
@@ -138,17 +136,9 @@ class Ps2Object(metaclass=abc.ABCMeta):
             The number of entries entries.
 
         """
-        service_id = 's:example' if client is None else client.service_id
-        query = Query(cls.collection, service_id=service_id, **kwargs)
-        result = await client.request(query, verb='count')
-        try:
-            return int(cast(str, result['count']))
-        except KeyError as err:
-            raise PayloadError(
-                'Missing key "count" in API response', result) from err
-        except ValueError as err:
-            raise PayloadError(
-                f'Invalid count: {result["count"]}', result) from err
+        # NOTE: The following is a runtime-only compatibility hack and violates
+        # type hinting. This is scheduled for removal as per the decorator.
+        return await client.count(cls, **kwargs)  # type: ignore
 
     @deprecated('0.3', replacement='Client.find()')
     @classmethod
@@ -180,15 +170,11 @@ class Ps2Object(metaclass=abc.ABCMeta):
             A list of matching entries.
 
         """
-        service_id = 's:example' if client is None else client.service_id
-        query = Query(cls.collection, service_id=service_id, **kwargs)
-        query.limit(results)
-        if offset > 0:
-            query.offset(offset)
-        query.exact_match_first(promote_exact).case(check_case)
-        matches = await client.request(query)
-        return [cls(i, client=client) for i in extract_payload(
-            matches, cls.collection)]
+        # NOTE: The following is a runtime-only compatibility hack and violates
+        # type hinting. This is scheduled for removal as per the decorator.
+        return await client.find(  # type: ignore
+            cls, results=results, offset=offset, promote_exact=promote_exact,
+            check_case=check_case, **kwargs)
 
     @deprecated('0.3', replacement='Client.get()')
     @classmethod
@@ -209,18 +195,10 @@ class Ps2Object(metaclass=abc.ABCMeta):
             A matching entry, or None if not found.
 
         """
-        data = await cls.find(client=client, results=1,
-                              check_case=check_case, **kwargs)
-        if data:
-            if not isinstance(data[0], cls):
-                raise RuntimeError(
-                    f'Expected {cls} instance, got {type(data[0])} instead, '
-                    'please report this bug to the project maintainers')
-            if len(data) > 1:
-                warnings.warn(f'Ps2Object.get() got {len(data)} results, all '
-                              'but the first will be discarded')
-            return data[0]
-        return None
+        # NOTE: The following is a runtime-only compatibility hack and violates
+        # type hinting. This is scheduled for removal as per the decorator.
+        return await client.get(  # type: ignore
+            cls, results=1, check_case=check_case, **kwargs)
 
     @deprecated('0.3', replacement='Client.get())')
     @classmethod
@@ -236,26 +214,9 @@ class Ps2Object(metaclass=abc.ABCMeta):
             The entry with the matching ID, or None if not found.
 
         """
-        filters: CensusData = {cls.id_field: id_}
-        data = await cls.find(client=client, results=1, **filters)
-        if data and not isinstance(data[0], cls):
-            raise RuntimeError(
-                f'Expected {cls} instance, got {type(data[0])} instead, '
-                'please report this bug to the project maintainers')
-        if data:
-            return data[0]
-        hook: Callable[[int], CensusData]
-        if (hook := getattr(cls, 'fallback_hook', None)) is not None:
-            try:
-                fallback = hook(id_)
-            except KeyError:
-                _log.debug(
-                    'No matching fallback instance found for ID %d', id_)
-                return None
-            _log.debug('Instantiating "%s" with ID %d through local copy',
-                       cls.__name__, id_)
-            return cls(fallback, client=client)
-        return None
+        # NOTE: The following is a runtime-only compatibility hack and violates
+        # type hinting. This is scheduled for removal as per the decorator.
+        return await client.get_by_id(cls, id_)  # type: ignore
 
     def query(self) -> Query:
         """Return a query from the current object.
@@ -470,21 +431,9 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
             The entry with the matching name, or ``None`` if not found.
 
         """
-        key = f'{locale}_{name.lower()}'
-        _log.debug('%s "%s"[%s] requested', cls.__name__, name, locale)
-        if (instance := cls._cache.get(key)) is not None:
-            _log.debug('%r restored from cache', instance)
-            return instance  # type: ignore
-        _log.debug('%s "%s"[%s] not cached, generating API query...',
-                   cls.__name__, name, locale)
-        query = Query(cls.collection, service_id=client.service_id)
-        query.case(False).add_term(field=f'name.{locale}', value=name)
-        payload = await client.request(query)
-        try:
-            payload = extract_single(payload, cls.collection)
-        except NotFoundError:
-            return None
-        return cls(payload, locale=locale, client=client)
+        # NOTE: The following is a runtime-only compatibility hack and violates
+        # type hinting. This is scheduled for removal as per the decorator.
+        return client.get_by_name(cls, name, locale=locale)  # type: ignore
 
     def name(self, locale: str = 'en') -> str:
         """Return the localised name of the object.

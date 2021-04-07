@@ -7,10 +7,14 @@ streaming service (ESS).
 """
 
 import logging
-from typing import Any, List, Optional, Type, TypeVar
+import warnings
+from typing import Any, Callable, List, Optional, Type, TypeVar, cast
 
 from .base import Named, Ps2Object
-from ._rest import RequestClient
+from .census import Query
+from .errors import NotFoundError, PayloadError
+from ._rest import RequestClient, extract_payload, extract_single
+from .types import CensusData
 
 __all__ = [
     'Client'
@@ -52,7 +56,16 @@ class Client(RequestClient):
             The number of entries entries.
 
         """
-        return await type_.count(client=self, **kwargs)
+        query = Query(type_.collection, service_id=self.service_id, **kwargs)
+        result = await self.request(query, verb='count')
+        try:
+            return int(cast(str, result['count']))
+        except KeyError as err:
+            raise PayloadError(
+                'Missing key "count" in API response', result) from err
+        except ValueError as err:
+            raise PayloadError(
+                f'Invalid count: {result["count"]}', result) from err
 
     async def find(self, type_: Type[_Ps2ObjectT], results: int = 10,
                    offset: int = 0, promote_exact: bool = False,
@@ -80,15 +93,14 @@ class Client(RequestClient):
             A list of matching entries.
 
         """
-        data = await type_.find(results=results, offset=offset,
-                                promote_exact=promote_exact,
-                                check_case=check_case,
-                                client=self, **kwargs)
-        if data and not isinstance(data[0], type_):
-            raise RuntimeError(
-                f'Expected {type_} instance, got {type(data[0])} '
-                f'instead, please report this bug to the project maintainers')
-        return data
+        query = Query(type_.collection, service_id=self.service_id, **kwargs)
+        query.limit(results)
+        if offset > 0:
+            query.offset(offset)
+        query.exact_match_first(promote_exact).case(check_case)
+        matches = await self.request(query)
+        return [type_(i, client=self) for i in extract_payload(
+            matches, type_.collection)]
 
     async def get(self, type_: Type[_Ps2ObjectT], check_case: bool = True,
                   **kwargs: Any) -> Optional[_Ps2ObjectT]:
@@ -107,12 +119,18 @@ class Client(RequestClient):
             The first matching entry, or ``None`` if not found.
 
         """
-        data = await type_.get(check_case=check_case, client=self, **kwargs)
-        if data is not None and not isinstance(data, type_):
-            raise RuntimeError(
-                f'Expected {type_} instance, got {type(data)} instead, '
-                'please report this bug to the project maintainers')
-        return data  # type: ignore
+        data = await self.find(
+            type_, results=1, check_case=check_case, **kwargs)
+        if data:
+            if not isinstance(data[0], type_):
+                raise RuntimeError(
+                    f'Expected {type_} instance, got {type(data[0])} instead, '
+                    'please report this bug to the project maintainers')
+            if len(data) > 1:
+                warnings.warn(f'Ps2Object.get() got {len(data)} results, all '
+                              'but the first will be discarded')
+            return data[0]
+        return None
 
     async def get_by_id(self, type_: Type[_Ps2ObjectT], id_: int
                         ) -> Optional[_Ps2ObjectT]:
@@ -129,12 +147,26 @@ class Client(RequestClient):
             The entry with the matching ID, or None if not found.
 
         """
-        data = await type_.get_by_id(id_, client=self)
-        if data is not None and not isinstance(data, type_):
+        filters: CensusData = {type_.id_field: id_}
+        data = await self.find(type_, results=1, **filters)
+        if data and not isinstance(data[0], type_):
             raise RuntimeError(
-                f'Expected {type_} instance, got {type(data)} instead, '
+                f'Expected {type_} instance, got {type(data[0])} instead, '
                 'please report this bug to the project maintainers')
-        return data  # type: ignore
+        if data:
+            return data[0]
+        hook: Callable[[int], CensusData]
+        if (hook := getattr(type_, 'fallback_hook', None)) is not None:
+            try:
+                fallback = hook(id_)
+            except KeyError:
+                _log.debug(
+                    'No matching fallback instance found for ID %d', id_)
+                return None
+            _log.debug('Instantiating "%s" with ID %d through local copy',
+                       type_.__name__, id_)
+            return type_(fallback, client=self)
+        return None
 
     async def get_by_name(self, type_: Type[_NamedT], name: str, *,
                           locale: str = 'en') -> Optional[_NamedT]:
@@ -159,9 +191,19 @@ class Client(RequestClient):
             The entry with the matching name, or ``None`` if not found.
 
         """
-        data = await type_.get_by_name(name, locale=locale, client=self)
-        if data is not None and not isinstance(data, type_):
-            raise RuntimeError(
-                f'Expected {type_} instance, got {type(data)} instead, '
-                'please report this bug to the project maintainers')
-        return data  # type: ignore
+        key = f'{locale}_{name.lower()}'
+        _log.debug('%s "%s"[%s] requested', type_.__name__, name, locale)
+        # pylint: disable=protected-access
+        if (instance := type_._cache.get(key)) is not None:  # type: ignore
+            _log.debug('%r restored from cache', instance)
+            return instance  # type: ignore
+        _log.debug('%s "%s"[%s] not cached, generating API query...',
+                   type_.__name__, name, locale)
+        query = Query(type_.collection, service_id=self.service_id)
+        query.case(False).add_term(field=f'name.{locale}', value=name)
+        payload = await self.request(query)
+        try:
+            payload = extract_single(payload, type_.collection)
+        except NotFoundError:
+            return None
+        return type_(payload, locale=locale, client=self)
