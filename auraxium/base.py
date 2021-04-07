@@ -9,7 +9,8 @@ import abc
 import dataclasses
 import logging
 import warnings
-from typing import Any, ClassVar, List, Optional, Type, TypeVar, Union, cast
+from typing import (Any, Callable, ClassVar, List, Optional, Type, TypeVar,
+                    Union, cast)
 
 import pydantic
 
@@ -34,7 +35,7 @@ Ps2ObjectT = TypeVar('Ps2ObjectT', bound='Ps2Object')
 _log = logging.getLogger('auraxium.ps2')
 
 
-class FallbackMixin:
+class FallbackMixin(metaclass=abc.ABCMeta):
     """A mixin class used to provide hard-coded fallback instances.
 
     Some collections are out of date and do not contain all required
@@ -44,10 +45,9 @@ class FallbackMixin:
     """
 
     @staticmethod
+    @abc.abstractmethod
     def fallback_hook(id_: int) -> CensusData:
-        _ = id_
-        _log.warning('Fallback class without overrides found')
-        raise KeyError('No fallback value implemented')
+        ...
 
 
 class Ps2Object(metaclass=abc.ABCMeta):
@@ -244,17 +244,16 @@ class Ps2Object(metaclass=abc.ABCMeta):
                 'please report this bug to the project maintainers')
         if data:
             return data[0]
-        # Check for local fallback data
-        if issubclass(cls, FallbackMixin):
-            fb_cls = cast(Type[FallbackMixin], cls)
+        hook: Callable[[int], CensusData]
+        if (hook := getattr(cls, 'fallback_hook', None)) is not None:
             try:
-                fallback = fb_cls.fallback_hook(id_)
+                fallback = hook(id_)
             except KeyError:
                 _log.debug(
                     'No matching fallback instance found for ID %d', id_)
                 return None
             _log.debug('Instantiating "%s" with ID %d through local copy',
-                       fb_cls.__name__, id_)
+                       cls.__name__, id_)
             return cls(fallback, client=client)
         return None
 
