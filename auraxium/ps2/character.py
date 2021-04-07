@@ -1,17 +1,17 @@
 """Character class definition."""
 
 import logging
-from typing import Any, ClassVar, Final, List, Optional, Tuple, Type, Union
+from typing import Any, ClassVar, Final, List, Optional, Tuple, Type, Union, cast
 
 from ..base import Named, NamedT
-from ..cache import TLRUCache
+from .._cache import TLRUCache
 from ..census import Query
-from ..client import Client
 from ..errors import NotFoundError
 from ..models import CharacterAchievement, TitleData, CharacterData
 from ..proxy import InstanceProxy, SequenceProxy
-from ..request import extract_payload, extract_single
+from .._rest import RequestClient, extract_payload, extract_single
 from ..types import CensusData, LocaleData
+from .._support import deprecated
 
 from .faction import Faction
 from .item import Item
@@ -116,7 +116,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.add_term(field=self.id_field, value=self.id)
         payload = await self._client.request(query)
         data = extract_single(payload, collection)
-        return int(data['quantity']), int(data['prestige_currency'])
+        return int(str(data['quantity'])), int(str(data['prestige_currency']))
 
     async def directive(self, results: int = 1,
                         **kwargs: Any) -> List[CensusData]:
@@ -212,15 +212,17 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         payload = await self._client.request(query)
         data = extract_single(payload, collection)
         character_ids: List[str] = [
-            str(d['character_id']) for d in data['friend_list']]
+            str(d['character_id'])
+            for d in cast(List[CensusData], data['friend_list'])]
         characters = await Character.find(
             results=len(character_ids), client=self._client,
             character_id=','.join(character_ids))
         return characters
 
+    @deprecated('0.3', replacement='Client.get()')
     @classmethod
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
-                          client: Client) -> Optional[NamedT]:
+                          client: RequestClient) -> Optional[NamedT]:
         """Retrieve an object by its unique name.
 
         This query is always case-insensitive.
@@ -241,7 +243,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         return cls(payload, client=client)
 
     @classmethod
-    async def get_online(cls, id_: int, *args: int, client: Client
+    async def get_online(cls, id_: int, *args: int, client: RequestClient
                          ) -> List['Character']:
         """Retrieve the characters that are online from a list."""
         char_ids = [id_]
@@ -253,7 +255,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         data = await client.request(query)
         payload = extract_payload(data, cls.collection)
         return [cls(c, client=client) for c in payload
-                if int(c['online_status'])]
+                if int(str(c['online_status']))]
 
     def items(self) -> SequenceProxy[Item]:
         """Return the items available to the character.
@@ -272,27 +274,19 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         """Return whether the given character is online."""
         return bool(int(await self.online_status()))
 
-    def name(self, locale: str = 'en') -> str:
-        """Return the unique name of the player.
-
-        Since character names are not localised, the "locale" keyword
-        argument is ignored.
-
-        This will always return the capitalised version of the name.
-        Use the built-int str.lower() method for a lowercase version.
-        """
-        _ = locale
-        return str(self.data.name.first)
-
     async def name_long(self, locale: str = 'en') -> str:
         """Return the full name of the player.
 
         This includes an optional player title if the player has
         selected one.
         """
-        if self.title_id == 0:
-            return self.name(locale)
-        return f'{(await self.title()).name(locale)} {self.name(locale)}'
+        if self.title_id != 0:
+            title = await self.title()
+            if title is not None:
+                title_name = getattr(title.name, locale, None)
+                if title_name is not None:
+                    return f'{title_name} {self.name.first}'
+        return self.name.first
 
     async def online_status(self) -> int:
         """Return the online status of the character.
@@ -305,7 +299,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.add_term(field=self.id_field, value=self.id)
         payload = await self._client.request(query)
         data = extract_single(payload, collection)
-        return int(data['online_status'])
+        return int(str(data['online_status']))
 
     def outfit(self) -> InstanceProxy[Outfit]:
         """Return the outfit of the character, if any.

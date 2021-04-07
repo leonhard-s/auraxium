@@ -5,7 +5,7 @@ from typing import Final, Optional, TYPE_CHECKING
 from ..base import Cached, ImageMixin, Named
 from ..census import Query
 from ..models import ItemCategoryData, ItemData, ItemTypeData
-from ..request import extract_single
+from .._rest import extract_single
 from ..proxy import InstanceProxy, SequenceProxy
 from ..types import LocaleData
 
@@ -133,7 +133,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
         query.limit(100)
         join = query.create_join(self.collection)
         join.set_fields('attachment_item_id', self.id_field)
-        return SequenceProxy(self.__class__, query, client=self._client)
+        return SequenceProxy(Item, query, client=self._client)
 
     def category(self) -> InstanceProxy[ItemCategory]:
         """Return the category of the item.

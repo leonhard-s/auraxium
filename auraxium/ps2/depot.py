@@ -6,7 +6,7 @@ from ..base import Named, Cached
 from ..census import Query
 from ..models import MarketingBundleData, MarketingBundleSingleData
 from ..proxy import InstanceProxy
-from ..request import extract_payload
+from .._rest import extract_payload
 from ..types import LocaleData
 
 from .item import Item
@@ -73,7 +73,7 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
         items: List[Tuple[Item, int]] = []
         for item_data in data:
             item = Item(item_data[key_name], client=self._client)
-            count = int(item_data['quantity'])
+            count = int(str(item_data['quantity']))
             items.append((item, count))
         return items
 

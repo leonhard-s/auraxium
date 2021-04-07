@@ -8,82 +8,32 @@ throughout the PlanetSide 2 object model.
 import abc
 import dataclasses
 import logging
-from typing import (Any, ClassVar, Dict, List, Optional, Type, TYPE_CHECKING,
-                    TypeVar, Union, cast)
-import warnings
+from typing import Any, ClassVar, List, Optional, Type, TypeVar, Union
 
 import pydantic
 
-from .cache import TLRUCache
+from .models.base import RESTPayload
+from ._cache import TLRUCache
 from .census import Query
-from .errors import PayloadError, NotFoundError
-from .request import extract_payload, extract_single
+from .errors import PayloadError
+from ._rest import RequestClient
 from .types import CensusData
-
-if TYPE_CHECKING:  # pragma: no cover
-    # This is only imported during static type checking to resolve the 'Client'
-    # forward reference. This avoids a circular import at runtime.
-    from .client import Client
+from ._support import deprecated
 
 __all__ = [
-    'Ps2Data',
     'Ps2Object',
     'Cached',
     'Named'
 ]
 
-AnyT = TypeVar('AnyT')
 CachedT = TypeVar('CachedT', bound='Cached')
 NamedT = TypeVar('NamedT', bound='Named')
-Ps2DataT = TypeVar('Ps2DataT', bound='Ps2Data')
 Ps2ObjectT = TypeVar('Ps2ObjectT', bound='Ps2Object')
-log = logging.getLogger('auraxium.ps2')
+
+_log = logging.getLogger('auraxium.ps2')
 
 
-class Ps2Data(pydantic.BaseModel, metaclass=abc.ABCMeta):
-    """Base class for PlanetSide 2 data classes.
-
-    This class is based on :class:`pydantic.BaseModel` and will
-    automatically cast any kwargs provided into the set of attributes
-    defined for the current subclass.
-
-    Extraneous kwargs are silently discarded. Any values equal to the
-    string ``'NULL'`` are converted to ``None`` before the parsing is
-    performed.
-
-    This does support compound type declarations like
-    :class:`typing.Union` or :class:`typing.Optional`.
-    """
-    # pylint: disable=too-few-public-methods
-
-    class Config:
-        """Pydantic model configuration.
-
-        This inner class is used to namespace the pydantic
-        configuration options.
-        """
-        allow_mutation = False
-        anystr_strip_whitespace = True
-
-    @pydantic.validator('*', pre=True)
-    @classmethod
-    def _convert_null(cls: Type['Ps2Data'], value: AnyT) -> Optional[AnyT]:
-        """Handle NULL string return values.
-
-        This converts any NULL strings to equal ``None`` instead.
-
-        By default, the API will omit any NULL fields in the response,
-        unless the ``c:includeNull`` flag is set.
-        This value being a string would break type annotations like
-        ``Optional[int] = None``, which is why they are silently
-        converted into ``None`` before any parsing takes place.
-        """
-        if value == 'NULL':
-            return None
-        return value
-
-
-class FallbackMixin:
+class FallbackMixin(metaclass=abc.ABCMeta):
     """A mixin class used to provide hard-coded fallback instances.
 
     Some collections are out of date and do not contain all required
@@ -92,7 +42,10 @@ class FallbackMixin:
     updated to include these missing types.
     """
 
-    _fallback: ClassVar[Dict[int, CensusData]]
+    @staticmethod
+    @abc.abstractmethod
+    def fallback_hook(id_: int) -> CensusData:
+        ...
 
 
 class Ps2Object(metaclass=abc.ABCMeta):
@@ -106,10 +59,10 @@ class Ps2Object(metaclass=abc.ABCMeta):
     """
 
     collection: ClassVar[str] = 'bogus'
-    dataclass: ClassVar[Type[Ps2Data]]
+    dataclass: ClassVar[Type[RESTPayload]]
     id_field: ClassVar[str] = 'bogus_id'
 
-    def __init__(self, data: CensusData, client: 'Client') -> None:
+    def __init__(self, data: CensusData, client: RequestClient) -> None:
         """Initialise the object.
 
         This sets the object's :attr:`~Ps2Object.id` attribute and
@@ -122,9 +75,9 @@ class Ps2Object(metaclass=abc.ABCMeta):
                 performed via this object. Defaults to ``None``.
 
         """
-        id_ = int(data[self.id_field])
-        log.debug('Instantiating <%s:%d> using payload: %s',
-                  self.__class__.__name__, id_, data)
+        id_ = int(str(data[self.id_field]))
+        _log.debug('Instantiating <%s:%d> using payload: %s',
+                   self.__class__.__name__, id_, data)
         self.id = id_
         self._client = client
         try:
@@ -170,9 +123,9 @@ class Ps2Object(metaclass=abc.ABCMeta):
         """
         return f'<{self.__class__.__name__}:{self.id}>'
 
+    @deprecated('0.3', replacement='Client.count()')
     @classmethod
-    async def count(cls: Type['Ps2Object'], client: 'Client',
-                    **kwargs: Any) -> int:
+    async def count(cls, client: RequestClient, **kwargs: Any) -> int:
         """Return the number of items matching the given terms.
 
         Arguments:
@@ -183,22 +136,15 @@ class Ps2Object(metaclass=abc.ABCMeta):
             The number of entries entries.
 
         """
-        service_id = 's:example' if client is None else client.service_id
-        query = Query(cls.collection, service_id=service_id, **kwargs)
-        result = await client.request(query, verb='count')
-        try:
-            return int(result['count'])
-        except KeyError as err:
-            raise PayloadError(
-                'Missing key "count" in API response', result) from err
-        except ValueError as err:
-            raise PayloadError(
-                f'Invalid count: {result["count"]}', result) from err
+        # NOTE: The following is a runtime-only compatibility hack and violates
+        # type hinting. This is scheduled for removal as per the decorator.
+        return await client.count(cls, **kwargs)  # type: ignore
 
+    @deprecated('0.3', replacement='Client.find()')
     @classmethod
     async def find(cls: Type[Ps2ObjectT], results: int = 10, *,
                    offset: int = 0, promote_exact: bool = False,
-                   check_case: bool = True, client: 'Client',
+                   check_case: bool = True, client: RequestClient,
                    **kwargs: Any) -> List[Ps2ObjectT]:
         """Return a list of entries matching the given terms.
 
@@ -224,18 +170,15 @@ class Ps2Object(metaclass=abc.ABCMeta):
             A list of matching entries.
 
         """
-        service_id = 's:example' if client is None else client.service_id
-        query = Query(cls.collection, service_id=service_id, **kwargs)
-        query.limit(results)
-        if offset > 0:
-            query.offset(offset)
-        query.exact_match_first(promote_exact).case(check_case)
-        matches = await client.request(query)
-        return [cls(i, client=client) for i in extract_payload(
-            matches, cls.collection)]
+        # NOTE: The following is a runtime-only compatibility hack and violates
+        # type hinting. This is scheduled for removal as per the decorator.
+        return await client.find(  # type: ignore
+            cls, results=results, offset=offset, promote_exact=promote_exact,
+            check_case=check_case, **kwargs)
 
+    @deprecated('0.3', replacement='Client.get()')
     @classmethod
-    async def get(cls: Type[Ps2ObjectT], client: 'Client',
+    async def get(cls: Type[Ps2ObjectT], client: RequestClient,
                   check_case: bool = True, **kwargs: Any
                   ) -> Optional[Ps2ObjectT]:
         """Return the first entry matching the given terms.
@@ -252,23 +195,15 @@ class Ps2Object(metaclass=abc.ABCMeta):
             A matching entry, or None if not found.
 
         """
-        data = await cls.find(client=client, results=1,
-                              check_case=check_case, **kwargs)
-        if data:
-            if not isinstance(data[0], cls):
-                raise RuntimeError(
-                    f'Expected {cls} instance, got {type(data[0])} instead, '
-                    'please report this bug to the project maintainers')
-            if len(data) > 1:
-                warnings.warn(f'Ps2Object.get() got {len(data)} results, all '
-                              'but the first will be discarded')
-            data = cast(List[Ps2ObjectT], data)
-            return data[0]
-        return None
+        # NOTE: The following is a runtime-only compatibility hack and violates
+        # type hinting. This is scheduled for removal as per the decorator.
+        return await client.get(  # type: ignore
+            cls, results=1, check_case=check_case, **kwargs)
 
+    @deprecated('0.3', replacement='Client.get())')
     @classmethod
-    async def get_by_id(cls: Type[Ps2ObjectT], id_: int, *, client: 'Client'
-                        ) -> Optional[Ps2ObjectT]:
+    async def get_by_id(cls: Type[Ps2ObjectT], id_: int, *,
+                        client: RequestClient) -> Optional[Ps2ObjectT]:
         """Retrieve an object by its unique Census ID.
 
         Arguments:
@@ -279,39 +214,9 @@ class Ps2Object(metaclass=abc.ABCMeta):
             The entry with the matching ID, or None if not found.
 
         """
-        filters: CensusData = {cls.id_field: id_}
-        data = await cls.find(client=client, results=1, **filters)
-        data = cast(List[Ps2ObjectT], data)
-        if data and not isinstance(data[0], cls):
-            raise RuntimeError(
-                f'Expected {cls} instance, got {type(data[0])} instead, '
-                'please report this bug to the project maintainers')
-
-        # Check for FallbackMixin compatibility
-        if hasattr(cls, '_fallback'):
-            # pylint: disable=no-member
-            data_fallback: Dict[int, CensusData] = (
-                cls._fallback)  # type: ignore
-            log.debug('Fallback attribute found for type "%s", checking ID...',
-                      cls.__name__)
-            if (fallback := data_fallback.get(id_)) is not None:
-                log.debug('Instantiating "%s" with ID %d through local copy',
-                          cls.__name__, id_)
-                if data:
-                    # Log the fact that the local copy is not required
-                    log.info('Type "%s" provides a local fallback for ID %d '
-                             'despite this type being available on-line',
-                             cls.__name__, id_)
-                    return data[0]
-                # Return a locally instantiated copy
-                return cls(fallback, client=client)
-            log.debug('No matching fallback instance found for ID %d', id_)
-
-        elif data:
-            # If no fallback value was provided, return the first item found
-            # as normal
-            return data[0]
-        return None
+        # NOTE: The following is a runtime-only compatibility hack and violates
+        # type hinting. This is scheduled for removal as per the decorator.
+        return await client.get_by_id(cls, id_)  # type: ignore
 
     def query(self) -> Query:
         """Return a query from the current object.
@@ -346,7 +251,7 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
 
     _cache: ClassVar[TLRUCache[int, Any]]
 
-    def __init__(self, data: CensusData, client: 'Client') -> None:
+    def __init__(self, data: CensusData, client: RequestClient) -> None:
         """Initialise the cached object.
 
         After initialising this object via the parent class's
@@ -361,7 +266,7 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
         self._cache.add(self.id, self)
 
     @classmethod
-    def __init_subclass__(cls: Type['Cached'], cache_size: int,
+    def __init_subclass__(cls, cache_size: int,
                           cache_ttu: float = 0.0) -> None:
         """Initialise a cacheable subclass.
 
@@ -379,8 +284,8 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
 
         """
         super().__init_subclass__()
-        log.debug('Setting up cache for %s (size: %d, ttu: %.1f sec.)',
-                  cls.__name__, cache_size, cache_ttu)
+        _log.debug('Setting up cache for %s (size: %d, ttu: %.1f sec.)',
+                   cls.__name__, cache_size, cache_ttu)
         cls._cache = TLRUCache(size=cache_size, ttu=cache_ttu,
                                name=f'{cls.__name__}_Cache')
 
@@ -423,9 +328,10 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
         """
         return cls._cache.get(id_)
 
+    @deprecated('0.3', replacement='Client.get()')
     @classmethod
     async def get_by_id(cls: Type[CachedT], id_: int, *,  # type: ignore
-                        client: 'Client') -> Optional[CachedT]:
+                        client: RequestClient) -> Optional[CachedT]:
         """Retrieve an object by by ID.
 
         This query uses caches and might return an existing instance if
@@ -440,12 +346,12 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
             was found.
 
         """
-        log.debug('<%s:%d> requested', cls.__name__, id_)
+        _log.debug('<%s:%d> requested', cls.__name__, id_)
         if (instance := cls._cache.get(id_)) is not None:
-            log.debug('%r restored from cache', instance)
+            _log.debug('%r restored from cache', instance)
             return instance  # type: ignore
-        log.debug('<%s:%d> not cached, generating API query...',
-                  cls.__name__, id_)
+        _log.debug('<%s:%d> not cached, generating API query...',
+                   cls.__name__, id_)
         return await super().get_by_id(id_, client=client)  # type: ignore
 
 
@@ -475,8 +381,9 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
 
         """
         super().__init__(*args, **kwargs)
-        if locale is not None:
-            key = f'{locale}_{self.name(locale=locale).lower()}'
+        if (locale is not None
+                and (name := getattr(self.name, locale, None)) is not None):
+            key = f'{locale}_{name.lower()}'
             self._cache.add(key, self)
 
     def __repr__(self) -> str:
@@ -490,23 +397,24 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
 
         """
         return (f'<{self.__class__.__name__}:{self.id}:'
-                f'\'{self.name(locale="en")}\'>')
+                f'\'{self.name}\'>')
 
     def __str__(self) -> str:
         """Return the string representation of this object.
 
-        This calls the :meth:``Named.name()`` method for the English
-        locale.
+        This retrieves the :atr:``Named.name`` attribute for the
+        English locale.
 
         Returns:
             A string representation of the object.
 
         """
-        return self.name(locale='en')
+        return str(self.name)
 
+    @deprecated('0.3', replacement='Client.get()')
     @classmethod
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
-                          client: 'Client') -> Optional[NamedT]:
+                          client: RequestClient) -> Optional[NamedT]:
         """Retrieve an object by its unique name.
 
         If the same query has been performed recently, it may be
@@ -524,45 +432,9 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
             The entry with the matching name, or ``None`` if not found.
 
         """
-        key = f'{locale}_{name.lower()}'
-        log.debug('%s "%s"[%s] requested', cls.__name__, name, locale)
-        if (instance := cls._cache.get(key)) is not None:
-            log.debug('%r restored from cache', instance)
-            return instance  # type: ignore
-        log.debug('%s "%s"[%s] not cached, generating API query...',
-                  cls.__name__, name, locale)
-        query = Query(cls.collection, service_id=client.service_id)
-        query.case(False).add_term(field=f'name.{locale}', value=name)
-        payload = await client.request(query)
-        try:
-            payload = extract_single(payload, cls.collection)
-        except NotFoundError:
-            return None
-        return cls(payload, locale=locale, client=client)
-
-    def name(self, locale: str = 'en') -> str:
-        """Return the localised name of the object.
-
-        Some subclasses may not have a localised name field. In these
-        cases, the ``locale`` argument will be ignored.
-
-        Arguments:
-            locale (optional): The locale identifier to return.
-                Defaults to ``'en'``.
-
-        Raises:
-            ValueError: Raised if the given locale is unknown.
-
-        Returns:
-            The localised name of the object.
-
-        """
-        data = self.data
-        assert hasattr(data, 'name')
-        try:
-            return str(getattr(data.name, locale))  # type: ignore
-        except AttributeError as err:
-            raise ValueError(f'Invalid locale: {locale}') from err
+        # NOTE: The following is a runtime-only compatibility hack and violates
+        # type hinting. This is scheduled for removal as per the decorator.
+        return client.get_by_name(cls, name, locale=locale)  # type: ignore
 
 
 class ImageMixin(Ps2Object, metaclass=abc.ABCMeta):

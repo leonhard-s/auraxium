@@ -4,8 +4,8 @@ from typing import Final, Optional
 
 from ..base import Cached
 from ..census import Query
-from ..client import Client
 from ..models import RewardData, RewardTypeData
+from .._rest import RequestClient
 from ..proxy import InstanceProxy, SequenceProxy
 
 __all__ = [
@@ -81,7 +81,7 @@ class Reward(Cached, cache_size=50, cache_ttu=60.0):
     param5: Optional[str]
 
     @classmethod
-    def get_by_reward_group(cls, reward_group_id: int, client: Client
+    def get_by_reward_group(cls, reward_group_id: int, client: RequestClient
                             ) -> SequenceProxy['Reward']:
         """Return any rewards contained in the given reward group."""
         collection: Final[str] = 'reward_group_to_reward'
@@ -93,7 +93,7 @@ class Reward(Cached, cache_size=50, cache_ttu=60.0):
         return SequenceProxy(Reward, query, client=client)
 
     @classmethod
-    def get_by_reward_set(cls, reward_set_id: int, client: Client
+    def get_by_reward_set(cls, reward_set_id: int, client: RequestClient
                           ) -> SequenceProxy['Reward']:
         """Return any rewards contained in the given reward set."""
         collection: Final[str] = 'reward_set_to_reward_group'

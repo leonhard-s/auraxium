@@ -1,20 +1,17 @@
 """Experience and rank class definitions."""
 
 import logging
-from typing import List, TYPE_CHECKING, Union
+from typing import List, Union
 
 import pydantic
 
 from ..base import Cached
-from ..client import Client
 from ..errors import PayloadError
 from ..models import ExperienceData, ExperienceRankData
+from .._rest import RequestClient
 from ..types import CensusData
 
-if TYPE_CHECKING:  # pragma: no cover
-    # This is only imported during static type checking to resolve the forward
-    # references. This avoids import issues at runtime.
-    from ..ps2 import Faction
+from .faction import Faction
 
 __all__ = [
     'Experience',
@@ -75,12 +72,12 @@ class ExperienceRank:
     tr: ExperienceRankData.EmpireData
     tr_image_path: str
 
-    def __init__(self, data: CensusData, client: Client) -> None:
+    def __init__(self, data: CensusData, client: RequestClient) -> None:
         """Initialise the object.
 
         This populates the object using the provided payload.
         """
-        rank = int(data['rank'])
+        rank = int(str(data['rank']))
         log.debug('Instantiating <%s:%d> using payload: %s',
                   self.__class__.__name__, rank, data)
         self._client = client
@@ -91,9 +88,8 @@ class ExperienceRank:
                 f'Unable to populate {self.__class__.__name__} due to a '
                 f'missing key: {err.args[0]}', data) from err
 
-    def image(self, faction: Union[int, 'Faction']) -> str:
+    def image(self, faction: Union[int, Faction]) -> str:
         """Return the default image for this type."""
-        from ..ps2 import Faction  # pylint: disable=import-outside-toplevel
         if isinstance(faction, Faction):
             faction = faction.id
         internal_tag: List[str] = ['null', 'vs', 'nc', 'tr', 'nso']

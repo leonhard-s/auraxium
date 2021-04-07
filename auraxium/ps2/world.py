@@ -1,14 +1,14 @@
 """World class definition."""
 
 import datetime
-from typing import Any, Final, List, Optional, Tuple, Type, Union, cast
+from typing import Any, Final, List, Optional, Tuple, Type, Union
 
 from ..base import Named, NamedT
 from ..census import Query
-from ..client import Client
 from ..models import WorldData
-from ..request import extract_payload, extract_single
+from .._rest import RequestClient, extract_payload, extract_single
 from ..types import CensusData, LocaleData
+from .._support import deprecated
 
 from .zone import Zone
 
@@ -56,9 +56,10 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
         data = extract_payload(payload, collection=collection)
         return data
 
+    @deprecated('0.3', replacement='Client.get()')
     @classmethod
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
-                          client: Client) -> Optional[NamedT]:
+                          client: RequestClient) -> Optional[NamedT]:
         """Retrieve a world by name.
 
         This query is always case-insensitive.
@@ -67,14 +68,13 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
         # due to API limitations. This method works around this by first
         # retrieving all worlds, then looking the returned list up by name.
         data = await cls.find(20, client=client)
-        data = cast(List[NamedT], data)
         if data and not isinstance(data[0], cls):
             raise RuntimeError(
                 f'Expected {cls} instance, got {type(data[0])} instead, '
                 'please report this bug to the project maintainers')
         name = name.lower()
         for world in data:
-            if world.name(locale=locale).lower() == name:
+            if getattr(world.name, locale.lower(), '') == name:
                 return world
         return None
 
@@ -106,5 +106,5 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
         payload = await self._client.request(query)
         data = extract_single(payload, 'game_server_status')
         status = str(data['last_reported_state'])
-        last_updated = int(data['last_reported_time'])
+        last_updated = int(str(data['last_reported_time']))
         return status, datetime.datetime.utcfromtimestamp(last_updated)

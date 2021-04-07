@@ -2,15 +2,17 @@ import asyncio
 import datetime
 import json
 import warnings
-from typing import (Awaitable, Callable, Dict, Iterable, List, Optional, Set,
-                    TYPE_CHECKING, Union)
+from typing import (Any, Callable, Coroutine, Dict, Iterable, List, Optional,
+                    Set, Type, Union)
 
-from ..models.events import Event
+from ..models import Event, GainExperience
+from ..ps2 import Character, World
 
-if TYPE_CHECKING:  # pragma: no cover
-    # This is only imported during static type checking to resolve the forward
-    # references. This avoids a circular import at runtime.
-    from ..ps2 import Character, World
+_EventType = Union[Type[Event], str]
+_Condition = Callable[[Event], bool]
+_Action = Callable[[Event], Union[Coroutine[Any, Any, None], None]]
+_CharConstraint = Union[Iterable[Character], Iterable[int]]
+_WorldConstraint = Union[Iterable[World], Iterable[int]]
 
 
 class Trigger:
@@ -47,33 +49,28 @@ class Trigger:
 
     """
 
-    def __init__(self, event: Union[Event, str],
-                 *args: Union[Event, str],
-                 characters: Optional[
-                     Union[Iterable['Character'], Iterable[int]]] = None,
-                 worlds: Optional[
-                     Union[Iterable['World'], Iterable[int]]] = None,
-                 conditions: Optional[
-                     List[Union[bool, Callable[[Event], bool]]]] = None,
-                 action: Optional[
-                     Callable[[Event], Union[None, Awaitable[None]]]] = None,
+    def __init__(self, event: _EventType, *args: _EventType,
+                 characters: Optional[_CharConstraint] = None,
+                 worlds: Optional[_WorldConstraint] = None,
+                 conditions: Optional[List[_Condition]] = None,
+                 action: Optional[_Action] = None,
                  name: Optional[str] = None,
                  single_shot: bool = False) -> None:
         self.action = action
-        self.characters: List[int] = (
-            [] if characters is None else [c if isinstance(c, int) else c.id
-                                           for c in characters])
-        self.conditions: List[Union[bool, Callable[[Event], bool]]] = (
-            [] if conditions is None else conditions)
-        self.events: Set[Union[Event, str]] = set((event, *args))
+        self.characters: List[int] = []
+        if characters is not None:
+            self.characters = [
+                c if isinstance(c, int) else c.id for c in characters]
+        self.conditions: List[Callable[[Event], bool]] = conditions or []
+        self.events: Set[_EventType] = set((event, *args))
         self.last_run: Optional[datetime.datetime] = None
         self.name = name
         self.single_shot = single_shot
-        self.worlds: List[int] = (
-            [] if worlds is None else [w if isinstance(w, int) else w.id
-                                       for w in worlds])
+        self.worlds: List[int] = []
+        if worlds is not None:
+            self.worlds = [w if isinstance(w, int) else w.id for w in worlds]
 
-    def callback(self, func: Callable[[Event], None]) -> None:
+    def callback(self, func: _Action) -> None:
         """Set the given function as the trigger action.
 
         The action may be a regular callable or a coroutine.
@@ -114,10 +111,10 @@ class Trigger:
         if (event not in self.events
                 and event.__class__.__name__ not in self.events):
             # Extra check for the dynamically generated experience ID events
-            if event.__class__.__name__ == 'GainExperience':
+            if isinstance(event, GainExperience):
                 id_ = event.experience_id
                 for event_name in self.events:
-                    if event_name == Event.filter_experience(id_):
+                    if event_name == GainExperience.filter_experience(id_):
                         break
                 else:
                     return False  # Dynamic event but non-matching ID
@@ -125,8 +122,8 @@ class Trigger:
                 return False
         # Check character ID requirements
         if self.characters:
-            char_id = event.character_id
-            other_id = event.attacker_character_id
+            char_id = int(getattr(event, 'character_id', -1))
+            other_id = int(getattr(event, 'attacker_character_id', -1))
             if not (char_id in self.characters or other_id in self.characters):
                 return False
         # Check world ID requirements
@@ -146,7 +143,8 @@ class Trigger:
         """Generate the appropriate subscription for this trigger."""
         json_data: Dict[str, Union[str, List[str]]] = {
             'action': 'subscribe',
-            'eventNames': [e.__class__.__name__ for e in self.events],
+            'eventNames': [e if isinstance(e, str) else e.__name__
+                           for e in self.events],
             'service': 'event'}
         if self.characters:
             json_data['characters'] = [str(c) for c in self.characters]
@@ -167,9 +165,9 @@ class Trigger:
         """
         self.last_run = datetime.datetime.now()
         if self.action is None:
-            warnings.warn(f'Trigger {self} run with no action specified')
+            warnings.warn(f'Trigger {self.name} run with no action specified')
             return
+        ret = self.action(event)
         if asyncio.iscoroutinefunction(self.action):
-            await self.action(event)  # type: ignore
-        else:
-            self.action(event)
+            assert ret is not None
+            await ret

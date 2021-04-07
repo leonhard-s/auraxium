@@ -5,7 +5,7 @@ import logging
 import unittest
 from typing import Any
 
-from auraxium.cache import TLRUCache  # pylint: disable=import-error
+from auraxium._cache import TLRUCache  # pylint: disable=import-error
 
 
 class CacheFilter(logging.Filter):
