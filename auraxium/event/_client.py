@@ -6,7 +6,7 @@ from typing import (Any, Callable, Coroutine, Iterator, List, Optional, Union)
 
 import websockets
 
-from ..client import Client
+from .._client import Client
 from ..models import Event
 from ..types import CensusData
 from ..utils import expo_scaled

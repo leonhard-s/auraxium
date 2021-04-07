@@ -7,23 +7,18 @@ streaming service (ESS).
 """
 
 import logging
-from typing import Any, List, Optional, Type, TYPE_CHECKING, TypeVar
+from typing import Any, List, Optional, Type, TypeVar
 
+from .base import Named, Ps2Object
 from ._rest import RequestClient
-
-if TYPE_CHECKING:  # pragma: no cover
-    # This is only imported during static type checking to resolve the forward
-    # references. This avoids a circular import at runtime.
-    from .base import Named, Ps2Object
 
 __all__ = [
     'Client'
 ]
 
-ClientT = TypeVar('ClientT', bound='Client')
-NamedT = TypeVar('NamedT', bound='Named')
-Ps2ObjectT = TypeVar('Ps2ObjectT', bound='Ps2Object')
-log = logging.getLogger('auraxium.client')
+_NamedT = TypeVar('_NamedT', bound=Named)
+_Ps2ObjectT = TypeVar('_Ps2ObjectT', bound=Ps2Object)
+_log = logging.getLogger('auraxium.client')
 
 
 class Client(RequestClient):
@@ -46,7 +41,7 @@ class Client(RequestClient):
 
     """
 
-    async def count(self, type_: Type['Ps2Object'], **kwargs: Any) -> int:
+    async def count(self, type_: Type[Ps2Object], **kwargs: Any) -> int:
         """Return the number of items matching the given terms.
 
         Arguments:
@@ -59,9 +54,9 @@ class Client(RequestClient):
         """
         return await type_.count(client=self, **kwargs)
 
-    async def find(self, type_: Type[Ps2ObjectT], results: int = 10,
+    async def find(self, type_: Type[_Ps2ObjectT], results: int = 10,
                    offset: int = 0, promote_exact: bool = False,
-                   check_case: bool = True, **kwargs: Any) -> List[Ps2ObjectT]:
+                   check_case: bool = True, **kwargs: Any) -> List[_Ps2ObjectT]:
         """Return a list of entries matching the given terms.
 
         This returns up to as many entries as indicated by the results
@@ -95,8 +90,8 @@ class Client(RequestClient):
                 f'instead, please report this bug to the project maintainers')
         return data
 
-    async def get(self, type_: Type[Ps2ObjectT], check_case: bool = True,
-                  **kwargs: Any) -> Optional[Ps2ObjectT]:
+    async def get(self, type_: Type[_Ps2ObjectT], check_case: bool = True,
+                  **kwargs: Any) -> Optional[_Ps2ObjectT]:
         """Return the first entry matching the given terms.
 
         Like :meth:`Client.find()`, but will only return one item.
@@ -119,8 +114,8 @@ class Client(RequestClient):
                 'please report this bug to the project maintainers')
         return data  # type: ignore
 
-    async def get_by_id(self, type_: Type[Ps2ObjectT], id_: int
-                        ) -> Optional[Ps2ObjectT]:
+    async def get_by_id(self, type_: Type[_Ps2ObjectT], id_: int
+                        ) -> Optional[_Ps2ObjectT]:
         """Retrieve an object by its unique Census ID.
 
         Like :meth:`Client.get()`, but checks the local cache before
@@ -141,8 +136,8 @@ class Client(RequestClient):
                 'please report this bug to the project maintainers')
         return data  # type: ignore
 
-    async def get_by_name(self, type_: Type[NamedT], name: str, *,
-                          locale: str = 'en') -> Optional[NamedT]:
+    async def get_by_name(self, type_: Type[_NamedT], name: str, *,
+                          locale: str = 'en') -> Optional[_NamedT]:
         """Retrieve an object by its unique name.
 
         Depending on the ``type_`` specified, this may retrieve a
