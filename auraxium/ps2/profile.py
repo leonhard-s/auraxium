@@ -70,22 +70,6 @@ class Profile(Cached, cache_size=200, cache_ttu=60.0):
         return SequenceProxy(ResistInfo, query, client=self._client)
 
 
-def _get_fallback(id_: int) -> CensusData:
-    profile_id = id_ + 162 if id_ != 45 else 252
-    code_name = {
-        28: 'NSO Infiltrator',
-        29: 'NSO Light Assault',
-        30: 'NSO Medic',
-        31: 'NSO Engineer',
-        32: 'NSO Heavy Assault',
-        45: 'NSO MAX'}
-    return {
-        'loadout_id': id_,
-        'profile_id': profile_id,
-        'faction_id': 4,
-        'code_name': code_name[id_]}
-
-
 class Loadout(Cached, FallbackMixin, cache_size=20, cache_ttu=3600.0):
     """Represents a faction-specific infantry class.
 
@@ -101,7 +85,6 @@ class Loadout(Cached, FallbackMixin, cache_size=20, cache_ttu=3600.0):
     data: LoadoutData
     dataclass = LoadoutData
     id_field = 'loadout_id'
-    _fallback = {k: _get_fallback(k) for k in (*range(28, 33), 45)}
 
     # Type hints for data class fallback attributes
     loadout_id: int
@@ -152,3 +135,21 @@ class Loadout(Cached, FallbackMixin, cache_size=20, cache_ttu=3600.0):
         join = query.create_join(ResistInfo.collection)
         join.set_fields(ResistInfo.id_field)
         return SequenceProxy(ResistInfo, query, client=self._client)
+
+    @staticmethod
+    def fallback_hook(id_: int) -> CensusData:
+        if id_ not in (*range(28, 33), 45):
+            raise KeyError(f'No fallback value for D {id_}')
+        profile_id = id_ + 162 if id_ != 45 else 252
+        code_name = {
+            28: 'NSO Infiltrator',
+            29: 'NSO Light Assault',
+            30: 'NSO Medic',
+            31: 'NSO Engineer',
+            32: 'NSO Heavy Assault',
+            45: 'NSO MAX'}
+        # TODO: Switch to returning data model
+        return {'loadout_id': id_,
+                'profile_id': profile_id,
+                'faction_id': 4,
+                'code_name': code_name[id_]}

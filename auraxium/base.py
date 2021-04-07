@@ -8,8 +8,8 @@ throughout the PlanetSide 2 object model.
 import abc
 import dataclasses
 import logging
-from typing import (Any, ClassVar, Dict, List, Optional, Type, TYPE_CHECKING,
-                    TypeVar, Union)
+from typing import (Any, ClassVar, List, Optional, Type, TYPE_CHECKING,
+                    TypeVar, Union, cast)
 import warnings
 
 import pydantic
@@ -49,7 +49,11 @@ class FallbackMixin:
     updated to include these missing types.
     """
 
-    _fallback: ClassVar[Dict[int, CensusData]]
+    @staticmethod
+    def fallback_hook(id_: int) -> CensusData:
+        _ = id_
+        _log.warning('Fallback class without overrides found')
+        raise KeyError('No fallback value implemented')
 
 
 class Ps2Object(metaclass=abc.ABCMeta):
@@ -245,31 +249,20 @@ class Ps2Object(metaclass=abc.ABCMeta):
             raise RuntimeError(
                 f'Expected {cls} instance, got {type(data[0])} instead, '
                 'please report this bug to the project maintainers')
-
-        # Check for FallbackMixin compatibility
-        if hasattr(cls, '_fallback'):
-            # pylint: disable=no-member
-            data_fallback: Dict[int, CensusData] = (
-                cls._fallback)  # type: ignore
-            _log.debug('Fallback attribute found for type "%s", checking ID...',
-                       cls.__name__)
-            if (fallback := data_fallback.get(id_)) is not None:
-                _log.debug('Instantiating "%s" with ID %d through local copy',
-                           cls.__name__, id_)
-                if data:
-                    # Log the fact that the local copy is not required
-                    _log.info('Type "%s" provides a local fallback for ID %d '
-                              'despite this type being available on-line',
-                              cls.__name__, id_)
-                    return data[0]
-                # Return a locally instantiated copy
-                return cls(fallback, client=client)
-            _log.debug('No matching fallback instance found for ID %d', id_)
-
-        elif data:
-            # If no fallback value was provided, return the first item found
-            # as normal
+        if data:
             return data[0]
+        # Check for local fallback data
+        if issubclass(cls, FallbackMixin):
+            fb_cls = cast(Type[FallbackMixin], cls)
+            try:
+                fallback = fb_cls.fallback_hook(id_)
+            except KeyError:
+                _log.debug(
+                    'No matching fallback instance found for ID %d', id_)
+                return None
+            _log.debug('Instantiating "%s" with ID %d through local copy',
+                       fb_cls.__name__, id_)
+            return cls(fallback, client=client)
         return None
 
     def query(self) -> Query:
