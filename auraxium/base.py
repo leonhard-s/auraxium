@@ -8,9 +8,8 @@ throughout the PlanetSide 2 object model.
 import abc
 import dataclasses
 import logging
-from typing import (Any, ClassVar, List, Optional, Type, TYPE_CHECKING,
-                    TypeVar, Union, cast)
 import warnings
+from typing import Any, ClassVar, List, Optional, Type, TypeVar, Union, cast
 
 import pydantic
 
@@ -18,14 +17,9 @@ from .models.base import RESTPayload
 from ._cache import TLRUCache
 from .census import Query
 from .errors import PayloadError, NotFoundError
-from ._rest import extract_payload, extract_single
+from ._rest import RequestClient, extract_payload, extract_single
 from .types import CensusData
 from .utils import deprecated
-
-if TYPE_CHECKING:  # pragma: no cover
-    # This is only imported during static type checking to resolve the 'Client'
-    # forward reference. This avoids a circular import at runtime.
-    from .client import Client
 
 __all__ = [
     'Ps2Object',
@@ -70,7 +64,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
     dataclass: ClassVar[Type[RESTPayload]]
     id_field: ClassVar[str] = 'bogus_id'
 
-    def __init__(self, data: CensusData, client: 'Client') -> None:
+    def __init__(self, data: CensusData, client: RequestClient) -> None:
         """Initialise the object.
 
         This sets the object's :attr:`~Ps2Object.id` attribute and
@@ -133,8 +127,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
 
     @deprecated('0.3', replacement='Client.count()')
     @classmethod
-    async def count(cls: Type['Ps2Object'], client: 'Client',
-                    **kwargs: Any) -> int:
+    async def count(cls, client: RequestClient, **kwargs: Any) -> int:
         """Return the number of items matching the given terms.
 
         Arguments:
@@ -161,7 +154,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
     @classmethod
     async def find(cls: Type[Ps2ObjectT], results: int = 10, *,
                    offset: int = 0, promote_exact: bool = False,
-                   check_case: bool = True, client: 'Client',
+                   check_case: bool = True, client: RequestClient,
                    **kwargs: Any) -> List[Ps2ObjectT]:
         """Return a list of entries matching the given terms.
 
@@ -199,7 +192,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
 
     @deprecated('0.3', replacement='Client.get()')
     @classmethod
-    async def get(cls: Type[Ps2ObjectT], client: 'Client',
+    async def get(cls: Type[Ps2ObjectT], client: RequestClient,
                   check_case: bool = True, **kwargs: Any
                   ) -> Optional[Ps2ObjectT]:
         """Return the first entry matching the given terms.
@@ -231,8 +224,8 @@ class Ps2Object(metaclass=abc.ABCMeta):
 
     @deprecated('0.3', replacement='Client.get())')
     @classmethod
-    async def get_by_id(cls: Type[Ps2ObjectT], id_: int, *, client: 'Client'
-                        ) -> Optional[Ps2ObjectT]:
+    async def get_by_id(cls: Type[Ps2ObjectT], id_: int, *,
+                        client: RequestClient) -> Optional[Ps2ObjectT]:
         """Retrieve an object by its unique Census ID.
 
         Arguments:
@@ -298,7 +291,7 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
 
     _cache: ClassVar[TLRUCache[int, Any]]
 
-    def __init__(self, data: CensusData, client: 'Client') -> None:
+    def __init__(self, data: CensusData, client: RequestClient) -> None:
         """Initialise the cached object.
 
         After initialising this object via the parent class's
@@ -313,7 +306,7 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
         self._cache.add(self.id, self)
 
     @classmethod
-    def __init_subclass__(cls: Type['Cached'], cache_size: int,
+    def __init_subclass__(cls, cache_size: int,
                           cache_ttu: float = 0.0) -> None:
         """Initialise a cacheable subclass.
 
@@ -378,7 +371,7 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
     @deprecated('0.3', replacement='Client.get()')
     @classmethod
     async def get_by_id(cls: Type[CachedT], id_: int, *,  # type: ignore
-                        client: 'Client') -> Optional[CachedT]:
+                        client: RequestClient) -> Optional[CachedT]:
         """Retrieve an object by by ID.
 
         This query uses caches and might return an existing instance if
@@ -460,7 +453,7 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
     @deprecated('0.3', replacement='Client.get()')
     @classmethod
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
-                          client: 'Client') -> Optional[NamedT]:
+                          client: RequestClient) -> Optional[NamedT]:
         """Retrieve an object by its unique name.
 
         If the same query has been performed recently, it may be
