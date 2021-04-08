@@ -10,8 +10,8 @@ from ..proxy import InstanceProxy, SequenceProxy
 from .._rest import extract_payload
 from ..types import LocaleData
 
-from .projectile import Projectile
-from .states import PlayerState, PlayerStateGroup
+from ._projectile import Projectile
+from ._states import PlayerState, PlayerStateGroup
 
 __all__ = [
     'FireGroup',

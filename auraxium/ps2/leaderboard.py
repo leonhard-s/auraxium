@@ -8,8 +8,8 @@ from ..census import Query
 from ..errors import NotFoundError
 from .._rest import RequestClient, extract_payload, extract_single
 
-from .character import Character
-from .world import World
+from ._character import Character
+from ._world import World
 
 __all__ = [
     'by_char',

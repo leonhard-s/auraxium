@@ -8,7 +8,7 @@ from ..models import SkillData, SkillCategoryData, SkillLineData, SkillSetData
 from ..proxy import InstanceProxy, SequenceProxy
 from ..types import LocaleData
 
-from .item import Item
+from ._item import Item
 
 __all__ = [
     'Skill',

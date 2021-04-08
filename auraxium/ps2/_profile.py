@@ -9,9 +9,9 @@ from ..models.base import FallbackMixin
 from ..proxy import InstanceProxy, SequenceProxy
 from ..types import CensusData
 
-from .armour import ArmourInfo
-from .faction import Faction
-from .resist import ResistInfo
+from ._armour import ArmourInfo
+from ._faction import Faction
+from ._resist import ResistInfo
 
 __all__ = [
     'Loadout',

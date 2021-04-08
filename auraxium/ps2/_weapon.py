@@ -10,8 +10,8 @@ from ..proxy import InstanceProxy, SequenceProxy
 from .._rest import RequestClient, extract_payload, extract_single
 from .._support import deprecated
 
-from .fire import FireGroup
-from .item import Item
+from ._fire import FireGroup
+from ._item import Item
 
 __all__ = [
     'Weapon',

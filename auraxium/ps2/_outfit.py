@@ -15,7 +15,7 @@ from .._support import deprecated
 if TYPE_CHECKING:  # pragma: no cover
     # This is only imported during static type checking to resolve the
     # 'Character' forward reference. This avoids a circular import at runtime.
-    from .character import Character
+    from ._character import Character
 
 __all__ = [
     'Outfit',
@@ -65,7 +65,7 @@ class OutfitMember(Cached, cache_size=100, cache_ttu=300.0):
         # NOTE: This is required due to OutfitMember effectively being an
         # extension of Character.
         # pylint: disable=import-outside-toplevel
-        from .character import Character
+        from ._character import Character
         query = Query(Character.collection, service_id=self._client.service_id)
         query.add_term(field=Character.id_field, value=self.data.character_id)
         return InstanceProxy(Character, query, client=self._client)

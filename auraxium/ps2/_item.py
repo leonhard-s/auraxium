@@ -9,13 +9,13 @@ from .._rest import extract_single
 from ..proxy import InstanceProxy, SequenceProxy
 from ..types import LocaleData
 
-from .faction import Faction
-from .profile import Profile
+from ._faction import Faction
+from ._profile import Profile
 
 if TYPE_CHECKING:  # pragma: no cover
     # This is only imported during static type checking to resolve the forward
     # references. This avoids a circular import at runtime.
-    from .weapon import Weapon, WeaponDatasheet
+    from ._weapon import Weapon, WeaponDatasheet
 
 __all__ = [
     'Item',
@@ -161,7 +161,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     async def datasheet(self) -> 'WeaponDatasheet':
         """Return the datasheet for the weapon."""
         # pylint: disable=import-outside-toplevel
-        from .weapon import WeaponDatasheet
+        from ._weapon import WeaponDatasheet
         collection: Final[str] = 'weapon_datasheet'
         query = Query(collection, service_id=self._client.service_id)
         query.add_term(field=self.id_field, value=self.id)
@@ -198,7 +198,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
 
         This returns an :class:`auraxium.proxy.InstanceProxy`.
         """
-        from .weapon import Weapon  # pylint: disable=import-outside-toplevel
+        from ._weapon import Weapon  # pylint: disable=import-outside-toplevel
         collection: Final[str] = 'item_to_weapon'
         query = Query(collection, service_id=self._client.service_id)
         query.add_term(field=self.id_field, value=self.id)

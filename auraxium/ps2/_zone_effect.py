@@ -6,7 +6,7 @@ from ..census import Query
 from ..models import ZoneEffectData, ZoneEffectTypeData
 from ..proxy import InstanceProxy
 
-from .ability import Ability
+from ._ability import Ability
 
 __all__ = [
     'ZoneEffect',

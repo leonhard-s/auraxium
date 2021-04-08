@@ -11,7 +11,7 @@ from ..models import ExperienceData, ExperienceRankData
 from .._rest import RequestClient
 from ..types import CensusData
 
-from .faction import Faction
+from ._faction import Faction
 
 __all__ = [
     'Experience',

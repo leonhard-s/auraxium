@@ -9,7 +9,7 @@ from ..proxy import InstanceProxy
 from .._rest import extract_payload
 from ..types import LocaleData
 
-from .item import Item
+from ._item import Item
 
 __all__ = [
     'MarketingBundle',

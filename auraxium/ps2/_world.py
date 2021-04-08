@@ -10,7 +10,7 @@ from .._rest import RequestClient, extract_payload, extract_single
 from ..types import CensusData, LocaleData
 from .._support import deprecated
 
-from .zone import Zone
+from ._zone import Zone
 
 __all__ = [
     'World'

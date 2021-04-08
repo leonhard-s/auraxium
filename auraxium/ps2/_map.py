@@ -8,7 +8,7 @@ from ..models import FacilityTypeData, MapHexData, MapRegionData, RegionData
 from ..proxy import InstanceProxy, SequenceProxy
 from ..types import LocaleData
 
-from .zone import Zone
+from ._zone import Zone
 
 __all__ = [
     'FacilityType',

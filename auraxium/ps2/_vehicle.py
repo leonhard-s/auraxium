@@ -9,9 +9,9 @@ from .._rest import RequestClient
 from ..proxy import InstanceProxy, SequenceProxy
 from ..types import LocaleData
 
-from .faction import Faction
-from .item import Item
-from .skill import SkillSet
+from ._faction import Faction
+from ._item import Item
+from ._skill import SkillSet
 
 __all__ = [
     'Vehicle',

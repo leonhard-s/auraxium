@@ -9,7 +9,7 @@ from ..models import (DirectiveData, DirectiveTierData,
 from ..proxy import InstanceProxy, SequenceProxy
 from ..types import LocaleData
 
-from .objective import Objective
+from ._objective import Objective
 
 __all__ = [
     'Directive',

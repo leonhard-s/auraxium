@@ -13,11 +13,11 @@ from .._rest import RequestClient, extract_payload, extract_single
 from ..types import CensusData, LocaleData
 from .._support import deprecated
 
-from .faction import Faction
-from .item import Item
-from .outfit import Outfit, OutfitMember
-from .profile import Profile
-from .world import World
+from ._faction import Faction
+from ._item import Item
+from ._outfit import Outfit, OutfitMember
+from ._profile import Profile
+from ._world import World
 
 __all__ = [
     'Character',
