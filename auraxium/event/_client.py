@@ -2,8 +2,8 @@ import asyncio
 import contextlib
 import json
 import logging
-from typing import (Any, Callable, Coroutine, Iterator, List, Optional, Type, Union,
-                    cast)
+from typing import (Any, Callable, Coroutine, Iterator, List, Optional, Type, TypeVar, Union,
+                    cast, overload)
 
 import websockets
 
@@ -20,7 +20,11 @@ __all__ = [
 
 _ESS_ENDPOINT = 'wss://push.planetside2.com/streaming'
 
-_Callback = Callable[[Event], Union[Coroutine[Any, Any, None], None]]
+_EventT = TypeVar('_EventT', bound=Event)
+_EventT2 = TypeVar('_EventT2', bound=Event)
+_CallbackT = Union[Callable[[_EventT], None],
+                   Callable[[_EventT], Coroutine[Any, Any, None]]]
+
 _log = logging.getLogger('auraxium.ess')
 
 
@@ -284,9 +288,30 @@ class EventClient(Client):
                 _log.info('Sending message: %s', msg)
                 await self.websocket.send(msg)
 
+    @overload
+    def trigger(self, event: Type[_EventT], *, name: Optional[str] = None,
+                **kwargs: Any) -> Callable[[_CallbackT[_EventT]], None]:
+        # Single event variant (checks callback argument type)
+        ...
+
+    @overload
+    def trigger(self, event: Type[_EventT],
+                *args: Union[Type[_EventT], Type[_EventT2]],
+                name: Optional[str] = None, **kwargs: Any) -> Callable[
+                    [_CallbackT[Union[_EventT, _EventT2]]], None]:
+        # Two event variant (checks callback argument type)
+        ...
+
+    @overload
     def trigger(self, event: Union[str, Type[Event]],
                 *args: Union[str, Type[Event]], name: Optional[str] = None,
-                **kwargs: Any) -> Callable[[_Callback], None]:
+                **kwargs: Any) -> Callable[[_CallbackT[Event]], None]:
+        # Generic fallback variant (callback argument type not checked)
+        ...
+
+    def trigger(self, event: Union[str, Type[Event]],
+                *args: Union[str, Type[_EventT]], name: Optional[str] = None,
+                **kwargs: Any) -> Callable[[_CallbackT[Event]], None]:
         """Create and add a trigger for the given action.
 
         If no name is specified, the call-back function's name will be
@@ -310,7 +335,7 @@ class EventClient(Client):
         """
         trigger = Trigger(event, *args, name=name, **kwargs)
 
-        def wrapper(func: _Callback) -> None:
+        def wrapper(func: _CallbackT[_EventT]) -> None:
             trigger.action = func
             # If the trigger name has not been specified, use the call-back
             # function's name instead
