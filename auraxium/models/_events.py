@@ -207,7 +207,6 @@ class PlayerLogout(Event, CharacterEvent, WorldEvent):
     """A player has logged out."""
 
     character_id: int
-    event_name: str
 
 
 class SkillAdded(Event, CharacterEvent):
