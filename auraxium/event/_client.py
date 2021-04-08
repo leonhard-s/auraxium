@@ -4,13 +4,13 @@ import json
 import logging
 from typing import (Any, Callable, Coroutine, Iterator, List, Optional, Type, TypeVar, Union,
                     cast, overload)
+import backoff
 
 import websockets
 
 from .._client import Client
 from ..models import Event
 from ..types import CensusData
-from .._support import expo_scaled
 
 from ._trigger import Trigger
 
@@ -390,7 +390,8 @@ class EventClient(Client):
     @staticmethod
     def _reset_backoff() -> Iterator[float]:
         """Reset the reconnect backoff generator."""
-        return expo_scaled(factor=0.1, max_=30.0)()
+        return backoff.expo(  # type: ignore
+            base=2, factor=0.1, max_value=30.0)
 
     async def wait_for(self, trigger: Trigger, *args: Trigger,
                        timeout: Optional[float] = None) -> Event:
