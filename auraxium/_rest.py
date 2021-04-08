@@ -441,35 +441,31 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
     url = query.url(verb=verb)
     _log.debug('Performing %s request: %s', verb.upper(), url)
 
+    # TODO: Remove service ID from any URL literals outside of .census
+
     def on_success(details: Dict[str, Any]) -> None:
-        """Called when a query is successful."""
         if (tries := details['tries']) > 1:
-            _log.debug('Query successful after %d tries: %s',
+            _log.debug('Query successful after %d attempt[s]: %s',
                        tries, url)
 
     def on_backoff(details: Dict[str, Any]) -> None:
-        """Called when a query failed and is backed off."""
         wait = details['wait']
         tries = details['tries']
-        _log.debug('Backing off %.2f seconds after %d attempts: %s',
+        _log.debug('Backing off %.2f seconds after %d attempt[s]: %s',
                    wait, tries, url)
 
     def on_giveup(details: Dict[str, Any]) -> None:
-        """Called when giving up on a query."""
         elapsed: float = details['elapsed']
         tries: int = details['tries']
         _log.warning('Giving up on query and re-raising exception after %.2f '
-                     'seconds and %d attempts: %s', elapsed, tries, url)
+                     'seconds and %d attempt[s]: %s', elapsed, tries, url)
         _, exc_value, _ = sys.exc_info()
         assert exc_value is not None
         raise exc_value
 
-    # The following exceptions will be retried if occurring during the request
-    backoff_errors = (
-        aiohttp.ClientResponseError,
-        aiohttp.ClientConnectionError,
-        MaintenanceError)
-    # Backoff timeout generator
+    backoff_errors = (aiohttp.ClientResponseError,
+                      aiohttp.ClientConnectionError,
+                      MaintenanceError)
     backoff_gen: Iterator[float] = backoff.expo(  # type: ignore
         base=10, factor=0.001, max_value=5.0)
 
