@@ -4,6 +4,8 @@ from typing import Dict, List, Optional, Union
 
 import pydantic
 
+from ._support import deprecated
+
 __all__ = [
     'CensusData',
     'LocaleData'
@@ -34,6 +36,10 @@ class LocaleData(pydantic.BaseModel):
     es: Optional[str] = None
     fr: Optional[str] = None
     it: Optional[str] = None
+
+    @deprecated('0.3.0', '.name (without parentheses)')
+    def __call__(self, locale: str = 'en') -> str:
+        return getattr(self, locale)
 
     def __str__(self) -> str:
         return self.en or repr(self)

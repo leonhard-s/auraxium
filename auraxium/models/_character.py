@@ -4,6 +4,7 @@ from typing import Optional
 
 from .base import RESTPayload
 from ..types import LocaleData
+from .._support import deprecated
 
 __all__ = [
     'CharacterAchievement',
@@ -112,6 +113,10 @@ class CharacterData(RESTPayload):
 
         first: str
         first_lower: str
+
+        @deprecated('0.3.0', '.name (without parentheses)')
+        def __call__(self, locale: str = 'en') -> str:
+            return getattr(self, locale)
 
     class Times(RESTPayload):
         """Object representation of the "times" sub-key.
