@@ -25,6 +25,13 @@ class Payload(pydantic.BaseModel):
 
         allow_mutation = False
 
+    def __hash__(self) -> int:
+        # NOTE: pydantic has a beta setting called `frozen=True` that would
+        # generate a hash method, but it is not part of the stable API and
+        # therefore not used here.
+        # It should replace allow_mutation here once it out of beta.
+        return hash(tuple(self.dict().items()))
+
 
 class RESTPayload(Payload):
 
