@@ -2,7 +2,7 @@ import asyncio
 import contextlib
 import json
 import logging
-from typing import (Any, Callable, Coroutine, Iterator, List, Optional, Type, TypeVar, Union,
+from typing import (Any, Callable, Coroutine, Dict, Iterator, List, Optional, Type, TypeVar, Union,
                     cast, overload)
 import backoff
 
@@ -24,6 +24,8 @@ _EventT = TypeVar('_EventT', bound=Event)
 _EventT2 = TypeVar('_EventT2', bound=Event)
 _CallbackT = Union[Callable[[_EventT], None],
                    Callable[[_EventT], Coroutine[Any, Any, None]]]
+_CallableT = TypeVar('_CallableT', bound=Callable[..., Any])
+_Decorator = Callable[[_CallableT], _CallableT]
 
 _log = logging.getLogger('auraxium.ess')
 
@@ -60,7 +62,6 @@ class EventClient(Client):
         self.websocket: Optional[websockets.WebSocketClientProtocol] = None
         self._connect_lock = asyncio.Lock()
         self._connected: bool = False
-        self._reconnect_backoff = self._reset_backoff()
         self._send_queue: List[str] = []
 
     def add_trigger(self, trigger: Trigger) -> None:
@@ -178,35 +179,25 @@ class EventClient(Client):
             return
         await self._connect_lock.acquire()
 
-        _log.info('Connecting to websocket endpoint...')
-        url = f'{_ESS_ENDPOINT}?environment=ps2&service-id={self.service_id}'
-        async with websockets.connect(url) as websocket:
-            self.websocket = websocket
-            _log.info(
-                'Connected to %s?environment=ps2&service-id=XXX', _ESS_ENDPOINT)
-            self._connected = True
+        def on_success(details: Dict[str, Any]) -> None:
+            tries = int(details['tries'])
+            _log.debug('Connection successful after %d tries', tries)
 
-            # Reset the backoff generator as the connection attempt was
-            # successful
-            self._reconnect_backoff = self._reset_backoff()
+        def on_backoff(details: Dict[str, Any]) -> None:
+            wait = float(details['wait'])
+            tries = int(details['tries'])
+            _log.debug('Backing off %.2f seconds after %d failed attempt[s])',
+                       wait, tries)
 
-            # Keep processing websocket events until the connection dies or is
-            # closed by the user or trigger system.
-            while self._connect_lock.locked():
-                try:
-                    await self._handle_websocket()
-                except websockets.exceptions.ConnectionClosed as err:
-                    _log.info('Websocket connection closed (%d, %s)',
-                              err.code, err.reason)  # type: ignore
-                    await self.disconnect()
-                    # NOTE: This will increment the reconnect delay each time,
-                    # until one connection attempt is successful.
-                    delay = next(self._reconnect_backoff)
-                    _log.info(
-                        'Next reconnection attempt in %.2f seconds', delay)
-                    await asyncio.sleep(delay)
-                    _log.info('Attempting to reconnect...')
-                    self.loop.create_task(self.connect())
+        backoff_errors = (ConnectionRefusedError,
+                          ConnectionResetError,
+                          websockets.exceptions.ConnectionClosed)
+        backoff_gen: Iterator[float] = backoff.expo(  # type: ignore
+            base=10, factor=0.001, max_value=60.0)
+        backoff_wrap: _Decorator = backoff.on_exception(  # type: ignore
+            lambda: backoff_gen, backoff_errors, on_backoff=on_backoff,
+            on_success=on_success, jitter=None)
+        await backoff_wrap(self._connection_handler)()
 
     async def disconnect(self) -> None:
         """Disconnect the websocket.
@@ -257,6 +248,27 @@ class EventClient(Client):
                 if trigger.single_shot:
                     _log.info('Removing single-shot trigger %s', trigger)
                     self.remove_trigger(trigger)
+
+    async def _connection_handler(self) -> None:
+        """Internal WebSocket connection handler.
+
+        This worker is designed to fail internally and be restarted by
+        the :meth:`connect` method as per its reconnect policy.
+
+        This should therefore only be called through that method.
+        """
+        _log.info('Connecting to WebSocket endpoint...')
+        url = f'{_ESS_ENDPOINT}?environment=ps2&service-id={self.service_id}'
+        async with websockets.connect(url) as websocket:
+            self.websocket = websocket
+            _log.info('Connected to %s?environment=ps2&service-id=XXX',
+                      _ESS_ENDPOINT)
+            self._connected = True
+            # Keep processing websocket events until the connection dies or is
+            # closed by the user or trigger system.
+            while self._connect_lock.locked():
+                await self._handle_websocket()
+        _log.info('Disconnected from WebSocket endpoint')
 
     async def _handle_websocket(self, timeout: float = 0.1) -> None:
         """Main loop handling the websocket connection.
@@ -386,12 +398,6 @@ class EventClient(Client):
         # Other
         else:
             _log.warning('Unhandled message: %s', data)
-
-    @staticmethod
-    def _reset_backoff() -> Iterator[float]:
-        """Reset the reconnect backoff generator."""
-        return backoff.expo(  # type: ignore
-            base=2, factor=0.1, max_value=30.0)
 
     async def wait_for(self, trigger: Trigger, *args: Trigger,
                        timeout: Optional[float] = None) -> Event:
