@@ -1,7 +1,7 @@
 """Data classes for event streaming service payloads."""
 
 import warnings
-from typing import Any, Dict
+from typing import Any, Dict, Optional
 
 import pydantic
 
@@ -86,9 +86,9 @@ class Death(Event, CharacterEvent):
     attacker_weapon_id: int
     character_id: int
     character_loadout_id: int
-    is_critical: bool  # Always false
+    is_critical: Optional[bool]  # Always false
     is_headshot: bool
-    vehicle_id: int
+    vehicle_id: Optional[int]
     zone_id: int
 
 
