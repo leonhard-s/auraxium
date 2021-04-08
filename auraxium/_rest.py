@@ -17,7 +17,7 @@ import json
 import logging
 import sys
 import warnings
-from typing import Any, Dict, Literal, List, Optional, Tuple, Type, TypeVar, cast
+from typing import Any, Dict, Iterator, Literal, List, Optional, Tuple, Type, TypeVar, cast
 from types import TracebackType
 
 import aiohttp
@@ -31,7 +31,6 @@ from .errors import (PayloadError, BadRequestSyntaxError, CensusError,
                      ResponseError, ServerError, ServiceUnavailableError,
                      UnknownCollectionError)
 from .types import CensusData
-from ._support import expo_scaled
 
 __all__ = [
     'RequestClient',
@@ -470,11 +469,13 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
         aiohttp.ClientResponseError,
         aiohttp.ClientConnectionError,
         MaintenanceError)
+    # Backoff timeout generator
+    backoff_gen: Iterator[float] = backoff.expo(  # type: ignore
+        base=10, factor=0.001, max_value=5.0)
 
-    @backoff.on_exception(expo_scaled(0.05), backoff_errors,  # type: ignore
-                          on_backoff=on_backoff, on_giveup=on_giveup,
-                          on_success=on_success, max_time=30.0, max_tries=10,
-                          jitter=None)
+    @backoff.on_exception(  # type: ignore
+        lambda: backoff_gen, backoff_errors, on_backoff=on_backoff,
+        on_giveup=on_giveup, on_success=on_success, max_tries=5, jitter=None)
     async def retry_query() -> aiohttp.ClientResponse:
         """Request handling wrapper."""
         response = await session.get(
