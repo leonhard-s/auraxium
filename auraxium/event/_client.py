@@ -475,6 +475,6 @@ def _event_factory(data: CensusData) -> Event:
     """
     # TODO: Check for bad `data` passed
     for subclass in Event.__subclasses__():
-        if subclass.event_name == data['event_name']:
+        if subclass.__name__ == data['event_name']:
             return subclass(**data)
     return Event(**data)
