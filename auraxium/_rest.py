@@ -301,7 +301,7 @@ def raise_for_dict(data: CensusData, url: yarl.URL) -> None:
 
     """
     # Syntax parser and namespace dispatching
-    if (msg := str(data.get('error'))) is not None:
+    if (msg := data.get('error')) is not None:
         if msg == 'No data found.':
             namespace, collection = get_components(url)
             # NOTE: This error is returned if either the namespace or
@@ -325,22 +325,22 @@ def raise_for_dict(data: CensusData, url: yarl.URL) -> None:
             raise ServiceUnavailableError(
                 'This component of the API is currently unavailable. '
                 'Try again later.', url)
-        if msg.startswith('Provided Service ID is not registered.'):
+        if str(msg).startswith('Provided Service ID is not registered.'):
             raise InvalidServiceIDError(
                 'The service ID specified is unknown. Check your spelling '
                 'or wait for the email response validating your service ID.',
                 url)
-        if msg.startswith('Missing Service ID.'):
+        if str(msg).startswith('Missing Service ID.'):
             raise MissingServiceIDError(
                 'The default service ID "s:example" is for casual use only. '
                 'Wait 60 seconds or apply for your own service ID at '
                 'http://census.daybreakgames.com/#devSignup', url)
     # Collection field and query command parsing
-    if (code := str(data.get('errorCode'))) is not None:
-        if (msg := str(data.get('errorMessage'))) is not None:
+    if (code := data.get('errorCode')) is not None:
+        if (msg := data.get('errorMessage')) is not None:
             if code == 'SERVER_ERROR':
-                if msg.startswith('INVALID_SEARCH_TERM'):
-                    _process_invalid_search_term(msg, url)
+                if str(msg).startswith('INVALID_SEARCH_TERM'):
+                    _process_invalid_search_term(str(msg), url)
                 raise ServerError(
                     f'Error code: "{code}", error message: "{msg}"', url)
         if code == 'SERVER_ERROR':
@@ -499,7 +499,6 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
         # The connection had issues.
         raise ResponseError(
             f'A network exception occurred: {err.args[0]}') from err
-
     # Convert the HTTP response into a dictionary
     data = await response_to_dict(response)
     # Check the received dictionary for error codes
