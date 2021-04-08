@@ -62,7 +62,18 @@ class EventClient(Client):
         self.websocket: Optional[websockets.WebSocketClientProtocol] = None
         self._connect_lock = asyncio.Lock()
         self._connected: bool = False
+        self._endpoint_status: Dict[str, bool] = {}
         self._send_queue: List[str] = []
+
+    @property
+    def endpoint_status(self) -> Dict[str, bool]:
+        """Return endpoint status info.
+
+        This returns a dictionary mapping API event server endpoints to
+        their last reported status. This generally refreshes every 30
+        seconds as part of the WebSocket heartbeat messages.
+        """
+        return self._endpoint_status
 
     def add_trigger(self, trigger: Trigger) -> None:
         """Add a new event trigger to the client.
@@ -382,6 +393,10 @@ class EventClient(Client):
                            event.event_name)
                 self.dispatch(event)
             elif data['type'] == 'heartbeat':
+                servers = cast(Dict[str, str], data['online'])
+                self._endpoint_status = {
+                    k.split('_', maxsplit=2)[1]: v == 'true'
+                    for k, v in servers.items()}
                 _log.debug('Heartbeat received: %s', data)
         # Subscription echo
         elif 'subscription' in data:
