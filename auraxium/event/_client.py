@@ -499,8 +499,8 @@ def _event_factory(data: CensusData) -> Event:
         A dataclass representing the given event.
 
     """
-    # TODO: Check for bad `data` passed
-    for subclass in Event.__subclasses__():
-        if subclass.__name__ == data['event_name']:
-            return subclass(**data)
+    if (event_name := data.get('event_name')) is not None:
+        for subclass in Event.__subclasses__():
+            if subclass.__name__ == event_name:
+                return subclass(**data)
     return Event(**data)
