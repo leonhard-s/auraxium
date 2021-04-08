@@ -116,7 +116,10 @@ class CharacterData(RESTPayload):
 
         @deprecated('0.3.0', '.name (without parentheses)')
         def __call__(self, locale: str = 'en') -> str:
-            return getattr(self, locale)
+            return self.first
+
+        def __str__(self) -> str:
+            return self.first
 
     class Times(RESTPayload):
         """Object representation of the "times" sub-key.
