@@ -6,7 +6,7 @@ from typing import (Any, Callable, Coroutine, Dict, Iterable, List, Optional,
                     Set, Type, Union)
 
 from ..errors import MaintenanceError, CensusError
-from ..models import Event, GainExperience
+from ..models import CharacterEvent, Event, GainExperience
 from ..ps2 import Character, World
 
 _EventType = Union[Type[Event], str]
@@ -140,7 +140,7 @@ class Trigger:
                 return False
         return True
 
-    def generate_subscription(self) -> str:
+    def generate_subscription(self, logical_and: Optional[bool] = None) -> str:
         """Generate the appropriate subscription for this trigger."""
         json_data: Dict[str, Union[str, List[str]]] = {
             'action': 'subscribe',
@@ -155,6 +155,16 @@ class Trigger:
             json_data['worlds'] = [str(c) for c in self.worlds]
         else:
             json_data['worlds'] = ['all']
+        if logical_and is not None:
+            json_data['logicalAndCharactersWithWorlds'] = (
+                'true' if logical_and else 'false')
+        # When subscribing to character-centric events using only a world ID,
+        # set the "logicalAnd*" flag to avoid subscribing to all characters on
+        # all continents (characters would default to "all" if not specified).
+        elif self.worlds and not self.characters:
+            if any((issubclass(e, CharacterEvent)  # type: ignore
+                    for e in self.events)):
+                json_data['logicalAndCharactersWithWorlds'] = 'true'
         return json.dumps(json_data)
 
     async def run(self, event: Event) -> None:
