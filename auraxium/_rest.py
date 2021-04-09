@@ -206,7 +206,7 @@ async def response_to_dict(response: aiohttp.ClientResponse) -> CensusData:
             # error propagate.
             raise ResponseError(
                 f'Received a non-JSON response: {text}') from err
-        _log.info(
+        _log.debug(
             'Received a plain text response containing JSON data: %s', text)
         return data
     return data

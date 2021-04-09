@@ -5,6 +5,7 @@ import warnings
 from typing import (Any, Callable, Coroutine, Dict, Iterable, List, Optional,
                     Set, Type, Union)
 
+from ..errors import MaintenanceError, CensusError
 from ..models import Event, GainExperience
 from ..ps2 import Character, World
 
@@ -167,7 +168,10 @@ class Trigger:
         if self.action is None:
             warnings.warn(f'Trigger {self.name} run with no action specified')
             return
-        ret = self.action(event)
-        if asyncio.iscoroutinefunction(self.action):
-            assert ret is not None
-            await ret
+        try:
+            ret = self.action(event)
+            if asyncio.iscoroutinefunction(self.action):
+                assert ret is not None
+                await ret
+        except (MaintenanceError, CensusError) as err:
+            warnings.warn(f'Trigger {self.name} callback cancelled: {err}')
