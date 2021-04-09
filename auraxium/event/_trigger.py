@@ -109,7 +109,7 @@ class Trigger:
             Whether this trigger should run for the given event.
 
         """
-        if (event not in self.events
+        if (event.__class__ not in self.events
                 and event.__class__.__name__ not in self.events):
             # Extra check for the dynamically generated experience ID events
             if isinstance(event, GainExperience):
