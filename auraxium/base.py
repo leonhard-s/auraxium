@@ -43,7 +43,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
     """
 
     collection: ClassVar[str] = 'bogus'
-    dataclass: ClassVar[Type[RESTPayload]]
+    _model: ClassVar[Type[RESTPayload]]
     id_field: ClassVar[str] = 'bogus_id'
 
     def __init__(self, data: CensusData, client: RequestClient) -> None:
@@ -65,7 +65,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
         self.id = id_
         self._client = client
         try:
-            self.data = self.dataclass(**data)
+            self.data = self._model(**data)
         except pydantic.ValidationError as err:
             raise PayloadError(
                 f'Unable to instantiate {self.__class__.__name__} instance '

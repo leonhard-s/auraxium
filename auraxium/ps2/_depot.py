@@ -37,8 +37,8 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
 
     collection = 'marketing_bundle'
     data: MarketingBundleData
-    dataclass = MarketingBundleData
     id_field = 'marketing_bundle_id'
+    _model = MarketingBundleData
 
     # Type hints for data class fallback attributes
     id: int
@@ -99,8 +99,8 @@ class MarketingBundleSingle(Cached, cache_size=100, cache_ttu=60.0):
 
     collection = 'marketing_bundle_with_1_item'
     data: MarketingBundleSingleData
-    dataclass = MarketingBundleSingleData
     id_field = 'marketing_bundle_id'
+    _model = MarketingBundleSingleData
 
     # Type hints for data class fallback attributes
     id: int

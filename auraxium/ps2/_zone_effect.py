@@ -30,8 +30,8 @@ class ZoneEffectType(Cached, cache_size=20, cache_ttu=60.0):
 
     collection = 'zone_effect_type'
     data: ZoneEffectTypeData
-    dataclass = ZoneEffectTypeData
     id_field = 'zone_effect_type_id'
+    _model = ZoneEffectTypeData
 
     # Type hints for data class fallback attributes
     id: int
@@ -65,8 +65,8 @@ class ZoneEffect(Cached, cache_size=10, cache_ttu=60.0):
 
     collection = 'zone_effect'
     data: ZoneEffectData
-    dataclass = ZoneEffectData
     id_field = 'zone_effect_id'
+    _model = ZoneEffectData
 
     # Type hints for data class fallback attributes
     id: int

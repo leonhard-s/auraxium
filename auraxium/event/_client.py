@@ -517,7 +517,7 @@ def _event_factory(data: CensusData) -> Event:
         data: The "payload" sub-key of an event stream message.
 
     Returns:
-        A dataclass representing the given event.
+        A pydantic model representing the given event.
 
     """
     if (event_name := data.get('event_name')) is not None:

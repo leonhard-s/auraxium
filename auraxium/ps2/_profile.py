@@ -37,8 +37,8 @@ class Profile(Cached, cache_size=200, cache_ttu=60.0):
 
     collection = 'profile_2'
     data: ProfileData
-    dataclass = ProfileData
     id_field = 'profile_id'
+    _model = ProfileData
 
     # Type hints for data class fallback attributes
     id: int
@@ -84,8 +84,8 @@ class Loadout(Cached, FallbackMixin, cache_size=20, cache_ttu=3600.0):
 
     collection = 'loadout'
     data: LoadoutData
-    dataclass = LoadoutData
     id_field = 'loadout_id'
+    _model = LoadoutData
 
     # Type hints for data class fallback attributes
     id: int

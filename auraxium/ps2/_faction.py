@@ -22,8 +22,8 @@ class Faction(Named, ImageMixin, cache_size=10):
 
     collection = 'faction'
     data: FactionData
-    dataclass = FactionData
     id_field = 'faction_id'
+    _model = FactionData
 
     # Type hints for data class fallback attributes
     id: int

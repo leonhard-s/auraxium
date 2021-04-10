@@ -19,7 +19,7 @@ class TestModels(unittest.TestCase):
 
     This test dynamically walks all data in the tests/data/payloads
     directory, determines the associated collection, and attempts to
-    instantiate the given dataclass from it.
+    instantiate the given pydantic model from it.
     """
 
     def test_models_datatypes(self) -> None:
@@ -42,7 +42,8 @@ class TestModels(unittest.TestCase):
                 if not hasattr(type_, 'collection'):
                     continue
                 if type_.collection == collection:
-                    cls_ = type_.dataclass
+                    # pylint: disable=protected-access
+                    cls_ = type_._model  # type: ignore
             assert cls_ is not None, (
                 f'Type for collection "{collection}" not found')
             # Instantiate any payloads found

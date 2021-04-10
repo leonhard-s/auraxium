@@ -40,8 +40,8 @@ class MetagameEvent(Cached, cache_size=100, cache_ttu=60.0):
 
     collection = 'metagame_event'
     data: MetagameEventData
-    dataclass = MetagameEventData
     id_field = 'metagame_event_id'
+    _model = MetagameEventData
 
     # Type hints for data class fallback attributes
     id: int

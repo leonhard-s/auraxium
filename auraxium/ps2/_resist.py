@@ -27,8 +27,8 @@ class ResistType(Cached, cache_size=100, cache_ttu=60.0):
 
     collection = 'resist_type'
     data: ResistTypeData
-    dataclass = ResistTypeData
     id_field = 'resist_type_id'
+    _model = ResistTypeData
 
     # Type hints for data class fallback attributes
     id: int
@@ -52,8 +52,8 @@ class ResistInfo(Cached, cache_size=100, cache_ttu=60.0):
 
     collection = 'resist_info'
     data: ResistInfoData
-    dataclass = ResistInfoData
     id_field = 'resist_info_id'
+    _model = ResistInfoData
 
     # Type hints for data class fallback attributes
     id: int

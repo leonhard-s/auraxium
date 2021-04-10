@@ -29,8 +29,8 @@ class FacilityType(Cached, cache_size=10, cache_ttu=3600.0):
 
     collection = 'facility_type'
     data: FacilityTypeData
-    dataclass = FacilityTypeData
     id_field = 'facility_type_id'
+    _model = FacilityTypeData
 
     # Type hints for data class fallback attributes
     id: int
@@ -54,8 +54,8 @@ class MapHex(Cached, cache_size=100, cache_ttu=60.0):
 
     collection = 'map_hex'
     data: MapHexData
-    dataclass = MapHexData
     id_field = 'map_region_id'
+    _model = MapHexData
 
     # Type hints for data class fallback attributes
     zone_id: int
@@ -92,8 +92,8 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
 
     collection = 'map_region'
     data: MapRegionData
-    dataclass = MapRegionData
     id_field = 'map_region_id'
+    _model = MapRegionData
 
     # Type hints for data class fallback attributes
     id: int
@@ -159,8 +159,8 @@ class Region(Named, cache_size=100, cache_ttu=60.0):
 
     collection = 'region'
     data: RegionData
-    _dataclass = RegionData
     id_field = 'region_id'
+    _model = RegionData
 
     # Type hints for data class fallback attributes
     id: int

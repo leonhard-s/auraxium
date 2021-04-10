@@ -30,8 +30,8 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
 
     collection = 'world'
     data: WorldData
-    dataclass = WorldData
     id_field = 'world_id'
+    _model = WorldData
 
     # Type hints for data class fallback attributes
     id: int

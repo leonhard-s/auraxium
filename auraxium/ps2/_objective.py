@@ -28,8 +28,8 @@ class ObjectiveType(Cached, cache_size=10, cache_ttu=60.0):
 
     collection = 'objective_type'
     data: ObjectiveTypeData
-    dataclass = ObjectiveTypeData
     id_field = 'objective_type_id'
+    _model = ObjectiveTypeData
 
     # Type hints for data class fallback attributes
     id: int
@@ -61,8 +61,8 @@ class Objective(Cached, cache_size=10, cache_ttu=60.0):
 
     collection = 'objective'
     data: ObjectiveData
-    dataclass = ObjectiveData
     id_field = 'objective_id'
+    _model = ObjectiveData
 
     # Type hints for data class fallback attributes
     id: int

@@ -193,8 +193,8 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
 
     collection = 'fire_mode_2'
     data: FireModeData
-    dataclass = FireModeData
     id_field = 'fire_mode_id'
+    _model = FireModeData
 
     # Type hints for data class fallback attributes
     id: int
@@ -341,8 +341,8 @@ class FireGroup(Cached, cache_size=10, cache_ttu=60.0):
 
     collection = 'fire_group'
     data: FireGroupData
-    dataclass = FireGroupData
     id_field = 'fire_group_id'
+    _model = FireGroupData
 
     # Type hints for data class fallback attributes
     id: int

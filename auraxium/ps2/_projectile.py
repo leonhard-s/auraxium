@@ -63,8 +63,8 @@ class Projectile(Cached, cache_size=100, cache_ttu=60.0):
 
     collection = 'projectile'
     data: ProjectileData
-    dataclass = ProjectileData
     id_field = 'projectile_id'
+    _model = ProjectileData
 
     # Type hints for data class fallback attributes
     id: int

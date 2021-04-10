@@ -34,8 +34,8 @@ class Achievement(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
 
     collection = 'achievement'
     data: AchievementData
-    dataclass = AchievementData
     id_field = 'achievement_id'
+    _model = AchievementData
 
     # Type hints for data class fallback attributes
     id: int
