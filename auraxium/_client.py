@@ -8,11 +8,12 @@ streaming service (ESS).
 
 import logging
 import warnings
-from typing import Any, Callable, List, Optional, Type, TypeVar
+from typing import Any, Callable, List, Optional, Type, TypeVar, cast
 
 from .base import Named, Ps2Object
 from .census import Query
 from .errors import NotFoundError, PayloadError
+from .ps2 import Character
 from ._rest import RequestClient, extract_payload, extract_single
 from .types import CensusData
 
@@ -200,10 +201,13 @@ class Client(RequestClient):
         _log.debug('%s "%s"[%s] not cached, generating API query...',
                    type_.__name__, name, locale)
         query = Query(type_.collection, service_id=self.service_id)
-        query.case(False).add_term(field=f'name.{locale}', value=name)
+        if issubclass(type_, Character):
+            query.case(False).add_term(field='name.first', value=name)
+        else:
+            query.case(False).add_term(field=f'name.{locale}', value=name)
         payload = await self.request(query)
         try:
             payload = extract_single(payload, type_.collection)
         except NotFoundError:
             return None
-        return type_(payload, locale=locale, client=self)
+        return cast(_NamedT, type_(payload, locale=locale, client=self))

@@ -9,8 +9,7 @@ from typing import (Any, Dict, Generator, Generic, Iterator, List, Optional,
 
 from .base import Ps2Object
 from .census import JoinedQuery, Query
-from ._client import RequestClient
-from ._rest import extract_payload
+from ._rest import RequestClient, extract_payload
 
 __all__ = [
     'InstanceProxy',
