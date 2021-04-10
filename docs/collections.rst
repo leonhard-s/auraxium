@@ -45,7 +45,7 @@ Census Collection                      Auraxium                                 
 ``experience_rank``                    :class:`auraxium.ps2.ExperienceRank`                                --
 ``event``                              --                                                                  Not yet implemented
 ``facility_link``                      :meth:`auraxium.ps2.MapRegion.get_connected`                        --
-``facility_type``                      :meth:`auraxium.ps2.FacilityType`                                   --
+``facility_type``                      :class:`auraxium.ps2.FacilityType`                                   --
 ``faction``                            :class:`auraxium.ps2.Facility`                                      --
 ``fire_group``                         :class:`auraxium.ps2.FireGroup`                                     --
 ``fire_group_to_fire_mode``            :meth:`auraxium.ps2.FireGroup.fire_modes`                           --
