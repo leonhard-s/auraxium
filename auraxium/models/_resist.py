@@ -13,7 +13,7 @@ __all__ = [
 
 
 class ResistInfoData(RESTPayload):
-    """Data class for :class:`auraxium.ps2.armour.ResistInfo`.
+    """Data class for :class:`auraxium.ps2.ResistInfo`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -28,7 +28,7 @@ class ResistInfoData(RESTPayload):
 
 
 class ResistTypeData(RESTPayload):
-    """Data class for :class:`auraxium.ps2.armour.ResistType`.
+    """Data class for :class:`auraxium.ps2.ResistType`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.

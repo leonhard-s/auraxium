@@ -16,7 +16,7 @@ __all__ = [
 
 
 class FacilityTypeData(RESTPayload):
-    """Data class for :class:`auraxium.ps2.map.FacilityType`.
+    """Data class for :class:`auraxium.ps2.FacilityType`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -27,7 +27,7 @@ class FacilityTypeData(RESTPayload):
 
 
 class MapHexData(RESTPayload):
-    """Data class for :class:`auraxium.ps2.map.MapHex`.
+    """Data class for :class:`auraxium.ps2.MapHex`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -42,7 +42,7 @@ class MapHexData(RESTPayload):
 
 
 class MapRegionData(RESTPayload):
-    """Data class for :class:`auraxium.ps2.map.MapHex`.
+    """Data class for :class:`auraxium.ps2.MapRegion`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -63,7 +63,7 @@ class MapRegionData(RESTPayload):
 
 
 class RegionData(RESTPayload):
-    """Data class for :class:`auraxium.ps2.map.Region`.
+    """Data class for :class:`auraxium.ps2.Region`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.

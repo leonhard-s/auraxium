@@ -22,7 +22,7 @@ class FacilityType(Cached, cache_size=10, cache_ttu=3600.0):
     """A type of base/facility found in the game.
 
     Attributes:
-        facility_type_id: The unique ID of this facility type.
+        id: The unique ID of this facility type.
         description: The description of this facility type.
 
     """
@@ -33,7 +33,7 @@ class FacilityType(Cached, cache_size=10, cache_ttu=3600.0):
     id_field = 'facility_type_id'
 
     # Type hints for data class fallback attributes
-    facility_type_id: int
+    id: int
     description: str
 
 
@@ -76,7 +76,7 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
     """A facility on the continent map.
 
     Attributes:
-        map_region_id: The unique ID of this map region.
+        id: The unique ID of this map region.
         zone_id: The ID of the zone (i.e. continent) this region is in.
         facility_id: The ID of the associated facility.
         facility_name: The name of the associated facility.
@@ -96,7 +96,7 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
     id_field = 'map_region_id'
 
     # Type hints for data class fallback attributes
-    map_region_id: int
+    id: int
     zone_id: int
     facility_id: Optional[int]
     facility_name: str
@@ -139,7 +139,7 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
     def zone(self) -> InstanceProxy[Zone]:
         """Return the zone/continent of the region.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(Zone.collection, service_id=self._client.service_id)
         query.add_term(field=Zone.id_field, value=self.data.zone_id)
@@ -159,11 +159,11 @@ class Region(Named, cache_size=100, cache_ttu=60.0):
 
     collection = 'region'
     data: RegionData
-    dataclass = RegionData
+    _dataclass = RegionData
     id_field = 'region_id'
 
     # Type hints for data class fallback attributes
-    region_id: int
+    id: int
     zone_id: int
     initial_faction_id: int
     name: LocaleData
@@ -171,7 +171,7 @@ class Region(Named, cache_size=100, cache_ttu=60.0):
     def map_region(self) -> InstanceProxy[MapRegion]:
         """Return the map region associated with this region.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(MapRegion.collection, service_id=self._client.service_id)
         query.add_term(field=MapRegion.id_field, value=self.id)
@@ -180,7 +180,7 @@ class Region(Named, cache_size=100, cache_ttu=60.0):
     def zone(self) -> InstanceProxy[Zone]:
         """Return the zone/continent of the region.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(Zone.collection, service_id=self._client.service_id)
         query.add_term(field=Zone.id_field, value=self.data.zone_id)

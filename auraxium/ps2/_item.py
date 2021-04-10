@@ -31,8 +31,8 @@ class ItemCategory(Named, cache_size=32, cache_ttu=3600.0):
     such as "Infantry Gear", "Weapon Camo" or "Vehicle Weapons".
 
     Attributes:
-        item_category_id: The unique ID of this item category.
-        name: The localised name of the category.
+        id: The unique ID of this item category.
+        name: Localised name of the item category.
 
     """
 
@@ -42,7 +42,7 @@ class ItemCategory(Named, cache_size=32, cache_ttu=3600.0):
     id_field = 'item_category_id'
 
     # Type hints for data class fallback attributes
-    item_category_id: int
+    id: int
     name: LocaleData
 
 
@@ -56,7 +56,7 @@ class ItemType(Cached, cache_size=10, cache_ttu=60.0):
     tokens.
 
     Attributes:
-        item_type_id: The unique ID of this item type.
+        id: The unique ID of this item type.
         name: The identifying name of this item type.
         code: The internal code used to describe this item type.
 
@@ -68,8 +68,7 @@ class ItemType(Cached, cache_size=10, cache_ttu=60.0):
     id_field = 'item_type_id'
 
     # Type hints for data class fallback attributes
-    item_type_id: int
-    name: str
+    id: int
     code: str
 
 
@@ -78,20 +77,20 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
 
     This includes the item component of weapons, which is extended by
     weapon specific data in the associated
-    :class:`auraxium.ps2.weapon.Weapon` instance.
+    :class:`auraxium.ps2.Weapon` instance.
 
     Attributes:
-        item_id: The unique ID of this item.
+        id: The unique ID of this item.
         item_type_id: The ID of the item type for this item.
         item_category_id: The ID of the item category for this item.
         activatable_ability_id: (Not yet documented)
         passive_ability_id: (Not yet documented)
         is_vehicle_weapon: Whether this item is a vehicle weapon.
-        name: Localised name of the item.
         description: Localised description of the item.
         faction_id: The faction that has access to this item.
         max_stack_size: The stack size for stackable items such as
             grenades.
+        name: Localised name of the item.
         skill_set_id: The skill set associated with this item. This is
             used for upgradable items like the Medical Applicator or
             Repair Tool.
@@ -109,23 +108,23 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     id_field = 'item_id'
 
     # Type hints for data class fallback attributes
-    item_id: int
+    id: int
     item_type_id: Optional[int]
     item_category_id: Optional[int]
     activatable_ability_id: Optional[int]
     passive_ability_id: Optional[int]
     is_vehicle_weapon: bool
-    name: LocaleData
     description: Optional[LocaleData]
     faction_id: Optional[int]
     max_stack_size: int
+    name: LocaleData
     skill_set_id: Optional[int]
     is_default_attachment: bool
 
     def attachments(self) -> SequenceProxy['Item']:
         """Return the attachment options for this item.
 
-        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        This returns a :class:`auraxium.SequenceProxy`.
         """
         collection: Final[str] = 'item_attachment'
         query = Query(collection, service_id=self._client.service_id)
@@ -138,7 +137,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     def category(self) -> InstanceProxy[ItemCategory]:
         """Return the category of the item.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         if self.data.item_category_id is None:
             raise ValueError(f'{self} does not define a category')
@@ -151,7 +150,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     def faction(self) -> InstanceProxy[Faction]:
         """Return the faction that has access to this item.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         value = self.data.faction_id or -1
         query = Query(Faction.collection, service_id=self._client.service_id)
@@ -172,7 +171,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     def profiles(self) -> SequenceProxy[Profile]:
         """Return the profiles the item is available to.
 
-        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        This returns a :class:`auraxium.SequenceProxy`.
         """
         collection: Final[str] = 'item_profile'
         query = Query(collection, service_id=self._client.service_id)
@@ -185,7 +184,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     def type(self) -> InstanceProxy[ItemType]:
         """Return the type of item.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         if self.data.item_type_id is None:
             raise ValueError(f'{self} does not define a type')
@@ -196,7 +195,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     def weapon(self) -> InstanceProxy['Weapon']:
         """Return the weapon associated with this item, if any.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         from ._weapon import Weapon  # pylint: disable=import-outside-toplevel
         collection: Final[str] = 'item_to_weapon'

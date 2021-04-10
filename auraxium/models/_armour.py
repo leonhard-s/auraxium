@@ -12,7 +12,7 @@ __all__ = [
 
 
 class ArmourInfoData(RESTPayload):
-    """Data class for :class:`auraxium.ps2.armour.ArmorInfo`.
+    """Data class for :class:`auraxium.ps2.ArmorInfo`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.

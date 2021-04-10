@@ -29,11 +29,11 @@ class OutfitMember(Cached, cache_size=100, cache_ttu=300.0):
     """A member of an outfit.
 
     This class can be treated as an extension of the
-    :class:`auraxium.ps2.character.Character` class.
+    :class:`auraxium.ps2.Character` class.
 
     Attributes:
         outfit_id: The ID of the outfit this member is a part of.
-        character_id: The ID of the associated character.
+        id: The ID of the associated character.
         member_since: The date the character joined the outfit at as
             a UTC timestamp.
         member_since_date: Human-readable version of
@@ -51,7 +51,7 @@ class OutfitMember(Cached, cache_size=100, cache_ttu=300.0):
 
     # Type hints for data class fallback attributes
     outfit_id: int
-    character_id: int
+    id: int
     member_since: int
     member_since_date: str
     rank: str
@@ -60,7 +60,7 @@ class OutfitMember(Cached, cache_size=100, cache_ttu=300.0):
     def character(self) -> InstanceProxy['Character']:
         """Return the character associated with this member.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         # NOTE: This is required due to OutfitMember effectively being an
         # extension of Character.
@@ -73,7 +73,7 @@ class OutfitMember(Cached, cache_size=100, cache_ttu=300.0):
     def outfit(self) -> InstanceProxy['Outfit']:
         """Return the character associated with this member.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(Outfit.collection, service_id=self._client.service_id)
         query.add_term(field=Outfit.id_field, value=self.data.outfit_id)
@@ -84,13 +84,13 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
     """A player-run outfit.
 
     Attributes:
-        outfit_id: The unique ID of the outfit.
-        name: The name of the outfit.
+        id: The unique ID of the outfit.
         name_lower: Lowercase version of :attr`name`. Useful for
             optimising case-insensitive searches.
         alias: The alias (or tag) of the outfit.
         alias_lower: Lowercase version of :attr:`alias`. Useful for
             optimising case-insensitive searches.
+        name: Name of the outfit. Not localised.
         time_created: The creation date of the outfit as a UTC
             timestamp.
         time_created_date: Human-readable version of
@@ -108,15 +108,18 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
     id_field = 'outfit_id'
 
     # Type hints for data class fallback attributes
-    outfit_id: int
-    name: str
-    name_lower: str
+    id: int
     alias: str
-    alias_lower: str
     time_created: int
     time_created_date: str
     leader_character_id: int
     member_count: int
+    name: str
+
+    @property
+    def tag(self) -> str:
+        """Alias of :attr:`Outfit.alias`."""
+        return self.alias
 
     @deprecated('0.3', replacement='Client.get()')
     @classmethod
@@ -164,7 +167,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
     def leader(self) -> InstanceProxy[OutfitMember]:
         """Return the current leader of the outfit.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(
             OutfitMember.collection, service_id=self._client.service_id)
@@ -175,7 +178,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
     def members(self) -> SequenceProxy[OutfitMember]:
         """Return the members of the outfit.
 
-        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        This returns a :class:`auraxium.SequenceProxy`.
         """
         query = Query(
             OutfitMember.collection, service_id=self._client.service_id)

@@ -14,7 +14,7 @@ __all__ = [
 
 
 class MetagameEventState(enum.IntEnum):
-    """The state of a :class:`auraxium.ps2.metagame.MetagameEvent`."""
+    """The state of a :class:`auraxium.ps2.MetagameEvent`."""
 
     STARTED = 135
     RESTARTED = 136
@@ -27,7 +27,7 @@ class MetagameEvent(Cached, cache_size=100, cache_ttu=60.0):
     """An event or alert on a continent.
 
     Attributes:
-        metagame_event_id: The unique ID of this event.
+        id: The unique ID of this event.
         name: The localised name of the event.
         description: The localised description of the event.
         type: The type of event. Legacy alerts like "Dome Domination"
@@ -44,7 +44,7 @@ class MetagameEvent(Cached, cache_size=100, cache_ttu=60.0):
     id_field = 'metagame_event_id'
 
     # Type hints for data class fallback attributes
-    metagame_event_id: int
+    id: int
     name: LocaleData
     description: LocaleData
     type: int

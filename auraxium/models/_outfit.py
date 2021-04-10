@@ -12,7 +12,7 @@ __all__ = [
 
 
 class OutfitData(RESTPayload):
-    """Data class for :class:`auraxium.ps2.outfit.Outfit`.
+    """Data class for :class:`auraxium.ps2.Outfit`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -30,7 +30,7 @@ class OutfitData(RESTPayload):
 
 
 class OutfitMemberData(RESTPayload):
-    """Data class for :class:`auraxium.ps2.outfit.OutfitMember`.
+    """Data class for :class:`auraxium.ps2.OutfitMember`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -45,7 +45,7 @@ class OutfitMemberData(RESTPayload):
 
 
 class OutfitRankData(RESTPayload):
-    """Data class for :class:`auraxium.ps2.outfit.OutfitRank`.
+    """Data class for :class:`auraxium.ps2.OutfitRank`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.

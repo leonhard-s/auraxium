@@ -38,7 +38,7 @@ Here is an example script that prints various character properties:
         async with auraxium.Client() as client:
 
             char = await client.get_by_name(ps2.Character, 'auroram')
-            print(char.name())
+            print(char.name))
             print(char.data.prestige_level)
 
             # NOTE: Any methods that might incur network traffic are asynchronous.
@@ -52,7 +52,7 @@ Here is an example script that prints various character properties:
             # The online status is never cached as it is bound to change at any
             # moment.
             print(await char.is_online())
-            
+
     asyncio.get_event_loop().run_until_complete(main())
 
 API Reference

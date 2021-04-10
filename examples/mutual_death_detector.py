@@ -9,7 +9,8 @@ import asyncio
 import datetime
 from typing import Dict, Tuple
 
-import auraxium  # pylint: disable=import-error
+import auraxium
+from auraxium import event, ps2
 
 # The maximum time difference between kills for them to be considered mutual.
 MUTUAL_DEATH_WINDOW = 5.0
@@ -23,12 +24,12 @@ async def main() -> None:
     # This dictionary is used to track recent deaths
     cache: Dict[int, Tuple[int, datetime.datetime]] = {}
 
-    @client.trigger(auraxium.event.Death)
-    async def on_death(event: auraxium.event.Death) -> None:
+    @client.trigger(event.Death)
+    async def on_death(evt: event.Death) -> None:
         """Run whenever a death event is received."""
-        now = event.timestamp
-        victim_id = event.character_id
-        killer_id = event.attacker_character_id
+        now = evt.timestamp
+        victim_id = evt.character_id
+        killer_id = evt.attacker_character_id
 
         # Ignore deaths not caused by enemy players
         if killer_id == 0 or victim_id == killer_id:
@@ -49,8 +50,7 @@ async def main() -> None:
 
                 # Get the names of the players involved
                 ids = ','.join((str(i) for i in (killer_id, victim_id)))
-                results = await client.find(
-                    auraxium.ps2.Character, character_id=ids)
+                results = await client.find(ps2.Character, character_id=ids)
                 if not results:
                     # Ignore events if you cannot resolve the player names
                     return

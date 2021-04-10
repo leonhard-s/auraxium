@@ -39,8 +39,8 @@ class Title(Named, cache_size=300, cache_ttu=300.0):
 
 
     Attributes:
-        title_id: The ID of this title.
-        name: The localised name of this title.
+        id: The ID of this title.
+        name: Localised name of the title.
 
     """
 
@@ -50,7 +50,7 @@ class Title(Named, cache_size=300, cache_ttu=300.0):
     id_field = 'title_id'
 
     # Type hints for data class fallback attributes
-    title_id: int
+    id: int
     name: LocaleData
 
 
@@ -58,8 +58,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     """A player-controlled fighter.
 
     Attributes:
-        character_id: The unique name of the character.
-        name: The name of the player.
+        id: The unique name of the character.
         faction_id: The faction the character belongs to.
         head_id: The head model for this character.
         title_id: The current title selected for this character. May be
@@ -68,7 +67,6 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         certs: Certification data for the character.
         battle_rank: Battle rank data for the character.
         profile_id: The last profile the character used.
-        daily_ribbon: Daily ribbon data for the character.
         prestige_level: The ASP rank of the character.
 
     """
@@ -80,8 +78,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     id_field = 'character_id'
 
     # Type hints for data class fallback attributes
-    character_id: int
-    name: CharacterData.Name
+    id: int
     faction_id: int
     head_id: int
     title_id: int
@@ -89,7 +86,6 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     certs: CharacterData.Certs
     battle_rank: CharacterData.BattleRank
     profile_id: int
-    daily_ribbon: CharacterData.DailyRibbon
     prestige_level: int
 
     async def achievements(self, **kwargs: Any) -> List[CharacterAchievement]:
@@ -191,7 +187,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     def faction(self) -> InstanceProxy[Faction]:
         """Return the faction of the character.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(Faction.collection, service_id=self._client.service_id)
         query.add_term(field=Faction.id_field, value=self.data.faction_id)
@@ -260,7 +256,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     def items(self) -> SequenceProxy[Item]:
         """Return the items available to the character.
 
-        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        This returns a :class:`auraxium.SequenceProxy`.
         """
         collection: Final[str] = 'characters_item'
         query = Query(collection, service_id=self._client.service_id)
@@ -304,7 +300,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     def outfit(self) -> InstanceProxy[Outfit]:
         """Return the outfit of the character, if any.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         collection: Final[str] = 'outfit_member_extended'
         query = Query(collection, service_id=self._client.service_id)
@@ -314,7 +310,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     def outfit_member(self) -> InstanceProxy[OutfitMember]:
         """Return the outfit member of the character, if any.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(
             OutfitMember.collection, service_id=self._client.service_id)
@@ -324,7 +320,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     def profile(self) -> InstanceProxy[Profile]:
         """Return the last played profile of the character.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(Profile.collection, service_id=self._client.service_id)
         query.add_term(field=Profile.id_field, value=self.data.profile_id)
@@ -397,7 +393,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     def title(self) -> InstanceProxy[Title]:
         """Return the current title of the character, if any.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         title_id = self.data.title_id or -1
         query = Query(Title.collection, service_id=self._client.service_id)
@@ -407,7 +403,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     def world(self) -> InstanceProxy[World]:
         """Return the world of the character.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         collection: Final[str] = 'characters_world'
         query = Query(collection, service_id=self._client.service_id)

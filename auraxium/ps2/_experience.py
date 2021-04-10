@@ -25,7 +25,7 @@ class Experience(Cached, cache_size=100, cache_ttu=3600.0):
     """A type of experience tick.
 
     Attributes:
-        experience_id: The unique ID of this experience tick.
+        id: The unique ID of this experience tick.
         description: A description of when this experience reward is
             granted.
         xp: The amount of experience points awarded.
@@ -38,7 +38,7 @@ class Experience(Cached, cache_size=100, cache_ttu=3600.0):
     id_field = 'experience_id'
 
     # Type hints for data class fallback attributes
-    experience_id: int
+    id: int
     description: str
     xp: int
 

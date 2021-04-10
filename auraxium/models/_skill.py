@@ -18,7 +18,7 @@ __all__ = [
 
 
 class SkillData(RESTPayload, ImageData):
-    """Data class for :class:`auraxium.ps2.skill.Skill`.
+    """Data class for :class:`auraxium.ps2.Skill`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -34,7 +34,7 @@ class SkillData(RESTPayload, ImageData):
 
 
 class SkillCategoryData(RESTPayload, ImageData):
-    """Data class for :class:`auraxium.ps2.skill.SkillCategory`.
+    """Data class for :class:`auraxium.ps2.SkillCategory`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -49,7 +49,7 @@ class SkillCategoryData(RESTPayload, ImageData):
 
 
 class SkillLineData(RESTPayload, ImageData):
-    """Data class for :class:`auraxium.ps2.skill.SkillLine`.
+    """Data class for :class:`auraxium.ps2.SkillLine`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -64,7 +64,7 @@ class SkillLineData(RESTPayload, ImageData):
 
 
 class SkillSetData(RESTPayload, ImageData):
-    """Data class for :class:`auraxium.ps2.skill.SkillSet`.
+    """Data class for :class:`auraxium.ps2.SkillSet`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.

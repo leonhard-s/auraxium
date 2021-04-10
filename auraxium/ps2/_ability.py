@@ -19,7 +19,7 @@ class ResourceType(Cached, cache_size=50, cache_ttu=3600.0):
     """A type of resource consumed by an ability.
 
     Attributes:
-        resource_type_id: The unique ID of this resource type.
+        id: The unique ID of this resource type.
         description: A description of what this resource type is used
             for.
 
@@ -31,7 +31,7 @@ class ResourceType(Cached, cache_size=50, cache_ttu=3600.0):
     id_field = 'resource_type_id'
 
     # Type hints for data class fallback attributes
-    resource_type_id: int
+    id: int
     description: str
 
 
@@ -41,7 +41,7 @@ class AbilityType(Cached, cache_size=20, cache_ttu=60.0):
     This class mostly specifies the purpose of any generic parameters.
 
     Attributes:
-        ability_type_id: The unique ID for this ability type.
+        id: The unique ID for this ability type.
         description: A description of what this ability type is used
             for.
         param*: Descriptions of what the corresponding parameter is
@@ -57,7 +57,7 @@ class AbilityType(Cached, cache_size=20, cache_ttu=60.0):
     id_field = 'ability_type_id'
 
     # Type hints for data class fallback attributes
-    ability_type_id: int
+    id: int
     description: Optional[str]
     param1: Optional[str]
     param2: Optional[str]
@@ -82,12 +82,12 @@ class AbilityType(Cached, cache_size=20, cache_ttu=60.0):
 class Ability(Cached, cache_size=10, cache_ttu=60.0):
     """An ability cast by a character.
 
-    Access the corresponding :class:`auraxium.ps2.ability.AbilityType`
-    instance via the :meth:`type` method for information on generic
+    Access the corresponding :class:`auraxium.ps2.AbilityType` instance
+    via the :meth:`Ability.type` method for information on generic
     parameters.
 
     Attributes:
-        ability_id: The unique ID of this ability.
+        id: The unique ID of this ability.
         ability_type_id: The associated ability type for this ability.
         expire_msec: The duration of the ability.
         first_use_delay_msec: The initial cooldown of the ability.
@@ -112,7 +112,7 @@ class Ability(Cached, cache_size=10, cache_ttu=60.0):
     id_field = 'ability_id'
 
     # Type hints for data class fallback attributes
-    ability_id: int
+    id: int
     ability_type_id: int
     expire_msec: Optional[int]
     first_use_delay_msec: Optional[int]

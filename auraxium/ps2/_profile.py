@@ -30,7 +30,7 @@ class Profile(Cached, cache_size=200, cache_ttu=60.0):
     other non-static entities such as Cortium nodes or pumpkins.
 
     Attributes:
-        profile_id: The unique ID of this profile.
+        id: The unique ID of this profile.
         description: The description of the profile.
 
     """
@@ -41,13 +41,13 @@ class Profile(Cached, cache_size=200, cache_ttu=60.0):
     id_field = 'profile_id'
 
     # Type hints for data class fallback attributes
-    profile_id: int
+    id: int
     description: str
 
     def armour_info(self) -> SequenceProxy[ArmourInfo]:
         """Return the armour info of the profile.
 
-        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        This returns a :class:`auraxium.SequenceProxy`.
         """
         collection: Final[str] = 'profile_armor_map'
         query = Query(collection, service_id=self._client.service_id)
@@ -60,7 +60,7 @@ class Profile(Cached, cache_size=200, cache_ttu=60.0):
     def resist_info(self) -> SequenceProxy[ResistInfo]:
         """Return the resist info of the profile.
 
-        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        This returns a :class:`auraxium.SequenceProxy`.
         """
         collection: Final[str] = 'profile_resist_map'
         query = Query(collection, service_id=self._client.service_id)
@@ -75,7 +75,7 @@ class Loadout(Cached, FallbackMixin, cache_size=20, cache_ttu=3600.0):
     """Represents a faction-specific infantry class.
 
     Attributes:
-        loadout_id: The unique ID of this loadout.
+        id: The unique ID of this loadout.
         profile_id: The ID of the associated profile.
         faction_id: The faction for this loadout.
         code_name: A string describing the loadout.
@@ -88,7 +88,7 @@ class Loadout(Cached, FallbackMixin, cache_size=20, cache_ttu=3600.0):
     id_field = 'loadout_id'
 
     # Type hints for data class fallback attributes
-    loadout_id: int
+    id: int
     profile_id: int
     faction_id: int
     code_name: str
@@ -96,7 +96,7 @@ class Loadout(Cached, FallbackMixin, cache_size=20, cache_ttu=3600.0):
     def armour_info(self) -> SequenceProxy[ArmourInfo]:
         """Return the armour info of the loadout.
 
-        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        This returns a :class:`auraxium.SequenceProxy`.
         """
         collection: Final[str] = 'profile_armor_map'
         query = Query(collection, service_id=self._client.service_id)
@@ -109,7 +109,7 @@ class Loadout(Cached, FallbackMixin, cache_size=20, cache_ttu=3600.0):
     def faction(self) -> InstanceProxy[Faction]:
         """Return the faction of the loadout.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(Faction.collection, service_id=self._client.service_id)
         query.add_term(field=Faction.id_field, value=self.data.faction_id)
@@ -118,7 +118,7 @@ class Loadout(Cached, FallbackMixin, cache_size=20, cache_ttu=3600.0):
     def profile(self) -> InstanceProxy[Profile]:
         """Return the profile of the loadout.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(Profile.collection, service_id=self._client.service_id)
         query.add_term(field=Profile.id_field, value=self.data.profile_id)
@@ -127,7 +127,7 @@ class Loadout(Cached, FallbackMixin, cache_size=20, cache_ttu=3600.0):
     def resist_info(self) -> SequenceProxy[ResistInfo]:
         """Return the resist info of the loadout.
 
-        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        This returns a :class:`auraxium.SequenceProxy`.
         """
         collection: Final[str] = 'profile_resist_map'
         query = Query(collection, service_id=self._client.service_id)

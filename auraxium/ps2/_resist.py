@@ -19,7 +19,7 @@ class ResistType(Cached, cache_size=100, cache_ttu=60.0):
     or "Heavy Machine Gun".
 
     Attributes:
-        resist_type_id: The unique ID of this resist type.
+        id: The unique ID of this resist type.
         description: A description of what this resist type is used
             for.
 
@@ -31,7 +31,7 @@ class ResistType(Cached, cache_size=100, cache_ttu=60.0):
     id_field = 'resist_type_id'
 
     # Type hints for data class fallback attributes
-    resist_type_id: int
+    id: int
     description: str
 
 
@@ -39,7 +39,7 @@ class ResistInfo(Cached, cache_size=100, cache_ttu=60.0):
     """Specifies the resistance values for a given profile and type.
 
     Attributes:
-        resist_info: The ID of this resist info entry.
+        id: The ID of this resist info entry.
         resist_type_id: The ID of the :class:`ResistType` for this
             entry.
         resist_percent: The damage reduction in percent.
@@ -56,7 +56,7 @@ class ResistInfo(Cached, cache_size=100, cache_ttu=60.0):
     id_field = 'resist_info_id'
 
     # Type hints for data class fallback attributes
-    resist_info_id: int
+    id: int
     resist_type_id: int
     resist_percent: Optional[int]
     resist_amount: Optional[int]
@@ -66,7 +66,7 @@ class ResistInfo(Cached, cache_size=100, cache_ttu=60.0):
     def type(self) -> InstanceProxy[ResistType]:
         """Return the resist type for this entry.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(
             ResistType.collection, service_id=self._client.service_id)

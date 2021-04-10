@@ -11,7 +11,7 @@ __all__ = [
 
 
 class ZoneData(RESTPayload):
-    """Data class for :class:`auraxium.ps2.zone.Zone`.
+    """Data class for :class:`auraxium.ps2.Zone`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.

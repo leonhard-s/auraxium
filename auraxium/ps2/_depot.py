@@ -24,11 +24,11 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
     multiple items at once.
 
     Attributes:
-        marketing_bundle_id: The unique ID of this bundle.
-        name: The localised name of the bundle.
+        id: The unique ID of this bundle.
         description: The description text for this bundle.
         image_id: The image asset ID for this bundle.
         cert_price: The unlock price in certification points, if any.
+        name: Localised name of the bundle.
         station_cash_price: The unlock price in daybreak cash, if any.
         release_time: The time at which this bundle was first released
             as a UTC timestamp.
@@ -41,11 +41,11 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
     id_field = 'marketing_bundle_id'
 
     # Type hints for data class fallback attributes
-    marketing_bundle_id: int
-    name: LocaleData
+    id: int
     description: LocaleData
     image_id: int
     cert_price: Optional[int]
+    name: LocaleData
     station_cash_price: int
     release_time: int
 
@@ -86,9 +86,10 @@ class MarketingBundleSingle(Cached, cache_size=100, cache_ttu=60.0):
     information.
 
     Attributes:
-        marketing_bundle_id: The unique ID of this bundle.
+        id: The unique ID of this bundle.
         item_id: The item unlocked by this bundle.
         item_quantity: The number of items received.
+        name: Localised name of the bundle.
         station_cash_price: The daybreak cash price of the item.
         cert_price: The certification point price of the item.
         release_time: The time at which this item was first released
@@ -102,9 +103,10 @@ class MarketingBundleSingle(Cached, cache_size=100, cache_ttu=60.0):
     id_field = 'marketing_bundle_id'
 
     # Type hints for data class fallback attributes
-    marketing_bundle_id: int
+    id: int
     item_id: int
     item_quantity: int
+    name: LocaleData
     station_cash_price: int
     cert_price: Optional[int]
     release_time: int
@@ -112,7 +114,7 @@ class MarketingBundleSingle(Cached, cache_size=100, cache_ttu=60.0):
     def item(self) -> InstanceProxy[Item]:
         """Return the item unlocked by the bundle.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(Item.collection, service_id=self._client.service_id)
         query.add_term(field=Item.id_field, value=self.data.item_id)

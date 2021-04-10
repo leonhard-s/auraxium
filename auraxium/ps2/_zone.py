@@ -27,11 +27,11 @@ class Zone(Named, cache_size=20, cache_ttu=3600.0):
     wars desolation maps.
 
     Attributes:
-        zone_id: The unique ID of this zone.
+        id: The unique ID of this zone.
         code: The internal code used to represent this zone.
         hex_size: The map size for this zone.
-        name: The localised name of this zone.
         description: The localised name of this zone.
+        name: Localised name of the zone.
 
     """
 
@@ -41,11 +41,11 @@ class Zone(Named, cache_size=20, cache_ttu=3600.0):
     id_field = 'zone_id'
 
     # Type hints for data class fallback attributes
-    zone_id: int
+    id: int
     code: str
     hex_size: int
-    name: LocaleData
     description: LocaleData
+    name: LocaleData
 
     @property
     def is_dynamic(self) -> bool:

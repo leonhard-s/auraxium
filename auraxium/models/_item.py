@@ -17,7 +17,7 @@ __all__ = [
 
 
 class ItemCategoryData(RESTPayload):
-    """Data class for :class:`auraxium.ps2.item.ItemCategory`.
+    """Data class for :class:`auraxium.ps2.ItemCategory`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -28,7 +28,7 @@ class ItemCategoryData(RESTPayload):
 
 
 class ItemData(RESTPayload, ImageData):
-    """Data class for :class:`auraxium.ps2.item.Item`.
+    """Data class for :class:`auraxium.ps2.Item`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
@@ -49,7 +49,7 @@ class ItemData(RESTPayload, ImageData):
 
 
 class ItemTypeData(RESTPayload):
-    """Data class for :class:`auraxium.ps2.item.ItemType`.
+    """Data class for :class:`auraxium.ps2.ItemType`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.

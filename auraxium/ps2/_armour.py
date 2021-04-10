@@ -36,7 +36,7 @@ class ArmourInfo(Cached, cache_size=100, cache_ttu=60.0):
     value.
 
     Attributes:
-        armor_info_id: The unique ID of this entry.
+        id: The unique ID of this entry.
         armor_facing_id: The enum value the facing direction this entry
             provides armour data for.
         armor_percent: Damage reduction in percent.
@@ -52,7 +52,7 @@ class ArmourInfo(Cached, cache_size=100, cache_ttu=60.0):
     id_field = 'armor_info_id'
 
     # Type hints for data class fallback attributes
-    armor_info_id: int
+    id: int
     armor_facing_id: int
     armor_percent: int
     armor_amount: Optional[int]

@@ -30,7 +30,7 @@ class EffectType(Cached, cache_size=20, cache_ttu=60.0):
     This class mostly specifies the purpose of any generic parameters.
 
     Attributes:
-        effect_type_id: The unique ID of this effect type.
+        id: The unique ID of this effect type.
         description: A description of what this effect type is used
             for.
         param*: Descriptions of what the corresponding parameter is
@@ -44,7 +44,7 @@ class EffectType(Cached, cache_size=20, cache_ttu=60.0):
     id_field = 'effect_type_id'
 
     # Type hints for data class fallback attributes
-    effect_type_id: int
+    id: int
     description: str
     param1: Optional[str]
     param2: Optional[str]
@@ -64,12 +64,12 @@ class EffectType(Cached, cache_size=20, cache_ttu=60.0):
 class Effect(Cached, cache_size=10, cache_ttu=60.0):
     """An effect acting on a character.
 
-    Access the corresponding :class:`auraxium.ps2.effect.EffectType`
-    instance via the :meth:`type` method for information on generic
+    Access the corresponding :class:`auraxium.ps2.EffectType` instance
+    via the :meth:`Effect.type` method for information on generic
     parameters.
 
     Attributes:
-        effect_id: The unique ID of this effect.
+        id: The unique ID of this effect.
         effect_type_id: The associated effect type for this effect.
         ability_id: The ability spawning the effect, if any.
         target_type_id: Integer value of the :class:`TargetType`
@@ -89,7 +89,7 @@ class Effect(Cached, cache_size=10, cache_ttu=60.0):
     id_field = 'effect_id'
 
     # Type hints for data class fallback attributes
-    effect_id: int
+    id: int
     effect_type_id: int
     ability_id: Optional[int]
     target_type_id: Optional[int]

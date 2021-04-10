@@ -28,7 +28,7 @@ class DirectiveTreeCategory(Named, ImageMixin, cache_size=10, cache_ttu=300.0):
     Attributes:
         directive_tree_category_id: The unique ID of the directive tree
             category.
-        name: The localised name of the directive tree category.
+        name: Localised name of the directive tree category.
 
     """
 
@@ -38,13 +38,13 @@ class DirectiveTreeCategory(Named, ImageMixin, cache_size=10, cache_ttu=300.0):
     id_field = 'directive_tree_category_id'
 
     # Type hints for data class fallback attributes
-    directive_tree_category_id: int
+    id: int
     name: LocaleData
 
     def trees(self) -> SequenceProxy['DirectiveTree']:
         """Return the trees in the category.
 
-        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        This returns a :class:`auraxium.SequenceProxy`.
         """
         query = Query(
             DirectiveTree.collection, service_id=self._client.service_id)
@@ -59,10 +59,10 @@ class DirectiveTree(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     "Heavy Assault".
 
     Attributes:
-        directive_tree_id: The unique ID of the directive tree.
+        id: The unique ID of the directive tree.
         directive_tree_category_id: The category of the directive tree.
-        name: The localised name of the directive tree.
         description: The localised description of the directive tree.
+        name: Localised name of the directive tree.
 
     """
 
@@ -72,15 +72,15 @@ class DirectiveTree(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     id_field = 'directive_tree_id'
 
     # Type hints for data class fallback attributes
-    directive_tree_id: int
+    id: int
     directive_tree_category_id: int
-    name: LocaleData
     description: Optional[LocaleData]
+    name: LocaleData
 
     def category(self) -> InstanceProxy[DirectiveTreeCategory]:
         """Return the category of the directive tree.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(DirectiveTreeCategory.collection,
                       service_id=self._client.service_id)
@@ -91,7 +91,7 @@ class DirectiveTree(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     def directives(self) -> SequenceProxy['Directive']:
         """Return the list of directives in this category.
 
-        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        This returns a :class:`auraxium.SequenceProxy`.
         """
         query = Query(Directive.collection, service_id=self._client.service_id)
         query.add_term(field='directive_tree_id', value=self.id).limit(400)
@@ -100,7 +100,7 @@ class DirectiveTree(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     def tiers(self) -> SequenceProxy['DirectiveTier']:
         """Return the list of directive tiers in this category.
 
-        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        This returns a :class:`auraxium.SequenceProxy`.
         """
         query = Query(
             DirectiveTier.collection, service_id=self._client.service_id)
@@ -114,7 +114,7 @@ class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     Container for related directives, e.g. "Combat Medic: Adept".
 
     Attributes:
-        directive_tier_id: The unique ID of the directive tier.
+        id: The unique ID of the directive tier.
         directive_tree_id: The directive tree this directive belongs
             to.
         reward_set_id: The reward set awarded upon completion of this
@@ -123,7 +123,7 @@ class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
             of this directive tier.
         completion_count: The number of directives that must be
             completed for completion of this directive tier.
-        name: The localised name of the directive tier.
+        name: Localised name of the directive tier.
 
     """
 
@@ -133,17 +133,17 @@ class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     id_field = 'directive_tier_id'
 
     # Type hints for data class fallback attributes
-    directive_tier_id: int
+    id: int
     directive_tree_id: int
+    name: LocaleData
     reward_set_id: Optional[int]
     directive_points: int
     completion_count: int
-    name: LocaleData
 
     def directives(self) -> SequenceProxy['Directive']:
         """Return the list of directives in this tier.
 
-        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        This returns a :class:`auraxium.SequenceProxy`.
         """
         query = Query(Directive.collection, service_id=self._client.service_id)
         query.add_term(field='directive_tier_id', value=self.id).limit(100)
@@ -152,7 +152,7 @@ class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     def tree(self) -> InstanceProxy[DirectiveTree]:
         """Return the tree of the directive.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(
             DirectiveTree.collection, service_id=self._client.service_id)
@@ -165,15 +165,15 @@ class Directive(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     """A directive a character may complete.
 
     Attributes:
-        directive_id: The unique ID of this directive.
+        id: The unique ID of this directive.
         directive_tree_id: The directive tree of this directive.
         directive_tier_id: The directive tier of this directive.
         objective_set_id: The objective set contributing towards this
             directive.
+        name: Localised name of the directive.
         qualify_requirement_id: An item that must be unlocked for this
             directive to be available.
-        name: The localised name of the directive.
-        name: The localised description of the directive.
+        description: The localised description of the directive.
 
     """
 
@@ -183,18 +183,18 @@ class Directive(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     id_field = 'directive_id'
 
     # Type hints for data class fallback attributes
-    directive_id: int
+    id: int
     directive_tree_id: int
     directive_tier_id: int
+    name: LocaleData
     objective_set_id: int
     qualify_requirement_id: Optional[int]
-    name: LocaleData
     description: Optional[LocaleData]
 
     def objectives(self) -> SequenceProxy[Objective]:
         """Return the objectives for this directive.
 
-        This returns a :class:`auraxium.proxy.SequenceProxy`.
+        This returns a :class:`auraxium.SequenceProxy`.
         """
         # NOTE: This table is being treated as a single set mapping to multiple
         # objectives via their common group. This is a guess. I was not able to
@@ -211,7 +211,7 @@ class Directive(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     def tier(self) -> InstanceProxy[DirectiveTier]:
         """Return the tier of the directive.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(
             DirectiveTier.collection, service_id=self._client.service_id)
@@ -222,7 +222,7 @@ class Directive(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     def tree(self) -> InstanceProxy[DirectiveTree]:
         """Return the tree of the directive.
 
-        This returns an :class:`auraxium.proxy.InstanceProxy`.
+        This returns an :class:`auraxium.InstanceProxy`.
         """
         query = Query(
             DirectiveTree.collection, service_id=self._client.service_id)

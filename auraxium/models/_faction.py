@@ -13,7 +13,7 @@ __all__ = [
 
 
 class FactionData(RESTPayload, ImageData):
-    """Data class for :class:`auraxium.ps2.faction.Faction`.
+    """Data class for :class:`auraxium.ps2.Faction`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.

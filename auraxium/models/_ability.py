@@ -14,11 +14,10 @@ __all__ = [
 
 
 class AbilityData(RESTPayload):
-    """Data class for :class:`auraxium.ps2.ability.Ability`.
+    """Data class for :class:`auraxium.ps2.Ability`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
-
     """
 
     ability_id: int
@@ -54,11 +53,10 @@ class AbilityData(RESTPayload):
 
 
 class AbilityTypeData(RESTPayload):
-    """Data class for :class:`auraxium.ps2.ability.AbilityType`.
+    """Data class for :class:`auraxium.ps2.AbilityType`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
-
     """
 
     ability_type_id: int
@@ -84,11 +82,10 @@ class AbilityTypeData(RESTPayload):
 
 
 class ResourceTypeData(RESTPayload):
-    """Data class for :class:`auraxium.ps2.ability.ResourceType`.
+    """Data class for :class:`auraxium.ps2.ResourceType`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
-
     """
 
     resource_type_id: int

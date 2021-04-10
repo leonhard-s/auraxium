@@ -25,7 +25,7 @@ class Projectile(Cached, cache_size=100, cache_ttu=60.0):
     """A projectile fired by a fire mode.
 
     Attributes:
-        projectile_id: The unique ID of this projectile.
+        id: The unique ID of this projectile.
         projectile_flight_type_id: The ID of the associated
             :class:`ProjectileFlightType`.
         speed: The projectile speed in meters per second.
@@ -67,7 +67,7 @@ class Projectile(Cached, cache_size=100, cache_ttu=60.0):
     id_field = 'projectile_id'
 
     # Type hints for data class fallback attributes
-    projectile_id: int
+    id: int
     projectile_flight_type_id: int
     speed: int
     speed_max: Optional[int]

@@ -168,6 +168,9 @@ class MetagameEvent(Event, WorldEvent):
         :attr:`metagame_event_id`, a warning is raised and ``zone_id``
         set to ``0``.
         """
+        # NOTE: Making this a static method is not possible due to the way
+        # pydantic validators are registered, hence the unused class attribute.
+        _ = cls
         if values['zone_id'] < 0:
             event_id = int(values['metagame_event_id'])
             try:

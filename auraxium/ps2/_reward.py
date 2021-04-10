@@ -20,7 +20,7 @@ class RewardType(Cached, cache_size=10, cache_ttu=3600.0):
     This class mostly specifies the purpose of any generic parameters.
 
     Attributes:
-        reward_type_id: The unique ID of this reward type.
+        id: The unique ID of this reward type.
         description: A description of what this reward type is used
             for.
         count_min: The minimum number of rewarded items/currency.
@@ -36,7 +36,7 @@ class RewardType(Cached, cache_size=10, cache_ttu=3600.0):
     id_field = 'reward_type_id'
 
     # Type hints for data class fallback attributes
-    reward_type_id: int
+    id: int
     description: str
     count_min: Optional[str]
     count_max: Optional[str]
@@ -50,12 +50,12 @@ class RewardType(Cached, cache_size=10, cache_ttu=3600.0):
 class Reward(Cached, cache_size=50, cache_ttu=60.0):
     """A reward awarded to a player.
 
-    Access the corresponding :class:`auraxium.ps2.reward.RewardType`
-    instance via the :meth:`type` method for information on generic
+    Access the corresponding :class:`auraxium.ps2.RewardType` instance
+    via the :meth:`Reward.type` method for information on generic
     parameters.
 
     Attributes:
-        reward_id: The unique ID of this reward.
+        id: The unique ID of this reward.
         reward_type_id: The :class:`RewardType` of this reward.
         count_min: The minimum number of rewarded items/currency.
         count_max: The maximum number of rewarded items/currency.
@@ -70,7 +70,7 @@ class Reward(Cached, cache_size=50, cache_ttu=60.0):
     id_field = 'reward_id'
 
     # Type hints for data class fallback attributes
-    reward_id: int
+    id: int
     reward_type_id: int
     count_min: int
     count_max: int
