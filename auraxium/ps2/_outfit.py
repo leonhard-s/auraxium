@@ -8,7 +8,7 @@ from .._cache import TLRUCache
 from ..census import Query
 from ..errors import NotFoundError
 from ..models import OutfitData, OutfitMemberData, OutfitRankData
-from ..proxy import InstanceProxy, SequenceProxy
+from .._proxy import InstanceProxy, SequenceProxy
 from .._rest import RequestClient, extract_payload, extract_single
 from .._support import deprecated
 

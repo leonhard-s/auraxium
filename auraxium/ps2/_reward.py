@@ -6,7 +6,7 @@ from ..base import Cached
 from ..census import Query
 from ..models import RewardData, RewardTypeData
 from .._rest import RequestClient
-from ..proxy import InstanceProxy, SequenceProxy
+from .._proxy import InstanceProxy, SequenceProxy
 
 __all__ = [
     'Reward',

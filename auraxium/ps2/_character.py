@@ -8,7 +8,7 @@ from .._cache import TLRUCache
 from ..census import Query
 from ..errors import NotFoundError
 from ..models import CharacterAchievement, TitleData, CharacterData
-from ..proxy import InstanceProxy, SequenceProxy
+from .._proxy import InstanceProxy, SequenceProxy
 from .._rest import RequestClient, extract_payload, extract_single
 from ..types import CensusData, LocaleData
 from .._support import deprecated

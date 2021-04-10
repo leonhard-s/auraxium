@@ -6,7 +6,7 @@ from typing import Dict, Final, Optional
 from ..base import Cached
 from ..census import Query
 from ..models import FireGroupData, FireModeData
-from ..proxy import InstanceProxy, SequenceProxy
+from .._proxy import InstanceProxy, SequenceProxy
 from .._rest import extract_payload
 from ..types import LocaleData
 

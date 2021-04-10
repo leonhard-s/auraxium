@@ -6,7 +6,7 @@ from typing import Final, List, Optional
 from ..base import Cached
 from ..census import Query
 from ..models import WeaponAmmoSlot, WeaponData, WeaponDatasheet
-from ..proxy import InstanceProxy, SequenceProxy
+from .._proxy import InstanceProxy, SequenceProxy
 from .._rest import RequestClient, extract_payload, extract_single
 from .._support import deprecated
 

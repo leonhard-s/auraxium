@@ -6,7 +6,7 @@ from ..base import Cached
 from ..census import Query
 from ..models import LoadoutData, ProfileData
 from ..models.base import FallbackMixin
-from ..proxy import InstanceProxy, SequenceProxy
+from .._proxy import InstanceProxy, SequenceProxy
 from ..types import CensusData
 
 from ._armour import ArmourInfo

@@ -6,7 +6,7 @@ from ..base import Cached, ImageMixin, Named
 from ..census import Query
 from ..models import ItemCategoryData, ItemData, ItemTypeData
 from .._rest import extract_single
-from ..proxy import InstanceProxy, SequenceProxy
+from .._proxy import InstanceProxy, SequenceProxy
 from ..types import LocaleData
 
 from ._faction import Faction
