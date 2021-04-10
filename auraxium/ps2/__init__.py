@@ -5,35 +5,35 @@ census. Note that the object attributes and hierarchy of this object
 model will not match up to the Census API perfectly.
 """
 
-from .ability import Ability, AbilityType, ResourceType
-from .achievement import Achievement
-from .armour import ArmourFacing, ArmourInfo
-from .character import Character, Title
-from .currency import Currency
-from .depot import MarketingBundle, MarketingBundleSingle
-from .directive import (Directive, DirectiveTier, DirectiveTree,
-                        DirectiveTreeCategory)
-from .effect import Effect, EffectType, TargetType
-from .experience import Experience, ExperienceRank
-from .faction import Faction
-from .fire import FireGroup, FireMode, FireModeType
-from .item import Item, ItemCategory, ItemType
+from ._ability import Ability, AbilityType, ResourceType
+from ._achievement import Achievement
+from ._armour import ArmourFacing, ArmourInfo
+from ._character import Character, Title
+from ._currency import Currency
+from ._depot import MarketingBundle, MarketingBundleSingle
+from ._directive import (Directive, DirectiveTier, DirectiveTree,
+                         DirectiveTreeCategory)
+from ._effect import Effect, EffectType, TargetType
+from ._experience import Experience, ExperienceRank
+from ._faction import Faction
+from ._fire import FireGroup, FireMode, FireModeType
+from ._item import Item, ItemCategory, ItemType
 from . import leaderboard
-from .map import MapHex, MapRegion, Region
-from .metagame import MetagameEvent, MetagameEventState
-from .objective import Objective, ObjectiveType
-from .outfit import Outfit, OutfitMember
-from .profile import Loadout, Profile
-from .projectile import Projectile, ProjectileFlightType
-from .resist import ResistInfo, ResistType
-from .reward import Reward, RewardType
-from .skill import Skill, SkillCategory, SkillLine, SkillSet
-from .states import PlayerState, PlayerStateGroup
-from .vehicle import Vehicle, VehicleAttachment
-from .weapon import Weapon, WeaponAmmoSlot, WeaponDatasheet
-from .world import World
-from .zone import Zone
-from .zone_effect import ZoneEffect, ZoneEffectType
+from ._map import MapHex, MapRegion, Region
+from ._metagame import MetagameEvent, MetagameEventState
+from ._objective import Objective, ObjectiveType
+from ._outfit import Outfit, OutfitMember
+from ._profile import Loadout, Profile
+from ._projectile import Projectile, ProjectileFlightType
+from ._resist import ResistInfo, ResistType
+from ._reward import Reward, RewardType
+from ._skill import Skill, SkillCategory, SkillLine, SkillSet
+from ._states import PlayerState, PlayerStateGroup
+from ._vehicle import Vehicle, VehicleAttachment
+from ._weapon import Weapon, WeaponAmmoSlot, WeaponDatasheet
+from ._world import World
+from ._zone import Zone
+from ._zone_effect import ZoneEffect, ZoneEffectType
 
 __all__ = [
     'Ability',

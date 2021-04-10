@@ -49,7 +49,7 @@ class EventClientTest(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(self.client.triggers, 'predefined triggers found')
         self.assertIsNone(self.client.websocket, 'preexisting websocket found')
         # Add trigger and wait for ready
-        trigger = auraxium.Trigger(auraxium.EventType.BATTLE_RANK_UP)
+        trigger = auraxium.Trigger(auraxium.event.BattleRankUp)
         self.client.add_trigger(trigger)
         await self.client.wait_ready()
         # Check for websocket activity
@@ -61,15 +61,16 @@ class EventClientTest(unittest.IsolatedAsyncioTestCase):
         """Test event dispatching."""
         flag = asyncio.Event()
 
-        async def on_death(event: auraxium.Event) -> None:
-            self.assertIsInstance(event, auraxium.Event, 'non-event returned')
+        async def on_death(event: auraxium.event.Event) -> None:
+            self.assertIsInstance(event, auraxium.event.Event,
+                                  'non-event returned')
             flag.set()
 
-        self.client.trigger(auraxium.EventType.DEATH)(on_death)
+        self.client.trigger(auraxium.event.Death)(on_death)
         try:
-            await asyncio.wait_for(flag.wait(), 30.0)
+            await asyncio.wait_for(flag.wait(), 5.0)
         except asyncio.TimeoutError:
-            self.skipTest('no game event received after 30 seconds, '
+            self.skipTest('no game event received after 5 seconds, '
                           'is the game in maintenance?')
         self.assertEqual(len(self.client.triggers), 1)
         self.client.remove_trigger('on_death')
@@ -77,18 +78,18 @@ class EventClientTest(unittest.IsolatedAsyncioTestCase):
 
     async def test_single_shot(self) -> None:
         """Test a single-shot trigger to ensure it is auto-deleted."""
-        trigger = auraxium.Trigger(auraxium.EventType.DEATH, single_shot=True)
+        trigger = auraxium.Trigger(auraxium.event.Death, single_shot=True)
         flag = asyncio.Event()
 
-        async def wait_for(event: auraxium.Event) -> None:
+        async def wait_for(event: auraxium.event.Event) -> None:
             _ = event
             flag.set()
 
         trigger.action = wait_for
         self.client.add_trigger(trigger)
         try:
-            await asyncio.wait_for(flag.wait(), 30.0)
+            await asyncio.wait_for(flag.wait(), 5.0)
         except asyncio.TimeoutError:
-            self.skipTest('no game event received after 30 seconds, '
+            self.skipTest('no game event received after 5 seconds, '
                           'is the game in maintenance?')
         self.assertEqual(len(self.client.triggers), 0)

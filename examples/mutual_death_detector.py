@@ -1,5 +1,3 @@
-# type: ignore
-# pylint: disable=unused-variable
 """Example for detecting mutual deaths between players.
 
 This script showcases using the event client to detect mutual deaths
@@ -11,7 +9,7 @@ import asyncio
 import datetime
 from typing import Dict, Tuple
 
-import auraxium
+import auraxium  # pylint: disable=import-error
 
 # The maximum time difference between kills for them to be considered mutual.
 MUTUAL_DEATH_WINDOW = 5.0
@@ -25,8 +23,8 @@ async def main() -> None:
     # This dictionary is used to track recent deaths
     cache: Dict[int, Tuple[int, datetime.datetime]] = {}
 
-    @client.trigger(auraxium.EventType.DEATH)
-    async def on_death(event: auraxium.Event) -> None:
+    @client.trigger(auraxium.event.Death)
+    async def on_death(event: auraxium.event.Death) -> None:
         """Run whenever a death event is received."""
         now = event.timestamp
         victim_id = event.character_id
@@ -62,11 +60,14 @@ async def main() -> None:
                 server = await victim.world()
 
                 print(f'{now}: [{server}] - Mutual death between '
-                      f'{victim.name()} and {killer.name()}')
+                      f'{victim.name} and {killer.name}')
 
                 # Remove cache item as it was "consumed" for this mutual death
                 del cache[cache_killer]
                 return
+
+        # No-op; this mostly serves to fix "unused name" errors in some linters
+        _ = on_death
 
         # No match found, add current event to cache instead
         cache[killer_id] = victim_id, now

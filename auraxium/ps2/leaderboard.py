@@ -6,11 +6,10 @@ from typing import Dict, Final, List, Optional, Tuple, Union
 
 from ..census import Query
 from ..errors import NotFoundError
-from ..client import Client
-from ..request import extract_payload, extract_single
+from .._rest import RequestClient, extract_payload, extract_single
 
-from .character import Character
-from .world import World
+from ._character import Character
+from ._world import World
 
 __all__ = [
     'by_char',
@@ -42,7 +41,7 @@ class Stat(enum.Enum):
 
 async def by_char(stat: Stat, character: Union[int, Character],
                   period: Period = Period.FOREVER,
-                  *, client: Client) -> Optional[Tuple[int, int]]:
+                  *, client: RequestClient) -> Optional[Tuple[int, int]]:
     """Return the rank of the player on the leaderboard.
 
     Note that only the top 10'000 players are tracked by the
@@ -61,13 +60,13 @@ async def by_char(stat: Stat, character: Union[int, Character],
         data = extract_single(payload, collection)
     except NotFoundError:
         return None
-    return int(data['rank']), int(data['value'])
+    return int(str(data['rank'])), int(str(data['value']))
 
 
 async def by_char_multi(stat: Stat, character: Union[int, Character],
                         *args: Union[int, Character],
                         period: Period = Period.FOREVER,
-                        client: Client) -> List[Tuple[int, int]]:
+                        client: RequestClient) -> List[Tuple[int, int]]:
     """Return the rank of the players on the leaderboard.
 
     Like by_char, but takes any number of arguments.
@@ -84,14 +83,14 @@ async def by_char_multi(stat: Stat, character: Union[int, Character],
     data = extract_payload(payload, collection)
     return_: Dict[int, Tuple[int, int]] = {i: (-1, -1) for i in char_ids}
     for row in data:
-        id_ = int(row['character_id'])
-        return_[id_] = int(row['rank']), int(row['value'])
+        id_ = int(str(row['character_id']))
+        return_[id_] = int(str(row['rank'])), int(str(row['value']))
     return [return_[i] for i in char_ids]
 
 
 async def top(stat: Stat, period: Period = Period.FOREVER, matches: int = 10,
               offset: int = 0, world: Optional[Union[int, World]] = None,
-              *, client: Client) -> List[Tuple[int, Character]]:
+              *, client: RequestClient) -> List[Tuple[int, Character]]:
     """Retrieve the top entries on the leaderboard for the given stat.
 
     Note that only the top 10'000 players are tracked by the
@@ -114,7 +113,7 @@ async def top(stat: Stat, period: Period = Period.FOREVER, matches: int = 10,
     join.set_fields(Character.id_field)
     payload = await client.request(query)
     key = 'character_id_join_character'
-    return [(int(d['value']), Character(d[key], client=client))
+    return [(int(str(d['value'])), Character(d[key], client=client))
             for d in extract_payload(payload, collection=collection)]
 
 
