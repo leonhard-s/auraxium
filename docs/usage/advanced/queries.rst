@@ -144,7 +144,7 @@ However, it would be more convenient if we could have it return a list of :class
 
 .. note::
 
-    This strategy is lower-latency as it only uses a single query, but it also significantly increases bandwidth - this trade-off can generally not be avoided when working with joins.
+    This strategy is lower-latency as it only uses a single query, but it also significantly increases bandwidth due to the character data being retrieved for all friends, not just online ones. This trade-off between latency and payload size can generally not be avoided when working with joins.
 
 To achieve this, another join is added to the friends list, which will contain the full character payload for each friend (even offline ones, but most players' friends lists should be short enough for this to not affect performance).
 

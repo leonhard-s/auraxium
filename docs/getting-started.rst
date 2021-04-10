@@ -16,13 +16,13 @@ Auraxium can be installed from PyPI through pip:
 
 .. rubric:: Windows
 
-.. code-block::
+.. code-block:: posh
 
     python -m pip install --user --upgrade auraxium
 
 .. rubric:: Unix
 
-.. code-block::
+.. code-block:: bash
 
     python3 -m pip install --user --upgrade auraxium
 
@@ -30,13 +30,13 @@ You can also use the following commands to install the latest development build 
 
 .. rubric:: Windows
 
-.. code-block::
+.. code-block:: posh
 
     python -m pip install --user -e git+git://github.com/leonhard-s/auraxium.git#egg=auraxium
 
 .. rubric:: Unix
 
-.. code-block::
+.. code-block:: bash
 
     python3 -m pip install --user -e git+git://github.com/leonhard-s/auraxium.git#egg=auraxium
 
@@ -58,29 +58,11 @@ Object Model
 
 All API interactions are performed through :class:`auraxium.Client` or one of its sub classes. The class representations of in-game objects can be found in the :mod:`auraxium.ps2` module.
 
-To retrieve in-game object instances, use :meth:`~auraxium.Ps2Object.get`, :meth:`~auraxium.Ps2Object.find`, or one of the ``get_by_*()`` helpers.
-
-These methods are available for either of the following patterns:
-
-.. rubric:: Client-Based Access
-
-.. code-block:: python3
-
-    client = auraxium.Client()
-
-    my_char = await client.get_by_name(auraxium.ps2.Character, 'Higby')
-
-.. rubric:: Object-Based Access
-
-.. code-block:: python3
-
-    client = auraxium.Client()
-
-    my_char = await auraxium.ps2.Character.get_by_name('Higby', client=client)
+To retrieve in-game object instances, use :meth:`~auraxium.Client.get`, for single items, or :meth:`~auraxium.Client.find` for lists.
 
 .. note::
 
-    Object-based access is generally preferrable as it exposes additional, class-specific helpers like :meth:`auraxium.ps2.Outfit.get_by_tag()`.
+    The ``auraxium.Ps2Object.get_by_*`` interface has been deprecated and is scheduled for removal in version 0.3. Please use the :class:`auraxium.Client` methods instead.
 
 For more information on the available classes and the attributes they expose, refer to the :doc:`object model reference <api/ps2>`.
 
@@ -93,9 +75,9 @@ The :class:`auraxium.EventClient` sub class adds a trigger-action system allowin
 
     client = auraxium.EventClient()
 
-    @client.trigger(auraxium.EventType.DEATH)
+    @client.trigger(auraxium.event.Death)
     async def on_death(event):
-        victim_id = int(event.payload['character_id'])
+        victim_id = event.character_id
         victim = await client.get_by_id(auraxium.ps2.Character, victim_id)
         print(f'Player {victim.name}' has died)
 
