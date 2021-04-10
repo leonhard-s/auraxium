@@ -178,7 +178,7 @@ This now returns a list of payloads compatible with the ``character`` collection
 .. literalinclude:: ../../../examples/get_online_friends.py
     :start-at: async def
     :end-at: return
-    :emphasize-lines: 3,21
+    :emphasize-lines: 3,20
 
 That's it - this method now behaves exactly the same as any built-in utility methods and will play nicely with any other methods using the object model.
 
