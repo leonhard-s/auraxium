@@ -649,7 +649,7 @@ class Query(QueryBase):
 
         .. code-block:: python3
 
-            QueryBase.sort('field1', ('field'2, True))  # Ascending
+            QueryBase.sort('field1', ('field2', True))  # Ascending
             QueryBase.sort(('field3', False))  # Descending
 
         If multiple field names are provided, multiple sorting passes
