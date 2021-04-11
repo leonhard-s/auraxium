@@ -32,18 +32,24 @@ log = logging.getLogger('auraxium.ps2')
 class Title(Named, cache_size=300, cache_ttu=300.0):
     """A title selectable by a character.
 
-    .. important::
-        Unlike most other forms of API data, the ID used by titles is
-        **not** unique.
+    .. attribute:: id
+       type: int:
 
-        This is due to the ASP system re-using the same title IDs while
-        introducing a different name ("A.S.P. Operative" for ``en``).
+       The identifier for this title.
 
+       .. important::
+          Unlike most other forms of API data, the ID used by titles is
+          **not** unique.
 
-    Attributes:
-        id: The ID of this title.
-        name: Localised name of the title.
+          This is due to the ASP system re-using the same title IDs
+          while introducing a different name (namely "A.S.P. Operative"
+          for all titles in the ``en`` locale).
 
+    .. attribute:: name
+       :type: auraxium.types.LocaleData
+
+       Per-locale names for this entity. Casting to string will use the
+       English locale.
     """
 
     collection = 'title'
@@ -57,20 +63,88 @@ class Title(Named, cache_size=300, cache_ttu=300.0):
 
 
 class Character(Named, cache_size=256, cache_ttu=30.0):
-    """A player-controlled fighter.
+    """A player-controlled character running around the game.
 
-    Attributes:
-        id: The unique name of the character.
-        faction_id: The faction the character belongs to.
-        head_id: The head model for this character.
-        title_id: The current title selected for this character. May be
-            zero.
-        times: Play and login time data for the character.
-        certs: Certification data for the character.
-        battle_rank: Battle rank data for the character.
-        profile_id: The last profile the character used.
-        prestige_level: The ASP rank of the character.
+    .. attribute:: id
+       :type: int
 
+       The unique identifier of the player.
+
+       .. note::
+
+          IDs are only unique per platform. The same character ID
+          could be reused between PC and PS4.
+
+    .. attribute:: faction_id
+       :type: int
+
+       ID of the :class:`Faction` the character belongs to.
+
+       .. seealso:: :meth:`Character.faction` -- Retrieve the
+          :class:`Faction` the character belongs to.
+
+    .. attribute:: head_id
+       :type: int
+
+       The head model selected by the player. This includes the two
+       genders as well as the four head types, giving a total of eight
+       variants.
+
+       For human player models, head IDs 1 through 4 are the male
+       variants, 5 through 8 are the female head shapes.
+
+       There are ~160 characters with a head ID of 0 (bad data?), and
+       NSO characters appear to be limited to head IDs 1 through 4.
+
+    .. attribute:: title_id
+       :type: int
+
+       ID of the currently selected :class:`Title` for this character.
+       May be zero if the character has not selected any title.
+
+       .. seealso::
+          :meth:`Character.title` -- Retrieve the currently selected
+          :class:`Title` of the character.
+
+          :meth:`Character.name_long` -- Retrieve the display name of
+          the character (i.e. including their :class:`Title`, if any).
+
+    .. attribute:: times
+       :type: auraxium.models.CharacterData.Times
+
+       Login times and minutes played for the given character.
+
+    .. attribute:: certs
+       :type: auraxium.models.CharacterData.Certs
+
+       Current, past and total certification points for the character.
+
+    .. attribute:: battle_rank
+       :type: auraxium.models.CharacterData.BattleRank
+
+       The current battle rank of the character, and their progress
+       until the next rankup.
+
+    .. autodata:: auraxium.models.CharacterData.battle_rank
+       :members:
+
+    .. attribute:: profile_id
+       :type: int
+
+       ID of the last :class:`Profile` the character played as.
+
+       This value is only updated on logout, polling it is not not a
+       reliable way of determining a player's current class.
+
+       .. seealso::
+
+          :meth:`Character.profile` -- Retrieve the :class:`Profile`
+          the character last played as.
+
+    .. attribute:: prestive_level
+       :type: int
+
+       The prestige (or A.S.P.) rank for the character.
     """
 
     _cache: ClassVar[TLRUCache[Union[int, str], 'Character']]
@@ -91,7 +165,18 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     prestige_level: int
 
     async def achievements(self, **kwargs: Any) -> List[CharacterAchievement]:
-        """Return the achievement status for a character."""
+        """Helper method for retrieving character achievements.
+
+        Any keyword arguments passed are forwarded to
+        :meth:`auraxium.census.Query`.
+
+        Returns at most 5'000 results.
+
+        .. warning::
+
+           This method is part of a provisional API and may be removed
+           or altered in upcoming versions.
+        """
         collection: Final[str] = 'characters_achievement'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.limit(5000)
@@ -101,7 +186,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         return [CharacterAchievement(**d) for d in data]
 
     async def currency(self) -> Tuple[int, int]:
-        """Return the currencies of the character.
+        """Helper method for retrieving a character's balance.
 
         This returns a tuple of the number of Nanites and ASP tokens
         available to the player.
@@ -118,7 +203,19 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
     async def directive(self, results: int = 1,
                         **kwargs: Any) -> List[CharacterDirective]:
-        """Query the directive status for this character."""
+        """Helper method for retrieving character directive progress.
+
+        The payloads returned show if and when the character has
+        completed the given :class:`Directive`.
+
+        Any keyword arguments passed are forwarded to
+        :meth:`auraxium.census.Query`.
+
+        .. warning::
+
+           This method is part of a provisional API and may be removed
+           or altered in upcoming versions.
+        """
         collection: Final[str] = 'characters_directive'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
@@ -129,7 +226,19 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
     async def directive_objective(self, results: int = 1, **kwargs: Any
                                   ) -> List[CharacterDirectiveObjective]:
-        """Query the objective status for a directive."""
+        """Helper method for retrieving directive progress.
+
+        The payloads returned show the progress towards a given
+        directive.
+
+        Any keyword arguments passed are forwarded to
+        :meth:`auraxium.census.Query`.
+
+        .. warning::
+
+           This method is part of a provisional API and may be removed
+           or altered in upcoming versions.
+        """
         collection: Final[str] = 'characters_directive_objective'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
@@ -140,7 +249,19 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
     async def directive_tier(self, results: int = 1,
                              **kwargs: Any) -> List[CharacterDirectiveTier]:
-        """Query the directive tier status for this character."""
+        """Helper method for retrieving directive tier progress.
+
+        The payloads returned show if and when the character has
+        completed a given :class:`DirectiveTier`.
+
+        Any keyword arguments passed are forwarded to
+        :meth:`auraxium.census.Query`.
+
+        .. warning::
+
+           This method is part of a provisional API and may be removed
+           or altered in upcoming versions.
+        """
         collection: Final[str] = 'characters_directive_tier'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
@@ -151,7 +272,19 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
     async def directive_tree(self, results: int = 1,
                              **kwargs: Any) -> List[CharacterDirectiveTree]:
-        """Query the directive tree status for this character."""
+        """Helper method for retrieving directive tree progress.
+
+        The payloads returned show the current progress of the
+        character along a :class:`DirectiveTree`.
+
+        Any keyword arguments passed are forwarded to
+        :meth:`auraxium.census.Query`.
+
+        .. warning::
+
+           This method is part of a provisional API and may be removed
+           or altered in upcoming versions.
+        """
         collection: Final[str] = 'characters_directive_tree'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
@@ -163,10 +296,17 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     async def events(self, **kwargs: Any) -> List[CensusData]:
         """Return and process past events for this character.
 
-        This provides a REST endpoint for past character events.
+        This provides a REST endpoint for past character events. This
+        is always limited to at most 1000 return values. Use the begin
+        and end parameters to poll more data.
 
-        This is always limited to at most 1000 return values. Use the
-        begin and end parameters to poll more data.
+        Any keyword arguments passed are forwarded to
+        :meth:`auraxium.census.Query`.
+
+        .. warning::
+
+            This method is part of a provisional API and may be removed
+            or altered in upcoming versions.
         """
         collection: Final[str] = 'characters_event'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
@@ -177,7 +317,16 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         return data
 
     async def events_grouped(self, **kwargs: Any) -> List[CensusData]:
-        """Used to obtain kills and deaths on a per-player basis."""
+        """Helper method for retrieving deaths and kills by player.
+
+        Any keyword arguments passed are forwarded to
+        :meth:`auraxium.census.Query`.
+
+        .. warning::
+
+            This method is part of a provisional API and may be removed
+            or altered in upcoming versions.
+        """
         collection: Final[str] = 'characters_event_grouped'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
@@ -218,7 +367,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         return characters
 
     @classmethod
-    @deprecated('0.3', replacement='Client.get()')
+    @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
                           client: RequestClient) -> Optional[NamedT]:
         """Retrieve an object by its unique name.
@@ -329,7 +478,16 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         return InstanceProxy(Profile, query, client=self._client)
 
     async def skill(self, results: int = 1, **kwargs: Any) -> List[CensusData]:
-        """Return the skills unlocked by this character."""
+        """Return skills unlocked by the player.
+
+        Any keyword arguments passed are forwarded to
+        :meth:`auraxium.census.Query`.
+
+        .. warning::
+
+           This method is part of a provisional API and may be removed
+           or altered in upcoming versions.
+        """
         collection: Final[str] = 'characters_skill'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
@@ -339,7 +497,16 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         return data
 
     async def stat(self, results: int = 1, **kwargs: Any) -> List[CensusData]:
-        """Return global statistics for this character."""
+        """Return global statistics for this character.
+
+        Any keyword arguments passed are forwarded to
+        :meth:`auraxium.census.Query`.
+
+        .. warning::
+
+           This method is part of a provisional API and may be removed
+           or altered in upcoming versions.
+        """
         collection: Final[str] = 'characters_stat'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
@@ -350,7 +517,16 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
     async def stat_by_faction(self, results: int = 1,
                               **kwargs: Any) -> List[CensusData]:
-        """Return faction-specific statistics for this character."""
+        """Return faction-specific statistics for this character.
+
+        Any keyword arguments passed are forwarded to
+        :meth:`auraxium.census.Query`.
+
+        .. warning::
+
+           This method is part of a provisional API and may be removed
+           or altered in upcoming versions.
+        """
         collection: Final[str] = 'characters_stat_by_faction'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
@@ -361,7 +537,16 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
     async def stat_history(self, results: int = 1,
                            **kwargs: Any) -> List[CensusData]:
-        """Return historical statistics for this character."""
+        """Return historical statistics for this character.
+
+        Any keyword arguments passed are forwarded to
+        :meth:`auraxium.census.Query`.
+
+        .. warning::
+
+           This method is part of a provisional API and may be removed
+           or altered in upcoming versions.
+        """
         collection: Final[str] = 'characters_stat_history'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
@@ -372,7 +557,16 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
     async def weapon_stat(self, results: int = 1,
                           **kwargs: Any) -> List[CensusData]:
-        """Return weapon-specific statistics for this character."""
+        """Return weapon-specific statistics for this character.
+
+        Any keyword arguments passed are forwarded to
+        :meth:`auraxium.census.Query`.
+
+        .. warning::
+
+           This method is part of a provisional API and may be removed
+           or altered in upcoming versions.
+        """
         collection: Final[str] = 'characters_weapon_stat'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
@@ -383,7 +577,16 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
     async def weapon_stat_by_faction(self, results: int = 1,
                                      **kwargs: Any) -> List[CensusData]:
-        """Return per-faction weapon statistics for this character."""
+        """Return per-faction weapon statistics for this character.
+
+        Any keyword arguments passed are forwarded to
+        :meth:`auraxium.census.Query`.
+
+        .. warning::
+
+           This method is part of a provisional API and may be removed
+           or altered in upcoming versions.
+        """
         collection: Final[str] = 'characters_weapon_stat_by_faction'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
         query.add_term(field=self.id_field, value=self.id)
