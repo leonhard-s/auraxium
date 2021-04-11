@@ -35,6 +35,7 @@ class SearchModifier(enum.Enum):
        CONTAINS: '*',              NOT_EQUAL: '!'
 
     """
+    # pylint: disable=invalid-name
 
     EQUAL_TO = 0
     LESS_THAN = 1
@@ -44,6 +45,70 @@ class SearchModifier(enum.Enum):
     STARTS_WITH = 5
     CONTAINS = 6
     NOT_EQUAL = 7
+
+    @property
+    def EQ(self) -> 'SearchModifier':
+        """Alias for :class:`EQUAL_TO <SearchModifier>`.
+
+        .. versionadded:: 0.2
+        """
+        return self.EQUAL_TO
+
+    @property
+    def LT(self) -> 'SearchModifier':
+        """Alias for :class:`LESS_THAN <SearchModifier>`.
+
+        .. versionadded:: 0.2
+        """
+        return self.LESS_THAN
+
+    @property
+    def LTE(self) -> 'SearchModifier':
+        """Alias for :class:`LESS_THAN_OR_EQUAL <SearchModifier>`.
+
+        .. versionadded:: 0.2
+        """
+        return self.LESS_THAN_OR_EQUAL
+
+    @property
+    def GT(self) -> 'SearchModifier':
+        """Alias for :class:`GREATER_THAN <SearchModifier>`.
+
+        .. versionadded:: 0.2
+        """
+        return self.GREATER_THAN
+
+    @property
+    def GTE(self) -> 'SearchModifier':
+        """Alias for :class:`GREATER_THAN_OR_EQUAL <SearchModifier>`.
+
+        .. versionadded:: 0.2
+        """
+        return self.GREATER_THAN_OR_EQUAL
+
+    @property
+    def SW(self) -> 'SearchModifier':
+        """Alias for :class:`STARTS_WITH <SearchModifier>`.
+
+        .. versionadded:: 0.2
+        """
+        return self.STARTS_WITH
+
+    @property
+    def IN(self) -> 'SearchModifier':
+        """Alias for :class:`CONTAINS <SearchModifier>`.
+
+        .. versionadded:: 0.2
+        """
+        return self.CONTAINS
+
+    @property
+    def NE(self) -> 'SearchModifier':
+        """Alias for :class:`NOT_EQUAL <SearchModifier>`.
+
+        .. versionadded:: 0.2
+        """
+        return self.NOT_EQUAL
 
     @classmethod
     def from_value(cls, value: CensusValue) -> 'SearchModifier':

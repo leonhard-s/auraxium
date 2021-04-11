@@ -271,6 +271,8 @@ Search modifiers & filters
 --------------------------
 
 .. autoclass:: SearchModifier()
+   :members:
+   :exclude-members: from_value, serialise
 
    .. automethod:: from_value(value: float | int | str) -> SearchModifier
 
