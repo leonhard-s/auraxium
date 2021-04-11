@@ -29,25 +29,53 @@ class Trigger:
     Note that some subscriptions are incompatible with each other and
     may require multiple clients to be stable.
 
-    Attributes:
-        action: The method or coroutine to run if the matching event is
-            encountered.
-        characters: A list of characters to filter the incoming events
-            by. For some events, like :class:`auraxium.event.Death`,
-            there are multiple character IDs involved that may match.
-        conditions: Any number of variables or callables that must be
-            True for the trigger to run. Note that these filters are
-            checked for any matching events, so any callables must be
-            synchronous and lightweight.
-        events: A set of events that the trigger will listen for.
-        last_run: A :class:`datetime.datetime` instance that will be set
-            to the last time the trigger has run. This will be
-            ``None`` until the first run of the trigger.
-        name: The unique name of the trigger.
-        single_shot: If True, the trigger will be automatically removed
-            from the client when it fires once.
-        worlds: A list of worlds to filter the incoming events by.
+    .. attribute:: action
+       :type: collections.abc.Callable[[Event], None] | collections.abc.Callable[[typing.Coroutine[None]], None]
 
+        The method or coroutine to run if the matching event is
+        encountered.
+
+    .. attribute:: characters
+       :type: list[int]
+
+          A list of characters to filter the incoming events by. For
+          some events, like :class:`auraxium.event.Death`, both the
+          victim and killer can lead to a match.
+
+    .. attribute:: conditions
+       :type: list[collections.abc.Callable[[Event], bool]] | None
+
+       Any number of callables that must return true for the trigger to
+       run. Note that these filters are checked for any matching
+       event types. Any callables used must be synchronous.
+
+    .. attribute:: events
+       :type: typing.Type[Event] | str
+
+       A set of events that the trigger will listen for.
+
+    .. attribute:: last_run
+       :type: datetime.datetime | None
+
+       A :class:`datetime.datetime` instance that will be set to the
+       last time the trigger has run. This will be :obj:`None` until
+       the first run of te trigger.
+
+    .. attribute:: name
+       :type: str
+
+       The unique name of the trigger.
+
+    .. attribute:: single_shot
+       :type: bool
+
+       If True, the trigger will be automatically removed from the
+       client when it first fires.
+
+    .. attribute:: worlds
+       :type: list[int]
+
+       A list of worlds to filter the incoming events by.
     """
 
     def __init__(self, event: _EventType, *args: _EventType,
@@ -57,6 +85,34 @@ class Trigger:
                  action: Optional[_Action] = None,
                  name: Optional[str] = None,
                  single_shot: bool = False) -> None:
+        """Initialise a new trigger.
+
+        .. seealso::
+
+           :meth:`auraxium.EventClient.trigger` -- Decorator used to
+           define a trigger around a given function.
+
+        :param event: The event type to trigger on.
+        :type event: typing.Type[Event] or str
+        :param args: Additional events to trigger on.
+        :type args: typing.Type[Event] or str
+        :param characters: A list of character constraints for the
+           trigger.
+        :type characters: collections.abc.Iterable[
+           auraxium.ps2.Character] or collections.abc.Iterable[int] or None
+        :param worlds: A list of world constraints for the trigger.
+        :type worlds: collections.abc.Iterable[auraxium.abc.World] or collections.abc.Iterable[int] or None
+        :param conditions: A list of callables that must be true for
+           the trigger to run.
+        :type conditions: list[collections.abc.Callable[[Event], bool]] or None
+        :param action: The method or coroutine to run if a matching
+           event is encountered.
+        :type action: collections.abc.Callable[[Event], None] or collections.abc.Callable[[typing.Coroutine[None]], None]
+        :param name: The unique name of the trigger.
+        :type name: str or None
+        :param bool single_shot: If true, trigger will be removed from
+           any client when it first fires.
+        """
         self.action = action
         self.characters: List[int] = []
         if characters is not None:
@@ -75,23 +131,23 @@ class Trigger:
         """Set the given function as the trigger action.
 
         The action may be a regular callable or a coroutine.
-        Any callable that is a coroutine according to
-        :meth:`asyncio.iscoroutinefunction()` will be awaited.
+        Any callable that is a coroutine function according to
+        :func:`asyncio.iscoroutinefunction` will be awaited.
 
         This method can be used as a decorator.
 
         .. code-block:: python3
 
-            my_trigger = Trigger('Death')
-            @my_trigger.callback
-            def pay_respect(event):
-                char = event.character_id
-                print('F ({char})')
+           my_trigger = Trigger('Death')
 
-        Arguments:
-            func: The method or coroutine to call when the event
-                trigger fires.
+           @my_trigger.callback
+           def pay_respect(event):
+               char = event.character_id
+               print('F ({char})')
 
+        :param func: The method or coroutine to call when the event
+           trigger fires.
+        :type func: collections.abc.Callable[[Event], None] or collections.abc.Callable[[typing.Coroutine[None]], None]
         """
         self.action = func
 
