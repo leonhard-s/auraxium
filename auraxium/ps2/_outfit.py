@@ -122,7 +122,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         return self.alias
 
     @classmethod
-    @deprecated('0.3', replacement='Client.get()')
+    @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
                           client: RequestClient) -> Optional[NamedT]:
         """Retrieve an outfit by its unique name.
@@ -146,7 +146,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         return cls(payload, client=client)
 
     @classmethod
-    @deprecated('0.3', replacement='Client.get()')
+    @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')
     async def get_by_tag(cls, tag: str, client: RequestClient) -> Optional['Outfit']:
         """Return an outfit by its unique tag.
 

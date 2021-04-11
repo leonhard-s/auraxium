@@ -37,7 +37,7 @@ class LocaleData(pydantic.BaseModel):
     fr: Optional[str] = None
     it: Optional[str] = None
 
-    @deprecated('0.3.0', '.name (without parentheses)')
+    @deprecated('0.3.0', ':attr:`auraxium.types.LocaleData.name`')
     def __call__(self, locale: str = 'en') -> str:
         return getattr(self, locale)
 
