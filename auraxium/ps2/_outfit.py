@@ -121,8 +121,8 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         """Alias of :attr:`Outfit.alias`."""
         return self.alias
 
-    @deprecated('0.3', replacement='Client.get()')
     @classmethod
+    @deprecated('0.3', replacement='Client.get()')
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
                           client: RequestClient) -> Optional[NamedT]:
         """Retrieve an outfit by its unique name.
@@ -145,8 +145,8 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
             return None
         return cls(payload, client=client)
 
-    @deprecated('0.3', replacement='Client.get()')
     @classmethod
+    @deprecated('0.3', replacement='Client.get()')
     async def get_by_tag(cls, tag: str, client: RequestClient) -> Optional['Outfit']:
         """Return an outfit by its unique tag.
 

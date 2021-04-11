@@ -107,8 +107,8 @@ class Ps2Object(metaclass=abc.ABCMeta):
         """
         return f'<{self.__class__.__name__}:{self.id}>'
 
-    @deprecated('0.3', replacement='Client.count()')
     @classmethod
+    @deprecated('0.3', replacement='Client.count()')
     async def count(cls, client: RequestClient, **kwargs: Any) -> int:
         """Return the number of items matching the given terms.
 
@@ -124,8 +124,8 @@ class Ps2Object(metaclass=abc.ABCMeta):
         # type hinting. This is scheduled for removal as per the decorator.
         return await client.count(cls, **kwargs)  # type: ignore
 
-    @deprecated('0.3', replacement='Client.find()')
     @classmethod
+    @deprecated('0.3', replacement='Client.find()')
     async def find(cls: Type[Ps2ObjectT], results: int = 10, *,
                    offset: int = 0, promote_exact: bool = False,
                    check_case: bool = True, client: RequestClient,
@@ -160,8 +160,8 @@ class Ps2Object(metaclass=abc.ABCMeta):
             cls, results=results, offset=offset, promote_exact=promote_exact,
             check_case=check_case, **kwargs)
 
-    @deprecated('0.3', replacement='Client.get()')
     @classmethod
+    @deprecated('0.3', replacement='Client.get()')
     async def get(cls: Type[Ps2ObjectT], client: RequestClient,
                   check_case: bool = True, **kwargs: Any
                   ) -> Optional[Ps2ObjectT]:
@@ -184,8 +184,8 @@ class Ps2Object(metaclass=abc.ABCMeta):
         return await client.get(  # type: ignore
             cls, results=1, check_case=check_case, **kwargs)
 
-    @deprecated('0.3', replacement='Client.get())')
     @classmethod
+    @deprecated('0.3', replacement='Client.get())')
     async def get_by_id(cls: Type[Ps2ObjectT], id_: int, *,
                         client: RequestClient) -> Optional[Ps2ObjectT]:
         """Retrieve an object by its unique Census ID.
@@ -312,8 +312,8 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
         """
         return cls._cache.get(id_)
 
-    @deprecated('0.3', replacement='Client.get()')
     @classmethod
+    @deprecated('0.3', replacement='Client.get()')
     async def get_by_id(cls: Type[CachedT], id_: int, *,  # type: ignore
                         client: RequestClient) -> Optional[CachedT]:
         """Retrieve an object by by ID.
@@ -395,8 +395,8 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
         """
         return str(self.name)
 
-    @deprecated('0.3', replacement='Client.get()')
     @classmethod
+    @deprecated('0.3', replacement='Client.get()')
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
                           client: RequestClient) -> Optional[NamedT]:
         """Retrieve an object by its unique name.

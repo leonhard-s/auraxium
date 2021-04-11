@@ -136,8 +136,8 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
         join.set_fields(FireGroup.id_field)
         return SequenceProxy(FireGroup, query, client=self._client)
 
-    @deprecated('0.3', replacement='Client.get()')
     @classmethod
+    @deprecated('0.3', replacement='Client.get()')
     async def get_by_name(cls, name: str, *, locale: str = 'en',
                           client: RequestClient) -> Optional['Weapon']:
         """Retrieve a weapon by name.
