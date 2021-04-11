@@ -35,8 +35,7 @@ version = auraxium.__version__
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
 extensions = ['sphinx.ext.autodoc',
-              'sphinx.ext.intersphinx',
-              'sphinx.ext.napoleon']
+              'sphinx.ext.intersphinx']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -51,6 +50,9 @@ master_doc = 'index'
 
 # Add parentheses to any function and method references
 add_function_parentheses = True
+
+# Report broken links and other grievences
+nitpicky = True
 
 
 # -- Options for HTML output -------------------------------------------------
@@ -69,16 +71,31 @@ html_static_path = ['_static']
 # the configuration directory (i.e. the one containing this file).
 html_logo = '../assets/logo_rtd.png'
 
+# Additional HTML theme settings, refer to the link below for options:
+# https://www.sphinx-doc.org/en/master/usage/configuration.html
+html_theme_options = {
+    'logo_only': True,
+    'prev_next_buttons_location': 'both'
+}
 
-# -- Napoleon configuration --------------------------------------------------
 
-napoleon_include_special_with_doc = True
+# -- Autodoc configuration ---------------------------------------------------
+
+# Autodoc type hints do not like reimported entities, so its type hint parsing
+# is disabled. The types are instead documented as part of the methods
+# themselves.
+autodoc_typehints = 'none'
+
+# Control how autodoc members are sorted in the docs.
+autodoc_member_order = 'groupwise'
+
 
 # -- Intersphinx configuration -----------------------------------------------
 
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
     'aiohttp': ('https://docs.aiohttp.org/en/stable/', None),
+    'requests': ('https://docs.python-requests.org/en/master/', None),
     'yarl': ('https://yarl.readthedocs.io/en/latest/', None),
     'websockets': ('https://websockets.readthedocs.io/en/stable/', None)
 }
