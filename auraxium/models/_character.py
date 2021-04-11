@@ -184,6 +184,69 @@ class CharacterDirective(RESTPayload):
     completion_time_date: str
 
 
+class CharacterDirectiveObjective(RESTPayload):
+    """Data container for a characters's directive progress.
+
+    Attributes:
+        character_id: The ID of the character for this entry.
+        directive_id: The ID of the directive for this entry.
+        objective_id: Objective ID.
+        objective_group_id: (Details needed).
+        status: The status of this objective.
+        state_data: Extra data for this state.
+    """
+
+    character_id: int
+    directive_id: int
+    objective_id: int
+    objective_group_id: int
+    status: int
+    state_date: int
+
+
+class CharacterDirectiveTier(RESTPayload):
+    """Data container for character directive tier progress.
+
+    Attributes:
+        character_id: ID of the character.
+        directive_tree_id: ID of the directive tree.
+        directive_tier_id: ID of the directive tier.
+        completion_time: When this tier was completed, or zero if not
+            yet completed.
+        completion_time_date: String version of
+            :attr:`completion_time`.
+    """
+
+    character_id: int
+    directive_tree_id: int
+    directive_tier_id: int
+    completion_time: int
+    completion_time_date: str
+
+
+class CharacterDirectiveTree(RESTPayload):
+    """Data container for character directive tree progress.
+
+    Attributes:
+        character_id: ID of the character.
+        directive_tree_id: The directive tree for this entry.
+        current_directive_tier_id: The current tier the character is on
+            for the given directive tree.
+        current_level: The current level in this directive tree.
+        completion_time: When the directive tree was compled, or zero
+            if not yet completed.
+        completion_time_date: String version of
+            :attr:`completion_time`.
+    """
+
+    character_id: int
+    directive_tree_id: int
+    current_directive_tier_id: int
+    current_level: int
+    completion_time: int
+    completion_time_date: str
+
+
 class TitleData(RESTPayload):
     """Data class for :class:`auraxium.ps2.Title`.
 

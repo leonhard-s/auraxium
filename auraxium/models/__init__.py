@@ -5,7 +5,9 @@ from ._achievement import AchievementData
 from ._armour import ArmourInfoData
 from .base import CharacterEvent, Event, WorldEvent
 from ._character import (CharacterAchievement, CharacterData,
-                         CharacterDirective, TitleData)
+                         CharacterDirective, CharacterDirectiveObjective,
+                         CharacterDirectiveTier, CharacterDirectiveTree,
+                         TitleData)
 from ._currency import CurrencyData
 from ._depot import MarketingBundleData, MarketingBundleSingleData
 from ._directive import (DirectiveData, DirectiveTierData,
@@ -46,6 +48,9 @@ __all__ = [
     'CharacterAchievement',
     'CharacterData',
     'CharacterDirective',
+    'CharacterDirectiveObjective',
+    'CharacterDirectiveTier',
+    'CharacterDirectiveTree',
     'CharacterEvent',
     'ContinentLock',
     'ContinentUnlock',

@@ -7,7 +7,9 @@ from ..base import Named, NamedT
 from .._cache import TLRUCache
 from ..census import Query
 from ..errors import NotFoundError
-from ..models import CharacterAchievement, TitleData, CharacterData
+from ..models import (CharacterAchievement, CharacterData, CharacterDirective,
+                      CharacterDirectiveObjective, CharacterDirectiveTier,
+                      CharacterDirectiveTree, TitleData)
 from .._proxy import InstanceProxy, SequenceProxy
 from .._rest import RequestClient, extract_payload, extract_single
 from ..types import CensusData, LocaleData
@@ -115,7 +117,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         return int(str(data['quantity'])), int(str(data['prestige_currency']))
 
     async def directive(self, results: int = 1,
-                        **kwargs: Any) -> List[CensusData]:
+                        **kwargs: Any) -> List[CharacterDirective]:
         """Query the directive status for this character."""
         collection: Final[str] = 'characters_directive'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
@@ -123,10 +125,10 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.limit(results)
         payload = await self._client.request(query)
         data = extract_payload(payload, collection)
-        return data
+        return [CharacterDirective(**d) for d in data]
 
-    async def directive_objective(self, results: int = 1,
-                                  **kwargs: Any) -> List[CensusData]:
+    async def directive_objective(self, results: int = 1, **kwargs: Any
+                                  ) -> List[CharacterDirectiveObjective]:
         """Query the objective status for a directive."""
         collection: Final[str] = 'characters_directive_objective'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
@@ -134,10 +136,10 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.limit(results)
         payload = await self._client.request(query)
         data = extract_payload(payload, collection)
-        return data
+        return [CharacterDirectiveObjective(**d) for d in data]
 
     async def directive_tier(self, results: int = 1,
-                             **kwargs: Any) -> List[CensusData]:
+                             **kwargs: Any) -> List[CharacterDirectiveTier]:
         """Query the directive tier status for this character."""
         collection: Final[str] = 'characters_directive_tier'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
@@ -145,10 +147,10 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.limit(results)
         payload = await self._client.request(query)
         data = extract_payload(payload, collection)
-        return data
+        return [CharacterDirectiveTier(**d) for d in data]
 
     async def directive_tree(self, results: int = 1,
-                             **kwargs: Any) -> List[CensusData]:
+                             **kwargs: Any) -> List[CharacterDirectiveTree]:
         """Query the directive tree status for this character."""
         collection: Final[str] = 'characters_directive_tree'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
@@ -156,7 +158,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.limit(results)
         payload = await self._client.request(query)
         data = extract_payload(payload, collection)
-        return data
+        return [CharacterDirectiveTree(**d) for d in data]
 
     async def events(self, **kwargs: Any) -> List[CensusData]:
         """Return and process past events for this character.
