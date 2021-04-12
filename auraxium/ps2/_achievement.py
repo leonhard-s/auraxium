@@ -17,19 +17,43 @@ class Achievement(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
 
     Achievements include weapon medals and service ribbons.
 
-    Attributes:
-        id: The unique ID of this achievement.
-        item_id: The item associated with this achievement. An item ID
-            of ``0`` signifies that this achievement is a ribbon not
-            tied to any weapon.
-        name: Localised name of the achievement.
-        objective_group_id: The objective group tied to this
-            achievement.
-        reward_id: The reward granted when this achievement is earned.
-        repeatable: Whether this achievement is repeatable. Ribbons
-            generally are repeatable, weapon medals are not.
-        description: The localised description of achievement.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of this achievement.
+
+    .. attribute:: item_id
+       :type: int
+
+       The item associated with this achievement. An item ID of ``0``
+       signifies that this achievement is a ribbon not tied to any
+       weapon.
+
+    .. attribute:: name
+       :type: auraxium.types.LocaleData
+
+       Localised name of the achievement.
+
+    .. attribute:: objective_group_id
+       :type: int
+
+       The objective group tied to this achievement.
+
+    .. attribute:: reward_id
+       :type: int
+
+       The reward granted when this achievement is earned.
+
+    .. attribute:: repeatable
+       :type: bool
+
+       Whether this achievement is repeatable. Ribbons generally are
+       repeatable, weapon medals are not.
+
+    .. attribute:: description
+       :type: auraxium.types.LocaleData
+
+       The localised description of achievement.
     """
 
     collection = 'achievement'

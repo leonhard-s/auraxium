@@ -28,31 +28,81 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
     This can be treated as an extension to the
     :class:`auraxium.ps2.Item` class.
 
-    Attributes:
-        id: The unique ID of this weapon.
-        weapon_group_id: Used to group upgradable weapons together and
-            track them as a single entity, such as the Infiltrator's
-            Recon Dart Device or the Engineer's Repair Tool.
-        turn_modifier: Turn speed modifier to apply while the weapon is
-            equipped.
-        move_modifier: Move speed modifier to apply while the weapon is
-            equipped.
-        sprint_recovery_ms: Recovery time to allow firing or ADS after
-            the player stopped sprinting.
-        equip_ms: The weapon equip time in milliseconds.
-        unequip_ms: The weapon unequip time in milliseconds.
-        to_iron_sights_ms: The ADS enter time in milliseconds.
-        from_iron_sights_ms: The ADS exit time in milliseconds.
-        heat_capacity: The heat capacity of the weapon. Generally
-            identical to :attr:`~auraxium.ps2.FireMode.heat_threshold`,
-            but this only uses the first fire mode of the weapon.
-        heat_bleed_off_rate: The rate at which the weapon will cool
-            down after firing stops.
-        heat_overheat_penalty_ms: The overheat penalty imposed if the
-            user overheats the weapon.
-        melee_detect_width: The hitbox width for melee weapons.
-        melee_detect_height: The hitbox height for melee weapons.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of this weapon.
+
+    .. attribute:: weapon_group_id
+       :type: int | None
+
+       Used to group upgradable weapons together and track them as a
+       single entity, such as the Infiltrator's Recon Dart Device or
+       the Engineer's Repair Tool.
+
+    .. attribute:: turn_modifier
+       :type: float
+
+       Turn speed modifier to apply while the weapon is equipped.
+
+    .. attribute:: move_modifier
+       :type: float
+
+       Move speed modifier to apply while the weapon is equipped.
+
+    .. attribute:: sprint_recovery_ms
+       :type: int | None
+
+       Recovery time to allow firing or ADS after the player stopped
+       sprinting.
+
+    .. attribute:: equip_ms
+       :type: int | None
+
+       The weapon equip time in milliseconds.
+
+    .. attribute:: unequip_ms
+       :type: int | None
+
+       The weapon unequip time in milliseconds.
+
+    .. attribute:: to_iron_sights_ms
+       :type: int | None
+
+       The ADS enter time in milliseconds.
+
+    .. attribute:: from_iron_sights_ms
+       :type: int | None
+
+       The ADS exit time in milliseconds.
+
+    .. attribute:: heat_capacity
+       :type: int | None
+
+       The heat capacity of the weapon. Generally identical to
+       :attr:`~auraxium.ps2.FireMode.heat_threshold`, but this only
+       uses the first fire mode of the weapon.
+
+    .. attribute:: heat_bleed_off_rate
+       :type: float | None
+
+       The rate at which the weapon will cool down after firing stops.
+
+    .. attribute:: heat_overheat_penalty_ms
+       :type: int | None
+
+       The overheat read decay penalty imposed if the user overheats
+       the weapon in seconds.
+
+    .. attribute:: melee_detect_width
+       :type: float | None
+
+       The hitbox width for melee weapons.
+
+    .. attribute:: melee_detect_height
+       :type: float | None
+
+       The hitbox height for melee weapons.
     """
 
     collection = 'weapon'

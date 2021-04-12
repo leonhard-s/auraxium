@@ -19,15 +19,31 @@ class RewardType(Cached, cache_size=10, cache_ttu=3600.0):
 
     This class mostly specifies the purpose of any generic parameters.
 
-    Attributes:
-        id: The unique ID of this reward type.
-        description: A description of what this reward type is used
-            for.
-        count_min: The minimum number of rewarded items/currency.
-        count_max: The maximum number of rewarded items/currency.
-        param*: Descriptions of what the corresponding parameter is
-            used for in rewards of this type.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of this reward type.
+
+    .. attribute:: description
+       :type: str
+
+       A description of what this reward type is used for.
+
+    .. attribute:: count_min
+       :type: str | None
+
+       The minimum number of rewarded items/currency.
+
+    .. attribute:: count_max
+       :type: str | None
+
+       The maximum number of rewarded items/currency.
+
+    .. attribute:: param*
+       :type: str | None
+
+       Descriptions of what the corresponding parameter is used for in
+       rewards of this type.
     """
 
     collection = 'reward_type'
@@ -54,14 +70,31 @@ class Reward(Cached, cache_size=50, cache_ttu=60.0):
     via the :meth:`Reward.type` method for information on generic
     parameters.
 
-    Attributes:
-        id: The unique ID of this reward.
-        reward_type_id: The :class:`RewardType` of this reward.
-        count_min: The minimum number of rewarded items/currency.
-        count_max: The maximum number of rewarded items/currency.
-        param*: Type-specific parameters for this reward. Refer to the
-            corresponding :class:`RewardType` for details.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of this reward.
+
+    .. attribute:: reward_type_id
+       :type: int
+
+       The :class:`~auraxium.ps2.RewardType` of this reward.
+
+    .. attribute:: count_min
+       :type: int
+
+       The minimum number of rewarded items/currency.
+
+    .. attribute:: count_max
+       :type: int
+
+       The maximum number of rewarded items/currency.
+
+    .. attribute:: param*
+       :type: str | None
+
+       Type-specific parameters for this reward. Refer to the
+       corresponding :class:`~auraxium.ps2.RewardType` for details.
     """
 
     collection = 'reward'

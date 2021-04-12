@@ -125,9 +125,6 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
        The current battle rank of the character, and their progress
        until the next rankup.
 
-    .. autodata:: auraxium.models.CharacterData.battle_rank
-       :members:
-
     .. attribute:: profile_id
        :type: int
 

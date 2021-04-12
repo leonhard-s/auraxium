@@ -12,13 +12,25 @@ __all__ = [
 class Currency(Cached, cache_size=10, cache_ttu=3600.0):
     """A currency obtainable by characters.
 
-    Attributes:
-        id: The unique ID of this currency entry.
-        name: The localised name of this currency.
-        icon_id: The image ID of the currency icon image asset.
-        inventory_cap: The maximum amount of this currency a character
-            may hold.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of this currency entry.
+
+    .. attribute:: name
+       :type: auraxium.types.LocaleData
+
+       The localised name of this currency.
+
+    .. attribute:: icon_id
+       :type: int
+
+       The image ID of the currency icon image asset.
+
+    .. attribute:: inventory_cap
+       :type: int
+
+       The maximum amount of this currency a character may hold.
     """
 
     collection = 'currency'

@@ -29,19 +29,38 @@ class OutfitMember(Cached, cache_size=100, cache_ttu=300.0):
     """A member of an outfit.
 
     This class can be treated as an extension of the
-    :class:`auraxium.ps2.Character` class.
+    :class:`~auraxium.ps2.Character` class.
 
-    Attributes:
-        outfit_id: The ID of the outfit this member is a part of.
-        id: The ID of the associated character.
-        member_since: The date the character joined the outfit at as
-            a UTC timestamp.
-        member_since_date: Human-readable version of
-            :attr:`member_since`.
-        rank: The name of the member's in-game outfit rank.
-        rank_ordinal: The ordinal position of the member's rank within
-            the outfit. The lower the value, the higher the rank.
+    .. attribute:: outfit_id
+       :type: int
 
+       The ID of the outfit this member is a part of.
+
+    .. attribute:: id
+       :type: int
+
+       The ID of the associated character.
+
+    .. attribute:: member_since
+       :type: int
+
+       The date the character joined the outfit at as a UTC timestamp.
+
+    .. attribute:: member_since_date
+       :type: str
+
+       Human-readable version of :attr:`member_since`.
+
+    .. attribute:: rank
+       :type: str
+
+       The name of the member's in-game outfit rank.
+
+    .. attribute:: rank_ordinal
+       :type: int
+
+       The ordinal position of the member's rank within the outfit. The
+       lower the value, the higher the rank.
     """
 
     collection = 'outfit_member'
@@ -83,22 +102,53 @@ class OutfitMember(Cached, cache_size=100, cache_ttu=300.0):
 class Outfit(Named, cache_size=20, cache_ttu=300.0):
     """A player-run outfit.
 
-    Attributes:
-        id: The unique ID of the outfit.
-        name_lower: Lowercase version of :attr`name`. Useful for
-            optimising case-insensitive searches.
-        alias: The alias (or tag) of the outfit.
-        alias_lower: Lowercase version of :attr:`alias`. Useful for
-            optimising case-insensitive searches.
-        name: Name of the outfit. Not localised.
-        time_created: The creation date of the outfit as a UTC
-            timestamp.
-        time_created_date: Human-readable version of
-            :attr:`time_created`.
-        leader_character_id: The character/member ID of the outfit
-            leader.
-        member_count: The number of members in the outfit.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of the outfit.
+
+    .. attribute:: name_lower
+       :type: str
+
+       Lowercase version of :attr:`name`. Useful for optimising
+       case-insensitive lookups.
+
+    .. attribute:: alias
+       :type: str
+
+       The alias (or tag) of the outfit.
+
+    .. attribute:: alias_lower
+       :type: str
+
+       Lowercase version of :attr:`alias`. Useful for optimising
+       case-insensitive lookups.
+
+    .. attribute:: name
+       :type: str
+
+       Name of the outfit. Not localised.
+
+    .. attribute:: time_created
+       :type: int
+
+       The creation date of the outfit as a UTC
+            timestamp.
+
+    .. attribute:: time_created_date
+       :type: str
+
+       Human-readable version of :attr:`time_created`.
+
+    .. attribute:: leader_character_id
+       :type: int
+
+       The character/member ID of the outfit leader.
+
+    .. attribute:: member_count
+       :type: int
+
+       The number of members in the outfit.
     """
 
     _cache: ClassVar[TLRUCache[Union[int, str], 'Outfit']]

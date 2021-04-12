@@ -19,13 +19,21 @@ class ZoneEffectType(Cached, cache_size=20, cache_ttu=60.0):
 
     This class mostly specifies the purpose of any generic parameters.
 
-    Attributes:
-        id: The unique ID of this zone effect type.
-        description: A description of what this zone effect type is
-            used for.
-        param*: Descriptions of what the corresponding parameter is
-            used for in zone effects of this type.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of this zone effect type.
+
+    .. attribute:: description
+       :type: str
+
+       A description of what this zone effect type is used for.
+
+    .. attribute:: param*
+       :type: str | None
+
+       Descriptions of what the corresponding parameter is used for in
+       zone effects of this type.
     """
 
     collection = 'zone_effect_type'
@@ -52,15 +60,27 @@ class ZoneEffect(Cached, cache_size=10, cache_ttu=60.0):
     :meth:`ZoneEffect.type` method for information on generic
     parameters.
 
-    Attributes:
-        id: The unique ID of this zone effect.
-        zone_effect_type_id: The ID of the associated
-            :class:`ZoneEffectType`.
-        ability_id: The :class:`~auraxium.ps2.Ability` associated with
-            this zone effect.
-        param*: Type-specific parameters for this zone effect. Refer to
-            the corresponding :class:`ZoneEffectType` for details.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of this zone effect.
+
+    .. attribute:: zone_effect_type_id
+       :type: int
+
+       The ID of the associated :class:`~auraxium.ps2.ZoneEffectType`.
+
+    .. attribute:: ability_id
+       :type: int
+
+       The :class:`~auraxium.ps2.Ability` associated with this zone
+       effect.
+
+    .. attribute:: param*
+       :type: str | None
+
+       Type-specific parameters for this zone effect. Refer to the
+       corresponding :class:`~auraxium.ps2.ZoneEffectType` for details.
     """
 
     collection = 'zone_effect'

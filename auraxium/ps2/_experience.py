@@ -24,12 +24,21 @@ log = logging.getLogger('auraxium.ps2')
 class Experience(Cached, cache_size=100, cache_ttu=3600.0):
     """A type of experience tick.
 
-    Attributes:
-        id: The unique ID of this experience tick.
-        description: A description of when this experience reward is
-            granted.
-        xp: The amount of experience points awarded.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of this experience tick.
+
+    .. attribute:: description
+       :type: str
+
+       A description of when this experience reward is
+            granted.
+
+    .. attribute:: xp
+       :type: int
+
+       The amount of experience points awarded.
     """
 
     collection = 'experience'
@@ -46,16 +55,45 @@ class Experience(Cached, cache_size=100, cache_ttu=3600.0):
 class ExperienceRank:
     """A type of experience tick.
 
-    Attributes:
-        rank: The battle rank value represented by this rank name.
-        xp_max: (Not yet documented)
-        vs: Empire-specific rank data for VS.
-        vs_image_path: The VS-specific default image path.
-        nc: Empire-specific rank data for NC.
-        nc_image_path: The NC-specific default image path.
-        tr: Empire-specific rank data for TR.
-        tr_image_path: The TR-specific default image path.
+    .. attribute:: rank
+       :type: int
 
+       The battle rank value represented by this rank name.
+
+    .. attribute:: xp_max
+       :type: int
+
+       (Not yet documented)
+
+    .. attribute:: vs
+       :type: auraxium.models.ExperienceRankData.EmpireData
+
+       Empire-specific rank data for VS.
+
+    .. attribute:: vs_image_path
+       :type: str
+
+       The VS-specific default image path.
+
+    .. attribute:: nc
+       :type: auraxium.models.ExperienceRankData.EmpireData
+
+       Empire-specific rank data for NC.
+
+    .. attribute:: nc_image_path
+       :type: str
+
+       The NC-specific default image path.
+
+    .. attribute:: tr
+       :type: auraxium.models.ExperienceRankData.EmpireData
+
+       Empire-specific rank data for TR.
+
+    .. attribute:: tr_image_path
+       :type: str
+
+       The TR-specific default image path.
     """
 
     collection = 'experience_rank'
@@ -100,12 +138,8 @@ class ExperienceRank:
     def __repr__(self) -> str:
         """Return the unique string representation of this object.
 
-        This will take the form of <Class:rank:type>, e.g.
-        <ExperienceRank:50:ASP>.
-
-        Returns:
-            A string representing the object.
-
+        This will take the form of ``<Class:rank:type>``, e.g.
+        ``<ExperienceRank:50:ASP>``.
         """
         mode = 'ASP' if self.data.nc.image_id == 88685 else 'Default'
         return f'<{self.__class__.__name__}:{self.data.rank}:{mode}>'

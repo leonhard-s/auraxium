@@ -18,11 +18,15 @@ class ResistType(Cached, cache_size=100, cache_ttu=60.0):
     This is used to implement weapon types like "Melee", "Small Arms"
     or "Heavy Machine Gun".
 
-    Attributes:
-        id: The unique ID of this resist type.
-        description: A description of what this resist type is used
-            for.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of this resist type.
+
+    .. attribute:: description
+       :type: str
+
+       A description of what this resist type is used for.
     """
 
     collection = 'resist_type'
@@ -38,16 +42,36 @@ class ResistType(Cached, cache_size=100, cache_ttu=60.0):
 class ResistInfo(Cached, cache_size=100, cache_ttu=60.0):
     """Specifies the resistance values for a given profile and type.
 
-    Attributes:
-        id: The ID of this resist info entry.
-        resist_type_id: The ID of the :class:`ResistType` for this
-            entry.
-        resist_percent: The damage reduction in percent.
-        resist_amount: A flat amount of damage to absorb.
-        multiplier_when_headshot: A headshot multiplier override to
-            apply.
-        description: A description of this resist info entry.
+    .. attribute:: id
+       :type: int
 
+       The ID of this resist info entry.
+
+    .. attribute:: resist_type_id
+       :type: int
+
+       The ID of the corresponding :class:`auraxium.ps2.ResistType` for
+       this entry.
+
+    .. attribute:: resist_percent
+       :type: int | None
+
+       The damage reduction in percent.
+
+    .. attribute:: resist_amount
+       :type: int | None
+
+       A flat amount of damage to absorb.
+
+    .. attribute:: multiplier_when_headshot
+       :type: float | None
+
+       A custom headshot multiplier override to apply.
+
+    .. attribute:: description
+       :type: str
+
+       A description of this resist info entry.
     """
 
     collection = 'resist_info'
