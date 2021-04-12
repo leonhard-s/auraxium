@@ -30,7 +30,7 @@ class Trigger:
     may require multiple clients to be stable.
 
     .. attribute:: action
-       :type: collections.abc.Callable[[Event], None] | collections.abc.Callable[[typing.Coroutine[None]], None]
+       :type: collections.abc.Callable[[auraxium.event.Event], None] | collections.abc.Callable[[typing.Coroutine[None]], None]
 
         The method or coroutine to run if the matching event is
         encountered.
@@ -43,14 +43,14 @@ class Trigger:
           victim and killer can lead to a match.
 
     .. attribute:: conditions
-       :type: list[collections.abc.Callable[[Event], bool]] | None
+       :type: list[collections.abc.Callable[[auraxium.event.Event], bool]]
 
        Any number of callables that must return true for the trigger to
        run. Note that these filters are checked for any matching
        event types. Any callables used must be synchronous.
 
     .. attribute:: events
-       :type: typing.Type[Event] | str
+       :type: set[typing.Type[auraxium.event.Event] | str]
 
        A set of events that the trigger will listen for.
 

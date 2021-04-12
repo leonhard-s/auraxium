@@ -49,6 +49,6 @@ class LocaleData(pydantic.BaseModel):
         """Return an empty :class:`LocaleData` instance.
 
         This is mostly provided to easily handle payloads who's entire
-        localised string field is ``NULL``.
+        localised string field is NULL.
         """
         return cls()

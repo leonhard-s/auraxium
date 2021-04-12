@@ -38,23 +38,23 @@ class EventClient(Client):
     ``wss://push.planetside2.com/streaming``.
 
     To use the websocket endpoint, you have to define a
-    :class:`Trigger` and register it using the
-    :meth:`EventClient.add_trigger` method. This will automatically
-    open a WebSocket connection is there is not already one running.
-    Likewise, removing all event triggers from the client will cause
-    the underlying websocket connection to close.
+    :class:`~auraxium.event.Trigger` and register it using the
+    :meth:`add_trigger` method. This will automatically open a
+    WebSocket connection is there is not already one running. Likewise,
+    removing all event triggers from the client will cause the
+    underlying websocket connection to close.
 
-    Refer to the :class:`Trigger` class's documentation for details on
-    how to use triggers and respond to events.
+    Refer to the :class:`~auraxium.event.Trigger` class's documentation
+    for details on how to use triggers and respond to events.
 
     .. attribute:: triggers
-       :type: list[Trigger]
+       :type: list[auraxium.event.Trigger]
 
-       The list of :class:`Triggers <Trigger>` registered for the
-       client.
+       The list of :class:`Triggers <auraxium.event.Trigger>`
+       registered for the client.
 
     .. attribute:: websocket
-       :type: websockets.WebSocketClientProtocol | None
+       :type: websockets.client.WebSocketClientProtocol | None
 
        The websocket client used for the real-time event stream. This
        will be automatically opened and closed by the client as event
@@ -223,19 +223,23 @@ class EventClient(Client):
 
         This goes through the list of triggers registered for this
         client and checks if the passed event matches the trigger's
-        requirements using :meth:`Trigger.check`.
+        requirements using
+        :meth:`Trigger.check <auraxium.event.Trigger.check>`.
 
         The call-backs for the matching triggers will be scheduled for
         execution in the current event loop using
-        :meth:`asyncio.AbstractEventLoop.create_task`.
+        :meth:`asyncio.loop.create_task`.
 
-        If a trigger's :attr:`Trigger.single_shot` attribute is set to
-        true, the trigger will be removed from the client as soon as
-        its call-back has been scheduled for execution. This means that
-        when the action associated with a single-shot trigger runs, the
-        associated trigger will no longer be registered for the client.
+        If a trigger's
+        :attr:`single_shot <auraxium.event.Trigger.single_shot>`
+        attribute is set to true, the trigger will be removed from the
+        client as soon as its call-back has been scheduled for
+        execution. This means that when the action associated with a
+        single-shot trigger runs, the associated trigger will no longer
+        be registered for the client.
 
-        :param Event event: An event received through the event stream.
+        :param auraxium.event.Event event: An event received through
+           the event stream.
         """
         for trigger in self.triggers:
             _log.debug('Checking trigger %s', trigger)
@@ -332,9 +336,9 @@ class EventClient(Client):
         already exists.
 
         :param event: The event to trigger on.
-        :type event: str or typing.Type[Event]
+        :type event: str or typing.Type[auraxium.event.Event]
         :param args: Additional events that also trigger the action.
-        :type args: str or typing.Type[Event]
+        :type args: str or typing.Type[auraxium.event.Event]
         :param name: The name to assign to the trigger. If not
            specified, the decorated function's name will be used.
         :type name: str or None
@@ -362,9 +366,9 @@ class EventClient(Client):
 
         This method filters out any non-event messages (such as service
         messages, connection heartbeats or subscription echoes) before
-        passing any event payloads on to :meth:`EventClient.dispatch`.
+        passing any event payloads on to :meth:`dispatch`.
 
-        :param str resposne: The plain text response received through
+        :param str response: The plain text response received through
            the ESS.
         """
         data: CensusData = json.loads(response)
@@ -407,7 +411,7 @@ class EventClient(Client):
 
         By default, any triggers passed will be automatically removed
         once the first has been triggered, regardless of the triggers'
-        :attr:`Trigger.single_shot` setting.
+        :attr:`~auraxium.event.Trigger.single_shot` setting.
 
         :param Trigger trigger: A trigger to wait for.
         :param Trigger args: Additional triggers that will also resume
@@ -415,7 +419,7 @@ class EventClient(Client):
         :param timeout: The maximum number of seconds to wait for.
            Never expires if set to :obj:`None`.
         :type timeout: float or None
-        :raises TimeoutError: Raised if`timeout` is exceeded.
+        :raises TimeoutError: Raised if `timeout` is exceeded.
         :return: The first event matching the given trigger(s).
         """
         # The following asyncio Event will pause this method until the trigger
@@ -482,10 +486,10 @@ class EventClient(Client):
 def _event_factory(data: CensusData) -> Event:
     """Return the appropriate event type for the given payload.
 
-    This will return the appropriate :class:`Event` subclass, or the
-    base class itself if no matching subclass could be found. This can
-    happen if new event types are introduced but not yet supported by
-    the object model.
+    This will return the appropriate :class:`~auraxium.event.Event`
+    subclass, or the base class itself if no matching subclass could be
+    found. This can happen if new event types are introduced but not
+    yet supported by the object model.
 
     :param data: The "payload" sub-key of an event stream message.
     :type data: float or int or str

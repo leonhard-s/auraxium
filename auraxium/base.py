@@ -35,11 +35,25 @@ _log = logging.getLogger('auraxium.ps2')
 class Ps2Object(metaclass=abc.ABCMeta):
     """Common base class for all PS2 object representations.
 
-    This requires that subclasses overwrite the
-    :attr:`Ps2Object.collection` and :attr:`Ps2Object.id_field` names,
-    which are used to tie the class to its corresponding API
-    counterpart.
+    This requires that subclasses overwrite the :attr:`collection` and
+    :attr:`id_field` names, which are used to tie the class to its
+    corresponding API counterpart.
 
+    .. attribute:: collection
+       :type: str
+
+       The API collection linked to this type.
+
+    .. attribute:: id_field
+       :type: str
+
+       The field name containing the unique ID for this type.
+
+       .. note::
+
+          This will generally match the ``<type>_id`` convention, but
+          some collections like ``outfit_member`` or ``profile_2`` use
+          custom names. This attribute provides support for the latter.
     """
 
     collection: ClassVar[str] = 'bogus'
@@ -49,15 +63,13 @@ class Ps2Object(metaclass=abc.ABCMeta):
     def __init__(self, data: CensusData, client: RequestClient) -> None:
         """Initialise the object.
 
-        This sets the object's :attr:`~Ps2Object.id` attribute and
-        populates the instance using the provided payload.
+        This sets the object's :attr:`id` attribute and populates the
+        instance using the provided payload.
 
-        Arguments:
-            data: The census response dictionary to populate the
-                object with.
-            client (optional): The client object to use for requests
-                performed via this object. Defaults to ``None``.
-
+        :param auraxium.types.CensusData data: The census response
+           dictionary to populate the object with.
+        :param auraxium.Client client: The client object to use for
+           requests performed via this object.
         """
         id_ = int(str(data[self.id_field]))
         _log.debug('Instantiating <%s:%d> using payload: %s',
@@ -83,8 +95,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
         instance to fall back to its corresponding data class.
 
         If the attribute cannot be found there either, an
-        :class:`AttributeError` is raised as normal.
-
+        :exc:`AttributeError` is raised as normal.
         """
         # Re-raising or propagating the inner exception would only clutter up
         # the exception traceback, so we raise one "from scratch" instead.
@@ -100,10 +111,6 @@ class Ps2Object(metaclass=abc.ABCMeta):
 
         This will take the form of ``<Class:id>``, e.g.
         ``<Weapon:108>``.
-
-        Returns:
-            A string representing the object.
-
         """
         return f'<{self.__class__.__name__}:{self.id}>'
 
@@ -112,13 +119,10 @@ class Ps2Object(metaclass=abc.ABCMeta):
     async def count(cls, client: RequestClient, **kwargs: Any) -> int:
         """Return the number of items matching the given terms.
 
-        Arguments:
-            client: The client through which to perform the request.
-            **kwargs: Any number of query filters to apply.
-
-        Returns:
-            The number of entries entries.
-
+        :param auraxium.Client client: The client through which to
+           perform the request.
+        :param kwargs: Any number of query filters to apply.
+        :return: The number of entries entries.
         """
         # NOTE: The following is a runtime-only compatibility hack and violates
         # type hinting. This is scheduled for removal as per the decorator.
@@ -136,23 +140,19 @@ class Ps2Object(metaclass=abc.ABCMeta):
         argument. Note that it may be fewer if not enough matches are
         found.
 
-        Arguments:
-            results (optional): The maximum number of results. Defaults
-                to ``10``.
-            offset (optional): The number of entries to skip. Useful
-                for paginated views. Defaults to ``0``.
-            promote_exact (optional): If enabled, exact matches to
-                non-exact searches will always come first in the return
-                list. Defaults to ``False``.
-            check_case (optional): Whether to check case when comparing
-                strings. Note that case-insensitive searches are much
-                more expensive. Defaults to ``True``.
-            client: The client through which to perform the request.
-            **kwargs: Any number of filters to apply.
-
-        Returns:
-            A list of matching entries.
-
+        :param int results: The maximum number of results.
+        :param int offset: The number of entries to skip. Useful for
+           paginated views.
+        :param bool promote_exact: If enabled, exact matches to
+           non-exact searches will always come first in the return
+           list.
+        :param bool check_case: Whether to check case when comparing
+           strings. Note that case-insensitive searches are much more
+           expensive.
+        :param auraxium.Client client: The client through which to
+           perform the request.
+        :param kwargs: Any number of filters to apply.
+        :return: A list of matching entries.
         """
         # NOTE: The following is a runtime-only compatibility hack and violates
         # type hinting. This is scheduled for removal as per the decorator.
@@ -167,17 +167,14 @@ class Ps2Object(metaclass=abc.ABCMeta):
                   ) -> Optional[Ps2ObjectT]:
         """Return the first entry matching the given terms.
 
-        Like :meth:`Ps2Object.get()`, but will only return one item.
+        Like :meth:`Ps2Object.get`, but will only return one item.
 
-        Arguments:
-            client: The client through which to perform the request.
-            check_case (optional): Whether to check case when comparing
-                strings. Note that case-insensitive searches are much
-                more expensive. Defaults to ``True``.
-
-        Returns:
-            A matching entry, or None if not found.
-
+        :param auraxium.Client client: The client through which to
+           perform the request.
+        :param bool check_case: Whether to check case when comparing
+           strings. Note that case-insensitive searches are much more
+           expensive.
+        :return: A matching entry, or :obj:`None` if not found.
         """
         # NOTE: The following is a runtime-only compatibility hack and violates
         # type hinting. This is scheduled for removal as per the decorator.
@@ -190,13 +187,11 @@ class Ps2Object(metaclass=abc.ABCMeta):
                         client: RequestClient) -> Optional[Ps2ObjectT]:
         """Retrieve an object by its unique Census ID.
 
-        Arguments:
-            id_: The unique ID of the object.
-            client: The client through which to perform the request.
-
-        Returns:
-            The entry with the matching ID, or None if not found.
-
+        :param int id\\_: The unique ID of the object.
+        :param auraxium.Client client: The client through which to
+           perform the request.
+        :return: The entry with the matching ID, or :obj:`None` if not
+           found.
         """
         # NOTE: The following is a runtime-only compatibility hack and violates
         # type hinting. This is scheduled for removal as per the decorator.
@@ -230,7 +225,6 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
     The TTU (time-to-use) will independently discard items that are
     older than the given number of seconds to ensure data does not go
     too far out of date.
-
     """
 
     _cache: ClassVar[TLRUCache[int, Any]]
@@ -241,10 +235,10 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
         After initialising this object via the parent class's
         initialiser, this adds the current class to the cache.
 
-        Arguments:
-            data: The API response to instantiate the object from.
-            client: The client used to retrieve the object.
-
+        :param auraxium.types.CensusData data: The API response to
+           instantiate the object from.
+        :param auraxium.Client client: The client used to retrieve the
+           object.
         """
         super().__init__(data=data, client=client)
         self._cache.add(self.id, self)
@@ -257,15 +251,13 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
         This sets up the TLRU cache for the given subclass using the
         keyword arguments provided in the class definitions.
 
-        Arguments:
-            cache_size: The maximum number of items in the cache. Once
-                the cache reaches this number of items, it will delete
-                the  least recently used item for every new item added.
-            cache_ttu (optional): The time-to-use for cache items. If
-                an item is older than  TTU allows, it will be
-                re-fetched regardless of how often it is accessed.
-                Defaults to ``0.0``.
-
+        :param int cache_size: The maximum number of items in the
+           cache. Once the cache reaches this number of items, it will
+           delete the least recently used item for every new item
+           added.
+        :param float cache_ttu: The time-to-use for cache items. If an
+           item is older than  TTU allows, it will be re-fetched
+           regardless of how often it is accessed.
         """
         super().__init_subclass__()
         _log.debug('Setting up cache for %s (size: %d, ttu: %.1f sec.)',
@@ -281,13 +273,9 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
         This allows customisation of the class depending on your
         use-case.
 
-        Arguments:
-            size: The new cache size.
-            ttu (optional): The new item TTU. Defaults to ``None``.
-
-        Raises:
-            ValueError: Raised if the size is less than 1.
-
+        :param int size: The new cache size.
+        :param float ttu: The new item TTU.
+        :raises ValueError: Raised if the size is less than 1.
         """
         if size < 1:
             raise ValueError(f'{size} is not a valid cache size')
@@ -300,15 +288,12 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
     def _check_cache(cls: Type[CachedT], id_: int) -> Optional[CachedT]:
         """Attempt to restore an item from the cache.
 
-        If the item cannot be found, ``None`` will be returned instead.
+        If the item cannot be found, :obj:`None` will be returned
+        instead.
 
-        Arguments:
-            id_: The unique identifier the item is cached by.
-
-        Returns:
-            An existing instance if found, or ``None`` if the object
-            has not been retrieved before or expired.
-
+        :param int id_: The unique identifier the item is cached by.
+        :return: An existing instance if found, or :obj:`None` if the
+           object has not been retrieved before or expired.
         """
         return cls._cache.get(id_)
 
@@ -321,14 +306,11 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
         This query uses caches and might return an existing instance if
         the object has been recently retrieved.
 
-        Arguments:
-            id_: The unique id of the object.
-            client: The client through which to perform the request.
-
-        Returns:
-            The object matching the given ID or ``None`` if no match
-            was found.
-
+        :param int id\\_: The unique id of the object.
+        :param auraxium.Client client: The client through which to
+           perform the request.
+        :return: The object matching the given ID or :obj:`None` if no
+           match was found.
         """
         _log.debug('<%s:%d> requested', cls.__name__, id_)
         if (instance := cls._cache.get(id_)) is not None:
@@ -342,10 +324,10 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
 class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
     """Mix-in class for named objects.
 
-    This extends the functionality provided by :class:`Cached` to also
-    cache objects retrieved via :meth:`Named.get_by_name()`. The cache
-    will also store the locale used for the request.
-
+    This extends the functionality provided by
+    :class:`~auraxium.base.Cached` to also cache objects retrieved via
+    :meth:`Named.get_by_name`. The cache will also store the locale
+    used for the request.
     """
 
     _cache: ClassVar[TLRUCache[Union[int, str], Any]]  # type: ignore
@@ -356,13 +338,12 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
 
         This sets the object's id attribute and adds it to the cache.
 
-        Arguments:
-            locale: The locale under which to cache this object.
-            *args: Any extra positional arguments are forwarded to the
-                :class:`Cached` class's initialiser.
-            **kwargs: Any keyword arguments are forwarded to the
-                :class:`Cached` class's initialiser.
-
+        :param locale: The locale under which to cache this object.
+        :type locale: str or None
+        :param args: Any extra positional arguments are forwarded to
+           the :class:`~auraxium.base.Cached` class's initialiser.
+        :param kwargs: Any keyword arguments are forwarded to the
+           :class:`~auraxium.base.Cached` class's initialiser.
         """
         super().__init__(*args, **kwargs)
         if (locale is not None
@@ -375,10 +356,6 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
 
         This will take the form of ``<class:id:name>``, e.g.
         ``<Item:2:NC4 Mag-Shot>``.
-
-        Returns:
-            A string representing the object.
-
         """
         return (f'<{self.__class__.__name__}:{self.id}:'
                 f'\'{self.name}\'>')
@@ -388,10 +365,6 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
 
         This retrieves the :atr:``Named.name`` attribute for the
         English locale.
-
-        Returns:
-            A string representation of the object.
-
         """
         return str(self.name)
 
@@ -406,15 +379,12 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
 
         This query is always case-insensitive.
 
-        Arguments:
-            name: The name to search for.
-            locale (optional): The locale of the search key. Defaults
-                to ``'en'``.
-            client: The client through which to perform the request.
-
-        Returns:
-            The entry with the matching name, or ``None`` if not found.
-
+        :param str name: The name to search for.
+        :param str locale: The locale of the search key.
+        :param auraxium.Client client: The client through which to
+           perform the request.
+        :return: The entry with the matching name, or :obj:`None` if
+           not found.
         """
         # NOTE: The following is a runtime-only compatibility hack and violates
         # type hinting. This is scheduled for removal as per the decorator.

@@ -37,9 +37,10 @@ class CensusError(AuraxiumException):
     inform of syntax errors, as well as invalid operations or API
     outages.
 
-    Attributes:
-        url: The URL that gave rise to the error.
+    .. attribute:: url
+       :type: yarl.URL
 
+       The URL that gave rise to the error.
     """
 
     def __init__(self, message: str, url: yarl.URL) -> None:
@@ -72,8 +73,8 @@ class ServiceUnavailableError(CensusError):
     collections like ``ps2/characters_online_status``, the rest of the
     API might be fine.
 
-    Unlike :class:`MaintenanceError`, this error state often persists
-    for hours or even days.
+    Unlike :exc:`MaintenanceError`, this error state often persists for
+    hours or even days on select collections.
     """
 
 
@@ -130,12 +131,21 @@ class InvalidSearchTermError(ServerError):
     This means received when misusing API collections, or when trying
     to perform an invalid or unsupported operation on a given field.
 
-    Attributes:
-        collection: The collection that was accessed.
-        namespace: The namespace of the collection.
-        field: The field that caused the error. Might be ``None`` if
-            the culprit could not be determined.
+    .. attribute:: collection
+       :type: str
 
+       The collection that was accessed.
+
+    .. attribute:: namespace
+       :type: str
+
+       The namespace of the collection.
+
+    .. attribute:: field
+       :type: str | None
+
+       The field that caused the error. Might be :obj:`None` if the
+       culprit could not be determined.
     """
 
     def __init__(self, message: str, url: yarl.URL, namespace: str,
