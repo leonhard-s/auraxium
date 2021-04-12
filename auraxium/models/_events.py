@@ -106,7 +106,7 @@ class BattleRankUp(Event, CharacterEvent):
 
        The current :class:`~auraxium.ps2.Zone` of the character.
 
-    ..attribute:: timestamp
+    .. attribute:: timestamp
        :type: int
 
        The UTC timestamp of the event. May be used to infer latency to
@@ -188,7 +188,7 @@ class Death(Event, CharacterEvent):
 
        The current :class:`~auraxium.ps2.Zone` of the character.
 
-    ..attribute:: timestamp
+    .. attribute:: timestamp
        :type: int
 
        The UTC timestamp of the event. May be used to infer latency to
@@ -253,7 +253,7 @@ class FacilityControl(Event, WorldEvent):
 
        The :class:`~auraxium.ps2.Zone` of the captured base.
 
-    ..attribute:: timestamp
+    .. attribute:: timestamp
        :type: int
 
        The UTC timestamp of the event. May be used to infer latency to
@@ -315,7 +315,7 @@ class GainExperience(Event, CharacterEvent):
 
        The current :class:`~auraxium.ps2.Zone` of the character.
 
-    ..attribute:: timestamp
+    .. attribute:: timestamp
        :type: int
 
        The UTC timestamp of the event. May be used to infer latency to
@@ -382,7 +382,7 @@ class ItemAdded(Event, CharacterEvent):
 
        The current :class:`~auraxium.ps2.Zone` of the character.
 
-    ..attribute:: timestamp
+    .. attribute:: timestamp
        :type: int
 
        The UTC timestamp of the event. May be used to infer latency to
@@ -443,7 +443,7 @@ class MetagameEvent(Event, WorldEvent):
 
        The :class:`~auraxium.ps2.Zone` the event is taking place in.
 
-    ..attribute:: timestamp
+    .. attribute:: timestamp
        :type: int
 
        The UTC timestamp of the event. May be used to infer latency to
@@ -524,7 +524,7 @@ class PlayerFacilityCapture(Event, CharacterEvent):
 
        The current :class:`~auraxium.ps2.Zone` of the character.
 
-    ..attribute:: timestamp
+    .. attribute:: timestamp
        :type: int
 
        The UTC timestamp of the event. May be used to infer latency to
@@ -568,7 +568,7 @@ class PlayerFacilityDefend(Event, CharacterEvent):
 
        The current :class:`~auraxium.ps2.Zone` of the character.
 
-    ..attribute:: timestamp
+    .. attribute:: timestamp
        :type: int
 
        The UTC timestamp of the event. May be used to infer latency to
@@ -595,7 +595,7 @@ class PlayerLogin(Event, CharacterEvent, WorldEvent):
 
        The :class:`~auraxium.ps2.Character` that logged in.
 
-    ..attribute:: timestamp
+    .. attribute:: timestamp
        :type: int
 
        The UTC timestamp of the event. May be used to infer latency to
@@ -619,7 +619,7 @@ class PlayerLogout(Event, CharacterEvent, WorldEvent):
 
        The :class:`~auraxium.ps2.Character` that logged off.
 
-    ..attribute:: timestamp
+    .. attribute:: timestamp
        :type: int
 
        The UTC timestamp of the event. May be used to infer latency to
@@ -653,7 +653,7 @@ class SkillAdded(Event, CharacterEvent):
 
        The current :class:`~auraxium.ps2.Zone` of the character.
 
-    ..attribute:: timestamp
+    .. attribute:: timestamp
        :type: int
 
        The UTC timestamp of the event. May be used to infer latency to
@@ -725,7 +725,7 @@ class VehicleDestroy(Event, CharacterEvent):
 
        The :class:`~auraxium.ps2.Zone` the vehicle was destroyed in.
 
-    ..attribute:: timestamp
+    .. attribute:: timestamp
        :type: int
 
        The UTC timestamp of the event. May be used to infer latency to
@@ -793,7 +793,7 @@ class ContinentLock(Event, WorldEvent):
 
        The event type of :attr:`metagame_event_id`.
 
-    ..attribute:: timestamp
+    .. attribute:: timestamp
        :type: int
 
        The UTC timestamp of the event. May be used to infer latency to
@@ -864,7 +864,7 @@ class ContinentUnlock(Event, WorldEvent):
 
        (Unknown due to event being broken)
 
-    ..attribute:: timestamp
+    .. attribute:: timestamp
        :type: int
 
        The UTC timestamp of the event. May be used to infer latency to

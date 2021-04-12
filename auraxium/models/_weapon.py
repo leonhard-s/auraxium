@@ -138,7 +138,7 @@ class WeaponDatasheet(RESTPayload):
 
        (Not yet documented)
 
-    .. attribute:: fire_cone_max:´
+    .. attribute:: fire_cone_max
        :type: float
 
        (Not yet documented)

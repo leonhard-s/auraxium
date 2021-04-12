@@ -33,7 +33,7 @@ class Title(Named, cache_size=300, cache_ttu=300.0):
     """A title selectable by a character.
 
     .. attribute:: id
-       type: int:
+       :type: int:
 
        The identifier for this title.
 

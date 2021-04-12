@@ -116,7 +116,7 @@ class Event(Payload):
        The raw event name linked to this type. Generally identical to
        the name of the class.
 
-    ..attribute:: timestamp
+    .. attribute:: timestamp
        :type: int
 
        The UTC timestamp of the event. May be used to infer latency to

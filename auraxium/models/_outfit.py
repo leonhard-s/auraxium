@@ -63,12 +63,12 @@ class OutfitRankData(RESTPayload):
        values denote a higher rank.
 
     .. attribute:: name
-       type: str
+       :type: str
 
        The custom name of the outfit rank.
 
     .. attribute:: description
-       type: str
+       :type: str
 
        The description of the rank.
     """
