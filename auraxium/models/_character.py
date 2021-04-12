@@ -1,4 +1,4 @@
-"""Data classes for :mod:`auraxium.ps2.character`."""
+"""Data classes for :mod:`auraxium.ps2._character`."""
 
 from typing import Optional
 
@@ -19,21 +19,53 @@ __all__ = [
 class CharacterAchievement(RESTPayload):
     """Data container for a character's achievement status.
 
-    Attributes:
-        character_id: The ID of the character for this entry.
-        achievement_id: The ID of the achievement for this entry.
-        earned_count: How often the character has earned the given
-            achievement.
-        start: The UTC timestamp the character started progression
-            towards this achievement at.
-        start_date: Human-readable version of :attr:`start`.
-        finish: The time the character completed this achievement. Only
-            valid for one-time achievements such as medals.
-        finish_date: Human-readable version of :attr:`finish`.
-        last_save: The last time the character gained this
-            achievement at as a UTC timestamp.
-        last_save_date: Human-readable version of :attr:`last_save`.
+    .. attribute:: character_id
+       :type: int
 
+       The ID of the character for this entry.
+
+    .. attribute:: achievement_id
+       :type: int
+
+       The ID of the achievement for this entry.
+
+    .. attribute:: earned_count:
+       :type: int
+
+       How often the character has earned the given achievement.
+
+    .. attribute:: start
+       :type: int
+
+       The UTC timestamp the character started progression towards this
+       achievement at.
+
+    .. attribute:: start_date
+       :type: str
+
+       Human-readable version of :attr:`start`.
+
+    .. attribute:: finish:
+       :type: int
+
+       The time the character completed this achievement. Only valid
+       for one-time achievements such as medals.
+
+    .. attribute:: finish_date
+       :type: str
+
+       Human-readable version of :attr:`finish`.
+
+    .. attribute:: last_save
+       :type: int
+
+       The last time the character gained this achievement at as a UTC
+       timestamp.
+
+    .. attribute:: last_save_date
+       :type: str
+
+       Human-readable version of :attr:`last_save`.
     """
 
     character_id: int
@@ -57,10 +89,15 @@ class CharacterData(RESTPayload):
     class BattleRank(RESTPayload):
         """Object representation of the "battle_rank" sub-key.
 
-        Attributes:
-            value: The current battle rank.
-            percent_to_next: The progress to the next battle rank.
+        .. attribute:: value
+           :type: int
 
+           The current battle rank of the character.
+
+        .. attribute:: percent_to_next
+           :type: float
+
+           The progress to the next battle rank.
         """
 
         value: int
@@ -69,17 +106,31 @@ class CharacterData(RESTPayload):
     class Certs(RESTPayload):
         """Object representation of the "certs" sub-key.
 
-        Attributes:
-            earned_points: Certification points the player has ever
-                earned.
-            gifted_points: Certification points the player was gifted
-                through events.
-            spent_points: Certification points the character has spent.
-            available_points: The current certification point balance
-                of the character.
-            percent_to_next: The progress to the next certification
-                point for the character.
+        .. attribute:: earned_points
+           :type: int
 
+           Certification points the player has ever earned.
+
+        .. attribute:: gifted_points
+           :type: int
+
+           Certification points the player was gifted through events.
+
+        .. attribute:: spent_points
+           :type: int
+
+           Certification points the character has spent.
+
+        .. attribute:: available_points
+           :type: int
+
+           The current certification point balance of the character.
+
+        .. attribute:: percent_to_next
+            :type: float
+
+            The progress to the next certification point for the
+            character.
             """
 
         earned_points: int
@@ -91,11 +142,25 @@ class CharacterData(RESTPayload):
     class DailyRibbon(RESTPayload):
         """Object representation of the "daily_ribbon" sub-key.
 
-        Attributes:
-            count: The number of daily ribbon bonuses available.
-            time: (Not yet documented)
-            date: Human-readable version of :attr:`time`.
+        .. note::
 
+           As of spring 2021, daily ribbon boni are disabled and
+           unused.
+
+        .. attribute:: count
+           :type: int
+
+           The number of daily ribbon boni available.
+
+        .. attribute:: time
+           :type: int
+
+           The time the next daily ribbon bonus will be granted.
+
+        .. attribute:: date
+            type: str
+
+            Human-readable version of :attr:`time`.
         """
 
         count: int  # type: ignore
@@ -105,10 +170,22 @@ class CharacterData(RESTPayload):
     class Name(RESTPayload):
         """Object representation of the "name" sub-key.
 
-        Attributes:
-            first: The name of the character.
-            first_lower: Lowercase version of :attr:`first`.
+        .. note::
 
+           This object supports casting this object to :class:`str`,
+           which will return the name of the player.
+
+        .. attribute:: first
+           :type: str
+
+           Unique name of the player.
+
+        .. attribute:: first_lower
+           :type: str
+
+           Lowercase version of :attr:`first`. Useful for
+           case-insensitive name lookups without requiring the use of
+           a case-insensitive query.
         """
 
         first: str
@@ -125,22 +202,47 @@ class CharacterData(RESTPayload):
     class Times(RESTPayload):
         """Object representation of the "times" sub-key.
 
-        Attributes:
-            creation: The time the character was created.
-            creation_date: Human-readable version of :attr:`creation`.
-            last_save: The last time the character was updated. This
-                roughly matches the last time the character logged out.
-            last_save_date: Human-readable version of
-                :attr:`last_save`.
-            last_login: The last time the character logged in.
-            last_login_date: Human-readable version of
-                :attr:`last_login_date`.
-            login_count: The number of times the character has logged
-                in.
-            minutes_played: The total number of minutes this character
-                was logged into PS2.
+        .. attribute:: creation
+           :type: int
 
-            """
+           The time the character was created.
+
+        .. attribute:: creation_date
+           :type: str
+
+           Human-readable version of :attr:`creation`.
+
+        .. attribute:: last_save
+           :type: int
+
+           The last time the character was updated. This roughly
+           matches the last time the character logged out.
+
+        .. attribute:: last_save_date
+           :type: str
+
+           Human-readable version of :attr:`last_save`.
+
+        .. attribute:: last_login
+           :type: int
+
+           The last time the character logged in.
+
+        .. attribute:: last_login_date
+           :type: str
+
+           Human-readable version of :attr:`last_login_date`.
+
+        .. attribute:: login_count
+           :type: int
+
+           The number of times the character has logged in.
+
+        .. attribute:: minutes_played
+           :type: int
+
+           The total number of minutes this character was logged in.
+        """
 
         creation: int
         creation_date: str
@@ -167,15 +269,31 @@ class CharacterData(RESTPayload):
 class CharacterDirective(RESTPayload):
     """Data container for a character's directive status.
 
-    Attributes:
-        character_id: The ID of the character for this entry.
-        directive_tree_id: The ID of the directive tree for this entry.
-        directive_id: The ID of the directive for this entry.
-        completion_time: The time the character completed this
-            directive.
-        completion_time_date: Human-readable version of
-            :attr:`completion_time`.
+    .. attribute:: character_id
+       :type: int
 
+       The ID of the character for this entry.
+
+    .. attribute: directive_id
+       :type: int
+
+       The ID of the directive for this entry.
+
+
+    .. attribute:: directive_tree_id
+       :type: int
+
+       The ID of the directive tree for this entry.
+
+    .. attribute:: completion_time
+       :type: int
+
+       The time the character completed this directive.
+
+    .. attribute:: completion_time_date
+       :type: str
+
+       Human-readable version of :attr:`completion_time`.
     """
 
     character_id: int
@@ -188,13 +306,34 @@ class CharacterDirective(RESTPayload):
 class CharacterDirectiveObjective(RESTPayload):
     """Data container for a characters's directive progress.
 
-    Attributes:
-        character_id: The ID of the character for this entry.
-        directive_id: The ID of the directive for this entry.
-        objective_id: Objective ID.
-        objective_group_id: (Details needed).
-        status: The status of this objective.
-        state_data: Extra data for this state.
+    .. attribute:: character_id
+       :type: int
+
+       The ID of the character for this entry.
+    .. attribute:: directive_id
+       :type: int
+
+       The ID of the directive for this entry.
+
+    .. attribute:: objective_id
+       :type: int
+
+       ID of the objective.
+
+    .. attribute:: objective_group_id
+       :type: int
+
+       (More info needed)
+
+    .. attribute:: status
+       :type: int
+
+       The status of this objective.
+
+    .. attribute:: state_data
+       :type: int
+
+       Extra data for this state.
     """
 
     character_id: int
@@ -208,14 +347,30 @@ class CharacterDirectiveObjective(RESTPayload):
 class CharacterDirectiveTier(RESTPayload):
     """Data container for character directive tier progress.
 
-    Attributes:
-        character_id: ID of the character.
-        directive_tree_id: ID of the directive tree.
-        directive_tier_id: ID of the directive tier.
-        completion_time: When this tier was completed, or zero if not
-            yet completed.
-        completion_time_date: String version of
-            :attr:`completion_time`.
+    .. attribute:: character_id
+       :type: int
+
+       ID of the character.
+
+    .. attribute:: directive_tree_id
+       :type: int
+
+       ID of the directive tree.
+
+    .. attribute:: directive_tier_id
+       :type: int
+
+       ID of the directive tier.
+
+    .. attribute:: completion_time
+       :type: int
+
+       When this tier was completed, or zero if not yet completed.
+
+    .. attribute:: completion_time_date
+       :type: int
+
+       String version of :attr:`completion_time`.
     """
 
     character_id: int
@@ -228,16 +383,37 @@ class CharacterDirectiveTier(RESTPayload):
 class CharacterDirectiveTree(RESTPayload):
     """Data container for character directive tree progress.
 
-    Attributes:
-        character_id: ID of the character.
-        directive_tree_id: The directive tree for this entry.
-        current_directive_tier_id: The current tier the character is on
-            for the given directive tree.
-        current_level: The current level in this directive tree.
-        completion_time: When the directive tree was compled, or zero
-            if not yet completed.
-        completion_time_date: String version of
-            :attr:`completion_time`.
+    .. attribute:: character_id
+       :type: int
+
+       ID of the character.
+
+    .. attribute:: directive_tree_id
+       :type: int
+
+       The directive tree for this entry.
+
+    .. attribute:: current_directive_tier_id
+       :type: int
+
+       The current tier the character is on for the given directive
+       tree.
+
+    .. attribute:: current_level
+       :type: int
+
+       The current level in this directive tree.
+
+    .. attribute:: completion_time
+       :type: int
+
+       When the directive tree was compled, or zero if not yet
+       completed.
+
+    .. attribute:: completion_time_date
+       :type: int
+
+       String version of :attr:`completion_time`.
     """
 
     character_id: int

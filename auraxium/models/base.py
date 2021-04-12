@@ -21,7 +21,10 @@ class Payload(pydantic.BaseModel):
     """
 
     class Config:
-        """Pydantic model configuration."""
+        """Pydantic model configuration.
+
+        :meta private:
+        """
 
         allow_mutation = False
 
@@ -34,6 +37,11 @@ class Payload(pydantic.BaseModel):
 
 
 class RESTPayload(Payload):
+    """A JSON payload received through the REST interface.
+
+    This :class:`Payload` subclass implicitly converts NULL strings to
+    :obj:`None`.
+    """
 
     @pydantic.validator('*', pre=True)
     @classmethod
@@ -43,7 +51,7 @@ class RESTPayload(Payload):
         This is a pre-validator; it is run before any other validation
         or conversion takes place.
 
-        By default, the API will omit any "NULL" fields in the
+        By default, the API will omit any NULL fields in the
         response unless the ``c:includeNull`` flag is set. In Python,
         a missing value is instead. This also ensures that optional
         values can be type-hinted with :obj:`typing.Optional` without
@@ -62,6 +70,10 @@ class FallbackMixin(metaclass=abc.ABCMeta):
     data. This mixin provides a hook to insert this missing data into
     data types while not causing issues if the API ends up being
     updated to include these missing types.
+
+    Subclasses must implement the :meth:`fallback_hook` method to
+    inject custom fallback data into the type. If no value can be
+    provided for a given `id_`, a :exc:`KeyError` should be raised.
     """
 
     @staticmethod
@@ -72,7 +84,23 @@ class FallbackMixin(metaclass=abc.ABCMeta):
 
 @dataclasses.dataclass(frozen=True)
 class ImageData:
-    """Mixin dataclass for types supporting image access."""
+    """Mixin dataclass for types supporting image access.
+
+    .. attribute:: image_id
+       :type: int | None
+
+       The default image ID of the object.
+
+    .. attribute:: image_set_id
+       :type: int | None
+
+       The image set ID of the object.
+
+    .. attribute:: image_path
+       :type: str | None
+
+       The base path to the default :attr:`image_id`.
+    """
 
     image_id: Optional[int] = None
     image_set_id: Optional[int] = None
@@ -80,7 +108,26 @@ class ImageData:
 
 
 class Event(Payload):
-    """An event returned via the ESS websocket connection."""
+    """An event returned via the ESS websocket connection.
+
+    .. attribute:: event_name
+       :type: str
+
+       The raw event name linked to this type. Generally identical to
+       the name of the class.
+
+    ..attribute:: timestamp
+       :type: int
+
+       The UTC timestamp of the event. May be used to infer latency to
+       the event streaming endpoint.
+
+    .. attribute:: world_id
+       :type: int
+
+       ID of the :class:`~auraxium.ps2.World` whose event streaming
+       endpoint broadcast the event.
+    """
 
     event_name: str
     timestamp: datetime.datetime
@@ -96,7 +143,7 @@ class Event(Payload):
 class CharacterEvent:
     """Mixin class for character-centric events.
 
-    Events inheriting from this calss support subscription by character
+    Events inheriting from this class support subscription by character
     ID.
     """
 

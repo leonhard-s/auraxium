@@ -1,4 +1,4 @@
-"""Data classes for :mod:`auraxium.ps2.achievement`."""
+"""Data classes for :mod:`auraxium.ps2._achievement`."""
 
 from .base import ImageData
 from ..types import LocaleData

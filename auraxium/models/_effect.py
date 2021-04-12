@@ -1,4 +1,4 @@
-"""Data classes for :mod:`auraxium.ps2.effect`."""
+"""Data classes for :mod:`auraxium.ps2._effect`."""
 
 from typing import Optional
 
@@ -46,7 +46,6 @@ class EffectTypeData(RESTPayload):
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
-
     """
 
     effect_type_id: int
