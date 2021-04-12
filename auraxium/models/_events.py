@@ -772,12 +772,12 @@ class ContinentLock(Event, WorldEvent):
 
        Population percentage for VS.
 
-    .. attribute:: vs_population
+    .. attribute:: nc_population
        :type: float
 
        Population percentage for NC.
 
-    .. attribute:: vs_population
+    .. attribute:: tr_population
        :type: float
 
        Population percentage for TR.
@@ -844,12 +844,12 @@ class ContinentUnlock(Event, WorldEvent):
 
        (Unknown due to event being broken)
 
-    .. attribute:: vs_population
+    .. attribute:: nc_population
        :type: float
 
        (Unknown due to event being broken)
 
-    .. attribute:: vs_population
+    .. attribute:: tr_population
        :type: float
 
        (Unknown due to event being broken)

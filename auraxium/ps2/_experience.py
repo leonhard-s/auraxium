@@ -32,8 +32,7 @@ class Experience(Cached, cache_size=100, cache_ttu=3600.0):
     .. attribute:: description
        :type: str
 
-       A description of when this experience reward is
-            granted.
+       A description of when this experience reward is granted.
 
     .. attribute:: xp
        :type: int

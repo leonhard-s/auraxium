@@ -76,7 +76,7 @@ class Objective(Cached, cache_size=10, cache_ttu=60.0):
        :type: str | None
 
        Type-specific parameters for this objective. Refer to the
-       corresponding :class:`~auraxium.types.ObjectiveType` for
+       corresponding :class:`~auraxium.ps2.ObjectiveType` for
        details.
     """
 

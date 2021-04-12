@@ -97,8 +97,8 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
     .. attribute:: projectile_speed_override
        :type: int | None
 
-       A fire mode specific override used
-            to override the fire mode's projectile's speed.
+       A fire mode specific override used to override the fire mode's
+       projectile's speed.
 
     .. attribute:: sprint_fire
        :type: bool | None
@@ -144,8 +144,8 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
     .. attribute:: cof_scalar
        :type: float
 
-       The starting cone-of-fire scalar. This exists so it
-            can be modified by attachments.
+       The starting cone-of-fire scalar. This exists so it can be
+       modified by attachments.
 
     .. attribute:: cof_scalar_moving
        :type: float
@@ -168,8 +168,7 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
     .. attribute:: damage_head_multiplier
        :type: float | None
 
-       The headshot multiplier for the fire
-            mode.
+       The headshot multiplier for the fire mode.
 
     .. attribute:: damage_indirect_effect_id
        :type: int | None
@@ -239,8 +238,7 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
     .. attribute:: heat_recovery_delay_ms
        :type: int | None
 
-       The duration after which weapon heat
-            will start to dissipate.
+       The duration after which weapon heat will start to dissipate.
 
     .. attribute:: heat_threshold
        :type: int | None
@@ -449,8 +447,7 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
     .. attribute:: sway_can_steady
        :type: bool | None
 
-       Whether the player can hold their breath to
-            stop camera sway.
+       Whether the player can hold their breath to stop camera sway.
 
     .. attribute:: sway_period_x
        :type: int | None
@@ -507,8 +504,7 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
     .. attribute:: min_damage_range
        :type: float | None
 
-       The range at which the weapon deals its
-            minimum damage.
+       The range at which the weapon deals its minimum damage.
 
     .. attribute:: shield_bypass_pct
        :type: int | None
@@ -662,8 +658,7 @@ class FireGroup(Cached, cache_size=10, cache_ttu=60.0):
     .. attribute:: chamber_duration_ms
        :type:
 
-       The rechamber time for weapons in this
-            group.
+       The rechamber time for weapons in this group.
 
     .. attribute:: transition_duration_ms
        :type:
@@ -673,23 +668,19 @@ class FireGroup(Cached, cache_size=10, cache_ttu=60.0):
     .. attribute:: spool_up_ms
        :type:
 
-       The duration of the spool-up period for this
-            weapon group.
+       The duration of the spool-up period for this weapon group.
 
     .. attribute:: spool_up_initial_refire_ms
        :type:
 
-       The initial fire speed (rounds
-            per minute) of the weapon group. The weapon starts out at
-            this value when firing, then tapers to the regular value
-            after :attr:`spool_up_ms` milliseconds.
+       The initial fire speed (rounds per minute) of the weapon group.
+       The weapon starts out at this value when firing, then tapers to
+       the regular value after :attr:`spool_up_ms` milliseconds.
 
     .. attribute:: can_chamber_ironsights
        :type:
 
-       Whether a bolt-action weapon can be
-            rechambered while in ADS.
-
+       Whether a bolt-action weapon can be rechambered while in ADS.
     """
 
     collection = 'fire_group'

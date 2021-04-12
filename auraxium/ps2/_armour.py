@@ -43,8 +43,8 @@ class ArmourInfo(Cached, cache_size=100, cache_ttu=60.0):
     .. attribute:: armor_facing_id
        :type: int
 
-       The enum value the facing direction this entry
-            provides armour data for.
+       The enum value the facing direction this entry provides armour
+       data for.
 
     .. attribute:: armor_percent
        :type: int

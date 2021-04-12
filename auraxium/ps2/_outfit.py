@@ -132,8 +132,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
     .. attribute:: time_created
        :type: int
 
-       The creation date of the outfit as a UTC
-            timestamp.
+       The creation date of the outfit as a UTC timestamp.
 
     .. attribute:: time_created_date
        :type: str
@@ -168,7 +167,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
 
     @property
     def tag(self) -> str:
-        """Alias of :attr:`Outfit.alias`."""
+        """Alias of :attr:`alias`."""
         return self.alias
 
     @classmethod
@@ -178,7 +177,6 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         """Retrieve an outfit by its unique name.
 
         This query is always case-insensitive.
-
         """
         log.debug('%s "%s"[%s] requested', cls.__name__, name, locale)
         if (instance := cls._cache.get(f'_{name.lower()}')) is not None:
@@ -201,7 +199,6 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         """Return an outfit by its unique tag.
 
         This query is always case-insensitive.
-
         """
         log.debug('%s with tag "%s" requested, generating API query...',
                   cls.__name__, tag)

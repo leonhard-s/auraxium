@@ -45,7 +45,7 @@ class CharacterAchievement(RESTPayload):
 
        Human-readable version of :attr:`start`.
 
-    .. attribute:: finish:
+    .. attribute:: finish
        :type: int
 
        The time the character completed this achievement. Only valid

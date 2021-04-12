@@ -28,8 +28,7 @@ class DirectiveTreeCategory(Named, ImageMixin, cache_size=10, cache_ttu=300.0):
     .. attribute:: directive_tree_category_id
        :type: int
 
-       The unique ID of the directive tree
-            category.
+       The unique ID of the directive tree category.
 
     .. attribute:: name
        :type: auraxium.types.LocaleData

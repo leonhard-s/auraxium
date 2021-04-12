@@ -61,8 +61,8 @@ class Projectile(Cached, cache_size=100, cache_ttu=60.0):
        :type: int | float
 
        The time after which the projectile will be destroyed if it ha
-        not hit a target. Effectively limits  the maximum distance
-        travelled.
+       not hit a target. Effectively limits  the maximum distance
+       travelled.
 
     .. attribute:: drag
        :type: float | None

@@ -79,7 +79,18 @@ class FallbackMixin(metaclass=abc.ABCMeta):
     @staticmethod
     @abc.abstractmethod
     def fallback_hook(id_: int) -> CensusData:
-        ...
+        """Hook for retrieving hard-coded fallback data.
+
+        Some collections are missing data or providing bad data for
+        some or all IDs. This method provides a non-destructive hook
+        for inserting missing data if the API cannot produce a value.
+
+        :param int id_: The ID of the value to look up.
+        :raises KeyError: Raised if no fallback data can be provided
+           for the given `id_`.
+        :return: A fallback payload to treat as if it came from the
+           server.
+        """
 
 
 @dataclasses.dataclass(frozen=True)
@@ -112,18 +123,21 @@ class Event(Payload):
 
     .. attribute:: event_name
        :type: str
+       :noindex:
 
        The raw event name linked to this type. Generally identical to
        the name of the class.
 
     .. attribute:: timestamp
        :type: int
+       :noindex:
 
        The UTC timestamp of the event. May be used to infer latency to
        the event streaming endpoint.
 
     .. attribute:: world_id
        :type: int
+       :noindex:
 
        ID of the :class:`~auraxium.ps2.World` whose event streaming
        endpoint broadcast the event.

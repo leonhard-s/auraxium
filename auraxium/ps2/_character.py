@@ -33,7 +33,7 @@ class Title(Named, cache_size=300, cache_ttu=300.0):
     """A title selectable by a character.
 
     .. attribute:: id
-       :type: int:
+       :type: int
 
        The identifier for this title.
 
@@ -80,8 +80,10 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
        ID of the :class:`Faction` the character belongs to.
 
-       .. seealso:: :meth:`Character.faction` -- Retrieve the
-          :class:`Faction` the character belongs to.
+       .. seealso::
+
+          :meth:`Character.faction` -- Retrieve the :class:`Faction`
+          the character belongs to.
 
     .. attribute:: head_id
        :type: int
@@ -103,6 +105,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
        May be zero if the character has not selected any title.
 
        .. seealso::
+
           :meth:`Character.title` -- Retrieve the currently selected
           :class:`Title` of the character.
 
@@ -321,8 +324,8 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
         .. warning::
 
-            This method is part of a provisional API and may be removed
-            or altered in upcoming versions.
+           This method is part of a provisional API and may be removed
+           or altered in upcoming versions.
         """
         collection: Final[str] = 'characters_event_grouped'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
