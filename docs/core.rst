@@ -5,9 +5,9 @@ All of Auraxium's API interactions are performed through the :class:`auraxium.Cl
 
 .. note::
 
-    You can use the default value of ``s:example`` for testing, but you may run into rate limiting issues if your app generates more than 5-6 queries a minute.
+   You can use the default value of ``s:example`` for testing, but you may run into rate limiting issues if your app generates more than 5-6 queries a minute.
 
-    You can apply for your custom service ID here; the process is free, and you usually hear back within a few hours.
+   You can apply for your custom service ID here; the process is free, and you usually hear back within a few hours.
 
 Some of these references are also required for any queries carried out behind the scenes, so the client object is also handed around behind the scenes; be mindful when updating them as this may cause issues with ongoing background queries.
 
@@ -16,9 +16,7 @@ Retrieving Data
 
 .. note::
 
-    The game-specific object representations for PlanetSide 2 reside in the :mod:`auraxium.ps2` submodule.
-
-..    Refer to the `Object Model Documentation <ps2.html>`_ for details.
+   The game-specific object representations for PlanetSide 2 reside in the :mod:`auraxium.ps2` submodule. Refer to the `Object Model Documentation <api/ps2.html>`_  for details.
 
 The :class:`auraxium.Client` class exposes several methods used to access the REST API data, like :meth:`~auraxium.Client.get()`, used to return a single match, or :meth:`~auraxium.Client.find()`, used to return a list of matching entries.
 
@@ -30,33 +28,27 @@ Here is an example script that prints various character properties:
 
 .. code-block:: python3
 
-    import asyncio
-    import auraxium
-    from auraxium import ps2
+   import asyncio
+   import auraxium
+   from auraxium import ps2
 
-    async def main():
-        async with auraxium.Client() as client:
+   async def main():
+       async with auraxium.Client() as client:
 
-            char = await client.get_by_name(ps2.Character, 'auroram')
-            print(char.name))
-            print(char.data.prestige_level)
+           char = await client.get_by_name(ps2.Character, 'auroram')
+           print(char.name))
+           print(char.data.prestige_level)
 
-            # NOTE: Any methods that might incur network traffic are asynchronous.
-            # If the data type has been cached locally, no network communication
-            # is required.
+           # NOTE: Any methods that might incur network traffic are asynchronous.
+           # If the data type has been cached locally, no network communication
+           # is required.
 
-            # This will only generate a request once per faction, as the faction
-            # data type is cached forever by default
-            print(await char.faction())
+           # This will only generate a request once per faction, as the faction
+           # data type is cached forever by default
+           print(await char.faction())
 
-            # The online status is never cached as it is bound to change at any
-            # moment.
-            print(await char.is_online())
+           # The online status is never cached as it is bound to change at any
+           # moment.
+           print(await char.is_online())
 
-    asyncio.get_event_loop().run_until_complete(main())
-
-API Reference
--------------
-
-.. autoclass:: auraxium.Client
-    :members:
+   asyncio.get_event_loop().run_until_complete(main())

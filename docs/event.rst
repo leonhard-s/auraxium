@@ -10,26 +10,25 @@ To gain access to event streaming functionality in Auraxium, you must use the :c
 
 .. note::
 
-    When using the event client, be wary of using the asynchronous context manager interface. When the context manager body finishes execution, the WebSocket connection is shut down as well:
-
-    .. code-block:: python3
-
-        async with auraxium.EventClient() as client:
-            @client.trigger(...)
-            async def action(event):
-                ...
-
-            # This block is left immediately, shutting the client
-
-   You can mitigate this by using an :class:`asyncio.Event` or a similar asynchronous flag to keep the control flow within the context manager until you are ready to shut it down.
-
-   Alternatively, you can use :meth:`asyncio.AbstractEventLoop.run_forever()` to keep the event loop running even after the enclosing method finishes:
+   When using the event client, be wary of using the asynchronous context manager interface. When the context manager body finishes execution, the WebSocket connection is shut down as well:
 
    .. code-block:: python3
 
-        loop = asyncio.get_event_loop()
-        loop.create_task(main())
-        loop.run_forever()
+      async with auraxium.EventClient() as client:
+          @client.trigger(...)
+          async def action(event):
+              ...
+         # This block is left immediately, shutting the client
+
+   You can mitigate this by using an :class:`asyncio.Event` or a similar asynchronous flag to keep the control flow within the context manager until you are ready to shut it down.
+
+   Alternatively, you can use :meth:`asyncio.loop.run_forever` to keep the event loop running even after the enclosing method finishes:
+
+   .. code-block:: python3
+
+      loop = asyncio.get_event_loop()
+      loop.create_task(main())
+      loop.run_forever()
 
 Trigger System Overview
 =======================
@@ -53,34 +52,35 @@ In the case of the PlanetSide 2 event stream, this information is also used to d
 
 A trigger can be set up to listen to more than event at once. Information about the event types available and the data they make accessible can be found in the `event types`_ section below.
 
-Example:
-   The minimum code required to set up an event trigger and its action uses the :meth:`auraxium.EventClient.trigger()` decorator:
+.. rubric:: Example
 
-   .. code-block:: python3
-      :emphasize-lines: 3
+The minimum code required to set up an event trigger and its action uses the :meth:`auraxium.EventClient.trigger` decorator:
 
-      client = auraxium.EventClient()
+.. code-block:: python3
+   :emphasize-lines: 3
 
-      @client.trigger(auraxium.EventType.DEATH)
-      async def print_death(event):
+   client = auraxium.EventClient()
+
+   @client.trigger(auraxium.event.Death)
+   async def print_death(event):
          ...  # Do stuff
 
-   This version is shortest and will be used for most examples as it covers most use cases, but does not support some advanced trigger features like conditions.
+This version is shortest and will be used for most examples as it covers most use cases, but does not support some advanced trigger features like conditions.
 
-   For the full set of features, instantiate the :class:`auraxium.Trigger` manually, add any actions and conditions, and finally register it to the client via :meth:`auraxium.EventClient.add_trigger`:
+For the full set of features, instantiate the :class:`auraxium.event.Trigger` manually, add any actions and conditions, and finally register it to the client via :meth:`auraxium.EventClient.add_trigger`:
 
-   .. code-block:: python3
-      :emphasize-lines: 3,5,9
+.. code-block:: python3
+   :emphasize-lines: 3,5,9
 
-      client = auraxium.EventClient()
+   client = auraxium.EventClient()
 
-      my_trigger = auraxium.Trigger(auraxium.EventType.DEATH)
+   my_trigger = auraxium.Trigger(auraxium.event.Death)
 
-      @my_trigger.action
-      async def print_death(event):
-         ...  # Do stuff
+   @my_trigger.action
+   async def print_death(event):
+       ...  # Do stuff
 
-      client.add_trigger(my_trigger)
+   client.add_trigger(my_trigger)
 
 Conditions
 ----------
@@ -89,54 +89,56 @@ Whether a trigger fires is mainly controlled by its events. However, sometimes y
 
 To keep your event callbacks tidy and not cause unnecessary triggering of potentially expensive actions, you can additionally specify any number of conditions that must be met for the trigger to fire.
 
-Conditions are stored in the :attr:`auraxium.EventTrigger.conditions <EventTrigger.conditions>` list and are save to be modified or updated at any point.
+Conditions are stored in the :attr:`Trigger.conditions <auraxium.event.Trigger.conditions>` list and are save to be modified or updated at any point.
 
-This list may contain synchronous callables or any object that evaluates to :obj:`bool`. Callables must take a single argument: the :class:`auraxium.Event` encountered.
+This list may contain synchronous callables or any object that evaluates to :obj:`bool`. Callables must take a single argument: the :class:`auraxium.event.Event` encountered.
 
 .. important::
 
    Coroutines (i.e. functions defined via ``async def``) are **not** supported as conditions and will be cast to :obj:`bool` instead (i.e. always pass).
 
-Example:
-   .. code-block:: python3
-      :emphasize-lines: 3-8,11
+.. rubric:: Example
 
-      valid_character_ids = [5428072203494645969, ...]
+.. code-block:: python3
+   :emphasize-lines: 3-8,11
 
-      def check_killer_id(event):
-         """Example condition that checks the payload's killing player."""
-         payload = event['payload']
-         assert payload['event_name'] == 'Death'
-         char_id = int(payload['attacker_character_id'])
-         return char_id in valid_character_ids
+   valid_character_ids = [5428072203494645969, ...]
 
-      trigger = auraxium.EventTrigger(auraxium.EventType.DEATH)
-      trigger.conditions.append(check_killer_id)
+   def check_killer_id(event):
+      """Example condition that checks the payload's killing player."""
+      payload = event['payload']
+      assert payload['event_name'] == 'Death'
+      char_id = int(payload['attacker_character_id'])
+      return char_id in valid_character_ids
 
-      @trigger.action
-      async def filtered_death(event):
-          ...  # Do stuff
+   trigger = auraxium.EventTrigger(auraxium.event.Death)
+   trigger.conditions.append(check_killer_id)
+
+   @trigger.action
+   async def filtered_death(event):
+       ...  # Do stuff
 
 Actions
 -------
 
 A trigger action is a method or function that will be run when the corresponding trigger fires (i.e. a matching event is encountered and all conditions were met).
 
-Actions may be synchronous functions or coroutines; anything that is a coroutine as determined by :meth:`asyncio.iscoroutinefunction` will be awaited.
+Actions may be synchronous functions or coroutines; anything that is a coroutine as determined by :func:`asyncio.iscoroutinefunction` will be awaited.
 
-The only argument passed to the trigger action is the :class:`auraxium.Event` received.
+The only argument passed to the trigger action is the :class:`auraxium.event.Event` received.
 
-Example:
-   .. code-block:: python3
-      :emphasize-lines: 1
+.. rubric:: Example
 
-      async def example_action(event: Event) -> None:
-         """Example function to showcase the signature used for actions.
+.. code-block:: python3
+   :emphasize-lines: 1
 
-         Keep in mind that this could also be a regular function (i.e. one
-         defined without the "async" keyword).
-         """
-         ...  # Do stuff
+   async def example_action(event: Event) -> None:
+       """Example function to showcase the signature used for actions.
+
+       Keep in mind that this could also be a regular function (i.e. one
+       defined without the "async" keyword).
+       """
+       ...  # Do stuff
 
 Event Types
 ===========
@@ -144,7 +146,7 @@ Event Types
 Standard Events
 ---------------
 
-.. autoclass:: auraxium.EventType
+.. autoclass:: auraxium.event.Event
    :members:
    :noindex:
    :undoc-members:
@@ -153,14 +155,14 @@ Standard Events
 Filtering by Experience ID
 --------------------------
 
-Due to the high volume of events matching :attr:`auraxium.EventType.GAIN_EXPERIENCE`, it is also possible to only listen for specific experience IDs.
+Due to the high volume of events matching :class:`auraxium.event.GainExperience`, it is also possible to only listen for specific experience IDs.
 
-Due to the dynamic nature of these events, they are not part of the :class:`auraxium.EventType` enumerator, but are instead generated dynamically via its :meth:`auraxium.EventType.filter_experience` method:
+Due to the dynamic nature of these events, they are not part of the :mod:`auraxium.event` namespace, but are instead generated dynamically via its :meth:`GainExperience.filter_experience <auraxium.event.GainExperience.filter_experience>` method:
 
-.. automethod:: auraxium.EventType.filter_experience
+.. automethod:: auraxium.event.GainExperience.filter_experience
    :noindex:
 
-The strings generated by this method can then be used in place of the :class:`auraxium.EventType` enumerator to define triggers and conditions.
+The strings generated by this method can then be used in place of :class:`auraxium.event.Event` sub classses to define triggers and conditions.
 
 Examples
 ========

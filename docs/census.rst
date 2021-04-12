@@ -57,7 +57,7 @@ Basic functionality supported by all queries is defined in the :class:`QueryBase
 
       # With method chaining
       my_query = (census.Query('character', name__first='Auroram')
-               .case(False).show('name.first', 'prestige_level'))
+                  .case(False).show('name.first', 'prestige_level'))
 
    Use of this pattern is optional, but it can aid readability when working with complex or heavily nested queries.
 
@@ -89,21 +89,21 @@ This query now won't return actual map regions, but instead up to 20'000 unique 
 .. code-block:: json
 
    {
-      "count": 7,
-      "map_region_list": [
-         {
-            "facility_type": [
-               "Amp Station",
-               "Bio Lab",
-               "Construction Outpost",
-               "Large Outpost",
-               "Small Outpost",
-               "Tech Plant",
-               "Warpgate"
-            ]
-         }
-      ],
-      "returned": 1
+     "count": 7,
+     "map_region_list": [
+       {
+         "facility_type": [
+           "Amp Station",
+           "Bio Lab",
+           "Construction Outpost",
+           "Large Outpost",
+           "Small Outpost",
+           "Tech Plant",
+           "Warpgate"
+         ]
+       }
+     ],
+     "returned": 1
    }
 
 Joined queries

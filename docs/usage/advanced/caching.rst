@@ -2,8 +2,6 @@
 Object Caching
 ==============
 
-.. currentmodule:: auraxium
-
 Most objects accessible through the PlanetSide 2 API are static, meaning that the data returned will remain the same between polls.
 
 Auraxium uses a caching system to reduce API load by keeping objects in memory past their initial lifetime. The next time this item is accessed, it is instead restored from cache without incurring any network traffic.
@@ -14,18 +12,20 @@ Additionally, cache items have a maximum lifetime to force updates for regularly
 
 .. note::
 
-    Restoring items from cache is currently only supported when using :meth:`Ps2Object.get_by_id`.
+   Restoring items from cache is currently only supported when using :meth:`Client.get_by_id <auraxium.Client.get_by_id>`.
 
-    For :class:`Named` sub classes, the :meth:`Named.get_by_name` method is similarly cached by locale. This means that looking up the same name in two different locales will create two separate cache entries.
+   For :class:`Named <auraxium.base.Named.get_by_name>` sub classes, the :meth:`Client.get_by_name <auraxium.Client.get_by_name>` method is similarly cached by locale. This means that looking up the same name in two different locales will create two separate cache entries.
 
 Customising Caches
 ------------------
 
 Each PlanetSide 2 datatype is preconfigured with a suitable cache size and item lifetime. Factions, for example, are only updated once an hour. Characters are limited to a size of 256 and only last 30 seconds before they are repolled.
 
-You can override the default values at runtime using the :meth:`Cached.alter_cache` method:
+You can override the default values at runtime using the :meth:`Cached.alter_cache <auraxium.base.Cached.alter_cache>` method:
+
+.. currentmodule:: auraxium.base
 
 .. automethod:: Cached.alter_cache
-    :noindex:
+   :noindex:
 
 .. _TLRU Cache: https://en.wikipedia.org/wiki/Cache_replacement_policies#Time_aware_least_recently_used_(TLRU)

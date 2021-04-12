@@ -16,35 +16,35 @@ Auraxium can be installed from PyPI through pip:
 
 .. rubric:: Windows
 
-.. code-block:: posh
+.. code-block:: bat
 
-    python -m pip install --user --upgrade auraxium
+   python -m pip install --user --upgrade auraxium
 
 .. rubric:: Unix
 
 .. code-block:: bash
 
-    python3 -m pip install --user --upgrade auraxium
+   python3 -m pip install --user --upgrade auraxium
 
 You can also use the following commands to install the latest development build directly from the repository:
 
 .. rubric:: Windows
 
-.. code-block:: posh
+.. code-block:: bat
 
-    python -m pip install --user -e git+git://github.com/leonhard-s/auraxium.git#egg=auraxium
+   python -m pip install --user -e git+git://github.com/leonhard-s/auraxium.git#egg=auraxium
 
 .. rubric:: Unix
 
 .. code-block:: bash
 
-    python3 -m pip install --user -e git+git://github.com/leonhard-s/auraxium.git#egg=auraxium
+   python3 -m pip install --user -e git+git://github.com/leonhard-s/auraxium.git#egg=auraxium
 
 .. note::
 
-    When using pre-release versions of Auraxium as a dependency for your own packages, be sure to to pin the exact version used in ``setup.py`` or ``requirements.txt``.
+   When using pre-release versions of Auraxium as a dependency for your own packages, be sure to to pin the exact version used in ``setup.py`` or ``requirements.txt``.
 
-    The API for these versions should not be considered stable and could break your application with the next minor version upgrade.
+   The API for these versions should not be considered stable and could break your application with the next minor version upgrade.
 
 Overview
 ========
@@ -62,7 +62,7 @@ To retrieve in-game object instances, use :meth:`~auraxium.Client.get`, for sing
 
 .. note::
 
-    The ``auraxium.Ps2Object.get_by_*`` interface has been deprecated and is scheduled for removal in version 0.3. Please use the :class:`auraxium.Client` methods instead.
+   The ``auraxium.Ps2Object.get_by_*`` interface has been deprecated and is scheduled for removal in version 0.3. Please use the :class:`auraxium.Client` methods instead.
 
 For more information on the available classes and the attributes they expose, refer to the :doc:`object model reference <api/ps2>`.
 
@@ -73,13 +73,13 @@ The :class:`auraxium.EventClient` sub class adds a trigger-action system allowin
 
 .. code-block:: python3
 
-    client = auraxium.EventClient()
+   client = auraxium.EventClient()
 
-    @client.trigger(auraxium.event.Death)
-    async def on_death(event):
-        victim_id = event.character_id
-        victim = await client.get_by_id(auraxium.ps2.Character, victim_id)
-        print(f'Player {victim.name}' has died)
+   @client.trigger(auraxium.event.Death)
+   async def on_death(event):
+       victim_id = event.character_id
+       victim = await client.get_by_id(auraxium.ps2.Character, victim_id)
+       print(f'Player {victim.name}' has died)
 
 For more information on the event streaming system, refer to the :doc:`event streaming documentation <event>`.
 
