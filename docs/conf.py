@@ -24,7 +24,7 @@ import auraxium
 # -- Project information -----------------------------------------------------
 
 project = 'Auraxium'
-copyright = '2020, Leonhard S.'
+copyright = '2021, Leonhard S.'
 author = 'Leonhard S.'
 version = auraxium.__version__
 
