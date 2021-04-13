@@ -19,7 +19,7 @@ from ._faction import Faction
 from ._fire import FireGroup, FireMode, FireModeType
 from ._item import Item, ItemCategory, ItemType
 from . import leaderboard
-from ._map import MapHex, MapRegion, Region
+from ._map import FacilityType, MapHex, MapRegion, Region
 from ._metagame import MetagameEvent, MetagameEventState
 from ._objective import Objective, ObjectiveType
 from ._outfit import Outfit, OutfitMember
@@ -53,6 +53,7 @@ __all__ = [
     'EffectType',
     'Experience',
     'ExperienceRank',
+    'FacilityType',
     'Faction',
     'FireGroup',
     'FireMode',

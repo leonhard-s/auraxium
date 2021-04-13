@@ -1,4 +1,4 @@
-"""Data classes for :mod:`auraxium.ps2.item`."""
+"""Data classes for :mod:`auraxium.ps2._item`."""
 
 from typing import Optional
 

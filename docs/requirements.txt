@@ -1,5 +1,6 @@
 aiohttp
 backoff
 pydantic
+requests
 yarl
 websockets

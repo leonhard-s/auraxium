@@ -2,357 +2,403 @@
 PlanetSide 2 Object Reference
 =============================
 
-Ability
-=======
+.. module:: auraxium.ps2
 
-.. autoclass:: auraxium.ps2.Ability
-	:members:
-
-AbilityType
-===========
-
-.. autoclass:: auraxium.ps2.AbilityType
-	:members:
-
-Achievement
-===========
-
-.. autoclass:: auraxium.ps2.Achievement
-	:members:
-
-ArmourFacing
-============
-
-.. autoclass:: auraxium.ps2.ArmourFacing
-	:members:
-
-ArmourInfo
-==========
-
-.. autoclass:: auraxium.ps2.ArmourInfo
-	:members:
-
-Character
-=========
-
-.. autoclass:: auraxium.ps2.Character
-	:members:
-
-Currency
-========
-
-.. autoclass:: auraxium.ps2.Currency
-	:members:
-
-MarketingBundle
-===============
-
-.. autoclass:: auraxium.ps2.MarketingBundle
-	:members:
-
-MarketingBundleSingle
-=====================
-
-.. autoclass:: auraxium.ps2.MarketingBundleSingle
-	:members:
-
-Directive
-=========
-
-.. autoclass:: auraxium.ps2.Directive
-	:members:
-
-DirectiveTier
-=============
-
-.. autoclass:: auraxium.ps2.DirectiveTier
-	:members:
-
-DirectiveTree
-=============
-
-.. autoclass:: auraxium.ps2.DirectiveTree
-	:members:
-
-DirectiveTreeCategory
-=====================
-
-.. autoclass:: auraxium.ps2.DirectiveTreeCategory
-	:members:
-
-Effect
-======
-
-.. autoclass:: auraxium.ps2.Effect
-	:members:
-
-EffectType
-==========
-
-.. autoclass:: auraxium.ps2.EffectType
-	:members:
-
-Experience
-==========
-
-.. autoclass:: auraxium.ps2.Experience
-	:members:
-
-ExperienceRank
-==============
-
-.. autoclass:: auraxium.ps2.ExperienceRank
-	:members:
-
-Faction
-=======
-
-.. autoclass:: auraxium.ps2.Faction
-	:members:
-
-FireGroup
-=========
-
-.. autoclass:: auraxium.ps2.FireGroup
-	:members:
-
-FireMode
-========
-
-.. autoclass:: auraxium.ps2.FireMode
-	:members:
-
-FireModeType
-============
-
-.. autoclass:: auraxium.ps2.FireModeType
-	:members:
-
-Item
-====
-
-.. autoclass:: auraxium.ps2.Item
-	:members:
-
-ItemCategory
-============
-
-.. autoclass:: auraxium.ps2.ItemCategory
-	:members:
-
-ItemType
-========
-
-.. autoclass:: auraxium.ps2.ItemType
-	:members:
-
-Loadout
-=======
-
-.. autoclass:: auraxium.ps2.Loadout
-	:members:
-
-MapHex
-======
-
-.. autoclass:: auraxium.ps2.MapHex
-	:members:
-
-MapRegion
-=========
-
-.. autoclass:: auraxium.ps2.MapRegion
-	:members:
-
-Region
-======
-
-.. autoclass:: auraxium.ps2.Region
-	:members:
-
-MetagameEvent
-=============
-
-.. autoclass:: auraxium.ps2.MetagameEvent
-	:members:
-
-MetagameEventState
-==================
-
-.. autoclass:: auraxium.ps2.MetagameEventState
-	:members:
-
-Objective
-=========
-
-.. autoclass:: auraxium.ps2.Objective
-	:members:
-
-ObjectiveType
-=============
-
-.. autoclass:: auraxium.ps2.ObjectiveType
-	:members:
-
-Outfit
-======
-
-.. autoclass:: auraxium.ps2.Outfit
-	:members:
-
-OutfitMember
-============
-
-.. autoclass:: auraxium.ps2.OutfitMember
-	:members:
-
-Profile
-=======
-
-.. autoclass:: auraxium.ps2.Profile
-	:members:
-
-Projectile
-==========
-
-.. autoclass:: auraxium.ps2.Projectile
-	:members:
-
-ProjectileFlightType
-====================
-
-.. autoclass:: auraxium.ps2.ProjectileFlightType
-	:members:
-
-ResistInfo
-==========
-
-.. autoclass:: auraxium.ps2.ResistInfo
-	:members:
-
-ResistType
-==========
-
-.. autoclass:: auraxium.ps2.ResistType
-	:members:
-
-ResourceType
-============
-
-.. autoclass:: auraxium.ps2.ResourceType
-	:members:
-
-Reward
-======
-
-.. autoclass:: auraxium.ps2.Reward
-	:members:
-
-RewardType
-==========
-
-.. autoclass:: auraxium.ps2.RewardType
-	:members:
-
-Skill
-=====
-
-.. autoclass:: auraxium.ps2.Skill
-	:members:
-
-SkillCategory
-=============
-
-.. autoclass:: auraxium.ps2.SkillCategory
-	:members:
-
-SkillLine
-=========
-
-.. autoclass:: auraxium.ps2.SkillLine
-	:members:
-
-SkillSet
-========
-
-.. autoclass:: auraxium.ps2.SkillSet
-	:members:
-
-TargetType
-==========
-
-.. autoclass:: auraxium.ps2.TargetType
-	:members:
-
-Title
-=====
-
-.. autoclass:: auraxium.ps2.Title
-	:members:
-
-PlayerState
-===========
-
-.. autoclass:: auraxium.ps2.PlayerState
-	:members:
-
-PlayerStateGroup
-================
-
-.. autoclass:: auraxium.ps2.PlayerStateGroup
-	:members:
-
-Vehicle
-=======
-
-.. autoclass:: auraxium.ps2.Vehicle
-	:members:
-
-VehicleAttachment
+Player Characters
 =================
 
-.. autoclass:: auraxium.ps2.VehicleAttachment
-	:members:
+.. autoclass:: Character(data: auraxium.types.CensusData, client: auraxium.Client)
 
-Weapon
-======
+   .. automethod:: __init__(data: auraxium.types.CensusData, client: auraxium.Client) -> None
 
-.. autoclass:: auraxium.ps2.Weapon
-	:members:
+   .. automethod:: achievements(**kwargs) -> list[auraxium.models.CharacterAchievement]
 
-WeaponAmmoSlot
-==============
+   .. automethod:: currency(**kwargs) -> tuple[int, int]
 
-.. autoclass:: auraxium.ps2.WeaponAmmoSlot
-	:members:
+   .. automethod:: directive(results: int = 1, **kwargs) -> list[auraxium.types.CensusData]
 
-WeaponDatasheet
+   .. automethod:: directive_objective(results: int = 1, **kwargs) -> list[auraxium.models.CharacterDirectiveObjective]
+
+   .. automethod:: directive_tier(results: int = 1, **kwargs) -> list[auraxium.models.CharacterDirectiveTier]
+
+   .. automethod:: directive_tree(results: int = 1, **kwargs) -> list[auraxium.models.CharacterDirectiveTree]
+
+   .. automethod:: events(**kwargs) -> list[auraxium.types.CensusData]
+
+   .. automethod:: events_grouped(**kwargs) -> list[auraxium.types.CensusData]
+
+   .. automethod:: faction() -> auraxium.InstanceProxy[Faction]
+
+   .. automethod:: friends() -> list[Character]
+
+   .. automethod:: get_by_name(name: str, *, locale: str = 'en', client: auraxium.Client) -> typing.Awaitable[Character | None]
+
+   .. automethod:: get_online(id_: int, *args: int, client: auraxium.Client) -> list[Character]
+
+   .. automethod:: items() -> auraxium.SequenceProxy[Item]
+
+   .. automethod:: is_online() -> bool
+
+   .. automethod:: name_long(locale: str = 'en') -> str
+
+   .. automethod:: online_status() -> int
+
+   .. automethod:: outfit() -> auraxium.InstanceProxy[Outfit]
+
+   .. automethod:: outfit_member() -> auraxium.InstanceProxy[OutfitMember]
+
+   .. automethod:: profile() -> auraxium.InstanceProxy[Profile]
+
+   .. automethod:: skill(results: int = 1, **kwargs) -> list[auraxium.types.CensusData]
+
+   .. automethod:: stat(results: int = 1, **kwargs) -> list[auraxium.types.CensusData]
+
+   .. automethod:: stat_by_faction(results: int = 1, **kwargs) -> list[auraxium.types.CensusData]
+
+   .. automethod:: stat_history(results: int = 1, **kwargs) -> list[auraxium.types.CensusData]
+
+   .. automethod:: weapon_stat(results: int = 1, **kwargs) -> list[auraxium.types.CensusData]
+
+   .. automethod:: weapon_stat_by_faction(results: int = 1, **kwargs) -> list[auraxium.types.CensusData]
+
+   .. automethod:: title() -> auraxium.InstanceProxy[Title]
+
+   .. automethod:: world() -> auraxium.InstanceProxy[World]
+
+.. autoclass:: Faction
+
+   .. automethod:: tag() -> str
+
+.. autoclass:: Title
+
+.. autoclass:: Currency
+
+Outfits
+=======
+
+.. autoclass:: Outfit
+
+   .. automethod:: tag() -> str
+
+   .. automethod:: get_by_name(name: str, *, locale: str = 'en', client: auraxium.Client) -> typing.Awaitable[Outfit | None]
+
+   .. automethod:: get_by_tag(tag: str, client: auraxium.Client) -> typing.Awaitable[Outfit | None]
+
+   .. automethod:: leader() -> auraxium.InstanceProxy[Character]
+
+   .. automethod:: members() -> auraxium.SequenceProxy[OutfitMember]
+
+   .. automethod:: ranks() -> List[auraxium.models.OutfitRankData]
+
+.. autoclass:: OutfitMember
+
+   .. automethod:: character() -> auraxium.InstanceProxy[Character]
+
+   .. automethod:: outfit() -> auraxium.InstanceProxy[Outfit]
+
+Game World & Servers
+====================
+
+.. autoclass:: Region
+
+   .. automethod:: map_region() -> auraxium.InstanceProxy[MapRegion]
+
+   .. automethod:: zone() -> auraxium.InstanceProxy[Zone]
+
+.. autoclass:: FacilityType
+
+.. autoclass:: World
+
+   .. automethod:: events(**kwargs: Any) -> list[auraxium.types.CensusData]
+
+   .. automethod:: get_by_name(name: str, *, locale: str = 'en', client: auraxium.Client) -> typing.Awaitable[World | None]
+
+   .. automethod:: map(zone: int | Zone, *args: int | Zone) -> list[auraxium.types.CensusData]
+
+   .. automethod:: status() -> tuple[str, datetime.datetime]
+
+.. autoclass:: Zone
+
+   .. automethod:: is_dynamic() -> bool
+
+Classes & Vehicles
+==================
+
+.. autoclass:: Loadout
+
+   .. automethod:: armour_info() -> auraxium.SequenceProxy[ArmourInfo]
+
+   .. automethod:: faction() -> auraxium.InstanceProxy[Faction]
+
+   .. automethod:: profile() -> auraxium.InstanceProxy[Profile]
+
+   .. automethod:: resist_info() -> auraxium.SequenceProxy[ResistInfo]
+
+.. autoclass:: Profile
+
+   .. automethod:: armour_info() -> auraxium.SequenceProxy[ArmourInfo]
+
+   .. automethod:: resist_info() -> auraxium.SequenceProxy[ResistInfo]
+
+.. autoclass:: Vehicle
+
+   .. automethod:: factions() -> auraxium.SequenceProxy[Faction]
+
+   .. automethod:: get_by_faction(faction: Faction | int, *, client: auraxium.Client) -> list[Vehicle]
+
+   .. automethod:: skill_sets(faction: Faction | int | None) -> auraxium.SequenceProxy[SkillSet]
+
+.. autoclass:: VehicleAttachment
+
+   .. automethod:: faction() -> auraxium.InstanceProxy[Faction]
+
+   .. automethod:: item() -> auraxium.InstanceProxy[Item]
+
+   .. automethod:: vehicle() -> auraxium.InstanceProxy[Vehicle]
+
+Firing Mechanics
+================
+
+.. autoclass:: FireGroup
+
+   .. automethod:: fire_modes() -> auraxium.SequenceProxy[FireMode]
+
+.. autoclass:: FireMode
+
+   .. automethod:: type() -> FireModeType
+
+   .. automethod:: state_groups() -> dict[PlayerState, auraxium.models.PlayerStateGroup]
+
+   .. automethod:: projectile() -> auraxium.InstanceProxy[Projectile]
+
+.. autoclass:: FireModeType
+
+.. autoclass:: Projectile
+
+   .. automethod:: flight_type() -> ProjectileFlightType
+
+.. autoclass:: ProjectileFlightType
+   :undoc-members:
+
+.. autoclass:: PlayerState
+   :undoc-members:
+
+Metagame & Alerts
+=================
+
+.. autoclass:: MetagameEvent
+
+.. autoclass:: MetagameEventState
+
+Items & Weapons
 ===============
 
-.. autoclass:: auraxium.ps2.WeaponDatasheet
-	:members:
+.. autoclass:: Item
 
-World
-=====
+   .. automethod:: attachments() -> auraxium.SequenceProxy[Item]
 
-.. autoclass:: auraxium.ps2.World
-	:members:
+   .. automethod:: category() -> auraxium.InstanceProxy[ItemCategory]
 
-Zone
-====
+   .. automethod:: faction() -> auraxium.InstanceProxy[Faction]
 
-.. autoclass:: auraxium.ps2.Zone
-	:members:
+   .. automethod:: datasheet() -> auraxium.models.WeaponDatasheet
 
-ZoneEffect
+   .. automethod:: profiles() -> auraxium.SequenceProxy[Profile]
+
+   .. automethod:: type() -> auraxium.InstanceProxy[ItemType]
+
+   .. automethod:: weapon() -> auraxium.InstanceProxy[Weapon]
+
+.. autoclass:: ItemCategory
+
+.. autoclass:: ItemType
+
+.. autoclass:: Weapon
+
+   .. automethod:: is_heat_weapon() -> bool
+
+   .. automethod:: ammo_slots() -> list[auraxium.models.WeaponAmmoSlot]
+
+   .. automethod:: attachments() -> auraxium.SequenceProxy[Item]
+
+   .. automethod:: datasheet() -> auraxium.models.WeaponDatasheet
+
+   .. automethod:: fire_groups() -> auraxium.SequenceProxy[FireGroup]
+
+   .. automethod:: get_by_name(name: str, *, locale: str = 'en', client: auraxium.Client) -> typing.Awaitable[Weapon | None]
+
+   .. automethod:: item() -> auraxium.InstanceProxy[Item]
+
+Map Screen
 ==========
 
-.. autoclass:: auraxium.ps2.ZoneEffect
-	:members:
+.. autoclass:: MapHex
 
-ZoneEffectType
-==============
+   .. automethod:: map_region() -> auraxium.InstanceProxy[MapRegion]
 
-.. autoclass:: auraxium.ps2.ZoneEffectType
-	:members:
+.. autoclass:: MapRegion
 
+   .. automethod:: get_connected() -> set[MapRegion]
+
+   .. automethod:: zone() -> auraxium.InstanceProxy[Zone]
+
+Certifications & A.S.P. Skills
+==============================
+
+.. autoclass:: Skill
+
+   .. automethod:: grant_item() -> auraxium.InstanceProxy[Item]
+
+   .. automethod:: skill_line() -> auraxium.InstanceProxy[SkillLine]
+
+.. autoclass:: SkillCategory
+
+   .. automethod:: skill_lines() -> auraxium.SequenceProxy[SkillLine]
+
+   .. automethod:: skill_set() -> auraxium.InstanceProxy[SkillSet]
+
+.. autoclass:: SkillLine
+
+   .. automethod:: category() -> auraxium.InstanceProxy[SkillCategory]
+
+   .. automethod:: skills() -> auraxium.SequenceProxy[Skill]
+
+.. autoclass:: SkillSet
+
+   .. automethod:: categories() -> auraxium.SequenceProxy[SkillCategory]
+
+   .. automethod:: required_item() -> auraxium.InstanceProxy[Item]
+
+Progression
+===========
+
+.. autoclass:: Achievement
+
+.. autoclass:: Experience
+
+.. autoclass:: ExperienceRank
+
+   .. automethod:: image(faction: int | Faction) -> str
+
+.. autoclass:: Directive
+
+   .. automethod:: objectives() -> auraxium.SequenceProxy[Objective]
+
+   .. automethod:: tier() -> auraxium.InstanceProxy[DirectiveTier]
+
+   .. automethod:: tree() -> auraxium.InstanceProxy[DirectiveTree]
+
+.. autoclass:: DirectiveTier
+
+   .. automethod:: directives() -> auraxium.SequenceProxy[Directive]
+
+   .. automethod:: tree() -> auraxium.InstanceProxy[DirectiveTree]
+
+.. autoclass:: DirectiveTree
+
+   .. automethod:: category() -> auraxium.InstanceProxy[DirectiveTreeCategory]
+
+   .. automethod:: directives() -> auraxium.SequenceProxy[Directive]
+
+   .. automethod:: tiers() -> auraxium.SequenceProxy[DirectiveTier]
+
+.. autoclass:: DirectiveTreeCategory
+
+   .. automethod:: trees() -> auraxium.SequenceProxy[DirectiveTree]
+
+.. autoclass:: Objective
+
+   .. automethod:: type() -> auraxium.InstanceProxy[ObjectiveType]
+
+.. autoclass:: ObjectiveType
+
+.. autoclass:: Reward
+
+   .. automethod:: get_by_reward_group(reward_group_id: int, client: auraxium.Client) -> auraxium.SequenceProxy[Reward]
+
+   .. automethod:: get_by_reward_set(reward_set_id: int, client: auraxium.Client) -> auraxium.SequenceProxy[Reward]
+
+   .. automethod:: type() -> auraxium.InstanceProxy[RewardType]
+
+.. autoclass:: RewardType
+
+Abilities
+=========
+
+.. autoclass:: Ability
+
+   .. automethod:: resource_type() -> auraxium.InstanceProxy[ResourceType]
+
+   .. automethod:: type() -> auraxium.InstanceProxy[AbilityType]
+
+.. autoclass:: AbilityType
+
+.. autoclass:: ResourceType
+
+Effects
+=======
+
+.. autoclass:: Effect
+
+   .. automethod:: target_type() -> TargetType | None
+
+   .. automethod:: type() -> auraxium.InstanceProxy[EffectType]
+
+.. autoclass:: EffectType
+
+.. autoclass:: TargetType
+   :undoc-members:
+
+.. autoclass:: ZoneEffect
+
+   .. automethod:: ability() -> auraxium.InstanceProxy[Ability]
+
+   .. automethod:: type() -> auraxium.InstanceProxy[ZoneEffectType]
+
+.. autoclass:: ZoneEffectType
+
+Resistance & Armour
+===================
+
+.. autoclass:: ArmourFacing
+   :undoc-members:
+
+.. autoclass:: ArmourInfo
+
+   .. automethod:: facing() -> ArmourFacing
+
+.. autoclass:: ResistInfo
+
+   .. automethod:: type() -> auraxium.InstanceProxy[ResistType]
+
+.. autoclass:: ResistType
+
+Weapon Unlocks & Depot Bundles
+==============================
+
+.. autoclass:: MarketingBundle
+
+   .. automethod:: image() -> str
+
+   .. automethod:: items() -> list[tuple[Item, int]]
+
+.. autoclass:: MarketingBundleSingle
+
+   .. automethod:: item() -> auraxium.InstanceProxy[Item]
+
+Leaderboard
+===========
+
+.. automodule:: auraxium.ps2.leaderboard
+
+   .. autoclass:: Period
+      :undoc-members:
+
+   .. autoclass:: Stat
+      :undoc-members:
+
+   .. autofunction:: by_char(stat: Stat, character: int | auraxium.ps2.Character, period: Period = Period.FOREVER, *, client: auraxium.Client) -> tuple[int, int] | None
+
+   .. autofunction:: by_char_multi(stat: Stat, character: int | auraxium.ps2.Character, *args: int | auraxium.ps2.Character, period: Period = leaderboard.Period.FOREVER, client: auraxium.Client) -> list[tuple[int, int]]
+
+   .. autofunction:: top(stat: Stat, period: Period = Period.FOREVER, matches: int = 10, offset: int = 0, world: int | auraxium.ps2.World | None = None, *, client: auraxium.Client) -> list[tuple[int, auraxium.ps2.Character]]

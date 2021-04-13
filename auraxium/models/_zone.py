@@ -1,4 +1,4 @@
-"""Data classes for :mod:`auraxium.ps2.zone`."""
+"""Data classes for :mod:`auraxium.ps2._zone`."""
 
 from .base import RESTPayload
 from ..types import LocaleData

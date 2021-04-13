@@ -35,15 +35,38 @@ class ArmourInfo(Cached, cache_size=100, cache_ttu=60.0):
     instances associated with it, one for each :class:`ArmourFacing`
     value.
 
-    Attributes:
-        id: The unique ID of this entry.
-        armor_facing_id: The enum value the facing direction this entry
-            provides armour data for.
-        armor_percent: Damage reduction in percent.
-        armor_amount: A flat damage absorption applied to the damage
-            effect; generally unused.
-        description: A description for this entry.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of this entry.
+
+    .. attribute:: armor_facing_id
+       :type: int
+
+       The enum value the facing direction this entry provides armour
+       data for.
+
+    .. attribute:: armor_percent
+       :type: int
+
+       Damage reduction in percent. A value of 10 signifies a 10%
+       reduction.
+
+    .. attribute:: armor_amount
+       :type: int | None
+
+       A flat damage absorption applied to the damage effect.
+
+       .. note::
+
+          This field is generally unused since the 2017 armour rework
+          as part of the "Critical Mass" game update.
+
+    .. attribute:: description
+       :type: str
+
+       A description of what situation this armour info entry is used
+       for.
     """
 
     collection = 'armor_info'

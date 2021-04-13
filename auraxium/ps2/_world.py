@@ -20,12 +20,25 @@ __all__ = [
 class World(Named, cache_size=20, cache_ttu=3600.0):
     """A world (or server) in the game.
 
-    Attributes:
-        id: The unique ID of the world.
-        name: Localised name of the world.
-        state: The current state (i.e. online status) of the world.
-        description: A description of the world's server region.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of the world.
+
+    .. attribute:: name
+       :type: auraxium.types.LocaleData
+
+       Localised name of the world.
+
+    .. attribute:: state
+       :type: str
+
+       The current state (i.e. online status) of the world.
+
+    .. attribute:: description
+       :type: auraxium.types.LocaleData | None
+
+       A description of the world's server region.
     """
 
     collection = 'world'
@@ -56,8 +69,8 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
         data = extract_payload(payload, collection=collection)
         return data
 
-    @deprecated('0.3', replacement='Client.get()')
     @classmethod
+    @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
                           client: RequestClient) -> Optional[NamedT]:
         """Retrieve a world by name.

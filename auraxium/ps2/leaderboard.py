@@ -21,7 +21,17 @@ __all__ = [
 
 
 class Period(enum.Enum):
-    """The periods supported by the leaderboard."""
+    """The periods supported by the leaderboard.
+
+    The following valid time periods are currently known:::
+
+       FOREVER
+       MONTHLY
+       WEEKLY
+       DAILY
+       ONE_LIFE
+
+    """
 
     FOREVER = 0
     MONTHLY = 1
@@ -31,7 +41,17 @@ class Period(enum.Enum):
 
 
 class Stat(enum.Enum):
-    """A statistic tracked by the leaderboard."""
+    """A statistic tracked by the leaderboard.
+
+    The following statistics are currently available via the
+    leaderboard:::
+
+       KILLS
+       SCORE
+       TIME
+       DEATHS
+
+    """
 
     KILLS = 0
     SCORE = 1

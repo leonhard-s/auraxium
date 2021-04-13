@@ -1,4 +1,4 @@
-"""Data classes for :mod:`auraxium.ps2.experience`."""
+"""Data classes for :mod:`auraxium.ps2._experience`."""
 
 from .base import RESTPayload
 from ..types import LocaleData
@@ -33,11 +33,20 @@ class ExperienceRankData(RESTPayload):
     class EmpireData(RESTPayload):
         """Object representation of an empire-specific sub-key.
 
-        Attributes:
-            title: The localised title for this experience rank.
-            image_set_id: The image set associated with this rank.
-            image_id: The default image asset for this rank.
+        .. attribute:: title
+           :type: auraxium.types.LocaleData
 
+           The localised title for this experience rank.
+
+        .. attribute:: image_set_id
+           :type: int
+
+           The image set associated with this rank.
+
+        .. attribute:: image_id
+           :type: int
+
+           The default image asset for this rank.
         """
 
         title: LocaleData

@@ -3,5 +3,5 @@ Exception Reference
 ===================
 
 .. automodule:: auraxium.errors
-    :members:
-    :show-inheritance:
+   :members:
+   :show-inheritance:

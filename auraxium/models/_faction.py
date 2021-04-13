@@ -1,4 +1,4 @@
-"""Data classes for :mod:`auraxium.ps2.faction`."""
+"""Data classes for :mod:`auraxium.ps2._faction`."""
 
 from .base import ImageData
 from ..types import LocaleData

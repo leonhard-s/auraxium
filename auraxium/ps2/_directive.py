@@ -25,11 +25,15 @@ class DirectiveTreeCategory(Named, ImageMixin, cache_size=10, cache_ttu=300.0):
     Directive tree category are the topmost directive categorisation,
     e.g. "Infantry".
 
-    Attributes:
-        directive_tree_category_id: The unique ID of the directive tree
-            category.
-        name: Localised name of the directive tree category.
+    .. attribute:: directive_tree_category_id
+       :type: int
 
+       The unique ID of the directive tree category.
+
+    .. attribute:: name
+       :type: auraxium.types.LocaleData
+
+       Localised name of the directive tree category.
     """
 
     collection = 'directive_tree_category'
@@ -58,12 +62,25 @@ class DirectiveTree(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     Directive trees are a chain of related directive, e.g.
     "Heavy Assault".
 
-    Attributes:
-        id: The unique ID of the directive tree.
-        directive_tree_category_id: The category of the directive tree.
-        description: The localised description of the directive tree.
-        name: Localised name of the directive tree.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of the directive tree.
+
+    .. attribute:: directive_tree_category_id
+       :type: int
+
+       The category of the directive tree.
+
+    .. attribute:: description
+       :type: auraxium.types.LocaleData | None
+
+       The localised description of the directive tree.
+
+    .. attribute:: name
+       :type: auraxium.types.LocaleData
+
+       Localised name of the directive tree.
     """
 
     collection = 'directive_tree'
@@ -113,18 +130,37 @@ class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
 
     Container for related directives, e.g. "Combat Medic: Adept".
 
-    Attributes:
-        id: The unique ID of the directive tier.
-        directive_tree_id: The directive tree this directive belongs
-            to.
-        reward_set_id: The reward set awarded upon completion of this
-            directive tier.
-        directive_points: The directive points awarded upon completion
-            of this directive tier.
-        completion_count: The number of directives that must be
-            completed for completion of this directive tier.
-        name: Localised name of the directive tier.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of the directive tier.
+
+    .. attribute:: directive_tree_id
+       :type: int
+
+       The directive tree this directive belongs to.
+
+    .. attribute:: reward_set_id
+       :type: int | None
+
+       The reward set awarded upon completion of this directive tier.
+
+    .. attribute:: directive_points
+       :type: int
+
+       The directive points awarded upon completion of this directive
+       tier.
+
+    .. attribute:: completion_count
+       :type: int
+
+       The number of directives that must be completed for completion
+       of this directive tier.
+
+    .. attribute:: name
+       :type: auraxium.types.LocaleData
+
+       Localised name of the directive tier.
     """
 
     collection = 'directive_tier'
@@ -164,17 +200,41 @@ class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
 class Directive(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     """A directive a character may complete.
 
-    Attributes:
-        id: The unique ID of this directive.
-        directive_tree_id: The directive tree of this directive.
-        directive_tier_id: The directive tier of this directive.
-        objective_set_id: The objective set contributing towards this
-            directive.
-        name: Localised name of the directive.
-        qualify_requirement_id: An item that must be unlocked for this
-            directive to be available.
-        description: The localised description of the directive.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of this directive.
+
+    .. attribute:: directive_tree_id
+       :type: int
+
+       The directive tree of this directive.
+
+    .. attribute:: directive_tier_id
+       :type: int
+
+       The directive tier of this directive.
+
+    .. attribute:: objective_set_id
+       :type: int
+
+       The objective set contributing towards this directive.
+
+    .. attribute:: name
+       :type: auraxium.types.LocaleData
+
+       Localised name of the directive.
+
+    .. attribute:: qualify_requirement_id
+       :type: int
+
+       An item that must be unlocked for this directive to be
+       available.
+
+    .. attribute:: description
+       :type: auraxium.types.LocaleData
+
+       The localised description of the directive.
     """
 
     collection = 'directive'

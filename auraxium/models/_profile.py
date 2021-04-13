@@ -1,4 +1,4 @@
-"""Data classes for :mod:`auraxium.ps2.profile`."""
+"""Data classes for :mod:`auraxium.ps2._profile`."""
 
 from .base import RESTPayload
 

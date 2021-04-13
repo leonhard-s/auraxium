@@ -29,10 +29,15 @@ class Profile(Cached, cache_size=200, cache_ttu=60.0):
     infrastructure such as turrets, generators or shields, as well as
     other non-static entities such as Cortium nodes or pumpkins.
 
-    Attributes:
-        id: The unique ID of this profile.
-        description: The description of the profile.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of this profile.
+
+    .. attribute:: description
+       :type: str
+
+       The description of the profile.
     """
 
     collection = 'profile_2'
@@ -74,12 +79,25 @@ class Profile(Cached, cache_size=200, cache_ttu=60.0):
 class Loadout(Cached, FallbackMixin, cache_size=20, cache_ttu=3600.0):
     """Represents a faction-specific infantry class.
 
-    Attributes:
-        id: The unique ID of this loadout.
-        profile_id: The ID of the associated profile.
-        faction_id: The faction for this loadout.
-        code_name: A string describing the loadout.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of this loadout.
+
+    .. attribute:: profile_id
+       :type: int
+
+       The ID of the associated :class:`~auraxium.ps2.Profile`.
+
+    .. attribute:: faction_id
+       :type: int
+
+       The :class:`~auraxium.ps2.Faction` for this loadout.
+
+    .. attribute:: code_name
+       :type: str
+
+       A string describing the loadout for introspection purposes.
     """
 
     collection = 'loadout'

@@ -33,27 +33,32 @@ _log = logging.getLogger('auraxium.ess')
 class EventClient(Client):
     """Advanced client with event streaming capability.
 
-    This subclass of :class:`Client` extends the interface to also
-    provide access to the websocket endpoint at
+    This subclass of :class:`auraxium.Client` extends the interface to
+    also provide access to the WebSocket endpoint at
     ``wss://push.planetside2.com/streaming``.
 
     To use the websocket endpoint, you have to define a
-    :class:`Trigger` and register it using the
-    :meth:`EventClient.add_trigger()` method. This will automatically
-    open a websocket connection is there is not already one running.
-    Likewise, removing all event triggers from the client will cause
-    the underlying websocket connection to close.
+    :class:`~auraxium.event.Trigger` and register it using the
+    :meth:`add_trigger` method. This will automatically open a
+    WebSocket connection is there is not already one running. Likewise,
+    removing all event triggers from the client will cause the
+    underlying websocket connection to close.
 
-    Refer to the :class:`Trigger` class's documentation for details on
-    how to use triggers and respond to events.
+    Refer to the :class:`~auraxium.event.Trigger` class's documentation
+    for details on how to use triggers and respond to events.
 
-    Attributes:
-        triggers: The list of :class:`Triggers <Trigger>` registered
-            for the client.
-        websocket: The websocket client used for the real-time event
-            stream. This will be automatically opened and closed by the
-            client as event triggers are added and removed.
+    .. attribute:: triggers
+       :type: list[auraxium.event.Trigger]
 
+       The list of :class:`Triggers <auraxium.event.Trigger>`
+       registered for the client.
+
+    .. attribute:: websocket
+       :type: websockets.client.WebSocketClientProtocol | None
+
+       The websocket client used for the real-time event stream. This
+       will be automatically opened and closed by the client as event
+       triggers are added and removed.
     """
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
@@ -82,14 +87,13 @@ class EventClient(Client):
         event streaming service, one will be created for this trigger.
 
         .. note::
-            As this is a synchronous method, the websocket will not be
-            active by the time this method returns.
-            Use :meth:`EventClient.wait_ready()` to wait for the
-            websocket being ready.
 
-        Arguments:
-            trigger: The trigger to add.
+           As this is a synchronous method, the WebSocket will not be
+           active by the time this method returns.
+           You can use :meth:`EventClient.wait_ready` to wait for the
+           WebSocket being ready to process subscriptions.
 
+        :param Trigger trigger: The trigger to add.
         """
         _log.debug('Adding trigger %s', trigger)
         self.triggers.append(trigger)
@@ -103,15 +107,11 @@ class EventClient(Client):
     def get_trigger(self, name: str) -> Trigger:
         """Retrieve a registered event trigger by name.
 
-        If the trigger cannot be found, a :class:`KeyError` is raised.
+        If the trigger cannot be found, a :exc:`KeyError` is raised.
 
-        Arguments:
-            name: The name of the trigger to return.
-
-        Raises:
-            KeyError: Raised if no trigger with the given name is
-                registered for the client.
-
+        :param str name: The name of the trigger to return.
+        :raises KeyError: Raised if no trigger with the given name is
+           registered for the client.
         """
         for trigger in self.triggers:
             if trigger.name == name:
@@ -127,20 +127,18 @@ class EventClient(Client):
 
         By default, the underlying websocket connection will be closed
         if this was the only trigger registered. Use the
-        ``keep_websocket_alive`` flag to prevent this.
+        `keep_websocket_alive` flag to prevent this, for example if you
+        intend to immediately add another trigger.
 
-        Arguments:
-            trigger: The trigger to remove, or its unique name.
-            keep_websocket_alive (optional): If True, the websocket
-                connection will be kept open even if the client has
-                zero triggers remaining. Defaults to ``False``.
-
-        Raises:
-            KeyError: Raised if a trigger name was passed and no
-                trigger of this name exists for the client.
-            ValueError: Raised if no trigger of the given name is
-                currently registered for this client.
-
+        :param trigger: The trigger to remove, or its unique name.
+        :type trigger: Trigger or str
+        :param bool keep_websocket_alive: If true, the websocket
+           connection will be kept open even if the client has zero
+           triggers remaining.
+        :raises KeyError: Raised if a trigger name was passed and no
+           trigger of this name exists for the client.
+        :raises ValueError: Raised if no trigger of the given name is
+           currently registered for this client.
         """
         if not isinstance(trigger, Trigger):
             trigger = self.get_trigger(trigger)
@@ -156,13 +154,12 @@ class EventClient(Client):
             self.loop.create_task(self.close())
 
     async def close(self) -> None:
-        """Shut down the client.
+        """Gracefully shut down the client.
 
-        This will close the websocket connection and end any ongoing
+        This will close the WebSocket connection and end any ongoing
         HTTP sessions used for requests to the REST API.
 
         Call this to clean up before the client object is destroyed.
-
         """
         await self.disconnect()
         await super().close()
@@ -170,18 +167,13 @@ class EventClient(Client):
     async def connect(self) -> None:
         """Connect to the websocket endpoint and process responses.
 
-        This will continuously loop until :meth:`EventClient.close()`
-        is called.
-        If the websocket connection encounters and error, it will be
+        This will continuously loop until :meth:`EventClient.close` is
+        called.
+        If the WebSocket connection encounters and error, it will be
         automatically restarted.
 
-        Add payloads to :attr`EventClient._send_queue` to schedule
-        their transmission.
-
         Any event payloads received will be passed to
-        :meth:`EventClient.dispatch()` for filtering and event
-        dispatch.
-
+        :meth:`EventClient.dispatch` for filtering and event dispatch.
         """
         # NOTE: When multiple triggers are added to the bot without an active
         # websocket connection, this function may be scheduled multiple times.
@@ -211,11 +203,10 @@ class EventClient(Client):
         await backoff_wrap(self._connection_handler)()
 
     async def disconnect(self) -> None:
-        """Disconnect the websocket.
+        """Disconnect the WebSocket.
 
-        Unlike :meth:`EventClient.close()`, this does not affect the
-        HTTP session used by regular REST requests.
-
+        Unlike :meth:`EventClient.close`, this does not affect the HTTP
+        sessions used by regular REST requests.
         """
         if self.websocket is None:
             return
@@ -232,23 +223,24 @@ class EventClient(Client):
 
         This goes through the list of triggers registered for this
         client and checks if the passed event matches the trigger's
-        requirements using :meth:`Trigger.check()`.
+        requirements using
+        :meth:`Trigger.check <auraxium.event.Trigger.check>`.
 
         The call-backs for the matching triggers will be scheduled for
         execution in the current event loop using
-        :meth:`asyncio.AbstractEventLoop.create_task()`.
+        :meth:`asyncio.loop.create_task`.
 
-        If a trigger's :attr:`Trigger.single_shot` attribute is set to
-        True, the trigger will be removed from the client as soon as
-        its call-back has been scheduled for execution. This means that
-        when the action associated with a single-shot trigger runs, the
-        associated trigger will no longer be registered for the client.
+        If a trigger's
+        :attr:`single_shot <auraxium.event.Trigger.single_shot>`
+        attribute is set to true, the trigger will be removed from the
+        client as soon as its call-back has been scheduled for
+        execution. This means that when the action associated with a
+        single-shot trigger runs, the associated trigger will no longer
+        be registered for the client.
 
-        Arguments:
-            event: An event received through the event stream.
-
+        :param auraxium.event.Event event: An event received through
+           the event stream.
         """
-        # Check for appropriate triggers
         for trigger in self.triggers:
             _log.debug('Checking trigger %s', trigger)
             if trigger.check(event):
@@ -282,11 +274,10 @@ class EventClient(Client):
         _log.info('Disconnected from WebSocket endpoint')
 
     async def _handle_websocket(self, timeout: float = 0.1) -> None:
-        """Main loop handling the websocket connection.
+        """Main loop handling the WebSocket connection.
 
-        This method processes event payloads, adds automatic reconnect
-        capabilities and sends messages added to
-        :attr:`EventClient._send_queue`.
+        This method processes event payloads and sends messages added
+        to :attr:`EventClient._send_queue`.
         """
         if self.websocket is None:
             return
@@ -341,20 +332,18 @@ class EventClient(Client):
         used as the trigger name.
 
         Keep in mind that a trigger's name must be unique. A
-        :class:`KeyError` will be raised if a trigger with this name
+        :exc:`KeyError` will be raised if a trigger with this name
         already exists.
 
-        Arguments:
-            event: The event to trigger on.
-            *args: Additional events that also trigger the action.
-            name (optional): The name to assign to the trigger. If not
-                specified, the call-back function's name will be used.
-                Defaults to ``None``.
-
-        Raises:
-            KeyError: Raised if a trigger with the given name already
-                exists.
-
+        :param event: The event to trigger on.
+        :type event: str or typing.Type[auraxium.event.Event]
+        :param args: Additional events that also trigger the action.
+        :type args: str or typing.Type[auraxium.event.Event]
+        :param name: The name to assign to the trigger. If not
+           specified, the decorated function's name will be used.
+        :type name: str or None
+        :raises KeyError: Raised if a trigger with the given name
+           already exists.
         """
         trigger = Trigger(event, *args, name=name, **kwargs)
 
@@ -373,15 +362,14 @@ class EventClient(Client):
         return wrapper
 
     def _process_payload(self, response: str) -> None:
-        """Process a response payload received through the websocket.
+        """Process a response payload received through the WebSocket.
 
         This method filters out any non-event messages (such as service
         messages, connection heartbeats or subscription echoes) before
-        passing any event payloads on to :meth:`EventClient.dispatch()`.
+        passing any event payloads on to :meth:`dispatch`.
 
-        Arguments:
-            response: The plain text response received through the ESS.
-
+        :param str response: The plain text response received through
+           the ESS.
         """
         data: CensusData = json.loads(response)
         service = data.get('service')
@@ -423,21 +411,16 @@ class EventClient(Client):
 
         By default, any triggers passed will be automatically removed
         once the first has been triggered, regardless of the triggers'
-        :attr:`Trigger.single_shot` setting.
+        :attr:`~auraxium.event.Trigger.single_shot` setting.
 
-        Arguments:
-            trigger: A trigger to wait for.
-            *args: Additional triggers that will also resume execution.
-            timeout (optional): The maximum number of seconds to wait
-                for; never expires if set to ``None``. Defaults to
-                ``None``.
-
-        Raises:
-            TimeoutError: Raised if the given timeout is exceeded.
-
-        Returns:
-            The first event matching the given trigger(s).
-
+        :param Trigger trigger: A trigger to wait for.
+        :param Trigger args: Additional triggers that will also resume
+           execution.
+        :param timeout: The maximum number of seconds to wait for.
+           Never expires if set to :obj:`None`.
+        :type timeout: float or None
+        :raises TimeoutError: Raised if `timeout` is exceeded.
+        :return: The first event matching the given trigger(s).
         """
         # The following asyncio Event will pause this method until the trigger
         # fires or expires. Think of it as an asynchronous flag.
@@ -472,32 +455,27 @@ class EventClient(Client):
         for trig in triggers:
             trig.action = callback
             self.add_trigger(trig)
-
-        # Wait for the triggers to fire, or for the timeout to expire
         if timeout is not None and timeout <= 0.0:
             timeout = None
         try:
             await asyncio.wait_for(async_flag.wait(), timeout=timeout)
         except asyncio.TimeoutError as err:
             raise TimeoutError from err
-
         assert received_event is not None
         return received_event
 
     async def wait_ready(self, interval: float = 0.05) -> None:
-        """Wait for the websocket connection to be ready.
+        """Wait for the WebSocket connection to be ready.
 
-        This will return once the websocket connection is open and
+        This will return once the WebSocket connection is open and
         active. This condition will be checked regularly as set by the
-        ``interval`` argument.
+        `interval` argument.
 
-        If the websocket is already active at the time this method is
+        If the WebSocket is already active at the time this method is
         called, this will return without delay.
 
-        Arguments:
-            interval (optional): The interval at which to check the
-                websocket connection's status. Defaults to ``0.05``.
-
+        :param float interval: The interval at which to check the
+           WebSocket connection's status.
         """
         if self._connected:
             return
@@ -508,17 +486,14 @@ class EventClient(Client):
 def _event_factory(data: CensusData) -> Event:
     """Return the appropriate event type for the given payload.
 
-    This will return the appropriate :class:`Event` subclass, or the
-    base class itself if no matching subclass could be found. This can
-    happen if new event types are introduced but not yet supported by
-    the object model.
+    This will return the appropriate :class:`~auraxium.event.Event`
+    subclass, or the base class itself if no matching subclass could be
+    found. This can happen if new event types are introduced but not
+    yet supported by the object model.
 
-    Arguments:
-        data: The "payload" sub-key of an event stream message.
-
-    Returns:
-        A pydantic model representing the given event.
-
+    :param data: The "payload" sub-key of an event stream message.
+    :type data: float or int or str
+    :return: A pydantic model representing the given event.
     """
     if (event_name := data.get('event_name')) is not None:
         for subclass in Event.__subclasses__():

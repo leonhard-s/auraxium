@@ -26,13 +26,30 @@ class Zone(Named, cache_size=20, cache_ttu=3600.0):
     Dynamic zones include Sanctuary, the tutorial zones, and the outfit
     wars desolation maps.
 
-    Attributes:
-        id: The unique ID of this zone.
-        code: The internal code used to represent this zone.
-        hex_size: The map size for this zone.
-        description: The localised name of this zone.
-        name: Localised name of the zone.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of this zone.
+
+    .. attribute:: code
+       :type: str
+
+       The internal code used to represent this zone.
+
+    .. attribute:: hex_size
+       :type: int
+
+       The map size for this zone.
+
+    .. attribute:: description
+       :type: auraxium.types.LocaleData
+
+       The localised name of this zone.
+
+    .. attribute:: name
+       :type: auraxium.types.LocaleData
+
+       Localised name of the zone.
     """
 
     collection = 'zone'

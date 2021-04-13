@@ -12,12 +12,25 @@ __all__ = [
 class Faction(Named, ImageMixin, cache_size=10):
     """A faction in PS2.
 
-    Attributes:
-        id: The unique ID of this faction.
-        code_tag: The canonical tag representation of the faction.
-        name: Localised name of the faction.
-        user_selectable: Whether this faction is playable.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of this faction.
+
+    .. attribute:: code_tag
+       :type: str
+
+       The canonical tag representation of the faction.
+
+    .. attribute:: name
+       :type: auraxium.types.LocaleData
+
+       Localised name of the faction.
+
+    .. attribute:: user_selectable
+       :type: bool
+
+       Whether this faction is playable.
     """
 
     collection = 'faction'
@@ -35,10 +48,6 @@ class Faction(Named, ImageMixin, cache_size=10):
         """Return the unique string representation of the faction.
 
         This will take the form of <class:id:tag>, e.g. <Faction:2:NC>.
-
-        Returns:
-            A string representing the object.
-
         """
         return f'<{self.__class__.__name__}:{self.id}:{self.data.code_tag}>'
 

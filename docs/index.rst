@@ -1,7 +1,7 @@
 .. toctree::
    :hidden:
 
-   self
+   Documentation Home <self>
 
 .. image:: ../assets/logo_dark.png
    :alt: Auraxium Logo
@@ -9,18 +9,17 @@
 
 Auraxium is an object-oriented Python wrapper for the `PlanetSide 2 <https://www.planetside2.com/home>`_ API.
 
-It provides a comprehensive object model representation of the API data that facilitates the creation of bots and utilities without requiring deep knowledge of the API and its idiosyncrasies.
+This package provides a comprehensive object model representation of the API data that facilitates the creation of bots and utilities without requiring deep knowledge of the API and its idiosyncrasies.
+
+`Release notes <https://github.com/leonhard-s/auraxium/releases>`_
+•
+`Issue tracker <https://github.com/leonhard-s/auraxium/issues>`_
+•
+`Repository <https://github.com/leonhard-s/auraxium>`_
+•
+`PyPI <https://pypi.org/project/auraxium/>`_
 
 =====
-
-Useful links:
-   `Release notes <https://github.com/leonhard-s/auraxium/releases>`_
-   •
-   `Issue tracker <https://github.com/leonhard-s/auraxium/issues>`_
-   •
-   `Repository <https://github.com/leonhard-s/auraxium>`_
-   •
-   `PyPI <https://pypi.org/project/auraxium/>`_
 
 ======================
 Documentation Contents
@@ -30,34 +29,35 @@ Documentation Contents
    :caption: Basic Usage
    :maxdepth: 1
 
-   getting-started
-   quickstart
-   event
+   usage/basic/getting-started
+   usage/basic/rest
+   usage/basic/event
+   usage/basic/census
+   usage/basic/logging
 
 .. toctree::
    :caption: Advanced Features
    :maxdepth: 1
 
    usage/advanced/queries
-   usage/advanced/statistics
-   usage/advanced/reports
    usage/advanced/caching
 
 .. toctree::
    :caption: API Reference
    :maxdepth: 1
 
-   api/census
-   api/cache
+   api/ps2
+   api/event
+   api/payloads
+   api/rest
    api/errors
    api/types
-   api/ps2
 
 .. toctree::
    :caption: Miscellaneous
    :maxdepth: 1
 
-   Collection Reference <collections>
+   misc/collections
 
 Indices and Tables
 ==================

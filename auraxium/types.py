@@ -1,4 +1,4 @@
-"""Custom types used by the auraxium module."""
+"""Shared custom types and global type aliases."""
 
 from typing import Dict, List, Optional, Union
 
@@ -37,7 +37,7 @@ class LocaleData(pydantic.BaseModel):
     fr: Optional[str] = None
     it: Optional[str] = None
 
-    @deprecated('0.3.0', '.name (without parentheses)')
+    @deprecated('0.3.0', ':attr:`auraxium.types.LocaleData.name`')
     def __call__(self, locale: str = 'en') -> str:
         return getattr(self, locale)
 
@@ -49,6 +49,6 @@ class LocaleData(pydantic.BaseModel):
         """Return an empty :class:`LocaleData` instance.
 
         This is mostly provided to easily handle payloads who's entire
-        localised string field is ``NULL``.
+        localised string field is NULL.
         """
         return cls()

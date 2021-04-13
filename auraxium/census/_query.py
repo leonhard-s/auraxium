@@ -34,23 +34,32 @@ class QueryBase:
     :meth:`QueryBase.copy()` factory. See that method's docstring for
     details.
 
-    Attributes:
-        data: Provides low-level access to the represented query
-        joins: A list of inner queries that were attached to this one.
+    .. attribute:: data
+       :type: QueryBaseData
 
+       Provides low-level access to the represented query's internal
+       structure. Useful for introspection and testing, modification
+       of this data class by the user is not part of the interface.
+
+    .. attribute:: joins
+       :type: list[JoinedQuery]
+
+       A list of :class:`JoinedQuery` instances that have been
+       added to this query.
     """
 
     def __init__(self, collection: Optional[str] = None,
                  **kwargs: CensusValue) -> None:
-        """Initialise the query.
+        """Initialise a new query.
 
-        Arguments:
-            collection (optional): The API collection to access or
-                ``None`` to display the list of available collections.
-                Defaults to ``None``.
-            *kwargs: Key/value pairs to pass to the
-                :meth:`QueryBase.add_term()` method.
-
+        :param collection: The API collection to access. Set to
+           :obj:`None` to display the list of available collections in
+           the given namespace (only allowed in top level queries).
+        :type collection: str or None
+        :param kwargs: Key-value pairs to add to the query. Any search
+           modifier literals will first be parsed by
+           :meth:`SearchTerm.infer`.
+        :type kwargs: float or int or str
         """
         self.data = QueryBaseData(collection)
         self.joins: List[JoinedQuery] = []
@@ -61,23 +70,21 @@ class QueryBase:
         _ = [self.add_term(k, v, parse_modifier=True)
              for k, v in kwargs.items()]
 
-    def add_join(self: _QueryBaseT, query: 'JoinedQuery',
+    def add_join(self: _QueryBaseT, query: 'QueryBase',
                  **kwargs: Any) -> _QueryBaseT:
         """Add an existing :class:`JoinedQuery` to this query.
 
         This converts an existing :class:`QueryBase` instance to a
-        :class:`JoinedQuery` using the :meth:`QueryBase.copy()`
-        factory. The created join is then added to this query.
+        :class:`JoinedQuery` using the :meth:`QueryBase.copy` factory.
+        The created join is then added to this query.
 
         To create a new query and add it immediately, use the
         :meth:`QueryBase.create_join` method instead.
 
-        Arguments:
-            query: Another query to join to the current query.
-
-        Returns:
-            The query instance; this allows for chaining of operations.
-
+        :param QueryBase query: The query to convert and add.
+        :param kwargs: Extra keyword arguments are forwarded to the
+           :meth:`QueryBase.copy` method.
+        :return: The current query instance.
         """
         self.joins.append(JoinedQuery.copy(query, **kwargs))
         return self
@@ -91,18 +98,16 @@ class QueryBase:
         returned, or to specify the exact ID expected. Refer to the
         :class:`SearchTerm` class for details and examples.
 
-        Arguments:
-            field: The field to filter by.
-            value: The value of the filter term.
-            modifier(optional): A search modifier to use. This will
-                only be used if ``parse_modifier`` is False.
-                Defaults to ``SearchModifier.EQUAL_TO``.
-            parse_modifier(optional): If True, the search modifier
-                will be inferred from the value. Defaults to ``False``.
-
-        Returns:
-            The query instance; this allows for chaining of operations.
-
+        :param str field: The field to filter by.
+        :param value: The value of the filter term.
+        :type value: float or int or str
+        :param SearchModifier modifier: The search modifier to use.
+           This will only be used if `parse_modifier` is false. By
+           default :class:`SearchModifier.EQUAL_TO <SearchModifier>`.
+        :param parse_modifier: If true, the search modifier to use will
+           by inferred from the value. See :meth:`SearchTerm.infer` for
+           details.
+        :return: The current query instance.
         """
         if parse_modifier:
             term = SearchTerm.infer(field, value)
@@ -118,7 +123,7 @@ class QueryBase:
         """Create a new query, copying most data from the template.
 
         The new query will share the collection, terms and show/hide
-        markers of the template. If ``copy_joins`` is enabled, it will
+        markers of the template. If `copy_joins` is enabled, it will
         also copy its list of joins.
 
         Among other things, allows easy creation of joins from existing
@@ -127,51 +132,44 @@ class QueryBase:
 
         By default, this creates a shallow copy. Modifying the terms or
         joined queries will cause mutations of the template. Set the
-        ``deep_copy`` flag to ensure complete independence.
+        `deep_copy` flag to ensure complete independence.
 
         Any keyword arguments are passed to the new query's
         initialiser.
 
-        Example:
+        .. rubric:: Example
 
-            .. code-block:: python3
+        .. code-block:: python3
 
-                # This is an existing query that does what we need it
-                # to, assume it has some complex join or hidden field
-                # setup that would make it tedious to re-create.
-                old = Query('character')
+           # This is an existing query that does what we need it to,
+           # assume it has some complex join or hidden field setup that
+           # would make it tedious to re-create.
+           old = Query('character')
 
-                # This is an unrelated, new query. We want its join to
-                # return the exact same data structure as the previous
-                # query.
-                new = Query('outfit_member', outfit_id=...).limit(1000)
+           # This is an unrelated, new query. We want its join to
+           # return the exact same data structure as the previous
+           # query.
+           new = Query('outfit_member', outfit_id=...).limit(1000)
 
-                # Create a join emulating the original query and add it
-                join = JoinedQuery.copy(old, copy_joins=True)
-                new.add_join(join)
+           # Create a join emulating the original query and add it
+           join = JoinedQuery.copy(old, copy_joins=True)
+           new.add_join(join)
 
-        Arguments:
-            template: The query to copy.
-            copy_joins (optional): Whether to recursively copy joined
-                queries. Defaults to ``False``.
-            deep_copy (optional): Whether to perform a deep copy. Use
-                this if you intend to modify the list of terms or other
-                mutable types to avoid changing the template. Defaults
-                to ``False``.
-            **kwargs: Any keyword arguments are passed on to the new
-                query's constructor.
-
-        Raises:
-            TypeError: Raised when attempting to copy into a
-                :class:`JoinedQuery` without a collection specified.
-
-        Returns:
-            An instance of the current class populated with information
-            from the template query.
-
+        :param QueryBase template: The query to copy.
+        :param bool copy_joins: 
+           If true, any joins defined for the template will be copied
+           to the new instance.
+        :param bool deep_copy: Whether to perform a deep copy. Use this
+           if you intend to modify the list of terms or other mutable
+           attributes to avoid modifying the template.
+        :param kwargs: Any keyword arguments are passed to the new
+           query's constructor.
+        :raises TypeError: Raised when attempting to copy into a
+           :class:`JoinedQuery` without specifying a collection.
+        :return: An instance of the current class, populated with the
+           template query's data.
         """
         copy_func = copy.deepcopy if deep_copy else _dummy_copy
-        # Create a new querybase instance
         instance = cls(copy_func(template.data.collection), **kwargs)
         attrs = ['terms', 'hide', 'show']
         for attr in attrs:
@@ -185,19 +183,15 @@ class QueryBase:
                     **kwargs: Any) -> 'JoinedQuery':
         """Create a new joined query and add it to the current one.
 
-        See the initialiser for JoinedQuery for arguments, this method
-        passes and parameters given on.
+        See the initialiser for :class:`JoinedQuery` for parameter,
+        this method forwards any parameters given to it.
 
-        Arguments:
-            collection: The collection to join.
-            *args: Any anonymous positional arguments are passed on to
-                :meth:`JoinedQuery.__init__()`
-            *kwargs: Any anonymous keyword arguments are passed on to
-                :meth:`JoinedQuery.__init__()`
-
-        Returns:
-            The JoinedQuery instance that was created.
-
+        :param str collection: The collection to join.
+        :param args: Any positional arguments are passed on to
+           :meth:`JoinedQuery.__init__`.
+        :param kwargs: Any keyword arguments are passed on to
+           :meth:`JoinedQuery.__init__`.
+        :return: The created :class:`JoinedQuery` instance.
         """
         join = JoinedQuery(collection, *args, **kwargs)
         self.joins.append(join)
@@ -210,16 +204,12 @@ class QueryBase:
         this can break joins if the field they are attached to is not
         included.
 
-        This is mutually exclusive with :meth:`QueryBase.show()`;
+        This is mutually exclusive with :meth:`QueryBase.show`,
         setting one will undo any changes made by the other.
 
-        Arguments:
-            field: A field name to hide from the result data.
-            *args: Any number of additional fields to hide.
-
-        Returns:
-            The query instance; this allows for chaining of operations.
-
+        :param str field: A field name to exclude from the results.
+        :param str args: Additional fields to exclude.
+        :return: The current query instance.
         """
         self.data.hide = [field]
         self.data.hide.extend(args)
@@ -233,16 +223,12 @@ class QueryBase:
         this can break joins if the field they are attached to is not
         included.
 
-        This is mutually exclusive with :meth:`QueryBase.hide()`;
+        This is mutually exclusive with :meth:`QueryBase.hide`,
         setting one will undo any changes made by the other.
 
-        Arguments:
-            field: A field name to include in the result data.
-            *args: Any number of additional fields to include.
-
-        Returns:
-            The query instance; this allows for chaining of operations.
-
+        :param str field: A field name to include in the results.
+        :param str args: Additional fields to include.
+        :return: The current query instance.
         """
         self.data.show = [field]
         self.data.show.extend(args)
@@ -257,14 +243,14 @@ class Query(QueryBase):
     such as sorting or tree views, and also supports additional, global
     flags that will propagate through to any inner, joined queries.
 
-    This subclasses :class:`QueryBase`. Refer to its docstring for
-    details on inherited methods and attributes.
+    This subclasses :class:`QueryBase`.
 
-    You can find additional information on the attributes in their
-    respective setter methods.
+    .. attribute:: data
+       :type: QueryData
 
-    Attributes:
-        data: Provides low-level access to the represented query
+       Provides low-level access to the represented query's internal
+       structure. Useful for introspection and testing, modification
+       of this data class by the user is not part of the interface.
 
     """
 
@@ -276,15 +262,12 @@ class Query(QueryBase):
         The collection argument, as well as any keyword arguments, are
         passed on to the constructor of the QueryBase class.
 
-        Arguments:
-            collection (optional): The API collection to access.
-                Defaults to ``None``.
-            namespace (optional): The namespace to access. Defaults to
-                ``'ps2:v2'``.
-            service_id (optional): Your personal service ID. Note that
-                the default service ID is heavily rate limited.
-                Defaults to ``'s:example'``.
-
+        :param collection: The API collection to access. Set to
+           :obj:`None` to display the list of available collections in
+           the given `namespace`.
+        :type collection: str or None
+        :param str namespace: The game namespace to access.
+        :param str service_id: The service ID identifying this app.
         """
         super().__init__(collection, **kwargs)
         data: QueryBaseData = self.data  # type: ignore
@@ -293,15 +276,12 @@ class Query(QueryBase):
         self.data.service_id = service_id
 
     def __str__(self) -> str:
-        """Return the string representation of the query.
+        """Generate and return the URL defined by this query.
 
-        This is the URL in its finished form. Use :meth:`Query.url()`
-        to retrieve the URL as a :class:`yarl.URL` instance for extra
-        control.
+        .. seealso::
 
-        Returns:
-            The full URL describing this query and all of its joins.
-
+           :meth:`Query.url` -- the main URL generator accessed by this
+           method.
         """
         return str(self.url().human_repr())
 
@@ -310,15 +290,10 @@ class Query(QueryBase):
 
         Note that case-insensitive look-ups are significantly slower.
         Where available, use a case-sensitive query targeting a
-        lowercase field like ``ps2/character.name.first_lower``.
+        lowercase field like ``ps2:v2/character.name.first_lower``.
 
-        Arguments:
-            value (optional): Whether to ignore case for this query.
-                Defaults to ``True``.
-
-        Returns:
-            The full URL describing this query and all of its joins.
-
+        :param bool value: Whether to ignore case for this query.
+        :return: The current query instance.
         """
         self.data.case = value
         return self
@@ -330,7 +305,7 @@ class Query(QueryBase):
         """Create a new query, copying most data from the template.
 
         The new query will share the collection, terms and show/hide
-        markers of the template. If ``copy_joins`` is enabled, it will
+        markers of the template. If `copy_joins` is enabled, it will
         also copy its list of joins.
 
         Among other things, allows easy creation of joins from existing
@@ -339,51 +314,42 @@ class Query(QueryBase):
 
         By default, this creates a shallow copy. Modifying the terms or
         joined queries will cause mutations of the template. Set the
-        ``deep_copy`` flag to ensure complete independence.
+        `deep_copy` flag to ensure complete independence.
 
         Any keyword arguments are passed to the new query's
         initialiser.
 
-        Example:
+        .. rubric:: Example
 
-            .. code-block:: python3
+        .. code-block:: python3
 
-                # This is an existing query that does what we need it
-                # to, assume it has some complex join or hidden field
-                # setup that would make it tedious to re-create.
-                old = Query('character')
+           # This is an existing query that does what we need it to,
+           # assume it has some complex join or hidden field setup that
+           # would make it tedious to re-create.
+           old = Query('character')
 
-                # This is an unrelated, new query. We want its join to
-                # return the exact same data structure as the previous
-                # query.
-                new = Query('outfit_member', outfit_id=...).limit(1000)
+           # This is an unrelated, new query. We want its join to
+           # return the exact same data structure as the previous
+           # query.
+           new = Query('outfit_member', outfit_id=...).limit(1000)
 
-                # Create a join emulating the original query and add it
-                join = JoinedQuery.copy(old, copy_joins=True)
-                new.add_join(join)
+           # Create a join emulating the original query and add it
+           join = JoinedQuery.copy(old, copy_joins=True)
+           new.add_join(join)
 
-        Arguments:
-            template: The query to copy.
-            copy_joins (optional): Whether to recursively copy joined
-                queries. Defaults to ``False``.
-            deep_copy (optional): Whether to perform a deep copy. Use
-                this if you intend to modify the list of terms or other
-                mutable types to avoid changing the template. Defaults
-                to ``False``.
-            **kwargs: Any keyword arguments are passed on to the new
-                query's constructor.
-
-        Raises:
-            TypeError: Raised when attempting to copy into a
-                :class:`JoinedQuery` without a collection specified.
-
-        Returns:
-            An instance of the current class populated with information
-            from the template query.
-
+        :param QueryBase template: The query to copy.
+        :param bool copy_joins: 
+           If true, any joins defined for the template will be copied
+           to the new instance.
+        :param bool deep_copy: Whether to perform a deep copy. Use this
+           if you intend to modify the list of terms or other mutable
+           attributes to avoid modifying the template.
+        :param kwargs: Any keyword arguments are passed to the new
+           query's constructor.
+        :return: An instance of the current class, populated with the
+           template query's data.
         """
         copy_func = copy.deepcopy if deep_copy else _dummy_copy
-        # Create a new Query instance
         instance = super().copy(template, copy_joins=copy_joins,
                                 deep_copy=deep_copy, *kwargs)
         assert isinstance(instance, Query)
@@ -400,23 +366,20 @@ class Query(QueryBase):
         elif isinstance(template, JoinedQuery) and template.data.is_list:
             # NOTE: Joined lists have no set length, so this might break for
             # very long or complex joins.
-            instance.limit(10000)  # pylint: disable=no-member
+            instance.limit(10_000)  # pylint: disable=no-member
         return instance
 
     def has(self, field: str, *args: str) -> 'Query':
-        """Hide results with a ``NULL`` value at the given field.
+        """Hide results with a NULL value at the given field.
 
         This is useful for filtering large data sets by optional
         fields, such as searching the ``ps2/weapons`` collection for
         heat-based weapons using the heat-mechanic-specific fields.
 
-        Arguments:
-            field: The field required for results to be included.
-            *args: Additional required fields.
-
-        Returns:
-            The query instance; this allows for chaining of operations.
-
+        :param str field: A field required to be non-NULL for a result
+           to be included.
+        :param str args: Additional fields to require for results.
+        :return: The current query instance.
         """
         self.data.has = [field]
         self.data.has.extend(args)
@@ -425,13 +388,10 @@ class Query(QueryBase):
     def distinct(self, field: Optional[str]) -> 'Query':
         """Query command used to show all unique values for a field.
 
-        Arguments:
-            field: The field to show unique values for. Set to ``None``
-                to disable.
-
-        Returns:
-            The query instance; this allows for chaining of operations.
-
+        :param distinct: The field to show unique values for. Set to
+           :obj:`None` to disable.
+        :type distinct: str or None
+        :return: The current query instance.
         """
         self.data.distinct = field
         return self
@@ -440,18 +400,13 @@ class Query(QueryBase):
         """Whether to display exact matches before partial matches.
 
         When performing RegEx searches (i.e. ones using either
-        :attr:`SearchModifier.STARTS_WITH` or
-        :attr:`SearchModifier.CONTAINS`), this setting will always
-        promote an exact match to be the first item returned,
-        regardless of any sorting settings applied.
+        :class:`SearchModifier.STARTS_WITH <SearchModifier>` or
+        :class:`SearchModifier.CONTAINS <SearchModifier>`), this
+        setting will always promote an exact match to be the first item
+        returned, regardless of any sorting settings applied.
 
-        Arguments:
-            value (optional): Whether to promote exact matches.
-                Defaults to ``True``.
-
-        Returns:
-            The query instance; this allows for chaining of operations.
-
+        :param bool value: Whether to promote exact matches.
+        :return: The current query instance.
         """
         self.data.exact_match_first = value
         return self
@@ -460,18 +415,15 @@ class Query(QueryBase):
         """Whether to include NULL values in the response.
 
         This is useful for API introspection, but it is generally more
-        bandwidth-friendly to use the :meth:`dict.get()` method with a
+        bandwidth-friendly to use the :meth:`dict.get` method with a
         default value when parsing the result dictionary.
 
         This only affects the top-level query itself; joined queries
         will only show non-NULL values.
 
-        Arguments:
-            value: Enable or disable the setting.
-
-        Returns:
-            The query instance; this allows for chaining of operations.
-
+        :param bool value: Whether to include NULL values in the
+           result.
+        :return: The current query instance.
         """
         self.data.include_null = value
         return self
@@ -481,20 +433,16 @@ class Query(QueryBase):
 
         By default, queries return all locales for localised strings.
         Use this flag to only include the given locale, or reset to
-        ``None`` to include all localisations.
+        :obj:`None` to include all localisations.
 
         The following locales are currently supported and maintained:::
 
-            German: 'de', English: 'en', Spanish: 'es',
-            French: 'fr', Italian: 'it'
+           German: 'de', English: 'en', Spanish: 'es',
+           French: 'fr', Italian: 'it'
 
-        Arguments:
-            lang (optional): The locale identifier to return. Defaults
-                to ``None``.
-
-        Returns:
-            The query instance; this allows for chaining of operations.
-
+        :param lang: The locale identifier to filter by.
+        :type lang: str or None
+        :return: The current query instance.
         """
         self.data.lang = lang
         return self
@@ -507,21 +455,16 @@ class Query(QueryBase):
         method.
 
         The maximum number of values permissible varies from collection
-        to collection, e.g. 100k for ``ps2/character``, but only 5000
+        to collection, e.g. 100k for ``ps2/character``, but only 5'000
         for ``ps2/item``. Use your best judgement.
 
-        This is mutually exclusive with :meth:`Query.limit_per_db()`,
-        setting one will undo the changes made by the other.
+        This is mutually exclusive with :meth:`Query.limit_per_db`,
+        setting one will unset the other.
 
-        Arguments:
-            limit: The number of results to return. Must be at least 1.
-
-        Raises:
-            ValueError: Raised if ``limit`` is less than 1.
-
-        Returns:
-            The query instance; this allows for chaining of operations.
-
+        :param int limit: The number of results to return. Must be
+           greater than zero.
+        :raises ValueError: Raised if `limit` is less than 1.
+        :return: The current query instance.
         """
         if limit < 1:
             raise ValueError('limit must be greater than or equal to 1')
@@ -532,24 +475,18 @@ class Query(QueryBase):
     def limit_per_db(self, limit_per_db: int) -> 'Query':
         """Specify the number of results returned per database.
 
-        This method works similarly to :meth:`Query.limit()`, but will
+        This method works similarly to :meth:`Query.limit`, but will
         yield better results for distributed collections such as
         ps2/character, which is spread across 20 different databases
         more or less randomly.
 
-        This is mutually exclusive with :meth:`Query.limit()`, setting
-        one will undo the changes made by the other.
+        This is mutually exclusive with :meth:`Query.limit`, setting
+        one will unset the other.
 
-        Arguments:
-            limit_per_db: The number of results to return per database.
-                Must be at least 1.
-
-        Raises:
-            ValueError: Raised if ``limit_per_db`` is less than 1.
-
-        Returns:
-            The query instance; this allows for chaining of operations.
-
+        :param int limit_per_db: The number of results to return per
+           database. Must be greater than zero.
+        :raises ValueError: Raised if `limit_per_db` is less than 1.
+        :return: The current query instance.
         """
         if limit_per_db < 1:
             raise ValueError('limit_per_db must be greater than or equal to 1')
@@ -558,19 +495,14 @@ class Query(QueryBase):
         return self
 
     def offset(self, offset: int) -> 'Query':
-        """Alias for the :meth:`Query.start()` method.
+        """Alias for the :meth:`Query.start` method.
 
         Refer to its docstring for details.
 
-        Arguments:
-            offset: The number of results to skip.
-
-        Raises:
-            ValueError: Raised if offset is negative.
-
-        Returns:
-            The query instance; this allows for chaining of operations.
-
+        :param int offset: The number of results to skip. Must not be
+           negative.
+        :raises ValueError: Raised if `offset` is negative.
+        :return: The current query instance.
         """
         try:
             self.start(offset)
@@ -588,13 +520,9 @@ class Query(QueryBase):
         Perform a query with no collection specified to see a list of
         resolvable names for each collection.
 
-        Arguments:
-            name: A resolvable name to attach to the query.
-            *args: Any number of additional resolvable names to attach.
-
-        Returns:
-            The query instance; this allows for chaining of operations.
-
+        :param str name: A resolvable name to attach to the query.
+        :param str args: Additional resolvable names to attach.
+        :return: The current query instance.
         """
         self.data.resolve = [name]
         self.data.resolve.extend(args)
@@ -604,16 +532,11 @@ class Query(QueryBase):
         """Enable automatic query retry.
 
         By default, failed queries will be retried automatically. Set
-        this to False to disable this behaviour if you want to fail
-        early.
+        to false to disable this behaviour if you want to fail early
+        or have better control of how failed queries are handled.
 
-        Arguments:
-            retry (optional): Whether to enable automatic query
-                retrying. Defaults to ``False``.
-
-        Returns:
-            The full URL describing this query and all of its joins.
-
+        :param bool retry: Whether to automatically retry queries.
+        :return: The current query instance.
         """
         self.data.retry = retry
         return self
@@ -621,18 +544,13 @@ class Query(QueryBase):
     def start(self, start: int) -> 'Query':
         """Skip the given number of results in the response.
 
-        Together with :meth:`Query.limit()`, this can be used to create
+        Together with :meth:`Query.limit`, this can be used to create
         a paginated view of API data.
 
-        Arguments:
-            start: The number of results to skip.
-
-        Raises:
-            ValueError: Raised if start is negative.
-
-        Returns:
-            The query instance; this allows for chaining of operations.
-
+        :param int start: The number of results to skip. May not be
+           negative.
+        :raises ValueError: Raised if `start` is negative.
+        :return: The current query instance.
         """
         if start < 0:
             raise ValueError('start may not be negative')
@@ -649,19 +567,17 @@ class Query(QueryBase):
 
         .. code-block:: python3
 
-            QueryBase.sort('field1', ('field'2, True))  # Ascending
-            QueryBase.sort(('field3', False))  # Descending
+           QueryBase.sort('field1', ('field2', True))  # Ascending
+           QueryBase.sort(('field3', False))  # Descending
 
         If multiple field names are provided, multiple sorting passes
         will be performed in order to further refine the list returned.
 
-        Arguments:
-            field: A qualified field name to sort by.
-            *args: Additional fields to sort by.
-
-        Returns:
-            The query instance; this allows for chaining of operations.
-
+        :param field: A field to sort by.
+        :type field: str or tuple[str, bool]
+        :param args: Additional fields to sort by.
+        :type args: str or tuple[str, bool]
+        :return: The current query instance.
         """
         self.data.sort = [field]
         self.data.sort.extend(args)
@@ -670,17 +586,12 @@ class Query(QueryBase):
     def timing(self, value: bool = True) -> 'Query':
         """Enabling query profiling output.
 
-        Setting this flag will include an additional "timing" key in
+        Setting this flag will include an additional ``timing`` key in
         the response, providing timing information for the main query
         and any joins.
 
-        Arguments:
-            value (optional): Whether to enable profiling. Defaults to
-                ``True``.
-
-        Returns:
-            The full URL describing this query and all of its joins.
-
+        :param bool value: Whether to enable query profiling.
+        :return: The current query instance.
         """
         self.data.timing = value
         return self
@@ -692,19 +603,15 @@ class Query(QueryBase):
         This is useful for lists of data with obvious categorisation,
         such as grouping weapons by their type.
 
-        Arguments:
-            field: The field to remove and use for the data structure.
-            list (optional): Whether the tree data is a list. Defaults
-                to 0.
-            prefix (optional): A prefix to add to the field value to
-                increase readability. Defaults to ``''``.
-            start (optional): Used to tell the tree where to start. If
-                ``None``, the root list of results will be reformatted
-                as a tree. Defaults to ``None``.
-
-        Returns:
-            The query instance; this allows for chaining of operations.
-
+        :param str field: The field to remove and use as the root of
+           the data structure.
+        :param bool list: Whether the tree's data is a list.
+        :param str prefix: A prefix to add to the field value to
+           improve readability.
+        :param start: Used to tell the tree where to start. If equal to
+           :obj:`None`, the root result list will be reformatted.
+        :type start: str or None
+        :return: The current query instance.
         """
         self.data.tree = {'field': field, 'is_list': is_list,
                           'prefix': prefix, 'start': start}
@@ -715,19 +622,14 @@ class Query(QueryBase):
 
         This will also recursively process any joined queries.
 
-        Arguments:
-            verb (optional): The query verb to use for the query. Known
-                options are ``'get'``, used to return a list of
-                results, and ``'count'``, used to return the length of
-                that list. Defaults to ``'get'``.
-            skip_checks (optional): By default, the URL generator will
-                perform a number of checks to validate your query.
-                Enabling this flag will skip the checks. Defaults to
-                ``False``.
-
-        Returns:
-            A URL object representing the query.
-
+        :param str verb: The query verb to use. Known options are
+           ``get``, used to return a list of results, and ``count``,
+           which instead returns the number of potential matches.
+        :param bool skip_checks: By default, the URL generator will
+           perform a number of checks to validate the query. Enabling
+           this flag will skip these checks.
+        :return: A :class:`yarl.URL` instance representing the query
+           and all of its joins.
         """
         self.data.joins = [j.serialise() for j in self.joins]
         return generate_url(self.data, verb, validate=not skip_checks)
@@ -737,22 +639,32 @@ class JoinedQuery(QueryBase):
     """A sub-query to be joined to an existing query.
 
     Joined queries (or "joins") allow performing multiple, related
-    look-ups in the same request. For a simpler but less powerful
-    interface, see the :meth:`Query.resolve()` method.
+    look-ups in the same request.
 
-    This subclasses :class:`QueryBase`. Refer to its docstring for
-    details on inherited methods and attributes.
+    This subclasses :class:`QueryBase`.
 
-    You can find additional information on the attributes in their
-    respective setter methods.
+    .. seealso::
 
-    Attributes:
-        data: Provides low-level access to the represented joined query
+       :meth:`Query.resolve` -- A simpler but less powerful interface
+       for returning related data in the same request.
 
+    .. attribute:: data
+       :type: JoinedQueryData
+
+       Provides low-level access to the represented query's internal
+       structure. Useful for introspection and testing, modification
+       of this data class by the user is not part of the interface.
     """
 
     def __init__(self, collection: str, **kwargs: CensusValue) -> None:
-        """Instantiate a joined, inner query."""
+        """Initialise a joined, inner query.
+
+        :param str: The API collection to join.
+        :param kwargs: Key-value pairs to add to the query. Any search
+           modifier literals will first be parsed by
+           :meth:`SearchTerm.infer`.
+        :type kwargs: float or int or str
+        """
         super().__init__(collection, **kwargs)
         data: QueryBaseData = self.data  # type: ignore
         self.data = JoinedQueryData.from_base(data)
@@ -764,7 +676,7 @@ class JoinedQuery(QueryBase):
         """Create a new query, copying most data from the template.
 
         The new query will share the collection, terms and show/hide
-        markers of the template. If ``copy_joins`` is enabled, it will
+        markers of the template. If `copy_joins` is enabled, it will
         also copy its list of joins.
 
         Among other things, allows easy creation of joins from existing
@@ -773,48 +685,40 @@ class JoinedQuery(QueryBase):
 
         By default, this creates a shallow copy. Modifying the terms or
         joined queries will cause mutations of the template. Set the
-        ``deep_copy`` flag to ensure complete independence.
+        `deep_copy` flag to ensure complete independence.
 
         Any keyword arguments are passed to the new query's
         initialiser.
 
-        Example:
+        .. rubric:: Example
 
-            .. code-block:: python3
+        .. code-block:: python3
 
-                # This is an existing query that does what we need it
-                # to, assume it has some complex join or hidden field
-                # setup that would make it tedious to re-create.
-                old = Query('character')
+           # This is an existing query that does what we need it to,
+           # assume it has some complex join or hidden field setup that
+           # would make it tedious to re-create.
+           old = Query('character')
 
-                # This is an unrelated, new query. We want its join to
-                # return the exact same data structure as the previous
-                # query.
-                new = Query('outfit_member', outfit_id=...).limit(1000)
+           # This is an unrelated, new query. We want its join to
+           # return the exact same data structure as the previous
+           # query.
+           new = Query('outfit_member', outfit_id=...).limit(1000)
 
-                # Create a join emulating the original query and add it
-                join = JoinedQuery.copy(old, copy_joins=True)
-                new.add_join(join)
+           # Create a join emulating the original query and add it
+           join = JoinedQuery.copy(old, copy_joins=True)
+           new.add_join(join)
 
-        Arguments:
-            template: The query to copy.
-            copy_joins (optional): Whether to recursively copy joined
-                queries. Defaults to ``False``.
-            deep_copy (optional): Whether to perform a deep copy. Use
-                this if you intend to modify the list of terms or other
-                mutable types to avoid changing the template. Defaults
-                to ``False``.
-            **kwargs: Any keyword arguments are passed on to the new
-                query's constructor.
-
-        Raises:
-            TypeError: Raised when attempting to copy into a
-                :class:`JoinedQuery` without a collection specified.
-
-        Returns:
-            An instance of the current class populated with information
-            from the template query.
-
+        :param QueryBase template: The query to copy.
+        :param bool copy_joins: If true, any joins defined for the
+           template will be copied to the new instance.
+        :param bool deep_copy: Whether to perform a deep copy. Use this
+           if you intend to modify the list of terms or other mutable
+           attributes to avoid modifying the template.
+        :param kwargs: Any keyword arguments are passed to the new
+           query's constructor.
+        :raises TypeError: Raised when no collection is specified.
+        :return: An instance of the current class, populated with the
+           template query's data.
         """
         # A joined query cannot be created without a collection
         if template.data.collection is None:
@@ -839,7 +743,15 @@ class JoinedQuery(QueryBase):
         return instance
 
     def serialise(self) -> JoinedQueryData:
-        """Process any internal joins and return a nested data dict."""
+        """Serialise any inner joins and return a copy of :attr:`data`.
+
+        This method is used as part of the URL generator and should not
+        be considered part of the user-facing API. Only use this if you
+        require low-level access into the URL generation process.
+
+        :return: A copy of the joined query's :attr:`~JoinedQuery.data`
+           including any inner joins in serialised form.
+        """
         data = self.data
         data.joins = [j.serialise() for j in self.joins]
         return data
@@ -853,18 +765,17 @@ class JoinedQuery(QueryBase):
         ``<child-collection>_id``.
 
         Use this method to specify the field names manually. Either of
-        the given values may be ``None`` to use the default naming
+        the given values may be :obj:`None` to use the default naming
         system.
 
-        Specifying only the parent's name will apply it to both fields.
+        Specifying only the parent's name will apply its value to both
+        fields.
 
-        Arguments:
-            parent: The field name on the parent collection.
-            child (optional): The field name on the child collection.
-
-        Returns:
-            The query instance; this allows for chaining of operations.
-
+        :param parent: The field name on the parent collection.
+        :type parent: str or None
+        :param child: The field name on the child collection.
+        :type child: str or None
+        :return: The current query instance.
         """
         if parent is not None:
             self.data.field_on = parent
@@ -879,26 +790,30 @@ class JoinedQuery(QueryBase):
 
         By default, the inserted is added to a dynamically generated
         key following the pattern
-        ``<parent_field>_join_<joined_collection>``. Example:::
+        ``<parent_field>_join_<joined_collection>``.
 
-            character_id_join_characters_online_status
+        .. rubric:: Example
+
+        When joining `characters_online_status` to another query
+        using that query's `character_id` field, the resulting
+        default field name would be:::
+
+           character_id_join_characters_online_status
 
         This method allows overriding the name of this insertion key.
 
         This will overwrite existing keys. If the existing key is a
-        JSON object/Python dict, the added keys will be merged. When
-        updating this dictionary, any colliding keys will be appended
-        with ``_merged``.
-        Non-dict keys will simply be overwritten by the joined data.
+        JSON object/Python dict, the added keys will be merged into it.
+        When updating this dictionary, any colliding keys will be
+        appended with ``_merged``.
 
-        Arguments:
-            key (optional): The name of the key to inject the joined
-                data at. If ``None``, the autogenerated name is used.
-                Defaults to ``None``.
+        Non-dict keys will be overwritten by the joined data.
 
-        Returns:
-            The query instance; this allows for chaining of operations.
-
+        :param key: The name of the key to inject the joined query's
+           return data at. If set to :obj:`None`, the default naming
+           system is used.
+        :type key: str or None
+        :return: The current query instance.
         """
         self.data.inject_at = key
         return self
@@ -907,17 +822,13 @@ class JoinedQuery(QueryBase):
         """Set whether the current join should return a list.
 
         If True, the join will return any matching elements. Be wary of
-        large relational collections such as ``ps2/characters_item``;
-        there is no limiting system, just an eventual hard cut-off. Use
-        terms to reduce the number of matching elements when flagging a
-        join as a list.
+        large relational collections such as ``ps2/characters_item`` as
+        there is no limiting system, just a hard cut-off after a few
+        thousand elements. Use query terms to reduce the number of
+        matching elements when flagging a join as a list.
 
-        Arguments:
-            is_list: Whether the join should return a list.
-
-        Returns:
-            The query instance; this allows for chaining of operations.
-
+        :param bool is_list: Whether the join should return a list.
+        :return: The current query instance.
         """
         self.data.is_list = is_list
         return self
@@ -940,13 +851,9 @@ class JoinedQuery(QueryBase):
         However, if the join is flagged as an inner join, it will
         discard any results that do not meet the join's terms.
 
-        Arguments:
-            is_outer: If True, the join will be an outer join. Set to
-                False for inner join behaviour.
-
-        Returns:
-            The query instance; this allows for chaining of operations.
-
+        :param bool is_outer: If true, the join will be an outer join.
+           Set to false for inner join behaviour.
+        :return: The current query instance.
         """
         self.data.is_outer = is_outer
         return self

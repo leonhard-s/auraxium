@@ -29,12 +29,13 @@ class SearchModifier(enum.Enum):
     The following is a list of all search modifier literals and their
     corresponding enum value:::
 
-        EQUAL_TO: '',               LESS_THAN: '<',
-        LESS_THAN_OR_EQUAL: '[',    GREATER_THAN: '>',
-        GREATER_THAN_OR_EQUAL: ']', STARTS_WITH: '^',
-        CONTAINS: '*',              NOT_EQUAL: '!'
+       EQUAL_TO: '',               LESS_THAN: '<',
+       LESS_THAN_OR_EQUAL: '[',    GREATER_THAN: '>',
+       GREATER_THAN_OR_EQUAL: ']', STARTS_WITH: '^',
+       CONTAINS: '*',              NOT_EQUAL: '!'
 
     """
+    # pylint: disable=invalid-name
 
     EQUAL_TO = 0
     LESS_THAN = 1
@@ -45,6 +46,70 @@ class SearchModifier(enum.Enum):
     CONTAINS = 6
     NOT_EQUAL = 7
 
+    @property
+    def EQ(self) -> 'SearchModifier':
+        """Alias for :class:`EQUAL_TO <SearchModifier>`.
+
+        .. versionadded:: 0.2
+        """
+        return self.EQUAL_TO
+
+    @property
+    def LT(self) -> 'SearchModifier':
+        """Alias for :class:`LESS_THAN <SearchModifier>`.
+
+        .. versionadded:: 0.2
+        """
+        return self.LESS_THAN
+
+    @property
+    def LTE(self) -> 'SearchModifier':
+        """Alias for :class:`LESS_THAN_OR_EQUAL <SearchModifier>`.
+
+        .. versionadded:: 0.2
+        """
+        return self.LESS_THAN_OR_EQUAL
+
+    @property
+    def GT(self) -> 'SearchModifier':
+        """Alias for :class:`GREATER_THAN <SearchModifier>`.
+
+        .. versionadded:: 0.2
+        """
+        return self.GREATER_THAN
+
+    @property
+    def GTE(self) -> 'SearchModifier':
+        """Alias for :class:`GREATER_THAN_OR_EQUAL <SearchModifier>`.
+
+        .. versionadded:: 0.2
+        """
+        return self.GREATER_THAN_OR_EQUAL
+
+    @property
+    def SW(self) -> 'SearchModifier':
+        """Alias for :class:`STARTS_WITH <SearchModifier>`.
+
+        .. versionadded:: 0.2
+        """
+        return self.STARTS_WITH
+
+    @property
+    def IN(self) -> 'SearchModifier':
+        """Alias for :class:`CONTAINS <SearchModifier>`.
+
+        .. versionadded:: 0.2
+        """
+        return self.CONTAINS
+
+    @property
+    def NE(self) -> 'SearchModifier':
+        """Alias for :class:`NOT_EQUAL <SearchModifier>`.
+
+        .. versionadded:: 0.2
+        """
+        return self.NOT_EQUAL
+
     @classmethod
     def from_value(cls, value: CensusValue) -> 'SearchModifier':
         """Infer the search modifier from a given value.
@@ -54,19 +119,15 @@ class SearchModifier(enum.Enum):
         the corresponding SearchModifier enum value is returned.
 
         If the input is not a string or its first character does not
-        match any API literal, this will return ``EQUAL_TO``.
+        match any API literal, this will return
+        :class:`SearchModifier.EQUAL_TO <SearchModifier>`.
 
-        Arguments:
-            value: A value to infer the search modifier from.
-
-        Returns:
-            The search modifier for the value provided.
-
+        :param value: A value to infer the search modifier from.
+        :type value: float or int or str
+        :return: The search modifier for the value provided.
         """
-        # Return EQUAL_TO for non-string values
         if not isinstance(value, str):
             return cls(cls.EQUAL_TO)
-        # For strings, return the corresponding enum value
         try:
             return cls(_MODIFIER_LITERALS.index(value[0]))
         except ValueError:
@@ -76,25 +137,19 @@ class SearchModifier(enum.Enum):
     def serialise(enum_value: Union[int, 'SearchModifier']) -> str:
         """Return the string literal for the given enum value.
 
-        This is mostly used during URL generation.
+        This is primarily used during URL generation.
 
-        Arguments:
-            enum_value: The enum value or index to serialise.
-
-        Raises:
-            ValueError: Raised if the provided integer exceeds the
-                value range of the enum.
-
-        Returns:
-            The string representation of the search modifier. This will
-            be an empty string for ``SearchModifier.EQUAL_TO``.
-
+        :param enum_value: The enum value or index to serialise.
+        :type enum_value: int or SearchModifier
+        :raises ValueError: Raised if the provided integer exceeds the
+           value range of the enum.
+        :return: The string representation of the search modifier. This
+           will be an empty string for
+           :class:`SearchModifier.EQUAL_TO <SearchModifier>`.
         """
-        # Convert the enum value to an integer
         if isinstance(enum_value, SearchModifier):
             enum_value = enum_value.value
         assert isinstance(enum_value, int)
-        # Return the appropriate string literal
         try:
             return _MODIFIER_LITERALS[enum_value]
         except IndexError as err:
@@ -102,28 +157,48 @@ class SearchModifier(enum.Enum):
 
 
 class SearchTerm:
-    """Represents a single query term."""
+    """A query filter term.
+
+    Search terms are key-value pairs with an optional search modifier
+    determining how these values will be compared. See the
+    :class:`SearchModifier` enum for details on the available search
+    modifiers.
+
+    .. attribute:: field
+       :type: str
+
+       The field to filter by.
+
+    .. attribute:: value
+       :type: float | int | str
+
+       The value to compare the field against.
+
+    .. attribute:: modifier
+       :type: SearchModifier
+
+       The :class:`SearchModifier` to use.
+    """
 
     def __init__(self, field: str, value: CensusValue,
                  modifier: SearchModifier = SearchModifier.EQUAL_TO) -> None:
         """Initialise a new search term.
 
         Search terms are used to filter the results before returning.
-        This is particularly important for lists returned by joined
-        queries, as they do not have access to limiting mechanisms like
-        Query, easily resulting in excessively long return lists.
+        This is particularly important for lists returned by
+        :class:`JoinedQuery` instnaces as they do not have access to
+        limiting mechanisms like :class:`Query`, easily resulting in
+        excessively long return lists.
 
-        Use the :meth:`SearchTerm.infer()` factory if you prefer
-        defining search modifiers via their string literals as used by
-        the API, rather than manually specifying the enum value.
+        Use the :meth:`SearchTerm.infer` factory if you prefer defining
+        search modifiers via their string literals as used by the API,
+        rather than manually specifying the enum value.
 
-        Arguments:
-            field: The field to compare.
-            value: The value to compare the field against.
-            modifier(optional): The search modifier to use. Modifiers
-                can be used to get non-exact or partial matches.
-                Defaults to ``SearchModifier.EQUAL_TO``.
-
+        :param str field: The field to compare.
+        :param value: The value to compare the field against.
+        :type value: float or int or str
+        :param SearchModifier modifier: The search modifier to use.
+           Modifiers can be used to get non-exact or partial matches.
         """
         self.field = field
         self.value = value
@@ -133,12 +208,10 @@ class SearchTerm:
         """Return a key/value pair representing the search term.
 
         This is a helper function that calls
-        :meth:`SearchTerm.serialise()` and then splits the returned
+        :meth:`SearchTerm.serialise` and then splits the returned
         string at the equal sign.
 
-        Returns:
-            A key/value pair representing the search term.
-
+        :return: A key/value pair representing teh search term.
         """
         key, value = self.serialise().split('=', 1)
         return key, value
@@ -157,14 +230,13 @@ class SearchTerm:
         concern as this information will be lost during URL generation
         regardless).
 
-        Arguments:
-            field: The field to compare.
-            value: The value to compare the field against. If a string,
-                it will be checked for a search modifier literal.
-
-        Returns:
-            A new SearchTerm with a pre-defined search modifier.
-
+        :param str field: The field to compare.
+        :param value: The value to compare the field against. If
+           `value` is a subclass of :class:`str`, its first character
+           will be checked for search modifier literals.
+        :type value: float or int or str
+        :return: A new :class:`SearchTerm` with a pre-defined
+           :class:`SearchModifier`.
         """
         term = cls(field=field, value=value)
         term.modifier = SearchModifier.from_value(value)
@@ -183,9 +255,7 @@ class SearchTerm:
         This is the string that will added to the URL's query string as
         part of the URL generator.
 
-        Returns:
-            The string representation of the search term.
-
+        :return: The string representation of the search term.
         """
         return (f'{self.field}={SearchModifier.serialise(self.modifier)}'
                 f'{self.value}')
@@ -193,7 +263,10 @@ class SearchTerm:
 
 @dataclasses.dataclass()
 class QueryBaseData:
-    """A dataclass used to store generic query information."""
+    """A dataclass used to store generic query information.
+
+    Refer to the corresponding setter methods for details.
+    """
 
     collection: Optional[str]
     hide: List[str] = dataclasses.field(default_factory=list)
@@ -210,7 +283,10 @@ class QueryBaseData:
 
 @dataclasses.dataclass()
 class QueryData(QueryBaseData):
-    """A dataclass used to store global flags and settings for queries."""
+    """A dataclass used to store global flags and settings for queries.
+
+    Refer to the corresponding setter methods for details.
+    """
     # pylint: disable=too-many-instance-attributes
 
     case: bool = True
@@ -234,7 +310,10 @@ class QueryData(QueryBaseData):
 
 @dataclasses.dataclass()
 class JoinedQueryData(QueryBaseData):
-    """Data class for joined queries in the API."""
+    """Data class for joined queries in the API.
+
+    Refer to the corresponding setter methods for details.
+    """
 
     inject_at: Optional[str] = None
     is_list: bool = False

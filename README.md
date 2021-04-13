@@ -176,11 +176,11 @@ async def example_action(event: Event) -> None:
 
 ### Registering Triggers
 
-The easiest way to register a trigger to the client is via the [`auraxium.EventClient.trigger()`](https://auraxium.readthedocs.io/en/latest/core.html#auraxium.EventClient.trigger) decorator. It takes the event/s to listen for as the arguments and creates a trigger using the decorated function as the trigger action.
+The easiest way to register a trigger to the client is via the [`auraxium.event.EventClient.trigger()`](https://auraxium.readthedocs.io/en/latest/core.html#auraxium.event.EventClient.trigger) decorator. It takes the event/s to listen for as the arguments and creates a trigger using the decorated function as the trigger action.
 
 > **Important:** Keep in mind that the websocket connection will be continuously looping, waiting for new events to come in.
 >
-> This means that using [`auraxium.EventClient()`](https://auraxium.readthedocs.io/en/latest/core.html#auraxium.Client) as a context manager may cause issues since the context manager will close the connection when the context manager is exited.
+> This means that using [`auraxium.event.EventClient()`](https://auraxium.readthedocs.io/en/latest/core.html#auraxium.Client) as a context manager may cause issues since the context manager will close the connection when the context manager is exited.
 
 ```py
 import asyncio
@@ -192,7 +192,7 @@ loop = asyncio.get_event_loop()
 async def main():
     # NOTE: Depending on player activity, this script will likely exceed the
     # ~6 requests per minute and IP address limit for the default service ID.
-    client = auraxium.EventClient(service_id='s:example')
+    client = auraxium.event.EventClient(service_id='s:example')
 
     @client.trigger(auraxium.EventType.BATTLE_RANK_UP)
     async def print_levelup(event):

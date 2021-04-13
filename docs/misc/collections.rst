@@ -1,6 +1,6 @@
-======================
-Collection Cheat Sheet
-======================
+====================
+Collection Reference
+====================
 
 =====================================  ==================================================================  ================================================================================================
 Census Collection                      Auraxium                                                            Comment
@@ -21,8 +21,8 @@ Census Collection                      Auraxium                                 
 ``characters_event``                   :meth:`auraxium.ps2.Character.events`                               --
 ``characters_event_grouped``           :meth:`auraxium.ps2.Character.events_grouped`                       --
 ``characters_friend``                  :meth:`auraxium.ps2.Character.friends`                              --
-``characters_item``                    :meth:`auraxium.ps2.Character.item`                                 --
-``characters_leaderboard``             :meth:`auraxium.ps2.leaderboard.by_char`                            --
+``characters_item``                    :meth:`auraxium.ps2.Character.items`                                 --
+``characters_leaderboard``             :func:`auraxium.ps2.leaderboard.by_char`                            --
 ``characters_online_status``           :meth:`auraxium.ps2.Character.online_status`                        --
 ``characters_skill``                   :meth:`auraxium.ps2.Character.skill`                                --
 ``characters_stat``                    :meth:`auraxium.ps2.Character.stat`                                 --
@@ -45,14 +45,14 @@ Census Collection                      Auraxium                                 
 ``experience_rank``                    :class:`auraxium.ps2.ExperienceRank`                                --
 ``event``                              --                                                                  Not yet implemented
 ``facility_link``                      :meth:`auraxium.ps2.MapRegion.get_connected`                        --
-``facility_type``                      :meth:`auraxium.ps2.FacilityType`                                   --
-``faction``                            :class:`auraxium.ps2.Facility`                                      --
+``facility_type``                      :class:`auraxium.ps2.FacilityType`                                  --
+``faction``                            :class:`auraxium.ps2.Faction`                                       --
 ``fire_group``                         :class:`auraxium.ps2.FireGroup`                                     --
 ``fire_group_to_fire_mode``            :meth:`auraxium.ps2.FireGroup.fire_modes`                           --
 ``fire_mode``                          --                                                                  Superceded by ``fire_mode_2``
 ``fire_mode_2``                        :class:`auraxium.ps2.FireMode`                                      --
 ``fire_mode_to_projectile``            :meth:`auraxium.ps2.FireMode.projectile`                            --
-``fire_mode_type``                     :class:`auraxium.ps2.FireModetype`                                  --
+``fire_mode_type``                     :class:`auraxium.ps2.FireModeType`                                  --
 ``image``                              --                                                                  Not yet implemented
 ``image_set``                          --                                                                  Not yet implemented
 ``image_set_default``                  --                                                                  Not yet implemented
@@ -74,14 +74,14 @@ Census Collection                      Auraxium                                 
 ``metagame_event_state``               :class:`auraxium.ps2.MetagameEventState`                            --
 ``objective``                          :class:`auraxium.ps2.Objective`                                     --
 ``objective_set_to_objective``         :meth:`auraxium.ps2.Directive.objectives`                           --
-``objective_type``                     :class:`auraxium.ps2.ObjetiveType`                                  --
+``objective_type``                     :class:`auraxium.ps2.ObjectiveType`                                  --
 ``outfit``                             :class:`auraxium.ps2.Outfit`                                        --
 ``outfit_member``                      :class:`auraxium.ps2.OutfitMember`                                  --
 ``outfit_member_extended``             --                                                                  Join of ``outfit_member`` and ``outfit``
 ``outfit_rank``                        :meth:`auraxium.ps2.Outfit.ranks`                                   --
 ``player_state``                       :class:`auraxium.ps2.PlayerState`                                   --
 ``player_state_group``                 --                                                                  Superceded by ``player_state_group_2``
-``player_state_group_2``               :class:`auraxium.ps2.PlayerStateGroup`                              --
+``player_state_group_2``               :class:`auraxium.models.PlayerStateGroup`                              --
 ``profile``                            --                                                                  Superceded by ``profile_2``
 ``profile_2``                          :class:`auraxium.ps2.Profile`                                       --
 ``profile_armor_map``                  :meth:`auraxium.ps2.Profile.armour_info`                            --

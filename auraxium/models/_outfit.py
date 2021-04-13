@@ -1,4 +1,4 @@
-"""Data classes for :mod:`auraxium.ps2.outfit`."""
+"""Data classes for :mod:`auraxium.ps2._outfit`."""
 
 from .base import RESTPayload
 
@@ -45,10 +45,32 @@ class OutfitMemberData(RESTPayload):
 
 
 class OutfitRankData(RESTPayload):
-    """Data class for :class:`auraxium.ps2.OutfitRank`.
+    """Data class for custom, outfit-specific ranks.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
+
+    .. attribute:: outfit_id
+       :type: int
+
+       The ID of the :class:`~auraxium.ps2.Outfit` that defined this
+       rank.
+
+    .. attribute:: ordinal
+       :type: int
+
+       The ordinal position of this rank in the outfit's roster. Lower
+       values denote a higher rank.
+
+    .. attribute:: name
+       :type: str
+
+       The custom name of the outfit rank.
+
+    .. attribute:: description
+       :type: str
+
+       The description of the rank.
     """
 
     outfit_id: int

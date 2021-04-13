@@ -20,17 +20,13 @@ def generate_url(query: QueryData, verb: str, validate: bool = True) -> yarl.URL
 
     This will also recursively process any joined queries.
 
-    Arguments:
-        query: The top-level query to process.
-        verb: The query verb to use for the query.
-        validate (optional): By default, the URL generator will perform
-            a number of checks to validate the query, raising errors or
-            warnings as necessary. Disabling this flag will skip the
-            checks. Defaults to ``True``.
-
-    Returns:
-        A yarl URL representing the query.
-
+    :param QueryData query: The top level query to process.
+    :param str verb: The query verb to use for the query.
+    :param bool validate: By default, the URL generator will perform a
+       number of checks to validate the query, raising errors or
+       warnings as necessary. Disabling this flag will skip these
+       checks.
+    :return: A :class:`yarl.URL` representing the query.
     """
     # NOTE: The yarl.URL object uses the division operator to chain URI
     # components.
@@ -70,16 +66,13 @@ def process_join(data: JoinedQueryData, verbose: bool) -> str:
     This generates is the string that will be inserted into the
     URL. This will also recursively process any inner joins added.
 
-    Arguments:
-        data: The data representing the joined query.
-        verbose(optional): By default, the serialisation will try
-            to save space by omitting fields left at their default
-            value. Set this flag to True to change that. Defaults
-            to ``False``.
-
-    Returns:
-        The string representation of the joined query.
-
+    :param JoinedQueryData data: The data representing the joined
+       query.
+    :param bool verbose: By default, the serialisation will try to save
+       space by omitting fields left at their default value. Set this
+       flag to instead always write all values. This is primarily a
+       troubleshooting option.
+    :return: The string representation of the joined query.
     """
     # The collection (sometimes referred to as "type" in the docs) to join
     string = 'type:' if verbose else ''
@@ -117,15 +110,12 @@ def _process_query_commands(data: QueryData,
 
     This also recursively processes any joins defined.
 
-    Arguments:
-        data: The top-level query to process.
-        validate (optional): Whether to perform checks on the query and
-            warn the user about bad arguments. Defaults to ``True``.
-
-    Returns:
-        A dict of all query commands for the given query, this will be
-        an empty dict if the query does not use any query commands.
-
+    :param QueryData data: The top level query to process.
+    :param bool validate: Whether to perform checks on the query and
+       warn the user about bad arguments.
+    :return: A dict of all query commands for the given query, this
+       will be an empty dict if the query does not use any query
+       commands.
     """
     commands: Dict[str, str] = {}
     # c:show
@@ -196,15 +186,11 @@ def _process_sorts(sorts: Iterable[Union[str, Tuple[str, bool]]]) -> List[str]:
 
     This mostly handles the sorting direction tuples.
 
-    Arguments:
-        sorts: The sorting values to process.
-
-    Raises:
-        ValueError: Raised if an invalid sorting key is encountered.
-
-    Returns:
-        A list of sorting fields with sort order tokens.
-
+    :param sorts: The sorting values to process.
+    :type sorts: collections.abc.Iterable[str or tuple[str,bool]]
+    :raises ValueError: Raised if an invalid sorting key is
+       encountered.
+    :return: A list of sorting fields with sort order tokens.
     """
     processed: List[str] = []
     for sort in sorts:
@@ -222,14 +208,11 @@ def _process_sorts(sorts: Iterable[Union[str, Tuple[str, bool]]]) -> List[str]:
 
 
 def _process_tree(tree: Dict[str, Optional[Union[str, bool]]]) -> str:
-    """Process the dict created by the :meth:`Query.as_tree()` method.
+    """Process the dict created by the :meth:`Query.as_tree` method.
 
-    Arguments:
-        tree: The mapping to process.
-
-    Returns:
-        The string representation of the tree command.
-
+    :param tree: The dictionary to process.
+    :type tree: dict[str, str or bool or None] 
+    :return: The string representation of the tree.
     """
     string = str(tree['field'])
     if prefix := tree['prefix']:

@@ -9,8 +9,8 @@ from typing import (Any, Dict, Generator, Generic, Iterator, List, Optional,
 
 from .base import Ps2Object
 from .census import JoinedQuery, Query
-from ._client import RequestClient
-from ._rest import extract_payload
+from ._rest import RequestClient, extract_payload
+from .types import CensusData
 
 __all__ = [
     'InstanceProxy',
@@ -30,9 +30,10 @@ class Proxy(Generic[_Ps2ObjectT]):
     Additionally, this currently does not support custom insertion
     fields.
 
-    Attributes:
-        query: The API query used to populate the proxy object.
+    .. attribute:: query
+       :type: auraxium.census.Query
 
+       The API query used to populate the proxy object.
     """
 
     def __init__(self, type_: Type[_Ps2ObjectT], query: Query,
@@ -42,13 +43,11 @@ class Proxy(Generic[_Ps2ObjectT]):
         Note that the lifetime argument may not exceed the UTC epoch
         seconds due to the way this value is initialised.
 
-        Arguments:
-            type_: The object type represented by the proxy.
-            query: The query used to retrieve the data.
-            client: The client through which to query the API.
-            lifetime (optional): The time-to-use of the retrieved data.
-                Defaults to ``60.0``.
-
+        :param type_: The object type represented by the proxy.
+        :type type_: typing.Type[auraxium.base.Ps2Object]
+        :param auraxium.census.Query query: The query used to retrieve
+           the data.
+        :param float lifetime: The time-to-use of the retrieved data.
         """
         self._type = type_
         self.query = query
@@ -66,7 +65,6 @@ class Proxy(Generic[_Ps2ObjectT]):
 
         This method uses a lock to ensure it does not try to query the
         same object multiple times.
-
         """
         async with self._lock:
             payload = await self._client.request(self.query)
@@ -79,24 +77,19 @@ class Proxy(Generic[_Ps2ObjectT]):
                 data, client=self._client) for data in list_]
             self._last_fetched = datetime.datetime.now()
 
-    def _resolve_nested_payload(self, payload: Dict[str, Any]
-                                ) -> List[Dict[str, Any]]:
+    def _resolve_nested_payload(self, payload: CensusData) -> List[CensusData]:
         """Resolve the object payload.
 
         This introspects the given query to determine the sub-key for
         the actual object to return.
 
-        Arguments:
-            payload: The raw payload returned from the API.
-
-        Raises:
-            RuntimeError: Raised if the query has more than one join.
-            RuntimeError: Raised if the parent field of a query is not
-                given.
-
-        Returns:
-            The native list of payloads, ready for instantiation.
-
+        :param payload: The raw payload returned from the API.
+        :type payload: auraxium.types.CensusData
+        :raises RuntimeError: Raised if the query has more than one
+           join (this is not yet supported).
+        :raises RuntimeError: Raised if the parent field of a query is
+           not given.
+        :return: The native list of payloads, ready for instantiation.
         """
 
         def resolve_join(join: JoinedQuery, parent: List[Dict[str, Any]]
@@ -140,8 +133,12 @@ class Proxy(Generic[_Ps2ObjectT]):
 class SequenceProxy(Proxy[_Ps2ObjectT]):
     """Proxy for lists of results.
 
-    Use this is your joins are returning a list of objects.
+    This object supports asynchronous iteration (in which case all
+    elements are returned in a single request prior to iteration).
 
+    Alternatively, you can await it to receive a list of elements.
+
+    Use this if your joins return a list of objects.
     """
 
     def __aiter__(self) -> 'SequenceProxy[_Ps2ObjectT]':
@@ -166,9 +163,7 @@ class SequenceProxy(Proxy[_Ps2ObjectT]):
     async def flatten(self) -> List[_Ps2ObjectT]:
         """Retrieve all elements in the response as a list.
 
-        Returns:
-            A list of instantiated objects.
-
+        :return: A list of instantiated objects.
         """
         return [e async for e in self]
 
@@ -176,8 +171,9 @@ class SequenceProxy(Proxy[_Ps2ObjectT]):
 class InstanceProxy(Proxy[_Ps2ObjectT]):
     """Proxy for a single result.
 
-    Use this is your joins are returning a single object.
+    This object can be awaited to retrieve the actual data.
 
+    Use this if your joins return a single object.
     """
 
     def __await__(self) -> Generator[Any, None, Optional[_Ps2ObjectT]]:
@@ -186,9 +182,7 @@ class InstanceProxy(Proxy[_Ps2ObjectT]):
     async def resolve(self) -> Optional[_Ps2ObjectT]:
         """Return the proxy object.
 
-        Returns:
-            The object, or None if no match was found.
-
+        :return: The object, or :obj:`None` if no match was found.
         """
         age = datetime.datetime.now() - self._last_fetched
         if age.total_seconds() > self._ttu:

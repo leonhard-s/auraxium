@@ -24,41 +24,110 @@ class ProjectileFlightType(enum.IntEnum):
 class Projectile(Cached, cache_size=100, cache_ttu=60.0):
     """A projectile fired by a fire mode.
 
-    Attributes:
-        id: The unique ID of this projectile.
-        projectile_flight_type_id: The ID of the associated
-            :class:`ProjectileFlightType`.
-        speed: The projectile speed in meters per second.
-        speed_max: The maximum speed of the projectile; used with
-            :attr:`acceleration`.
-        acceleration: The acceleration of the projectile in meters
-            per second per second.
-        turn_rate: The turn rate of the projectile in degrees per
-            second.
-        lifespan: The time after which the projectile will be
-            destroyed if it has not hit a target. Effectively limits
-            the maximum distance travelled.
-        drag: The drag applied to the projectile.
-        gravity: The affect on gravity on the projectile.
-        lockon_acceleration: (Not yet documented)
-        lockon_lifespan: The life span of the projectile after it has
-            locked onto a target.
-        arm_distance: The minimum distance travelled for the projectile
-            to be armed. Used to increase the Archer's damage on range.
-        tether_distance: (Not yet documented)
-        detonate_distance: The travelled distance after which the
-            projectile will detonate.
-        detonate_on_contact: Whether the projectile will explode when
-            hitting a target. False for grenades and other bouncing
-            projectiles.
-        sticky: Whether the projectile will stick to objects.
-        sticks_to_players: Whether the projectile will stick to
-            players.
-        lockon_lose_angle: The angle at which the projectile will lose
-            its lock if the target's turn speed exceeds its own.
-        lockon_seek_in_flight: Whether the projectile will continue to
-            follow its target after launch.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of this projectile.
+
+    .. attribute:: projectile_flight_type_id
+       :type: int
+
+       The ID of the associated
+       :class:`auraxium.ps2.ProjectileFlightType`.
+
+    .. attribute:: speed
+       :type: int
+
+       The projectile speed in meters per second.
+
+    .. attribute:: speed_max
+       :type: int | None
+
+       The maximum speed of the projectile; used with
+       :attr:`acceleration`.
+
+    .. attribute:: acceleration
+       :type: int | None
+
+       The acceleration of the projectile in meters per second per
+       second.
+
+    .. attribute:: turn_rate
+       :type: int | None
+
+       The turn rate of the projectile in degrees per second.
+
+    .. attribute:: lifespan
+       :type: int | float
+
+       The time after which the projectile will be destroyed if it ha
+       not hit a target. Effectively limits  the maximum distance
+       travelled.
+
+    .. attribute:: drag
+       :type: float | None
+
+       The drag applied to the projectile.
+
+    .. attribute:: gravity
+       :type: float | None
+
+       The affect on gravity on the projectile.
+
+    .. attribute:: lockon_acceleration
+       :type: float | None
+
+       (Not yet documented)
+
+    .. attribute:: lockon_lifespan
+       :type: float | None
+
+       The life span of the projectile after it has locked onto a
+       target.
+
+    .. attribute:: arm_distance
+       :type: float | None
+
+       The minimum distance travelled for the projectile to be armed.
+       Used to increase the Archer's damage on range.
+
+    .. attribute:: tether_distance
+       :type: float | None
+
+       (Not yet documented)
+
+    .. attribute:: detonate_distance
+       :type: float | None
+
+       The travelled distance after which the projectile will detonate.
+
+    .. attribute:: detonate_on_contact
+       :type: bool | None
+
+       Whether the projectile will explode when hitting a target. False
+       for grenades and other bouncing projectiles.
+
+    .. attribute:: sticky
+       :type: bool | None
+
+       Whether the projectile will stick to objects.
+
+    .. attribute:: sticks_to_players
+       :type: bool | None
+
+       Whether the projectile will stick to players.
+
+    .. attribute:: lockon_lose_angle
+       :type: int | None
+
+       The angle at which the projectile will lose its lock if the
+       target's turn speed exceeds its own.
+
+    .. attribute:: lockon_seek_in_flight
+       :type: bool | None
+
+       Whether the projectile will continue to follow its target after
+       launch.
     """
 
     collection = 'projectile'

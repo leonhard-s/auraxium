@@ -1,4 +1,4 @@
-"""Data classes for :mod:`auraxium.ps2.zone_effect`."""
+"""Data classes for :mod:`auraxium.ps2._zone_effect`."""
 
 from typing import Optional
 
@@ -13,7 +13,7 @@ __all__ = [
 
 
 class ZoneEffectData(RESTPayload):
-    """Data class for :class:`auraxium.ps2.ZoneEffectData`.
+    """Data class for :class:`auraxium.ps2.ZoneEffect`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.

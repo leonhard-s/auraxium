@@ -21,15 +21,31 @@ __all__ = [
 class SkillSet(Named, ImageMixin, cache_size=100, cache_ttu=60.0):
     """A skill set for a particular vehicle or class.
 
-    Attributes:
-        id: The unique ID of this skill set.
-        name: Localised name of the skill set.
-        skill_points: (Not yet documented)
-        required_item_id: The item required to unlock this skill set.
-            Used to prevent buying upgrades for items the player has
-            not unlocked yet.
-        description: The localised description of the skill set.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of this skill set.
+
+    .. attribute:: name
+       :type: auraxium.types.LocaleData
+
+       Localised name of the skill set.
+
+    .. attribute:: skill_points
+       :type: int | None
+
+       (Not yet documented)
+
+    .. attribute:: required_item_id
+       :type: int | None
+
+       The item required to unlock this skill set. Used to prevent
+       buying upgrades for items the player has not unlocked yet.
+
+    .. attribute:: description
+       :type: auraxium.types.LocaleData | None
+
+       The localised description of the skill set.
     """
 
     collection = 'skill_set'
@@ -72,16 +88,36 @@ class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     Skill categories are groups like "Passive Systems" or "Performance
     Slot".
 
-    Attributes:
-        id: The unique ID of this skill category.
-        name: Localised name of the skill category.
-        skill_set_id: The :class:`SkillCategory` this category belongs
-            to.
-        skill_set_index: The position of this category in the
-            associated skill category.
-        skill_points: The unlock cost for this skill category.
-        description: The localised description for this skill category.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of this skill category.
+
+    .. attribute:: name
+       :type: auraxium.types.LocaleData
+
+       Localised name of the skill category.
+
+    .. attribute:: skill_set_id
+       :type: int
+
+       The :class:`~auraxium.ps2.SkillCategory` this category belongs
+       to.
+
+    .. attribute:: skill_set_index
+       :type: int
+
+       The position of this category in the associated skill category.
+
+    .. attribute:: skill_points
+       :type: int
+
+       The unlock cost for this skill category.
+
+    .. attribute:: description
+       :type: auraxium.types.LocaleData | None
+
+       The localised description for this skill category.
     """
 
     collection = 'skill_category'
@@ -120,16 +156,36 @@ class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
 class SkillLine(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     """A series of skills or certifications.
 
-    Attributes:
-        id: The unique ID for this skill line.
-        name: Localised name of the skill line.
-        skill_points: The unlock cost for this skill line.
-        skill_category_id: The :class:`SkillCategory` this skill line
-            belongs to.
-        skill_category_index: The index of this skill line in its
-            containing skill category.
-        description: The localised description for this skill line.
+    .. attribute:: id
+       :type: int
 
+       The unique ID for this skill line.
+
+    .. attribute:: name
+       :type: auraxium.types.LocaleData
+
+       Localised name of the skill line.
+
+    .. attribute:: skill_points
+       :type: int
+
+       The unlock cost for this skill line.
+
+    .. attribute:: skill_category_id
+       :type: int | None
+
+       The :class:`~auraxium.ps2.SkillCategory` this skill line belongs
+       to.
+
+    .. attribute:: skill_category_index
+       :type: int | None
+
+       The index of this skill line in its containing skill category.
+
+    .. attribute:: description
+       :type: auraxium.types.LocaleData | None
+
+       The localised description for this skill line.
     """
 
     collection = 'skill_line'
@@ -171,16 +227,40 @@ class SkillLine(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
 class Skill(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     """A skill or certification unlockable by a character.
 
-    Attributes:
-        id: The unique ID of this skill.
-        name: Localised name of the skill.
-        skill_line_id: The ID of the associated :class:`SkillLine`.
-        skill_line_index: The position of the skill in its skill line.
-        skill_points: The unlock cost of the skill.
-        grant_item_id: The :class:`~auraxium.ps2.Item` granted by this
-            skill, if any.
-        description: The localised description for this skill.
+    .. attribute:: id
+       :type: int
 
+       The unique ID of this skill.
+
+    .. attribute:: name
+       :type: auraxium.types.LocaleData
+
+       Localised name of the skill.
+
+    .. attribute:: skill_line_id
+       :type: int
+
+       The ID of the associated :class:`~auraxium.ps2.SkillLine`.
+
+    .. attribute:: skill_line_index
+       :type: int
+
+       The position of the skill in its skill line.
+
+    .. attribute:: skill_points
+       :type: int
+
+       The unlock cost of the skill.
+
+    .. attribute:: grant_item_id
+       :type: int | None
+
+       The :class:`~auraxium.ps2.Item` granted by this skill, if any.
+
+    .. attribute:: description
+       :type: auraxium.types.LocaleData | None
+
+       The localised description for this skill.
     """
 
     collection = 'skill'

@@ -24,15 +24,42 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
     multiple items at once.
 
     Attributes:
-        id: The unique ID of this bundle.
-        description: The description text for this bundle.
-        image_id: The image asset ID for this bundle.
-        cert_price: The unlock price in certification points, if any.
-        name: Localised name of the bundle.
-        station_cash_price: The unlock price in daybreak cash, if any.
-        release_time: The time at which this bundle was first released
-            as a UTC timestamp.
 
+    .. attribute:: id
+       :type: int
+
+       The unique ID of this bundle.
+
+    .. attribute:: description
+       :type: auraxium.types.LocaleData
+
+       The description text for this bundle.
+
+    .. attribute:: image_id
+       :type: int
+
+       The image asset ID for this bundle.
+
+    .. attribute:: cert_price
+       :type: int | None
+
+       The unlock price in certification points, if any.
+
+    .. attribute:: name
+       :type: auraxium.types.LocaleData
+
+       Localised name of the bundle.
+
+    .. attribute:: station_cash_price
+       :type: int
+
+       The unlock price in daybreak cash, if any.
+
+    .. attribute:: release_time
+       :type: int
+
+       The time at which this bundle was first released as a UTC
+       timestamp.
     """
 
     collection = 'marketing_bundle'
@@ -86,15 +113,42 @@ class MarketingBundleSingle(Cached, cache_size=100, cache_ttu=60.0):
     information.
 
     Attributes:
-        id: The unique ID of this bundle.
-        item_id: The item unlocked by this bundle.
-        item_quantity: The number of items received.
-        name: Localised name of the bundle.
-        station_cash_price: The daybreak cash price of the item.
-        cert_price: The certification point price of the item.
-        release_time: The time at which this item was first released
-            as a UTC timestamp.
 
+    .. attribute:: id
+       :type: int
+
+       The unique ID of this bundle.
+
+    .. attribute:: item_id
+       :type: int
+
+       The item unlocked by this bundle.
+
+    .. attribute:: item_quantity
+       :type: int
+
+       The number of items received.
+
+    .. attribute:: name
+       :type: auraxium.types.LocaleData
+
+       Localised name of the bundle.
+
+    .. attribute:: station_cash_price
+       :type: int
+
+       The daybreak cash price of the item.
+
+    .. attribute:: cert_price
+       :type: int | None
+
+       The certification point price of the item.
+
+    .. attribute:: release_time
+       :type: int
+
+       The time at which this item was first released as a UTC
+       timestamp.
     """
 
     collection = 'marketing_bundle_with_1_item'

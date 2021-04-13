@@ -68,14 +68,13 @@ class RequestClient:
         This closes the internal HTTP session before exiting, no error
         handling will be performed.
 
-        Arguments:
-            exc_type: The type of exception that was raised.
-            exc_value: The exception value that was raised.
-            traceback: The traceback type of the exception.
-
-        Returns:
-            Always False, i.e. no error suppression.
-
+        :param exc_type: The type of exception that was raised.
+        :type exc_type: typing.Type[BaseException] or None
+        :param exc_value: The exception value that was raised.
+        :type exc_value: BaseException or None
+        :param traceback: The traceback type of the exception.
+        :type traceback: types.TracebackType or None
+        :return: Always False, i.e. no error suppression.
         """
         await self.close()
         return False  # Do not suppress any exceptions
@@ -87,7 +86,6 @@ class RequestClient:
         This averages up to the last 100 query times. Use the logging
         utility to gain more insight into which queries take the most
         time.
-
         """
         if not self._timing_cache:
             return -1.0
@@ -100,7 +98,6 @@ class RequestClient:
         API.
 
         Call this to clean up before the client object is destroyed.
-
         """
         _log.info('Shutting down client')
         await self.session.close()
@@ -111,17 +108,9 @@ class RequestClient:
         This performs the query and performs error checking to ensure
         the query is valid.
 
-        Refer to the :meth:`auraxium.request.raise_for_dict()` method
-        for a list of exceptions raised from API errors.
-
-        Arguments:
-            query: The query to perform.
-            verb (optional): The query verb to utilise.
-                Defaults to ``'get'``.
-
-        Returns:
-            The API response payload received.
-
+        :param auraxium.census.Query query: The query to perform.
+        :param str verb: The query verb to utilise.
+        :return: The API response payload received.
         """
         if self.profiling:
             # Create a copy of the query before modifying it
@@ -142,14 +131,10 @@ class RequestClient:
 def get_components(url: yarl.URL) -> Tuple[str, Optional[str]]:
     """Return the namespace and collection of a given query.
 
-    Arguments:
-        url: The :class:`yarl.URL` to process. Only REST API query URLs
-            in the DBG census API format are allowed.
-
-    Returns:
-        The namespace/game and collection that was accessed. Collection
-        may be ``None`` for some queries.
-
+    :param yarl.URL url: The :class:`yarl.URL` to process. Only REST
+       API query URLs in the DBG census API format are allowed.
+    :return: The namespace/game and collection that was accessed.
+       Collection may be :obj:`None` for some queries.
     """
     components = url.path.split('/')[1:]
     if components[0].startswith('s:'):  # Remove service ID
@@ -171,23 +156,17 @@ async def response_to_dict(response: aiohttp.ClientResponse) -> CensusData:
 
     In some cases - mostly error states - the API will return JSON data
     without providing the appropriate ``Content-Type`` entity header,
-    which breaks :meth:`aiohttp.ClientResponse.json()`.
+    which breaks :meth:`aiohttp.ClientResponse.json`.
 
     This function catches this error and generates the expected
     dictionary from the plain text response instead, if possible. If
     the native :mod:`json` module cannot parse the response either, a
-    :class:`~auraxium.errors.ResponseError` is raised.
+    :exc:`~auraxium.errors.ResponseError` is raised.
 
-    Arguments:
-        response: The :class:`aiohttp.ClientResponse` to convert.
-
-    Raises:
-        ResponseError: Raised if the response cannot be converted into
-            a dictionary.
-
-    Returns:
-        A dictionary containing the response payload.
-
+    :param aiohttp.ClientResponse response: The response to convert.
+    :raises ResponseError: Raised if the response cannot be converted
+       into a dictionary.
+    :return: A dictionary containing the response payload.
     """
     data: CensusData
     try:
@@ -215,17 +194,12 @@ async def response_to_dict(response: aiohttp.ClientResponse) -> CensusData:
 def extract_payload(data: CensusData, collection: str) -> List[CensusData]:
     """Extract the payload from a census response dictionary.
 
-    Arguments:
-        data: The response dictionary to process.
-        collection: The collection name to expect.
-
-    Raises:
-        BadPayloadError: Raised if the provided response dictionary
-            lacks the collection-specific key expected.
-
-    Returns:
-        All dictionaries in the response list.
-
+    :param auraxium.types.CensusData data: The response dictionary to
+       process.
+    :param str collection: The collection name to expect.
+    :raises BadPayloadError: Raised if the provided response dictionary
+       lacks the collection-specific key expected.
+    :return: All dictionaries in the response list.
     """
     try:
         list_ = cast(List[CensusData], data[f'{collection}_list'])
@@ -243,21 +217,16 @@ def extract_single(data: CensusData, collection: str,
     Identical to :meth:`extract_payload`, but only returns the first
     match. If multiple results are found, a warning will be issued.
 
-    Arguments:
-        data: The response dictionary to process.
-        collection: The collection name to expect.
-        no_warn_multi (optional): Set this flag to disable the warning
-            issued when using this function on a multi-result payload.
-
-    Raises:
-        BadPayloadError: Raised if the provided response dictionary
-            lacks the collection-specific key expected.
-        NotFoundError: Raised if the collection does not contain any
-            results.
-
-    Returns:
-        The first result payload in the given dictionary.
-
+    :param auraxium.types.CensusData data: The response dictionary to
+       process.
+    :param str collection: The collection name to expect.
+    :param bool no_warn_multi: Set this flag to disable the warning
+       issued when using this function on a multi-result payload.
+    :raises BadPayloadError: Raised if the provided response dictionary
+       lacks the collection-specific key expected.
+    :raises NotFoundError: Raised if the collection does not contain
+       any results.
+    :return: The first result payload in the given dictionary.
     """
     try:
         list_ = extract_payload(data, collection)
@@ -277,28 +246,31 @@ def extract_single(data: CensusData, collection: str,
 def raise_for_dict(data: CensusData, url: yarl.URL) -> None:
     """Check an API response dictionary for errors.
 
-    This raises the appropriate :class:`auraxium.errors.CensusError`
+    This raises the appropriate :exc:`auraxium.errors.CensusError`
     subclass for a given API response.
 
-    Arguments:
-        data: The API response dictionary to check.
-        url: The URL used to perform the request. This is included in
-            any errors raised to facilitate troubleshooting.
-
-    Raises:
-        UnknownCollectionError: Raised when attempting to query a
-            namespace or collection that does not exist.
-        BadRequestSyntaxError: Raised if the server reports an
-            erroneous query.
-        ServiceUnavailableError: Raised if the API service accessed is
-            currently unavailable.
-        InvalidServiceIDError: Raised when using invalid service IDs.
-        MissingServiceIDError: Raised when exceeding the rate limits
-            imposed on the public ``s:examples`` service ID.
-        ServerError: Raised for server-side query parsing errors.
-        InvalidSearchTermError: Raised for bad field names or values
-        CensusError: Raised for unknown server-side errors.
-
+    :param auraxium.types.CensusData data: The API response dictionary
+       to check.
+    :param yarl.URL url: The URL used to perform the request. This is
+       included in any errors raised to facilitate troubleshooting.
+    :raises auraxium.errors.UnknownCollectionError: Raised when
+       attempting to query a namespace or collection that does not
+       exist.
+    :raises auraxium.errors.BadRequestSyntaxError: Raised if the server
+       reports an erroneous query.
+    :raises auraxium.errors.ServiceUnavailableError: Raised if the API
+       service accessed is currently unavailable.
+    :raises auraxium.errors.InvalidServiceIDError: Raised when using
+       invalid service IDs.
+    :raises auraxium.errors.MissingServiceIDError: Raised when
+       exceeding the rate limits imposed on the public ``s:examples``
+       service ID.
+    :raises auraxium.errors. ServerError: Raised for server-side query
+       parsing errors.
+    :raises auraxium.errors.InvalidSearchTermError: Raised for bad
+       field names or values.
+    :raises auraxium.errors.CensusError: Raised for unknown server-side
+       errors.
     """
     # Syntax parser and namespace dispatching
     if (msg := data.get('error')) is not None:
@@ -362,13 +334,10 @@ def _process_invalid_search_term(msg: str, url: yarl.URL) -> None:
 
     This method will return if it cannot provide a specific error.
 
-    Arguments:
-        msg: The error message received.
-        url: The URL that resulted in the current error.
-
-    Raises:
-        InvalidSearchTermError: Raised for bad field names or values
-
+    :param str msg: The error message received.
+    :param yarl.URL url: The URL that resulted in the current error.
+    :raises auraxium.errors.InvalidSearchTermError: Raised for bad
+       field names or values.
     """
     # Process the URL to provide more helpful errors
     *_, namespace, collection = url.parts
@@ -422,21 +391,13 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
     This will handle check both the HTTP response and JSON contents for
     errors before returning.
 
-    Refer to the :meth:`raise_for_dict()` method for details on the
-    exceptions raised.
-
-    Arguments:
-        query: The query to run.
-        session: The session to use for the request.
-        verb (optional): The query verb to pass. Defaults to ``'get'``.
-
-    Raises:
-        ResponseError: Raised if the HTTP response contained error
-            codes or could not be parsed.
-
-    Returns:
-        The response dictionary received.
-
+    :param auraxium.census.Query query: The query to run.
+    :param aiohttp.ClientSession session: The session to use for the
+       request.
+    :param str verb: The query verb to pass.
+    :raises ResponseError: Raised if the HTTP response contained error
+       codes or could not be parsed.
+    :return: The response dictionary received.
     """
     url = query.url(verb=verb)
     _log.debug('Performing %s request: %s', verb.upper(), url)

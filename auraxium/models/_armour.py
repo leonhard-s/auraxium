@@ -1,4 +1,4 @@
-"""Data classes for :mod:`auraxium.ps2.armour`."""
+"""Data classes for :mod:`auraxium.ps2._armour`."""
 
 from typing import Optional
 
@@ -12,7 +12,7 @@ __all__ = [
 
 
 class ArmourInfoData(RESTPayload):
-    """Data class for :class:`auraxium.ps2.ArmorInfo`.
+    """Data class for :class:`auraxium.ps2.ArmourInfo`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.
