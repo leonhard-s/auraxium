@@ -2,7 +2,7 @@
 Logging Configuration
 =====================
 
-Most components of Auraxium log their status via the :mod:`logging` Python module to help monitor their performance and troubleshoot potential issues.
+Most components of Auraxium log their status via the :mod:`logging` module to help monitor their performance and troubleshoot potential issues.
 
 The following snippet will, if placed before your application code, log all but the most spammy messages to your console:
 
@@ -12,7 +12,7 @@ The following snippet will, if placed before your application code, log all but 
 
    logging.basicConfnig(level=logging.INFO)
 
-Theis is an example of a more comprehensive logging setup, moving any warnings and errors into the console while still logging to disk at full resolution, useful for troubleshooting:
+Alternatively, the following snippet is an example of a more comprehensive logging setup, only keeping warnings and errors in the console while still logging to disk at full resolution. This option is recommended for troubleshooting:
 
 .. code-block:: python3
 
@@ -48,6 +48,6 @@ The following loggers are available in Auraxium. You can subscribe to a single l
    `auraxium.cache`:
       Cache misses and usage
 
-For more information on log messages, filters and configuration, please refer to the Python docs' `logging Cookbook`_.
+For more information on log messages, filters and configuration option, please refer to the Python docs' `logging Cookbook`_.
 
 .. _logging Cookbook: https://docs.python.org/3/howto/logging-cookbook.html
