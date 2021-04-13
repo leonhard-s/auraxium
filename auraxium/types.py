@@ -1,4 +1,4 @@
-"""Custom types used by the auraxium module."""
+"""Shared custom types and global type aliases."""
 
 from typing import Dict, List, Optional, Union
 

@@ -2,7 +2,7 @@
 Custom Types
 ============
 
-.. module:: auraxium.types
+.. automodule:: auraxium.types
 
 .. currentmodule:: auraxium.types
 
@@ -13,5 +13,29 @@ Custom Types
 
 .. autoclass:: LocaleData
    :members:
-   :undoc-members:
    :exclude-members: Config
+
+   .. attribute:: de
+      :type: str | None
+
+      German locale
+
+   .. attribute:: en
+      :type: str | None
+
+      English locale
+
+   .. attribute:: es
+      :type: str | None
+
+      Spanish locale
+
+   .. attribute:: fr
+      :type: str | None
+
+      French locale
+
+   .. attribute:: it
+      :type: str | None
+
+      Italian locale
