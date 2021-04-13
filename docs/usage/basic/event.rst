@@ -2,9 +2,9 @@
 Event Streaming
 ===============
 
-The PlanetSide 2 API supports streaming of live in-game events directly to your client.
+The PlanetSide 2 API supports streaming in-game events directly to your client.
 
-This is useful for obtaining real-time event data, but can also be used to gain access to data that would otherwise not be available through the REST API (see the `examples`_ below).
+This is useful for obtaining real-time event data, but can also be used to gain access to data that would otherwise not be available through the REST API (see the `Examples`_ below).
 
 To gain access to event streaming functionality in Auraxium, you must use the :class:`auraxium.event.EventClient` class. This is a sub class of :class:`auraxium.Client` and still supports the full REST API.
 
@@ -39,7 +39,7 @@ Auraxium wraps the real-time event endpoint of the PlanetSide 2 API in an event 
 
    Users familiar with the `discord.py <https://github.com/Rapptz/discord.py>`_ package can skip ahead to `Event Types`_ section.
 
-   The system used to define event listeners and commands in d.py is very similar to Auraxium's trigger system, with `trigger conditions <conditions>`_ being comparable to d.py's checks.
+   The system used to define event listeners and commands in d.py is very similar to Auraxium's trigger system, with `Conditions`_ being comparable to d.py's checks.
 
    Usage examples and the trigger definition syntax are covered further below.
 
@@ -130,7 +130,6 @@ The only argument passed to the trigger action is the :class:`auraxium.event.Eve
 .. rubric:: Example
 
 .. code-block:: python3
-   :emphasize-lines: 1
 
    async def example_action(event: Event) -> None:
        """Example function to showcase the signature used for actions.
@@ -138,26 +137,19 @@ The only argument passed to the trigger action is the :class:`auraxium.event.Eve
        Keep in mind that this could also be a regular function (i.e. one
        defined without the "async" keyword).
        """
-       ...  # Do stuff
+       # Do stuff
 
 Event Types
 ===========
 
-Standard Events
----------------
-
-.. autoclass:: auraxium.event.Event
-   :members:
-   :noindex:
-   :undoc-members:
-   :exclude-members: filter_experience, from_event_name, to_event_name, UNKNOWN
+You can find a list of all known event types in the :mod:`auraxium.event` module documentation.
 
 Filtering by Experience ID
 --------------------------
 
 Due to the high volume of events matching :class:`auraxium.event.GainExperience`, it is also possible to only listen for specific experience IDs.
 
-Due to the dynamic nature of these events, they are not part of the :mod:`auraxium.event` namespace, but are instead generated dynamically via its :meth:`GainExperience.filter_experience <auraxium.event.GainExperience.filter_experience>` method:
+Due to the dynamic nature of these events, they are not part of the :mod:`auraxium.event` namespace, but are instead generated dynamically via the :meth:`GainExperience.filter_experience <auraxium.event.GainExperience.filter_experience>` method:
 
 .. automethod:: auraxium.event.GainExperience.filter_experience
    :noindex:
@@ -172,11 +164,11 @@ Levelup Tracker
 
 A single trigger listening to players gaining a new battle rank and printing the character's name, their title, and the newly gained battle rank.
 
-.. literalinclude:: ../examples/rankup_logger.py
+.. literalinclude:: ../../../examples/rankup_logger.py
 
 Detecting Mutual Deaths
 -----------------------
 
 This script listens to player deaths, caching the ones it sees for a few seconds and looking for the opposite death (i.e. another death with the killer and victim reversed).
 
-.. literalinclude:: ../examples/mutual_death_detector.py
+.. literalinclude:: ../../../examples/mutual_death_detector.py

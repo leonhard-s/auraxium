@@ -4,7 +4,7 @@ Optimising With Custom Queries
 
 This document covers how to improve performance for expensive requests that slow down your application.
 
-It is therefore highly advisable to read the `Census API Primer`_ in the repository Wiki before continuing, as well as the usage instructions for Auraxium's :doc:`URL Generator <../../census>`.
+It is therefore highly advisable to read the `Census API Primer`_ in the repository Wiki before continuing, as well as the usage instructions for Auraxium's :doc:`URL Generator <../basic/census>`.
 
 .. note::
 

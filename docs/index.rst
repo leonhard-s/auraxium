@@ -14,10 +14,10 @@ This package provides a comprehensive object model representation of the API dat
 `Release notes <https://github.com/leonhard-s/auraxium/releases>`_
 •
 `Issue tracker <https://github.com/leonhard-s/auraxium/issues>`_
-   •
-   `Repository <https://github.com/leonhard-s/auraxium>`_
-   •
-   `PyPI <https://pypi.org/project/auraxium/>`_
+•
+`Repository <https://github.com/leonhard-s/auraxium>`_
+•
+`PyPI <https://pypi.org/project/auraxium/>`_
 
 =====
 
@@ -30,7 +30,9 @@ Documentation Contents
    :maxdepth: 1
 
    usage/basic/getting-started
-   event
+   usage/basic/rest
+   usage/basic/event
+   usage/basic/census
    usage/basic/logging
 
 .. toctree::

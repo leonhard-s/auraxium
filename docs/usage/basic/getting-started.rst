@@ -83,14 +83,14 @@ The :class:`auraxium.event.EventClient` sub class adds a trigger-action system a
        victim = await client.get_by_id(auraxium.ps2.Character, victim_id)
        print(f'Player {victim.name}' has died)
 
-For more information on the event streaming system, refer to the :doc:`event streaming documentation <../../event>`.
+For more information on the event streaming system, refer to the :doc:`event streaming documentation <event>`.
 
 URL Generator
 -------------
 
 The URL generator used for low-level access to the PlanetSide 2 API resides in the :mod:`auraxium.census` sub module.
 
-Note that this module is targeted at advanced users or ones familiar with the underlying Census API. An introduction into the module interface can be found :doc:`here <../../census>`.
+Note that this module is targeted at advanced users or ones familiar with the underlying Census API. An introduction into the module interface can be found :doc:`here <census>`.
 
 Service IDs
 ===========

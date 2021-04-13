@@ -1,5 +1,6 @@
-The Auraxium Client
-===================
+===============
+Auraxium Client
+===============
 
 All of Auraxium's API interactions are performed through the :class:`auraxium.Client` class, which contains a few essential references, like the current event loop, the connection pool, or the unique service ID used to identify your app.
 
@@ -9,10 +10,8 @@ All of Auraxium's API interactions are performed through the :class:`auraxium.Cl
 
    You can apply for your custom service ID here; the process is free, and you usually hear back within a few hours.
 
-Some of these references are also required for any queries carried out behind the scenes, so the client object is also handed around behind the scenes; be mindful when updating them as this may cause issues with ongoing background queries.
-
 Retrieving Data
----------------
+===============
 
 .. note::
 
@@ -20,11 +19,9 @@ Retrieving Data
 
 The :class:`auraxium.Client` class exposes several methods used to access the REST API data, like :meth:`~auraxium.Client.get()`, used to return a single match, or :meth:`~auraxium.Client.find()`, used to return a list of matching entries.
 
-It also provides some utility methods, like :meth:`~auraxium.Client.get_by_id()` and :meth:`~auraxium.Client.get_by_name()`. They behave much like the more general :meth:`~auraxium.Client.get()` but are cached to provide better performance for common lookups.
+It also provides some utility methods, like :meth:`~auraxium.Client.get_by_id()` and :meth:`~auraxium.Client.get_by_name()`. They behave much like the more general :meth:`~auraxium.Client.get()` but are generally preferrably for performance as they use an internal TLRU cache to keep recently used objects in local storage.
 
-This means that repeatedly accessing an object through :meth:`~auraxium.Client.get_by_id()` will only generate network traffic once, after which it is retrieved from cache.
-
-Here is an example script that prints various character properties:
+This means that repeatedly accessing an object through :meth:`~auraxium.Client.get_by_id()` will only generate network traffic once, after which it is retrieved from cache:
 
 .. code-block:: python3
 
@@ -41,7 +38,7 @@ Here is an example script that prints various character properties:
 
            # NOTE: Any methods that might incur network traffic are asynchronous.
            # If the data type has been cached locally, no network communication
-           # is required.
+           # is required and the coroutine will be done with no delay.
 
            # This will only generate a request once per faction, as the faction
            # data type is cached forever by default

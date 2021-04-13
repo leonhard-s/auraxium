@@ -8,7 +8,7 @@ The :mod:`auraxium.census` module provides a low-level Python wrapper around the
 
 The following pages cover the URL generator interface and usage, but the underlying REST endpoint's structure, functionality and limitations are outside the scope of this document. If you are unfamiliar with the Daybreak Game Company's Census API or would like a refresh, please refer to the `Census API Primer`_ in the repository Wiki.
 
-For an example of how to use the URL generator and custom queries in conjunction with the Auraxium object model, refer to the :doc:`../usage/advanced/queries` page.
+For an example of how to use the URL generator and custom queries in conjunction with the Auraxium object model, refer to the :doc:`../advanced/queries` page.
 
 .. note::
 
