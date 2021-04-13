@@ -17,10 +17,10 @@ class EventClientTest(unittest.IsolatedAsyncioTestCase):
 
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
-        self._client: Optional[auraxium.EventClient] = None
+        self._client: Optional[auraxium.event.EventClient] = None
 
     @property
-    def client(self) -> auraxium.EventClient:
+    def client(self) -> auraxium.event.EventClient:
         """Shorthand for returning the active client."""
         assert self._client is not None, 'test setup issue'
         return self._client
@@ -29,7 +29,7 @@ class EventClientTest(unittest.IsolatedAsyncioTestCase):
         """Reset the event streaming client before every test."""
         if self._client is not None:
             await self._client.close()
-        self._client = auraxium.EventClient(service_id=SERVICE_ID)
+        self._client = auraxium.event.EventClient(service_id=SERVICE_ID)
 
     async def asyncTearDown(self) -> None:
         """Close the event streaming client after every test."""

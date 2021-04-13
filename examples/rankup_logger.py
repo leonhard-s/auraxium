@@ -9,7 +9,7 @@ from auraxium import event, ps2
 async def main():
     # NOTE: Depending on player activity, this script may exceed the ~6
     # requests per minute and IP address limit for the default service ID.
-    client = auraxium.EventClient(service_id='s:example')
+    client = auraxium.event.EventClient(service_id='s:example')
 
     @client.trigger(event.BattleRankUp)
     async def print_levelup(evt: event.BattleRankUp):

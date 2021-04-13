@@ -69,11 +69,11 @@ For more information on the available classes and the attributes they expose, re
 Event Stream
 ------------
 
-The :class:`auraxium.EventClient` sub class adds a trigger-action system allowing the user to trigger actions when certain in-game events occur:
+The :class:`auraxium.event.EventClient` sub class adds a trigger-action system allowing the user to trigger actions when certain in-game events occur:
 
 .. code-block:: python3
 
-   client = auraxium.EventClient()
+   client = auraxium.event.EventClient()
 
    @client.trigger(auraxium.event.Death)
    async def on_death(event):

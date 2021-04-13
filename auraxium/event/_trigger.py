@@ -89,8 +89,8 @@ class Trigger:
 
         .. seealso::
 
-           :meth:`auraxium.EventClient.trigger` -- Decorator used to
-           define a trigger around a given function.
+           :meth:`auraxium.event.EventClient.trigger` -- Decorator used
+           to define a trigger around a given function.
 
         :param event: The event type to trigger on.
         :type event: typing.Type[Event] or str
@@ -101,7 +101,7 @@ class Trigger:
         :type characters: collections.abc.Iterable[
            auraxium.ps2.Character] or collections.abc.Iterable[int] or None
         :param worlds: A list of world constraints for the trigger.
-        :type worlds: collections.abc.Iterable[auraxium.abc.World] or collections.abc.Iterable[int] or None
+        :type worlds: collections.abc.Iterable[auraxium.ps2.World] or collections.abc.Iterable[int] or None
         :param conditions: A list of callables that must be true for
            the trigger to run.
         :type conditions: list[collections.abc.Callable[[Event], bool]] or None

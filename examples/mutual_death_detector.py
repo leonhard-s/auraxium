@@ -19,7 +19,7 @@ MUTUAL_DEATH_WINDOW = 5.0
 async def main() -> None:
     """Main script method."""
     # Instantiate the event client
-    client = auraxium.EventClient(service_id='s:example')
+    client = auraxium.event.EventClient(service_id='s:example')
 
     # This dictionary is used to track recent deaths
     cache: Dict[int, Tuple[int, datetime.datetime]] = {}

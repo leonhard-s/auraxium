@@ -6,7 +6,7 @@ The PlanetSide 2 API supports streaming of live in-game events directly to your 
 
 This is useful for obtaining real-time event data, but can also be used to gain access to data that would otherwise not be available through the REST API (see the `examples`_ below).
 
-To gain access to event streaming functionality in Auraxium, you must use the :class:`auraxium.EventClient` class. This is a sub class of :class:`auraxium.Client` and still supports the full REST API.
+To gain access to event streaming functionality in Auraxium, you must use the :class:`auraxium.event.EventClient` class. This is a sub class of :class:`auraxium.Client` and still supports the full REST API.
 
 .. note::
 
@@ -14,7 +14,7 @@ To gain access to event streaming functionality in Auraxium, you must use the :c
 
    .. code-block:: python3
 
-      async with auraxium.EventClient() as client:
+      async with auraxium.event.EventClient() as client:
           @client.trigger(...)
           async def action(event):
               ...
@@ -54,12 +54,12 @@ A trigger can be set up to listen to more than event at once. Information about 
 
 .. rubric:: Example
 
-The minimum code required to set up an event trigger and its action uses the :meth:`auraxium.EventClient.trigger` decorator:
+The minimum code required to set up an event trigger and its action uses the :meth:`auraxium.event.EventClient.trigger` decorator:
 
 .. code-block:: python3
    :emphasize-lines: 3
 
-   client = auraxium.EventClient()
+   client = auraxium.event.EventClient()
 
    @client.trigger(auraxium.event.Death)
    async def print_death(event):
@@ -67,12 +67,12 @@ The minimum code required to set up an event trigger and its action uses the :me
 
 This version is shortest and will be used for most examples as it covers most use cases, but does not support some advanced trigger features like conditions.
 
-For the full set of features, instantiate the :class:`auraxium.event.Trigger` manually, add any actions and conditions, and finally register it to the client via :meth:`auraxium.EventClient.add_trigger`:
+For the full set of features, instantiate the :class:`auraxium.event.Trigger` manually, add any actions and conditions, and finally register it to the client via :meth:`auraxium.event.EventClient.add_trigger`:
 
 .. code-block:: python3
    :emphasize-lines: 3,5,9
 
-   client = auraxium.EventClient()
+   client = auraxium.event.EventClient()
 
    my_trigger = auraxium.Trigger(auraxium.event.Death)
 
