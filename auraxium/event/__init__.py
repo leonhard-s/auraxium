@@ -1,8 +1,8 @@
-"""Event definitions and utilities for the websocket event stream.
+"""Event definitions and utilities for the WebSocket event stream.
 
-This mostly defines events, lists event types and defines the event
-trigger system.
-
+This module contains the custom :class:`EventClient` that adds support
+for the real-time endpoint, defines the available event types, and
+provides a trigger system used to respond to in-game events.
 """
 
 from ._client import EventClient
