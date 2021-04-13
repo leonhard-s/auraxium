@@ -1,6 +1,7 @@
 """Shared utility methods used throughout Auraxium."""
 
 import functools
+import inspect
 import warnings
 from typing import Any, Callable, TypeVar, cast
 
@@ -33,13 +34,12 @@ def deprecated(start: str, removal_in: str, replacement: str = ''
             warnings.simplefilter('default', DeprecationWarning)
             return func(*args, **kwargs)
 
-        if wrapper.__doc__ is not None:
-            wrapper.__doc__ += (
-                f'\n.. deprecated:: {start}\n\n'
-                f'   Scheduled for removal in {removal_in}.')
-            if replacement:
-                wrapper.__doc__ += f'\n   Use {replacement} instead.\n'
-
+        wrapper.__doc__ = inspect.cleandoc(wrapper.__doc__ or '')
+        wrapper.__doc__ += (
+            f'\n\n.. deprecated:: {start}\n\n'
+            f'   Scheduled for removal in {removal_in}.')
+        if replacement:
+            wrapper.__doc__ += f'\n   Use {replacement} instead.\n'
         return cast(_CallableT, wrapper)
 
     return decorator
