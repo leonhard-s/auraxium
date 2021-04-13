@@ -133,7 +133,12 @@ class Proxy(Generic[_Ps2ObjectT]):
 class SequenceProxy(Proxy[_Ps2ObjectT]):
     """Proxy for lists of results.
 
-    Use this is your joins are returning a list of objects.
+    This object supports asynchronous iteration (in which case all
+    elements are returned in a single request prior to iteration).
+
+    Alternatively, you can await it to receive a list of elements.
+
+    Use this if your joins return a list of objects.
     """
 
     def __aiter__(self) -> 'SequenceProxy[_Ps2ObjectT]':
@@ -166,7 +171,9 @@ class SequenceProxy(Proxy[_Ps2ObjectT]):
 class InstanceProxy(Proxy[_Ps2ObjectT]):
     """Proxy for a single result.
 
-    Use this is your joins are returning a single object.
+    This object can be awaited to retrieve the actual data.
+
+    Use this if your joins return a single object.
     """
 
     def __await__(self) -> Generator[Any, None, Optional[_Ps2ObjectT]]:

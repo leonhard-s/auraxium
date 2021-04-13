@@ -168,7 +168,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         """Helper method for retrieving character achievements.
 
         Any keyword arguments passed are forwarded to
-        :meth:`auraxium.census.Query`.
+        :class:`auraxium.census.Query`.
 
         Returns at most 5'000 results.
 
@@ -209,7 +209,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         completed the given :class:`Directive`.
 
         Any keyword arguments passed are forwarded to
-        :meth:`auraxium.census.Query`.
+        :class:`auraxium.census.Query`.
 
         .. warning::
 
@@ -232,7 +232,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         directive.
 
         Any keyword arguments passed are forwarded to
-        :meth:`auraxium.census.Query`.
+        :class:`auraxium.census.Query`.
 
         .. warning::
 
@@ -255,7 +255,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         completed a given :class:`DirectiveTier`.
 
         Any keyword arguments passed are forwarded to
-        :meth:`auraxium.census.Query`.
+        :class:`auraxium.census.Query`.
 
         .. warning::
 
@@ -278,7 +278,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         character along a :class:`DirectiveTree`.
 
         Any keyword arguments passed are forwarded to
-        :meth:`auraxium.census.Query`.
+        :class:`auraxium.census.Query`.
 
         .. warning::
 
@@ -301,7 +301,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         and end parameters to poll more data.
 
         Any keyword arguments passed are forwarded to
-        :meth:`auraxium.census.Query`.
+        :class:`auraxium.census.Query`.
 
         .. warning::
 
@@ -320,7 +320,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         """Helper method for retrieving deaths and kills by player.
 
         Any keyword arguments passed are forwarded to
-        :meth:`auraxium.census.Query`.
+        :class:`auraxium.census.Query`.
 
         .. warning::
 
@@ -481,7 +481,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         """Return skills unlocked by the player.
 
         Any keyword arguments passed are forwarded to
-        :meth:`auraxium.census.Query`.
+        :class:`auraxium.census.Query`.
 
         .. warning::
 
@@ -500,7 +500,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         """Return global statistics for this character.
 
         Any keyword arguments passed are forwarded to
-        :meth:`auraxium.census.Query`.
+        :class:`auraxium.census.Query`.
 
         .. warning::
 
@@ -520,7 +520,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         """Return faction-specific statistics for this character.
 
         Any keyword arguments passed are forwarded to
-        :meth:`auraxium.census.Query`.
+        :class:`auraxium.census.Query`.
 
         .. warning::
 
@@ -540,7 +540,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         """Return historical statistics for this character.
 
         Any keyword arguments passed are forwarded to
-        :meth:`auraxium.census.Query`.
+        :class:`auraxium.census.Query`.
 
         .. warning::
 
@@ -560,7 +560,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         """Return weapon-specific statistics for this character.
 
         Any keyword arguments passed are forwarded to
-        :meth:`auraxium.census.Query`.
+        :class:`auraxium.census.Query`.
 
         .. warning::
 
@@ -580,7 +580,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         """Return per-faction weapon statistics for this character.
 
         Any keyword arguments passed are forwarded to
-        :meth:`auraxium.census.Query`.
+        :class:`auraxium.census.Query`.
 
         .. warning::
 

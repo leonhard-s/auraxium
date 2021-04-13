@@ -5,7 +5,7 @@ Getting Started
 Prerequisites
 =============
 
-Auraxium currently requires `Python`_ version 3.8 or higher. Versions prior to 3.6 are not supported due to type hinting constraints. Versions 3.6 and 3.7 can likely be supported if there is demand, get in touch via the `repository issues`_ if your use case requires compatibility with these particular versions.
+Auraxium currently requires `Python`_ version 3.8 or higher. Versions prior to 3.6 are not supported due to type hinting constraints. Support for Python versions 3.6 and 3.7 can be added if there is demand, get in touch via the `repository issues`_ if your use case requires compatibility with these particular versions.
 
 Using the latest version of Python is generally recommended.
 
@@ -49,9 +49,11 @@ You can also use the following commands to install the latest development build 
 Overview
 ========
 
-Auraxium can interface with the Daybreak Game Company's `Census API`_ in one of two ways. The first is the object model, which wraps the API's REST interface and allows accessing specific pieces of data like character names or weapon statistics.
+Auraxium can interface with the Daybreak Game Company's `Census API`_ in one of three ways. The first is the object model, which wraps the API's REST interface and allows accessing and navigating between specific pieces of data like character names or weapon statistics.
 
-The other is the event stream, used to react to in-game events like continent locks or player deaths via a WebSocket connection.
+The :class:`auraxium.event.EventClient` sub class additionally supports the event streaming interface, used to react to in-game events like continent locks or player deaths in next to real-time via a WebSocket connection.
+
+Finally, the internal URL generator used to nevigate the object model can also be used on its own, allowing a high degree of customisation for the queries used. This lower-level access allows for optimisations not possible through the regular object-based REST interface.
 
 Object Model
 ------------
@@ -64,7 +66,7 @@ To retrieve in-game object instances, use :meth:`~auraxium.Client.get`, for sing
 
    The ``auraxium.Ps2Object.get_by_*`` interface has been deprecated and is scheduled for removal in version 0.3. Please use the :class:`auraxium.Client` methods instead.
 
-For more information on the available classes and the attributes they expose, refer to the :doc:`object model reference <api/ps2>`.
+For more information on the available classes and the attributes they expose, refer to the :doc:`Object Model Reference <../../api/ps2>`.
 
 Event Stream
 ------------
@@ -81,7 +83,14 @@ The :class:`auraxium.event.EventClient` sub class adds a trigger-action system a
        victim = await client.get_by_id(auraxium.ps2.Character, victim_id)
        print(f'Player {victim.name}' has died)
 
-For more information on the event streaming system, refer to the :doc:`event streaming documentation <event>`.
+For more information on the event streaming system, refer to the :doc:`event streaming documentation <../../event>`.
+
+URL Generator
+-------------
+
+The URL generator used for low-level access to the PlanetSide 2 API resides in the :mod:`auraxium.census` sub module.
+
+Note that this module is targeted at advanced users or ones familiar with the underlying Census API. An introduction into the module interface can be found :doc:`here <../../census>`.
 
 Service IDs
 ===========

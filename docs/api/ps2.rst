@@ -4,8 +4,6 @@ PlanetSide 2 Object Reference
 
 .. module:: auraxium.ps2
 
-.. currentmodule:: auraxium.ps2
-
 Player Characters
 =================
 
@@ -185,13 +183,12 @@ Firing Mechanics
 .. autoclass:: PlayerState
    :undoc-members:
 
-Events
-======
+Metagame & Alerts
+=================
 
 .. autoclass:: MetagameEvent
 
 .. autoclass:: MetagameEventState
-   :undoc-members:
 
 Items & Weapons
 ===============

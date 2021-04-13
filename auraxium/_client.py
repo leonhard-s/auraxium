@@ -31,8 +31,8 @@ class Client(RequestClient):
     This class handles access to the REST API at
     https://census.daybreakgames.com/.
 
-    To interface with the REST API, use the methods :meth:`Client.get`,
-    :meth:`Client.find`, or one of the ``Client.get_by_*()`` helpers.
+    To interface with the REST API, use the methods :meth:`get`,
+    :meth:`find`, or one of the ``Client.get_by_*()`` helpers.
 
     .. attribute:: loop
        :type: asyncio.AbstractEventLoop

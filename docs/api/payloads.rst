@@ -2,8 +2,6 @@
 Census Payload Reference
 ========================
 
-.. currentmodule:: auraxium.models
-
 Base Classes & Interfaces
 =========================
 
@@ -22,22 +20,19 @@ Base Classes & Interfaces
 
 .. autoclass:: Event
    :show-inheritance:
-   :noindex:
 
    .. note::
 
       While this base class is defined in and accessible from the :mod:`auraxium.models.base` module, its canonical location is the :mod:`auraxium.event` namespace.
 
-   .. automethod:: age() -> float
-
 .. autoclass:: CharacterEvent
 
 .. autoclass:: WorldEvent
 
-.. module:: auraxium.models
-
 REST Payloads
 =============
+
+.. module:: auraxium.models
 
 Object-Mirror Payloads
 ----------------------

@@ -32,15 +32,15 @@ class Trigger:
     .. attribute:: action
        :type: collections.abc.Callable[[auraxium.event.Event], None] | collections.abc.Callable[[typing.Coroutine[None]], None]
 
-        The method or coroutine to run if the matching event is
-        encountered.
+       The method or coroutine to run if the matching event is
+       encountered.
 
     .. attribute:: characters
        :type: list[int]
 
-          A list of characters to filter the incoming events by. For
-          some events, like :class:`auraxium.event.Death`, both the
-          victim and killer can lead to a match.
+       A list of characters to filter the incoming events by. For some
+       events, like :class:`auraxium.event.Death`, both the victim and
+       killer can lead to a match.
 
     .. attribute:: conditions
        :type: list[collections.abc.Callable[[auraxium.event.Event], bool]]
@@ -158,12 +158,8 @@ class Trigger:
         action will be scheduled separately, at which point
         :meth:`Trigger.run()` is called.
 
-        Arguments:
-            event: The event to check.
-
-        Returns:
-            Whether this trigger should run for the given event.
-
+        :param Event event: The event to check.
+        :return: Whether this trigger should run for the given event.
         """
         if (event.__class__ not in self.events
                 and event.__class__.__name__ not in self.events):
@@ -226,9 +222,7 @@ class Trigger:
     async def run(self, event: Event) -> None:
         """Perform the action associated with this trigger.
 
-        Arguments:
-            event: The event to pass to the trigger action.
-
+        :param Event event: The event to pass to the trigger action.
         """
         self.last_run = datetime.datetime.now()
         if self.action is None:

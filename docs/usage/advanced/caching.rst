@@ -6,9 +6,9 @@ Most objects accessible through the PlanetSide 2 API are static, meaning that th
 
 Auraxium uses a caching system to reduce API load by keeping objects in memory past their initial lifetime. The next time this item is accessed, it is instead restored from cache without incurring any network traffic.
 
-This is done via a local `TLRU Cache`_ specific to each cacheable object type. This type of cache has two replacement mechanisms: The first acts like a stack, with items being moved to the top as they are (re)used, and the bottom ones being discarded as the cache reaches its size limit. This is also referred to as a "least recently used" (LRU) cache.
+This is done via a local `TLRU Cache`_ specific to each cacheable object type. This type of cache has two replacement mechanisms: The first acts like a stack, with items being moved to the top as they are reused, and the bottom ones being discarded as the cache reaches its size limit due to new items being added. This is also referred to as a "least recently used" (LRU) cache.
 
-Additionally, cache items have a maximum lifetime to force updates for regularly used objects. This mostly ensures that somewhat-static objects are never too far out of date.
+Additionally, cache items have a maximum lifetime to force updates for regularly used objects. This mostly ensures that semi-static objects are never too far out of date (such as outfit member counts, tags, or character names.
 
 .. note::
 

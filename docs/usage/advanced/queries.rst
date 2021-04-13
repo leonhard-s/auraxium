@@ -178,9 +178,9 @@ This now returns a list of payloads compatible with the ``character`` collection
 .. literalinclude:: ../../../examples/get_online_friends.py
    :start-at: async def
    :end-at: return
-   :emphasize-lines: 3,20
+   :emphasize-lines: 2,20
 
-That's it - this method now behaves exactly the same as any built-in utility methods and will play nicely with any other methods using the object model.
+That's it - this type of method now behaves exactly the same as any built-in helper method like :meth:`auraxium.ps2.Character.get_online` and should play along nicely with other instances and object model utilities.
 
 .. _Census API Primer: https://github.com/leonhard-s/auraxium/wiki/Census-API-Primer
 .. _Joins: https://github.com/leonhard-s/auraxium/wiki/Census-API-Primer#joined-queries

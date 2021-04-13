@@ -11,37 +11,54 @@ Event Types
 
 .. autoclass:: Event
 
+   .. automethod:: age() -> float
+
 .. autoclass:: AchievementAdded
+   :show-inheritance:
 
 .. autoclass:: BattleRankUp
+   :show-inheritance:
 
 .. autoclass:: ContinentLock
+   :show-inheritance:
 
 .. autoclass:: ContinentUnlock
+   :show-inheritance:
 
 .. autoclass:: Death
+   :show-inheritance:
 
 .. autoclass:: FacilityControl
+   :show-inheritance:
 
 .. autoclass:: GainExperience
+   :show-inheritance:
 
    .. automethod:: filter_experience(id_: int) -> str
 
 .. autoclass:: ItemAdded
+   :show-inheritance:
 
 .. autoclass:: MetagameEvent
+   :show-inheritance:
 
 .. autoclass:: PlayerFacilityCapture
+   :show-inheritance:
 
 .. autoclass:: PlayerFacilityDefend
+   :show-inheritance:
 
 .. autoclass:: PlayerLogin
+   :show-inheritance:
 
 .. autoclass:: PlayerLogout
+   :show-inheritance:
 
 .. autoclass:: SkillAdded
+   :show-inheritance:
 
 .. autoclass:: VehicleDestroy
+   :show-inheritance:
 
 Event Client 
 ============
