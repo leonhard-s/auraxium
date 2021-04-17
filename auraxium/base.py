@@ -83,10 +83,10 @@ class Ps2Object(metaclass=abc.ABCMeta):
                 f'Unable to instantiate {self.__class__.__name__} instance '
                 f'from given payload: {err}', data) from err
 
-    def __eq__(self, value: Any) -> bool:
-        if not isinstance(value, self.__class__):
+    def __eq__(self, o: Any) -> bool:
+        if not isinstance(o, self.__class__):
             return False
-        return self.id == value.id
+        return self.id == o.id
 
     def __getattr__(self, name: str) -> Any:
         """Fallback for missing attributes.
