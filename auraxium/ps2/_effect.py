@@ -31,13 +31,13 @@ class EffectType(Cached, cache_size=20, cache_ttu=60.0):
 
 
     .. attribute:: id
-       :type:
+       :type: int
 
        The unique ID of this effect type.
 
 
     .. attribute:: description
-       :type:
+       :type: str
 
        A description of what this effect type is used  for.
 

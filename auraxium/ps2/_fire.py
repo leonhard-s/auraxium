@@ -651,34 +651,34 @@ class FireGroup(Cached, cache_size=10, cache_ttu=60.0):
     implement auxiliary fire modes such as under-barrel launchers.
 
     .. attribute:: id
-       :type:
+       :type: int
 
        The unique ID of this fire group.
 
     .. attribute:: chamber_duration_ms
-       :type:
+       :type: int | None
 
        The rechamber time for weapons in this group.
 
     .. attribute:: transition_duration_ms
-       :type:
+       :type: int | None
 
        (Not yet documented)
 
     .. attribute:: spool_up_ms
-       :type:
+       :type: int | None
 
        The duration of the spool-up period for this weapon group.
 
     .. attribute:: spool_up_initial_refire_ms
-       :type:
+       :type: int | None
 
        The initial fire speed (rounds per minute) of the weapon group.
        The weapon starts out at this value when firing, then tapers to
        the regular value after :attr:`spool_up_ms` milliseconds.
 
     .. attribute:: can_chamber_ironsights
-       :type:
+       :type: bool | None
 
        Whether a bolt-action weapon can be rechambered while in ADS.
     """
