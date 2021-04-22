@@ -124,10 +124,13 @@ class SearchModifier(enum.Enum):
 
         :param value: A value to infer the search modifier from.
         :type value: float or int or str
+        :raises ValueError: Raised if `value` is an empty string.
         :return: The search modifier for the value provided.
         """
         if not isinstance(value, str):
             return cls(cls.EQUAL_TO)
+        if not value:
+            raise ValueError('Value may not be an empty string')
         try:
             return cls(_MODIFIER_LITERALS.index(value[0]))
         except ValueError:
