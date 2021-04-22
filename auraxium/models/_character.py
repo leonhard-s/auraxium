@@ -40,6 +40,9 @@ class CharacterAchievement(RESTPayload):
        The UTC timestamp the character started progression towards this
        achievement at.
 
+       For repeatable achievements, this marks the last time the
+       achievement was gained.
+
     .. attribute:: start_date
        :type: str
 
@@ -50,6 +53,8 @@ class CharacterAchievement(RESTPayload):
 
        The time the character completed this achievement. Only valid
        for one-time achievements such as medals.
+
+       For repeatable achievements, this is always 0.
 
     .. attribute:: finish_date
        :type: str

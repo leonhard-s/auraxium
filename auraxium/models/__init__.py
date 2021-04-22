@@ -12,7 +12,8 @@ from ._currency import CurrencyData
 from ._depot import MarketingBundleData, MarketingBundleSingleData
 from ._directive import (DirectiveData, DirectiveTierData,
                          DirectiveTreeCategoryData, DirectiveTreeData)
-from ._effect import EffectData, EffectTypeData
+from ._effect import (EffectData, EffectTypeData, ZoneEffectData,
+                      ZoneEffectTypeData)
 from ._events import (AchievementAdded, BattleRankUp, Death, FacilityControl,
                       GainExperience, ItemAdded, MetagameEvent,
                       PlayerFacilityCapture, PlayerFacilityDefend, PlayerLogin,
@@ -36,7 +37,6 @@ from ._vehicle import VehicleAttachmentData, VehicleData
 from ._weapon import WeaponAmmoSlot, WeaponData, WeaponDatasheet
 from ._world import WorldData
 from ._zone import ZoneData
-from ._zone_effect import ZoneEffectData, ZoneEffectTypeData
 
 __all__ = [
     'AbilityData',
