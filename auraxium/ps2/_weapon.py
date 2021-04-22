@@ -31,7 +31,8 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
     .. attribute:: id
        :type: int
 
-       The unique ID of this weapon.
+       The unique ID of this weapon. In the API payload, this field
+       is called ``weapon_id``.
 
     .. attribute:: weapon_group_id
        :type: int | None
@@ -43,12 +44,14 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
     .. attribute:: turn_modifier
        :type: float
 
-       Turn speed modifier to apply while the weapon is equipped.
+       Turn rate modifier to apply while the weapon is equipped. This
+       is used to control turret turn rates for tanks and construction
+       items.
 
     .. attribute:: move_modifier
        :type: float
 
-       Move speed modifier to apply while the weapon is equipped.
+       Unused.
 
     .. attribute:: sprint_recovery_ms
        :type: int | None

@@ -22,7 +22,8 @@ class RewardType(Cached, cache_size=10, cache_ttu=3600.0):
     .. attribute:: id
        :type: int
 
-       The unique ID of this reward type.
+       The unique ID of this reward type. In the API payload, this
+       field is called ``reward_type_id``.
 
     .. attribute:: description
        :type: str
@@ -73,12 +74,17 @@ class Reward(Cached, cache_size=50, cache_ttu=60.0):
     .. attribute:: id
        :type: int
 
-       The unique ID of this reward.
+       The unique ID of this reward. In the API payload, this field is
+       called ``reward_id``.
 
     .. attribute:: reward_type_id
        :type: int
 
        The :class:`~auraxium.ps2.RewardType` of this reward.
+
+       .. seealso::
+
+          :meth:`type` -- The reward type instance for this report.
 
     .. attribute:: count_min
        :type: int
@@ -116,7 +122,10 @@ class Reward(Cached, cache_size=50, cache_ttu=60.0):
     @classmethod
     def get_by_reward_group(cls, reward_group_id: int, client: RequestClient
                             ) -> SequenceProxy['Reward']:
-        """Return any rewards contained in the given reward group."""
+        """Return any rewards contained in the given reward group.
+
+        This returns a :class:`auraxium.SequenceProxy`.
+        """
         collection: Final[str] = 'reward_group_to_reward'
         query = Query(collection, service_id=client.service_id)
         query.add_term(field='reward_group_id', value=reward_group_id)
@@ -128,7 +137,10 @@ class Reward(Cached, cache_size=50, cache_ttu=60.0):
     @classmethod
     def get_by_reward_set(cls, reward_set_id: int, client: RequestClient
                           ) -> SequenceProxy['Reward']:
-        """Return any rewards contained in the given reward set."""
+        """Return any rewards contained in the given reward set.
+
+        This returns a :class:`auraxium.SequenceProxy`.
+        """
         collection: Final[str] = 'reward_set_to_reward_group'
         query = Query(collection, service_id=client.service_id)
         query.add_term(field='reward_set_id', value=reward_set_id)
@@ -140,7 +152,10 @@ class Reward(Cached, cache_size=50, cache_ttu=60.0):
         return SequenceProxy(Reward, query, client=client)
 
     def type(self) -> InstanceProxy[RewardType]:
-        """Return the type of reward."""
+        """Return the type of reward.
+
+        This returns an :class:`auraxium.InstanceProxy`.
+        """
         query = Query(
             RewardType.collection, service_id=self._client.service_id)
         query.add_term(

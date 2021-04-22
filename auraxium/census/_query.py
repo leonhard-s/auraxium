@@ -156,7 +156,7 @@ class QueryBase:
            new.add_join(join)
 
         :param QueryBase template: The query to copy.
-        :param bool copy_joins: 
+        :param bool copy_joins:
            If true, any joins defined for the template will be copied
            to the new instance.
         :param bool deep_copy: Whether to perform a deep copy. Use this
@@ -338,7 +338,7 @@ class Query(QueryBase):
            new.add_join(join)
 
         :param QueryBase template: The query to copy.
-        :param bool copy_joins: 
+        :param bool copy_joins:
            If true, any joins defined for the template will be copied
            to the new instance.
         :param bool deep_copy: Whether to perform a deep copy. Use this

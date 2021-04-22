@@ -15,8 +15,21 @@ __all__ = [
 class ArmourFacing(enum.IntEnum):
     """Enumerator for armour facing directions.
 
-    This is used to list different armour values for a vehicle based on
-    the angle of attack.
+    This enum is used to list different :class:`ArmourInfo` values for
+    the same vehicle depending on the attacker's position.
+
+    Note that this mechanic uses the relative position of the attacker
+    and the impacted vehicle, not the impact location the projectile.
+
+    Values:::
+
+       FRONT  = 0
+       RIGHT  = 1
+       TOP    = 2
+       REAR   = 3
+       LEFT   = 4
+       BOTTOM = 5
+       ALL    = 6
     """
 
     FRONT = 0
@@ -27,46 +40,71 @@ class ArmourFacing(enum.IntEnum):
     BOTTOM = 5
     ALL = 6
 
+    def __str__(self) -> str:
+        literals = ['Front', 'Right', 'Top', 'Rear', 'Left', 'Bottom', 'All']
+        return literals[int(self.value)]
+
 
 class ArmourInfo(Cached, cache_size=100, cache_ttu=60.0):
-    """An armour stat for a given entity.
+    """An armour info entry for an entity.
 
-    Note that any given entity may have multiple :class:`ArmourInfo`
-    instances associated with it, one for each :class:`ArmourFacing`
-    value.
+    Armour is a vehicle-specific property that modifies incoming damage
+    depending on the angle of attack. Note that this mechanic uses the
+    relative position of the attacker and the impacted vehicle, not the
+    impact location the projectile.
+
+    A vehicle may have multiple :class:`ArmourInfo` entries associated
+    with different :class:`ArmourFacing` directions.
+
+    Note that these armour percentages may be negative, in which case
+    the damage dealt is increased beyond the base damage of the weapon.
+
+    .. seealso::
+
+       :class:`auraxium.ps2.Profile.armour_info` -- Access the armour
+       info entries for a given :class:`auraxium.ps2.Profile`.
 
     .. attribute:: id
        :type: int
 
-       The unique ID of this entry.
+       The unique ID of this entry. In the API payload, this field is
+       called ``armour_info_id``.
 
     .. attribute:: armor_facing_id
        :type: int
 
-       The enum value the facing direction this entry provides armour
-       data for.
+       The integer representation of the :class:`ArmourFacing` enum
+       value this entry provides armour data for.
+
+       .. seealso::
+
+          :attr:`facing` -- The enum value of this entry.
 
     .. attribute:: armor_percent
        :type: int
 
-       Damage reduction in percent. A value of 10 signifies a 10%
-       reduction.
+       Damage reduction in percent. A value of 10.0 denotes an armour
+       reduction of 10 percent. Negative armour values will increase
+       damage taken:::
+
+          actual_damage = (1 - (resistance / 100)) * base_damage
 
     .. attribute:: armor_amount
        :type: int | None
 
-       A flat damage absorption applied to the damage effect.
+       A flat damage reduction applied to the damage effect prior to
+       the percentage reduction.
 
        .. note::
 
-          This field is generally unused since the 2017 armour rework
-          as part of the "Critical Mass" game update.
+          This field is unused since the 2017 armour rework as part of
+          the "Critical Mass" game update.
 
     .. attribute:: description
        :type: str
 
-       A description of what situation this armour info entry is used
-       for.
+       An internal description of what situation this armour info entry
+       is used for.
     """
 
     collection = 'armor_info'

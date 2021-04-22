@@ -33,7 +33,6 @@ class SearchModifier(enum.Enum):
        LESS_THAN_OR_EQUAL: '[',    GREATER_THAN: '>',
        GREATER_THAN_OR_EQUAL: ']', STARTS_WITH: '^',
        CONTAINS: '*',              NOT_EQUAL: '!'
-
     """
     # pylint: disable=invalid-name
 

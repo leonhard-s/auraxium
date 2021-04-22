@@ -41,8 +41,8 @@ class _CacheItem(Generic[_V]):
        :type: datetime.datetime
 
        The time the object was added. Used to calculate the age of the
-       entry with respect to a :class:`TLRUCache`'s
-       :attr`~TLRUCache.ttu` attribute.
+       entry with respect to a :class:`TLRUCache` 's
+       :attr:`~TLRUCache.ttu` attribute.
 
     .. attribute:: last_accessed
        :type: datetime.datetime

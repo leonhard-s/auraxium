@@ -23,7 +23,8 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
     .. attribute:: id
        :type: int
 
-       The unique ID of the world.
+       The unique ID of the world. In the API payload, this field
+       is called ``world_id``.
 
     .. attribute:: name
        :type: auraxium.types.LocaleData

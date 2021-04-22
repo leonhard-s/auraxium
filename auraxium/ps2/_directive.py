@@ -1,6 +1,6 @@
 """Directive class definitions."""
 
-from typing import Final, Optional
+from typing import List, Optional
 
 from ..base import ImageMixin, Named
 from ..census import Query
@@ -10,6 +10,7 @@ from .._proxy import InstanceProxy, SequenceProxy
 from ..types import LocaleData
 
 from ._objective import Objective
+from ._reward import Reward
 
 __all__ = [
     'Directive',
@@ -20,20 +21,21 @@ __all__ = [
 
 
 class DirectiveTreeCategory(Named, ImageMixin, cache_size=10, cache_ttu=300.0):
-    """A directive category.
+    """A category of directive.
 
-    Directive tree category are the topmost directive categorisation,
-    e.g. "Infantry".
+    In-game, this is represented by the side bar to the left, e.g.
+    "Infantry", "Weapons", or "Vehicles".
 
-    .. attribute:: directive_tree_category_id
+    .. attribute:: id
        :type: int
 
-       The unique ID of the directive tree category.
+       The unique ID of the directive tree category. In the API
+       payload, this field is called ``directive_tree_category_id``.
 
     .. attribute:: name
        :type: auraxium.types.LocaleData
 
-       Localised name of the directive tree category.
+       The localised name of the directive tree category.
     """
 
     collection = 'directive_tree_category'
@@ -46,7 +48,7 @@ class DirectiveTreeCategory(Named, ImageMixin, cache_size=10, cache_ttu=300.0):
     name: LocaleData
 
     def trees(self) -> SequenceProxy['DirectiveTree']:
-        """Return the trees in the category.
+        """Return the directive trees in this category.
 
         This returns a :class:`auraxium.SequenceProxy`.
         """
@@ -57,20 +59,28 @@ class DirectiveTreeCategory(Named, ImageMixin, cache_size=10, cache_ttu=300.0):
 
 
 class DirectiveTree(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
-    """A tree of directives.
+    """A multi-tiered tree of directives for a given category.
 
-    Directive trees are a chain of related directive, e.g.
-    "Heavy Assault".
+    Directive trees are chains of related directives like
+    "Heavy Assault" in the "Infantry" category, or "Carbines" in the
+    "Weapons" category.
 
     .. attribute:: id
        :type: int
 
-       The unique ID of the directive tree.
+       The unique ID of the directive tree. In the API payload, this
+       field is called ``directive_tree_id``.
 
     .. attribute:: directive_tree_category_id
        :type: int
 
-       The category of the directive tree.
+       The ID of the :class:`DirectiveTreeCategory` of this directive
+       tree.
+
+       .. seealso::
+
+          :meth:`category` -- Return the directive tree category of
+          this directive tree.
 
     .. attribute:: description
        :type: auraxium.types.LocaleData | None
@@ -80,7 +90,7 @@ class DirectiveTree(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     .. attribute:: name
        :type: auraxium.types.LocaleData
 
-       Localised name of the directive tree.
+       The localised name of the directive tree.
     """
 
     collection = 'directive_tree'
@@ -126,41 +136,56 @@ class DirectiveTree(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
 
 
 class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
-    """A directive tier.
+    """A tier in a directive tree.
 
-    Container for related directives, e.g. "Combat Medic: Adept".
+    Directive tiers list the set of directives required to advance to
+    the next tier in the :class:`DirectiveTree`, e.g.
+    "Combat Medic: Adept" or "Shotguns: Master".
 
     .. attribute:: id
        :type: int
 
-       The unique ID of the directive tier.
+       The unique ID of the directive tier. In the API payload, this
+       field is called ``directive_tier_id``.
 
     .. attribute:: directive_tree_id
        :type: int
 
-       The directive tree this directive belongs to.
+       The ID of the :class:`DirectiveTree` this directive tier is a
+       part of.
+
+       .. seealso::
+
+          :meth:`tree` -- Return the directive tree of this directive
+          tier.
 
     .. attribute:: reward_set_id
        :type: int | None
 
-       The reward set awarded upon completion of this directive tier.
+       The ID of the reward set awarded upon completion of this
+       directive tier.
+
+       .. seealso::
+
+          :meth:`rewards` -- Return the list of rewards awarded upon
+          completion of this directive tier.
 
     .. attribute:: directive_points
        :type: int
 
-       The directive points awarded upon completion of this directive
-       tier.
+       The number of directive points awarded upon completion of this
+       directive tier.
 
     .. attribute:: completion_count
        :type: int
 
-       The number of directives that must be completed for completion
-       of this directive tier.
+       The number of directives in this tier that must be completed to
+       advance to the next stage.
 
     .. attribute:: name
        :type: auraxium.types.LocaleData
 
-       Localised name of the directive tier.
+       The localised name of the directive tier.
     """
 
     collection = 'directive_tier'
@@ -185,6 +210,13 @@ class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
         query.add_term(field='directive_tier_id', value=self.id).limit(100)
         return SequenceProxy(Directive, query, client=self._client)
 
+    async def rewards(self) -> List[Reward]:
+        """Return the rewards granted upon completion of this tier."""
+        if self.reward_set_id is None:
+            return []
+        return await Reward.get_by_reward_set(
+            self.reward_set_id, client=self._client).flatten()
+
     def tree(self) -> InstanceProxy[DirectiveTree]:
         """Return the tree of the directive.
 
@@ -203,33 +235,48 @@ class Directive(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     .. attribute:: id
        :type: int
 
-       The unique ID of this directive.
+       The unique ID of this directive. In the API payload, this field
+       is called ``directive_id``.
 
     .. attribute:: directive_tree_id
        :type: int
 
-       The directive tree of this directive.
+       The ID of the :class:`DirectiveTree` of this directive.
+
+       .. seealso::
+
+          :meth:`tree` -- Return the directive tree of this directive.
 
     .. attribute:: directive_tier_id
        :type: int
 
-       The directive tier of this directive.
+       The ID of the :class:`DirectiveTier` of this directive.
+
+       .. seealso::
+
+          :meth:`tier` -- Return the directive tier of this directive.
 
     .. attribute:: objective_set_id
        :type: int
 
-       The objective set contributing towards this directive.
+       The objective set of this directive. All objectives in the given
+       set will contribute towards this directive.
+
+       .. seealso::
+
+          :meth:`objectives` -- Return the objectives counting towards
+          completion of this directive.
 
     .. attribute:: name
        :type: auraxium.types.LocaleData
 
-       Localised name of the directive.
+       The localised name of the directive.
 
     .. attribute:: qualify_requirement_id
        :type: int
 
-       An item that must be unlocked for this directive to be
-       available.
+       The ID of an :class:`~auraxium.ps2.Item` (usually weapon) that
+       must be unlocked for this directive to be available.
 
     .. attribute:: description
        :type: auraxium.types.LocaleData
@@ -256,17 +303,8 @@ class Directive(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
 
         This returns a :class:`auraxium.SequenceProxy`.
         """
-        # NOTE: This table is being treated as a single set mapping to multiple
-        # objectives via their common group. This is a guess. I was not able to
-        # find any directives with multiple objectives associated.
-        collection: Final[str] = 'objective_set_to_objective'
-        query = Query(collection, service_id=self._client.service_id)
-        query.add_term(
-            field='objective_set_id', value=self.data.objective_set_id)
-        join = query.create_join(Objective.collection)
-        join.set_fields('objective_group_id')
-        join.set_list(True)
-        return SequenceProxy(Objective, query, client=self._client)
+        return Objective.get_by_objective_set(
+            self.objective_set_id, self._client)
 
     def tier(self) -> InstanceProxy[DirectiveTier]:
         """Return the tier of the directive.

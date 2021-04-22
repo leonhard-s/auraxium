@@ -28,7 +28,8 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
     .. attribute:: id
        :type: int
 
-       The unique ID of this vehicle type.
+       The unique ID of this vehicle type. In the API payload, this field
+       is called ``vehicle_id``.
 
     .. attribute:: description
        :type: auraxium.types.LocaleData | None
@@ -53,12 +54,12 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
     .. attribute:: cost
        :type: int | None
 
-       The cost of the vehicle.
+       The spawn cost of the vehicle.
 
     .. attribute:: cost_resource_id
        :type: int | None
 
-       The ID of the resource the cost is in.
+       The ID of the resource the vehicle costs.
     """
 
     collection = 'vehicle'
@@ -132,17 +133,28 @@ class VehicleAttachment(Cached, cache_size=250, cache_ttu=180.0):
     .. attribute:: id
        :type: int
 
-       The item that is being attached.
+       The item that is being attached. In the API payload, this field
+       is called ``vehicle_attachment_id``.
 
     .. attribute:: vehicle_id
        :type: int
 
-       The vehicle the item may be attached to.
+       The ID of the :class:`Vehicle` the item may be attached to.
+
+       .. seealso::
+
+          :meth:`vehicle` -- The vehicle the item may be attached to.
 
     .. attribute:: faction_id
        :type: int
 
-       The faction for which this attachment is available.
+       The ID of the :class:`~auraxium.ps2.Faction` for which this
+       attachment is available.
+
+       .. seealso::
+
+          :meth:`faction` -- The faction the attachment is availabl
+          to.
 
     .. attribute:: description
        :type: str

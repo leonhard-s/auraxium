@@ -30,7 +30,6 @@ class Period(enum.Enum):
        WEEKLY
        DAILY
        ONE_LIFE
-
     """
 
     FOREVER = 0
@@ -50,7 +49,6 @@ class Stat(enum.Enum):
        SCORE
        TIME
        DEATHS
-
     """
 
     KILLS = 0

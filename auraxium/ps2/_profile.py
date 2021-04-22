@@ -32,7 +32,8 @@ class Profile(Cached, cache_size=200, cache_ttu=60.0):
     .. attribute:: id
        :type: int
 
-       The unique ID of this profile.
+       The unique ID of this profile. In the API payload, this field is
+       called ``profile_id``.
 
     .. attribute:: description
        :type: str
@@ -82,17 +83,28 @@ class Loadout(Cached, FallbackMixin, cache_size=20, cache_ttu=3600.0):
     .. attribute:: id
        :type: int
 
-       The unique ID of this loadout.
+       The unique ID of this loadout. In the API payload, this field is
+       called ``loadout_id``.
 
     .. attribute:: profile_id
        :type: int
 
        The ID of the associated :class:`~auraxium.ps2.Profile`.
 
+       .. seealso::
+
+          :meth:`profile` -- Get the profile associated with this
+          loadout.
+
     .. attribute:: faction_id
        :type: int
 
        The :class:`~auraxium.ps2.Faction` for this loadout.
+
+       .. seealso::
+
+          :meth:`faction` -- Get the faction associated with this
+          loadout.
 
     .. attribute:: code_name
        :type: str

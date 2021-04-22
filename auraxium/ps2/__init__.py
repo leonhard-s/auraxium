@@ -13,7 +13,7 @@ from ._currency import Currency
 from ._depot import MarketingBundle, MarketingBundleSingle
 from ._directive import (Directive, DirectiveTier, DirectiveTree,
                          DirectiveTreeCategory)
-from ._effect import Effect, EffectType, TargetType
+from ._effect import Effect, EffectType, TargetType, ZoneEffect, ZoneEffectType
 from ._experience import Experience, ExperienceRank
 from ._faction import Faction
 from ._fire import FireGroup, FireMode, FireModeType
@@ -33,7 +33,6 @@ from ._vehicle import Vehicle, VehicleAttachment
 from ._weapon import Weapon, WeaponAmmoSlot, WeaponDatasheet
 from ._world import World
 from ._zone import Zone
-from ._zone_effect import ZoneEffect, ZoneEffectType
 
 __all__ = [
     'Ability',

@@ -39,7 +39,8 @@ class OutfitMember(Cached, cache_size=100, cache_ttu=300.0):
     .. attribute:: id
        :type: int
 
-       The ID of the associated character.
+       The ID of the associated character. In the API payload, this
+       field is called ``character_id``.
 
     .. attribute:: member_since
        :type: int
@@ -105,7 +106,8 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
     .. attribute:: id
        :type: int
 
-       The unique ID of the outfit.
+       The unique ID of the outfit. In the API payload, this field is
+       called ``outfit_id``.
 
     .. attribute:: name_lower
        :type: str
