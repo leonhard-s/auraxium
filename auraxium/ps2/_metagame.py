@@ -18,12 +18,11 @@ class MetagameEventState(enum.IntEnum):
 
     The following event state changes are currently recognised:::
 
-       STARTED: 135
-       RESTARTED: 136
-       CANCELLED: 137
-       ENDED: 138
-       XP_BONUS_CHANGED: 139
-
+       STARTED          = 135
+       RESTARTED        = 136
+       CANCELLED        = 137
+       ENDED            = 138
+       XP_BONUS_CHANGED = 139
     """
 
     STARTED = 135
@@ -39,7 +38,8 @@ class MetagameEvent(Cached, cache_size=100, cache_ttu=60.0):
     .. attribute:: id
        :type: int
 
-       The unique ID of this event.
+       The unique ID of this event. In the API payload, this
+       field is called ``metagame_event_id``.
 
     .. attribute:: name
        :type: auraxium.types.LocaleData

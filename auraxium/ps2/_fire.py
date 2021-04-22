@@ -21,10 +21,24 @@ __all__ = [
 
 
 class FireModeType(enum.IntEnum):
-    """A type of fire mode.
+    """Specifies the type of action taken when a weapon is fired.
 
-    This is mostly used to group similar fire modes together when
-    tabulating multiple weapons.
+    The default fire mode type, ``PROJECTILE``, is used for hipfired or
+    otherwise unaimed weapons. ``IRON_SIGHT`` is used when aiming down
+    sights (ADS).
+
+    ``MELEE`` is used for both quick knifing and equipped knives.
+    ``THROWN`` is responsible for grenades and mines, and
+    ``TRIGGER_ITEM_ABILITY`` is a hook used to place turrets and other
+    constructable items.
+
+    Values:::
+
+       PROJECTILE           =  0  # Hipfire
+       IRON_SIGHT           =  1  # Aim down sights
+       MELEE                =  3
+       TRIGGER_ITEM_ABILITY =  8
+       THROWN               = 12
     """
 
     PROJECTILE = 0
@@ -33,97 +47,134 @@ class FireModeType(enum.IntEnum):
     TRIGGER_ITEM_ABILITY = 8
     THROWN = 12
 
+    def __str__(self) -> str:
+        literals = ['Projectile', 'Iron Sight', 'Melee',
+                    'Trigger Item Ability', 'Thrown']
+        return literals[int(self.value)]
+
 
 class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
     """A fire mode of a weapon.
 
-    This class defines the bulk of a weapon's stats, such as reload
-    times or accuracy.
+    An API fire mode defines the bulk of a weapon's stats, such as
+    reload times, default accuracy and cone-of-fire characteristics.
 
-    Note that this is not synonymous with in-game fire modes, these are
-    handled by the :class:`FireGroup` class instead. Fire groups are
-    also used to implement the auxiliary under-barrel fire modes.
+    .. note::
 
-    Implementation detail: This class wraps the ``fire_mode_2``
-    collection, the regular ``fire_mode`` collection does not have a
-    representation in the object model.
+       Do not confuse this with in-game fire modes (automatic, triple
+       burst, etc.). Those are represented by the :class:`FireGroup`
+       class instead.
+
+    Most infantry weapons have two fire modes, one for being hipfired
+    and another used when aiming down sights. For more information on
+    fire mode types, see the :class:`FireModeType` class.
+
+    Keep in mind that most accuracy-related stats can be overwritten by
+    the current :class:`~auraxium.ps2.PlayerState`, i.e. whether the
+    player is jumping, crouching, etc.
+
+    See the :meth:`state_groups` method for a mapping of player states
+    to the state group entries for this fire mode.
 
     .. attribute:: id
        :type: int
 
-       The unique ID of this fire mode.
+       The unique ID of this fire mode. In the API payload, this field
+       is called ``fire_mode_id``.
 
     .. attribute:: fire_mode_type_id
-       :type: int
+       :type: int | None
 
-       The type of fire mode as a value of the
-       :class:`~auraxium.ps2.FireModeType` enumerator.
+       The ID of the :class:`~auraxium.ps2.FireModeType` of the fire
+       mode.
+
+       .. seealso::
+
+          :meth:`type` -- The type of this fire mode.
 
     .. attribute:: ability_id
        :type: int | None
 
-       (Not yet documented)
+       The item ability ID to trigger when the weapon is fired. Only
+       valid for fire modes of type ``TRIGGER_ITEM_ABILITY``.
 
     .. attribute:: ammo_slot
        :type: int | None
 
-       The ammo slot used by this fire mode.
+       The index of the ammo slot used by this fire mode. This field is
+       used to select the ammo reservoir to use for this fire mode.
 
     .. attribute:: automatic
        :type: bool
 
-       Whether the fire mode is automatic or not.
+       Whether the fire mode is fully automatic or not.
 
     .. attribute:: grief_immune
        :type: bool | None
 
-       Whether this fire mode is excluded from friendly fire.
+       Whether friendly fire is disabled for this fire mode.
 
     .. attribute:: iron_sights
        :type: bool | None
 
-       Whether this weapon comes with iron sights.
+       Whether this fire mode is using iron sights. This is generally
+       true is :attr:`fire_mode_type_id` is set to ``IRON_SIGHTS``.
 
     .. attribute:: laser_guided
        :type: bool | None
 
-       Whether this weapon is laser guided.
+       Whether this weapon is laser guided (such as the Hornet Missles
+       on empire-specific fighter aircraft).
 
     .. attribute:: move_modifier
        :type: float
 
-       (Not yet documented)
+       The movement speed modifier applied while in this fire mode.
+       Higher values provide increased mobility, particularly while
+       aiming down sights.
 
     .. attribute:: projectile_speed_override
        :type: int | None
 
-       A fire mode specific override used to override the fire mode's
-       projectile's speed.
+       A fire mode specific override used to override the default
+       :class:`Projectile` 's speed for this fire mode.
+
+       It is recommended to use this value over the projectile's if
+       available.
 
     .. attribute:: sprint_fire
        :type: bool | None
 
-       Whether the fire mode allows firing and sprinting.
+       Whether the fire mode allows firing and sprinting. This is
+       generally only true for quick knife fire modes.
 
     .. attribute:: turn_modifier
        :type: float
 
-       (Not yet documented)
+       A turn speed modifier applied while in this fire mode.
+
+       This is how MAXes turn speed is limited; all MAX weapons use a
+       0.75 turn rate modifier.
 
     .. attribute:: use_in_water
        :type: bool | None
 
-       Unused.
+       Whether the weapon can be used in water.
+
+       This is true for knives and false for all other weapons. Since
+       most bodies of water instantly kill players touching them, this
+       value has no real effect.
 
     .. attribute:: zoom_default
        :type: float
 
-       The iron-sight zoom level of the fire mode.
+       The default zoom level of the fire mode (i.e. without any scopes
+       attached).
 
     .. attribute:: cof_override
        :type: float | None
 
-       (Not yet documented)
+       Unused.
 
     .. attribute:: cof_pellet_spread
        :type: float | None
@@ -134,36 +185,42 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
     .. attribute:: cof_range
        :type: float
 
-       (Not yet documented)
+       Potentially unused? More testing needed.
 
     .. attribute:: cof_recoil
        :type: float | None
 
-       (Not yet documented)
+       Cone of fire bloom per shot fired in degrees.
 
     .. attribute:: cof_scalar
        :type: float
 
-       The starting cone-of-fire scalar. This exists so it can be
-       modified by attachments.
+       The starting cone of fire scalar. This mainly exists so it can
+       be modified by attachments like laser sights.
+
+       .. note::
+
+          The VS's Spiker is the only item with a base cof scalar of
+          0.5. All other items use 1.0.
 
     .. attribute:: cof_scalar_moving
        :type: float
 
        The starting cone-of-fire scalar while moving. This exists so it
-       can be modified by attachments.
+       can be modified by attachments. Always 1.0.
 
     .. attribute:: player_state_group_id
        :type: int
 
-       The state group associated with this fire mode. State groups
-       contain the state-dependent values for a weapon, such as
-       accuracy changes from sprinting, crouching, etc.
+       The ID of the :class:`~auraxium.models.PlayerStateGroup` for
+       this fire mode. State groups are used to modify weapon accuracy
+       depending on the current :class:`~auraxium.ps2.PlayerState`,
+       i.e. whether the player is standing, crouching, etc.
 
     .. attribute:: damage_direct_effect_id
        :type: int | None
 
-       The damage effect used on direct hits.
+       The damage :class:`~auraxium.ps2.Effect` created on direct hits.
 
     .. attribute:: damage_head_multiplier
        :type: float | None
@@ -173,7 +230,8 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
     .. attribute:: damage_indirect_effect_id
        :type: int | None
 
-       The splash damage effect used on indirect hits.
+       The damage :class:`~auraxium.ps2.Effect` created on indirect
+       hits.
 
     .. attribute:: damage_legs_multiplier
        :type: float | None
@@ -181,7 +239,7 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
        The leg shot multiplier for the fire mode.
 
     .. attribute:: fire_ammo_per_shot
-       :type: int
+       :type: int | None
 
        The amount of ammo consumed per shot. Some weapons, like the VS
        Lancer, may consume more than 1 bullet per shot.
@@ -189,51 +247,61 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
     .. attribute:: fire_auto_fire_ms
        :type: int | None
 
-       The time in-between shots during automatic fire.
+       The weapon's refire rate in fixed burst fire modes, such as the
+       NSX Yumi's five shot burst.
 
     .. attribute:: fire_burst_count
-       :type: int
+       :type: int | None
 
-       The burst size of the fire mode.
+       The burst size of fixed burst fire modes.
 
     .. attribute:: fire_charge_up_ms
        :type: int | None
 
-       The time it takes the weapon to charge up, used in the VS Lancer
-       rocket launcher.
+       The maximum amount of time the weapon can be charged before
+       firing automatically. Used in the VS's Lancer rocket launcher.
 
     .. attribute:: fire_delay_ms
        :type: int | None
 
        The delay between pulling the trigger and the weapon actually
-       firing, used in the NXS Yumi.
+       firing. Used in the NXS Yumi.
 
     .. attribute:: fire_detect_range
-       :type: float
+       :type: float | None
 
-       (Not yet documented)
+       The base minimap detection range when firing this weapon. Can be
+       modified by silencers or other barrel attachments.
 
     .. attribute:: fire_duration_ms
        :type: int | None
 
-       The firing duration of a weapon. Used for grenade throwing and
-       knifing animations.
+       The firing duration of a weapon. Used for the ``MELEE`` and
+       ``THROWN`` :class:`FireModeType` 's to sync the damage/throwable
+       release with the player model's animation.
 
     .. attribute:: fire_refire_ms
-       :type: int
+       :type: int | None
 
-       The re-fire delay used for semi-automatic weapons.
+       The amount of time between shots.
+
+       For automatic weapons, this is directly related to the rate of
+       fire:::
+
+          rounds-per-minute = 60'000 / refire_time_ms
+
+          rate-of-fire      = 1'000 / refire_time_ms
 
     .. attribute:: fire_pellets_per_shot
        :type: int | None
 
        The number of pellets fired by non-slug shotguns or the NSX
-       Tengu.
+       Tengu per shot.
 
     .. attribute:: heat_per_shot
        :type: int | None
 
-       The weapon heat applied per shot.
+       The amount of heat generated per shot.
 
     .. attribute:: heat_recovery_delay_ms
        :type: int | None
@@ -246,40 +314,75 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
        The overheating threshold of the weapon. This is comparable to
        the magazine size for heat-based weapons, with the number of
        shots available without overheating being equal to the floor of
-       :attr:`heat_threshold` divided :attr:`heat_per_shot`.
+       :attr:`heat_threshold` divided :attr:`heat_per_shot`:::
+
+          heat-magazine-size = heat_threshold // heat_per_shot + 1
 
     .. attribute:: lockon_acquire_close_ms
        :type: int | None
 
-       The time to establish a lock at the launcher's minimum lock-on
-       distance.
+       The time required to establish a lock at the launcher's minimum
+       lock-on distance.
+
+       This value is used for fire modes whose acquire time depends on
+       the distance from the target.
+
+       .. seealso::
+
+          :attr:`lockon_acquire_ms` -- Lock-on acquire time for fire
+          modes with constant acquire times.
 
     .. attribute:: lockon_acquire_far_ms
        :type: int | None
 
-       The time to establish a lock at the launcher's maximum lock-on
-       distance.
+       The time required to establish a lock at the launcher's maximum
+       lock-on distance.
+
+       This value is used for fire modes whose acquire time depends on
+       the distance from the target.
+
+       .. seealso::
+
+          :attr:`lockon_acquire_ms` -- Lock-on acquire time for fire
+          modes with constant acquire times.
 
     .. attribute:: lockon_acquire_ms
        :type: int | None
 
-       The base lock-on time.
+       The time required to establish a lock at the target.
+
+       This value is used for fire modes whose acquire time does not
+       change with distance from the target.
+
+       .. seealso::
+
+          :attr:`lockon_acquire_close_ms` -- Minimum acquire time for
+          fire modes whose acquire time depends on the distance from
+          the target.
+
+          :attr:`lockon_acquire_far_ms` -- Maximum acquire time for
+          fire modes whose acquire time depends on the distance from
+          the target.
 
     .. attribute:: lockon_angle
        :type: float | None
 
-       The maximum error allowed while locking on, you can think of
-       this like a cone of fire.
+       The maximum error allowed while locking on. As long as the
+       target is within this cone, lock-on acquisition will continue.
 
     .. attribute:: lockon_lose_ms
        :type: int | None
 
-       (Not yet documented)
+       The amount of time over which an establish lock will be lost.
+       Re-acquiring a lock within this time will not reset the lock-on
+       acquisition timer.
 
     .. attribute:: lockon_maintain
        :type: bool | None
 
-       (Not yet documented)
+       Whether a lock must be maintained until impact (like for A2A
+       lock-ons) or whether the projetile will continue tracking its
+       target on its own (as for most infantry launchers).
 
     .. attribute:: lockon_radius
        :type: float | None
@@ -289,23 +392,36 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
     .. attribute:: lockon_range
        :type: float | None
 
-       The maximum lock-on range.
+       The maximum range at which a lock can be maintained. If the
+       target moves beyond this range, an existing lock is lost.
 
     .. attribute:: lockon_range_close
        :type: float | None
 
-       (Not yet documented)
+       The minimum lock-on distance. Used for launchers whose lock-on
+       acquisition time depends on distance from the target.
+
+       .. seealso::
+
+          :attr:`lockon_acquire_close_ms` -- The time required to
+          establish a lock at minimum lock-on distance.
 
     .. attribute:: lockon_range_far
        :type: float | None
 
-       (Not yet documented)
+       The maximum lock-on distance. Used for launchers whose lock-on
+       acquisition time depends on distance from the target.
+
+       .. seealso::
+
+          :attr:`lockon_acquire_far_ms` -- The time required to
+          establish a lock at maximum lock-on distance.
 
     .. attribute:: lockon_required
        :type: bool | None
 
        Whether this weapon can be fired without being locked on (true
-       for the NS Annihilator, false for faction-specific lock-on
+       for the NS Annihilator, false for most faction-specific lock-on
        launchers).
 
     .. attribute:: recoil_angle_max
@@ -313,77 +429,118 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
 
        The maximum recoil angle, used to randomise recoil angle.
 
+       After every shot, the weapon will kick in a random direction
+       between :attr:`recoil_angle_min` and this value.
+
     .. attribute:: recoil_angle_min
        :type: float | None
 
        The minimum recoil angle, used to randomise recoil angle.
 
-    .. attribute:: recoil_first_shot_modifier
-       :type: float
+       After every shot, the weapon will kick in a random direction
+       between this value and :attr:`recoil_angle_max`.
 
-       Extra recoil to apply only to the first shot of the weapon.
+    .. attribute:: recoil_first_shot_modifier
+       :type: float | None
+
+       A recoil multiplier override for the first shot fired in
+       automatic mode. When single-shot bursting, this override is
+       applied to every shot.
+
+       For fixed-size bursts (e.g. triple burst fire modes), this will
+       only be applied to the first shot of every burst.
 
     .. attribute:: recoil_horizontal_max
        :type: float | None
 
-       The maximum horizontal recoil per shot.
+       The maximum horizontal recoil per shot. After every shot, the
+       weapon will kick up by a random angle between
+       :attr:`recoil_horizontal_min` and this value.
 
     .. attribute:: recoil_horizontal_max_increase
        :type: float | None
 
-       The maximum horizontal recoil jump per shot.
+       Some weapons' recoil increases or decreases with consecutive
+       shots. This value denotes by how much the maximum horizontal
+       recoil will change with each shot fired.
 
     .. attribute:: recoil_horizontal_min
        :type: float | None
 
-       The minimum horizontal recoil per shot.
+       The maximum horizontal recoil per shot. After every shot, the
+       weapon will kick up by a random angle between this value and
+       :attr:`recoil_horizontal_max`.
 
     .. attribute:: recoil_horizontal_min_increase
        :type: float | None
 
-       The minimum horizontal recoil jump per shot.
+       Some weapons' recoil increases or decreases with consecutive
+       shots. This value denotes by how much the minimum horizontal
+       recoil will change with each shot fired.
 
     .. attribute:: recoil_horizontal_tolerance
        :type: float | None
 
-       (Not yet documented)
+       The maximum horizontal deviation of the recoil from the initial
+       aiming position before it must kick back towards the other
+       direction.
 
     .. attribute:: recoil_increase
        :type: float | None
+
+       Some weapons' recoil increases or decreases with consecutive
+       shots. This value denotes by how much the vertical recoil will
+       change with each shot fired.
+
+       For negative values, the maximum recoil will go down until it
+       meets the minimum, for positive values the minimum recoil will
+       climb until it equals the maximum recoil.
 
        The base vertical recoil while standing.
 
     .. attribute:: recoil_increase_crouched
        :type: float | None
 
-       The base vertical recoil while crouching.
+       Same as :attr:`recoil_increase` but only affects the crouched
+       :class:`~auraxium.ps2.PlayerState`.
 
     .. attribute:: recoil_magnitude_max
        :type: float | None
 
-       The maximum vertical recoil per shot.
+       The maximum vertical recoil per shot. After every shot, the
+       weapon will kick up by a random angle between
+       :attr:`recoil_magnitude_min` and this value.
 
     .. attribute:: recoil_magnitude_min
        :type: float | None
 
-       The minimum vertical recoil per shot.
+       The minimum vertical recoil per shot. After every shot, the
+       weapon will kick up by a random angle between this value and
+       :attr:`recoil_magnitude_max`.
 
     .. attribute:: recoil_max_total_magnitude
        :type: float | None
 
-       The total maximum recoil, including both horizontal and vertical
-       offsets.
+       The total maximum recoil, including both the horizontal and
+       vertical component.
 
     .. attribute:: recoil_recovery_acceleration
        :type: int | None
 
-       (Not yet documented)
+       The acceleration at which the recoil recovery will reach its
+       full recovery rate. Lower values lead to a more progressive
+       recovery rate, where the initial recoil recovery window is less
+       effective than they would be with a linear recovery rate.
+
+       .. note::
+
+          No conclusive tests regarding this field yet.
 
     .. attribute:: recoil_recovery_delay_ms
        :type: int | None
 
-       The delay in milliseconds before the weapon will reset after the
-       player stopped firing.
+       The delay in milliseconds before the weapon will start to reset
+       to its default cone of fire after the player stopped firing.
 
     .. attribute:: recoil_recovery_rate
        :type: int | None
@@ -392,29 +549,35 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
        fire after the player stopped firing.
 
     .. attribute:: recoil_shots_at_min_magnitude
-       :type: bool | None
+       :type: int | None
 
-       (Not yet documented)
+       The number of shots before which the recoil penalties will take
+       effect. This is 0 or 1 for most weapons, some vehicle weapons
+       like the G40-F Ranger get 3 or more high accuracy shots before
+       recoil penalties starts taking effect.
 
     .. attribute:: reload_block_auto
        :type: bool | None
 
-       (Not yet documented)
+       Untested: this value seems to correlate with a weapon's ability
+       to reload while aiming down sights.
 
     .. attribute:: reload_continuous
        :type: bool | None
 
-       (Unused, always False or not set.)
+       Whether the weapon uses a continuous reload system where shots
+       are reloaded bullet by bullet (as pump action shotguns do).
 
     .. attribute:: reload_ammo_fill_ms
        :type: int | None
 
-       The time between ammo refill ticks.
+       The delay between ammo pack refill ticks.
 
     .. attribute:: reload_chamber_ms
        :type: int | None
 
-       The chamber time for bolt-action weapons.
+       The per-chamber reload time for weapons that are reloaded
+       sequentially (such as pump action shotguns).
 
     .. attribute:: reload_loop_start_ms
        :type: int | None
@@ -422,17 +585,20 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
        The initial loop time for reloading with looped reload weapons
        (such as pump action shotguns).
 
+       Used to sync up the reload with the character model's animation.
+
     .. attribute:: reload_loop_end_ms
        :type: int | None
 
        The final delay after reloading a looped reload weapon is
        completed.
 
-    .. attribute:: reload_time_ms
-       :type: int
+       Used to sync up the reload with the character model's animation.
 
-       The reload time of the weapon. For looped weapons, this is the
-       inner loop delay between ticks.
+    .. attribute:: reload_time_ms
+       :type: int | None
+
+       The reload time of the weapon.
 
     .. attribute:: sway_amplitude_x
        :type: float | None
@@ -462,17 +628,31 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
     .. attribute:: armor_penetration
        :type: float | None
 
-       (Unused as of June 2020)
+       Unused as of June 2020.
 
     .. attribute:: max_damage
        :type: int | None
 
        Maximum direct damage of the weapon.
 
+       For constant damage effects or damage fall off effects (effect
+       type ID 36 or 45), this field is a direct link to the direct
+       damage :class:`~auraxium.ps2.Effect` 's ``param1`` field.
+
+       As of April 2021, this link is confirmed to be without errors
+       for all fire modes that have a direct damage effect.
+
     .. attribute:: max_damage_ind
        :type: int | None
 
        Maximum indirect damage of the weapon.
+
+       For indirect damage effects (effect type ID 40), this field is a
+       direct link to the direct damage :class:`~auraxium.ps2.Effect` 's
+       ``param1`` field.
+
+       As of April 2021, this link is confirmed to be without errors
+       for all fire modes that have a direct damage effect.
 
     .. attribute:: max_damage_ind_radius
        :type: float | None
@@ -480,31 +660,71 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
        The radius over which maximum indirect damage of the weapon will
        be applied (aka. "inner splash").
 
+       For indirect damage effects (effect type ID 40), this field is a
+       direct link to the direct damage :class:`~auraxium.ps2.Effect` 's
+       ``param2`` field.
+
+       As of April 2021, this link is confirmed to be without errors
+       for all fire modes that have a direct damage effect.
+
     .. attribute:: max_damage_range
        :type: float | None
 
        The range up to which the weapon will deal its maximum direct
        damage.
 
+       For damage fall off effects (effect type ID 45), this field is a
+       direct link to the direct damage :class:`~auraxium.ps2.Effect` 's
+       ``param2`` field.
+
+       As of April 2021, this link is confirmed to be without errors
+       for all fire modes that have a direct damage effect.
+
     .. attribute:: min_damage
        :type: int | None
 
        The minimum direct damage of the weapon.
 
+       For damage fall off effects (effect type ID 45), this field is a
+       direct link to the direct damage :class:`~auraxium.ps2.Effect` 's
+       ``param3`` field.
+
+       As of April 2021, this link is confirmed to be without errors
+       for all fire modes that have a direct damage effect.
+
     .. attribute:: min_damage_ind
        :type: int | None
 
-       The minimum indirect damage of the weapon.
+       Minimum indirect damage of the weapon.
+
+       For indirect damage effects (effect type ID 40), this field is a
+       direct link to the direct damage :class:`~auraxium.ps2.Effect` 's
+       ``param3`` field.
 
     .. attribute:: min_damage_ind_radius
        :type: float | None
 
-       The outer distance of the splash radius.
+       The outer limit of the splash radius. Beyond this distance, no
+       damage will be dealt.
+
+       For indirect damage effects (effect type ID 40), this field is a
+       direct link to the direct damage :class:`~auraxium.ps2.Effect` 's
+       ``param5`` field.
+
+       As of April 2021, this link is confirmed to be without errors
+       for all fire modes that have a direct damage effect.
 
     .. attribute:: min_damage_range
        :type: float | None
 
        The range at which the weapon deals its minimum damage.
+
+       For damage fall off effects (effect type ID 45), this field is a
+       direct link to the direct damage :class:`~auraxium.ps2.Effect` 's
+       ``param5`` field.
+
+       As of April 2021, this link is confirmed to be without errors
+       for all fire modes that have a direct damage effect.
 
     .. attribute:: shield_bypass_pct
        :type: int | None
@@ -512,8 +732,12 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
        The percentage of damage that will bypass shields and always
        affect the raw health pool.
 
+       As of April 2021, this field is set to 130 for the default
+       faction-speficic launchers, but no such mechanic is observed
+       in-game.
+
     .. attribute:: description
-       :type: auraxium.types.LocaleData
+       :type: auraxium.types.LocaleData | None
 
        Localised description of the fire mode (e.g. "Automatic").
     """
@@ -525,7 +749,7 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
 
     # Type hints for data class fallback attributes
     id: int
-    fire_mode_type_id: int
+    fire_mode_type_id: Optional[int]
     ability_id: Optional[int]
     ammo_slot: Optional[int]
     automatic: bool
@@ -549,14 +773,14 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
     damage_head_multiplier: Optional[float]
     damage_indirect_effect_id: Optional[int]
     damage_legs_multiplier: Optional[float]
-    fire_ammo_per_shot: int
+    fire_ammo_per_shot: Optional[int]
     fire_auto_fire_ms: Optional[int]
-    fire_burst_count: int
+    fire_burst_count: Optional[int]
     fire_charge_up_ms: Optional[int]
     fire_delay_ms: Optional[int]
-    fire_detect_range: float
+    fire_detect_range: Optional[float]
     fire_duration_ms: Optional[int]
-    fire_refire_ms: int
+    fire_refire_ms: Optional[int]
     fire_pellets_per_shot: Optional[int]
     heat_per_shot: Optional[int]
     heat_recovery_delay_ms: Optional[int]
@@ -573,7 +797,7 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
     lockon_required: Optional[bool]
     recoil_angle_max: Optional[float]
     recoil_angle_min: Optional[float]
-    recoil_first_shot_modifier: float
+    recoil_first_shot_modifier: Optional[float]
     recoil_horizontal_max: Optional[float]
     recoil_horizontal_max_increase: Optional[float]
     recoil_horizontal_min: Optional[float]
@@ -587,14 +811,14 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
     recoil_recovery_acceleration: Optional[int]
     recoil_recovery_delay_ms: Optional[int]
     recoil_recovery_rate: Optional[int]
-    recoil_shots_at_min_magnitude: Optional[bool]
+    recoil_shots_at_min_magnitude: Optional[int]
     reload_block_auto: Optional[bool]
     reload_continuous: Optional[bool]
     reload_ammo_fill_ms: Optional[int]
     reload_chamber_ms: Optional[int]
     reload_loop_start_ms: Optional[int]
     reload_loop_end_ms: Optional[int]
-    reload_time_ms: int
+    reload_time_ms: Optional[int]
     sway_amplitude_x: Optional[float]
     sway_amplitude_y: Optional[float]
     sway_can_steady: Optional[bool]
@@ -613,8 +837,10 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
     description: LocaleData
 
     @property
-    def type(self) -> FireModeType:
+    def type(self) -> Optional[FireModeType]:
         """Return the type of fire mode as an enum."""
+        if self.data.fire_mode_type_id is None:
+            return None
         return FireModeType(self.data.fire_mode_type_id)
 
     async def state_groups(self) -> Dict[PlayerState, PlayerStateGroup]:
@@ -644,36 +870,42 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
 
 
 class FireGroup(Cached, cache_size=10, cache_ttu=60.0):
-    """Links multiple fire modes into a group.
+    """A fire group of a weapon.
 
-    Fire groups are comparable to the in-game fire modes, such as
+    Fire groups are comparable to the in-game fire modes, such as fixed
     burst, semi auto or fully automatic. They are also used to
     implement auxiliary fire modes such as under-barrel launchers.
 
     .. attribute:: id
        :type: int
 
-       The unique ID of this fire group.
+       The unique ID of this fire group. In the API payload, this field
+       is called ``fire_group_id``.
 
     .. attribute:: chamber_duration_ms
        :type: int | None
 
-       The rechamber time for weapons in this group.
+       The amount of time required to rechamber after firing. This is
+       used for pump action shotguns and bolt action sniper rifles and
+       must be added to their respective refire time for fire rate
+       calculation.
 
     .. attribute:: transition_duration_ms
        :type: int | None
 
-       (Not yet documented)
+       The time required to transition to this fire group. This defines
+       the delay between equipping an underbarrel shotgun and being
+       able to fire it.
 
     .. attribute:: spool_up_ms
        :type: int | None
 
-       The duration of the spool-up period for this weapon group.
+       The duration of the spool-up period for this fire group.
 
     .. attribute:: spool_up_initial_refire_ms
        :type: int | None
 
-       The initial fire speed (rounds per minute) of the weapon group.
+       The initial fire speed (rounds per minute) of the fire group.
        The weapon starts out at this value when firing, then tapers to
        the regular value after :attr:`spool_up_ms` milliseconds.
 

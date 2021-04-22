@@ -12,20 +12,26 @@ __all__ = [
 class Faction(Named, ImageMixin, cache_size=10):
     """A faction in PS2.
 
+    This includes both playable factions, as well as the default
+    Nanite Systems faction used for uncapturable territories and
+    cross-faction items.
+
     .. attribute:: id
        :type: int
 
-       The unique ID of this faction.
+       The unique ID of this faction. In the API payload, this
+       field is called ``faction_id``.
 
     .. attribute:: code_tag
        :type: str
 
-       The canonical tag representation of the faction.
+       The canonical tag representation of the faction (VS, TR, NC, or
+       NSO).
 
     .. attribute:: name
        :type: auraxium.types.LocaleData
 
-       Localised name of the faction.
+       The localised name of the faction.
 
     .. attribute:: user_selectable
        :type: bool

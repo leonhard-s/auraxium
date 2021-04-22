@@ -211,7 +211,7 @@ def _process_tree(tree: Dict[str, Optional[Union[str, bool]]]) -> str:
     """Process the dict created by the :meth:`Query.as_tree` method.
 
     :param tree: The dictionary to process.
-    :type tree: dict[str, str or bool or None] 
+    :type tree: dict[str, str or bool or None]
     :return: The string representation of the tree.
     """
     string = str(tree['field'])

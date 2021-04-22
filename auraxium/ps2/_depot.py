@@ -18,17 +18,16 @@ __all__ = [
 
 
 class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
-    """A marketing bundle containing one or more items.
+    """A marketing bundle containing multiple items.
 
-    This is used for special promotions, or for bundles that contain
-    multiple items at once.
-
-    Attributes:
+    A purchaseable bundle in the in-game depot. Use the :meth:`items`
+    method to retrieve the items contained in this bundle.
 
     .. attribute:: id
        :type: int
 
-       The unique ID of this bundle.
+       The unique ID of this bundle. In the API payload, this
+       field is called ``marketing_bundle_id``.
 
     .. attribute:: description
        :type: auraxium.types.LocaleData
@@ -43,17 +42,18 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
     .. attribute:: cert_price
        :type: int | None
 
-       The unlock price in certification points, if any.
+       The unlock price in certification points, if any. Note that most
+       promotional bundles may only be unlocked via Daybreak Cash.
 
     .. attribute:: name
        :type: auraxium.types.LocaleData
 
-       Localised name of the bundle.
+       Localised display name of the bundle.
 
     .. attribute:: station_cash_price
        :type: int
 
-       The unlock price in daybreak cash, if any.
+       The unlock price in Daybreak Cash (formerly SOE Station Cash).
 
     .. attribute:: release_time
        :type: int
@@ -85,8 +85,8 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
     async def items(self) -> List[Tuple[Item, int]]:
         """Return the contents of the bundle.
 
-        This returns a list of tuples consisting of the item, followed
-        by the quantity.
+        This returns a list of tuples consisting of the item and the
+        quantity awarded.
         """
         collection: Final[str] = 'marketing_bundle_item'
         query = Query(collection, service_id=self._client.service_id)
@@ -109,20 +109,18 @@ class MarketingBundleSingle(Cached, cache_size=100, cache_ttu=60.0):
     """A marketing bundle containing a single item.
 
     This is used for single-item entries in the depot, such as weapons,
-    scopes or other items that do not require any additional
-    information.
-
-    Attributes:
+    scopes or other upgrades that can be purchased in the Depot.
 
     .. attribute:: id
        :type: int
 
-       The unique ID of this bundle.
+       The unique ID of this bundle. In the API payload, this
+       field is called ``marketing_bundle_id``.
 
     .. attribute:: item_id
        :type: int
 
-       The item unlocked by this bundle.
+       The :class:`auraxium.ps2.Item` unlocked by this bundle.
 
     .. attribute:: item_quantity
        :type: int
@@ -132,17 +130,17 @@ class MarketingBundleSingle(Cached, cache_size=100, cache_ttu=60.0):
     .. attribute:: name
        :type: auraxium.types.LocaleData
 
-       Localised name of the bundle.
+       Localised display name of the bundle.
 
     .. attribute:: station_cash_price
        :type: int
 
-       The daybreak cash price of the item.
+       The unlock price in Daybreak Cash (formerly SOE Station Cash).
 
     .. attribute:: cert_price
        :type: int | None
 
-       The certification point price of the item.
+       The certification point price of the item, if any.
 
     .. attribute:: release_time
        :type: int

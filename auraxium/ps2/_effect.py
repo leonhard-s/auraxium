@@ -10,6 +10,7 @@ from ..models import (EffectData, EffectTypeData, ZoneEffectData,
 from .._proxy import InstanceProxy
 
 from ._ability import Ability
+from ._resist import ResistType
 
 __all__ = [
     'Effect',
@@ -21,30 +22,49 @@ __all__ = [
 
 
 class TargetType(enum.IntEnum):
-    """Enumerate the types of targets for effects."""
+    """Enumerate the types of targets for effects.
+
+    Effects will only act upon entities matching the given target type.
+    This is why AoE heal generally does not apply to enemies.
+
+    Values:::
+
+       SELF  = 1
+       ANY   = 2
+       ENEMY = 3
+       ALLY  = 4
+    """
 
     SELF = 1
     ANY = 2
     ENEMY = 3
     ALLY = 4
 
+    def __str__(self) -> str:
+        literals = ['Self', 'Any', 'Enemy', 'Ally']
+        return literals[int(self.value)]
+
 
 class EffectType(Cached, cache_size=20, cache_ttu=60.0):
     """A type of effect.
 
-    This class mostly specifies the purpose of any generic parameters.
+    Effect types specify the core function of a given :class:`Effect`.
+    The ``param*`` fields in the effect type list what these generic
+    parameters are used for in effects of this type.
 
+    Effects include damage (direct, indirect, and distance falloff),
+    (de-)buffs, resource modification, as well as healing/revives.
 
     .. attribute:: id
        :type: int
 
-       The unique ID of this effect type.
-
+       The unique ID of this effect type. In the API payload, this
+       field is called ``effect_type_id``.
 
     .. attribute:: description
        :type: str
 
-       A description of what this effect type is used  for.
+       A description of what this effect type is used for.
 
     .. attribute:: param*
        :type: str | None
@@ -79,24 +99,42 @@ class EffectType(Cached, cache_size=20, cache_ttu=60.0):
 class Effect(Cached, cache_size=10, cache_ttu=60.0):
     """An effect acting on a character.
 
-    Access the corresponding :class:`~auraxium.ps2.EffectType` instance
-    via the :meth:`Effect.type` method for information on generic
-    parameters.
+    Effects are usually created by an :class:`~auraxium.ps2.Ability` or
+    are the result of a weapon firing.
+
+    Access the corresponding :class:`EffectType` instance via the
+    :meth:`Effect.type` method for information on generic parameters.
+
+    .. note::
+
+       The relationship between :class:`Effect` and :class:`ZoneEffect`
+       is currently undocumented and non-obvious.
+
+       Both deal in weapon and character stat modifiers, but
+       :class:`Effect` seems to act on individual entities (damage,
+       single-target-heal, revives, etc.) while :class:`ZoneEffect`
+       usually acts on groups of entities (ammo dispatch, armour buffs,
+       etc.).
 
     .. attribute:: id
        :type: int
 
-       The unique ID of this effect.
+       The unique ID of this effect. In the API payload, this field is
+       called ``effect_id``.
 
     .. attribute:: effect_type_id
        :type: int
 
-       The associated effect type for this effect.
+       The ID of the :class:`EffectType` of this effect.
+
+       .. seealso::
+
+          :meth:`type` -- Return the type of this effect.
 
     .. attribute:: ability_id
        :type: int | None
 
-       The ability spawning the effect, if any.
+       The ability that  the effect, if any.
 
     .. attribute:: target_type_id
        :type: int | None
@@ -104,26 +142,41 @@ class Effect(Cached, cache_size=10, cache_ttu=60.0):
        Integer value of the :class:`~auraxium.ps2.TargetType` enum used
        to find targets for this effect.
 
+       .. seealso::
+
+          :meth:`target_type` -- Return the enum value representing the
+          effect's target type.
+
     .. attribute:: resist_type_id
        :type: int
 
-       The :class:`~auraxium.ps2.ResistInfo` entry used by this effect.
+       The :class:`~auraxium.ps2.ResistType` entry used by this effect.
+
+       .. seealso::
+
+          :meth:`resist_type` -- Return the resist type used by this
+          effect.
 
     .. attribute:: is_drain
        :type: bool | None
 
-       (Not yet documented)
+       Unknown. This flag does not appear to correlate with draineable
+       abilities such as Afterburners or overshields.
+
+       The resist type of any effect with this flag set will be zero.
 
     .. attribute:: duration_seconds
        :type: float | None
 
-       The duration of the effect.
+       The duration of the effect. For continuously channeled effects
+       such as the Combat Medic's healing beam, this will be 999'999
+       seconds.
 
     .. attribute:: param*
        :type: str |None
 
        Type-specific parameters for this effect. Refer to the
-       corresponding :class:`~auraxium.ps2.EffectType` for details.
+       corresponding :class:`EffectType` for details.
     """
 
     collection = 'effect'
@@ -152,6 +205,16 @@ class Effect(Cached, cache_size=10, cache_ttu=60.0):
     param11: Optional[str]
     param12: Optional[str]
     param13: Optional[str]
+
+    def resist_type(self) -> InstanceProxy[ResistType]:
+        """Return the resist type of the effect.
+
+        This returns an :class:`auraxium.InstanceProxy`.
+        """
+        query = Query(ResistType.collection,
+                      service_id=self._client.service_id)
+        query.add_term(field=ResistType.id_field, value=self.resist_type_id)
+        return InstanceProxy(ResistType, query, client=self._client)
 
     def target_type(self) -> Optional[TargetType]:
         """Return the target type of this effect."""

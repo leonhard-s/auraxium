@@ -21,10 +21,17 @@ __all__ = [
 class SkillSet(Named, ImageMixin, cache_size=100, cache_ttu=60.0):
     """A skill set for a particular vehicle or class.
 
+    In the old certifications menu, skill sets were used for all
+    certifications associated with a given item or vehicle. Since its
+    removal, they are mostly for internal grouping of skill lines.
+
+    Additionally, skill sets are used for unlocking vehicle weapons.
+
     .. attribute:: id
        :type: int
 
-       The unique ID of this skill set.
+       The unique ID of this skill set. In the API payload, this
+       field is called ``reward_type_id``.
 
     .. attribute:: name
        :type: auraxium.types.LocaleData
@@ -34,13 +41,15 @@ class SkillSet(Named, ImageMixin, cache_size=100, cache_ttu=60.0):
     .. attribute:: skill_points
        :type: int | None
 
-       (Not yet documented)
+       The number of certification points required to unlock a given
+       vehicle weapon.
 
     .. attribute:: required_item_id
        :type: int | None
 
-       The item required to unlock this skill set. Used to prevent
-       buying upgrades for items the player has not unlocked yet.
+       The :class:`~auraxium.ps2.Item` required to unlock this skill
+       set. Used to prevent buying upgrades for items the player has
+       not unlocked yet.
 
     .. attribute:: description
        :type: auraxium.types.LocaleData | None
@@ -85,13 +94,14 @@ class SkillSet(Named, ImageMixin, cache_size=100, cache_ttu=60.0):
 class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     """A skill category for a particular class or vehicle.
 
-    Skill categories are groups like "Passive Systems" or "Performance
-    Slot".
+    Skill categories are groups like "Passive Systems", "Performance
+    Slot", or weapon-specific groups like scopes or rail attachments.
 
     .. attribute:: id
        :type: int
 
-       The unique ID of this skill category.
+       The unique ID of this skill category. In the API payload, this
+       field is called ``skill_category_id``.
 
     .. attribute:: name
        :type: auraxium.types.LocaleData
@@ -104,6 +114,11 @@ class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
        The :class:`~auraxium.ps2.SkillCategory` this category belongs
        to.
 
+       .. seealso::
+
+          :meth:`skill_set` -- The skill set containing this skill
+          category.
+
     .. attribute:: skill_set_index
        :type: int
 
@@ -112,7 +127,7 @@ class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     .. attribute:: skill_points
        :type: int
 
-       The unlock cost for this skill category.
+       Unused.
 
     .. attribute:: description
        :type: auraxium.types.LocaleData | None
@@ -159,7 +174,8 @@ class SkillLine(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     .. attribute:: id
        :type: int
 
-       The unique ID for this skill line.
+       The unique ID for this skill line. In the API payload, this
+       field is called ``skill_line_id``.
 
     .. attribute:: name
        :type: auraxium.types.LocaleData
@@ -169,13 +185,20 @@ class SkillLine(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     .. attribute:: skill_points
        :type: int
 
-       The unlock cost for this skill line.
+       Unused. Any skill lines that can be acquired in-game have a cost
+       of zero. Skill lines with non-zero cost are unused and have
+       costs of 999'999.
 
     .. attribute:: skill_category_id
        :type: int | None
 
        The :class:`~auraxium.ps2.SkillCategory` this skill line belongs
        to.
+
+       .. seealso::
+
+          :meth:`category` -- The skill set category containing this
+          skill line.
 
     .. attribute:: skill_category_index
        :type: int | None
@@ -230,7 +253,8 @@ class Skill(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     .. attribute:: id
        :type: int
 
-       The unique ID of this skill.
+       The unique ID of this skill. In the API payload, this
+       field is called ``skill_id``.
 
     .. attribute:: name
        :type: auraxium.types.LocaleData
@@ -241,6 +265,10 @@ class Skill(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
        :type: int
 
        The ID of the associated :class:`~auraxium.ps2.SkillLine`.
+
+       .. seealso::
+
+          :meth:`skill_line` -- The skill line containing this skill.
 
     .. attribute:: skill_line_index
        :type: int
@@ -256,6 +284,10 @@ class Skill(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
        :type: int | None
 
        The :class:`~auraxium.ps2.Item` granted by this skill, if any.
+
+       .. seealso::
+
+          :meth:`grant_item` -- The item granted by this skill.
 
     .. attribute:: description
        :type: auraxium.types.LocaleData | None

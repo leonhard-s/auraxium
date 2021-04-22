@@ -29,7 +29,8 @@ class Zone(Named, cache_size=20, cache_ttu=3600.0):
     .. attribute:: id
        :type: int
 
-       The unique ID of this zone.
+       The unique ID of this zone. In the API payload, this field
+       is called ``zone_id``.
 
     .. attribute:: code
        :type: str

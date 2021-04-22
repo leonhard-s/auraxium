@@ -6,6 +6,7 @@ from ..base import Cached, Named
 from ..census import Query
 from ..models import FacilityTypeData, MapHexData, MapRegionData, RegionData
 from .._proxy import InstanceProxy, SequenceProxy
+from .._rest import RequestClient
 from ..types import LocaleData
 
 from ._zone import Zone
@@ -24,12 +25,13 @@ class FacilityType(Cached, cache_size=10, cache_ttu=3600.0):
     .. attribute:: id
        :type: int
 
-       The unique ID of this facility type.
+       The unique ID of this facility type. In the API payload, this
+       field is called ``facilty_type_id``.
 
     .. attribute:: description
        :type: str
 
-       The description of this facility type.
+       An internal description of this facility type.
     """
 
     collection = 'facility_type'
@@ -44,6 +46,21 @@ class FacilityType(Cached, cache_size=10, cache_ttu=3600.0):
 
 class MapHex(Cached, cache_size=100, cache_ttu=60.0):
     """An individual territory hex in the map.
+
+    Note that the :attr:`x` and :attr:`y` coordintes are not using a
+    regular Cartesian coordinate system. Rather, they are using a
+    hexagonal coordinate system, with all hexes being positioned via
+    integer coordinates.
+
+    An introduction on hexagonal coordinate systems can be found in
+    this article:
+    https://www.redblobgames.com/grids/hexagons/#coordinates-axial
+
+    .. note::
+
+       The coordinate system in PlanetSide 2 has its second axis go
+       from bottom left to top right, unlike the article above. All of
+       the principles and transformations still apply.
 
     .. attribute:: zone_id
        :type: int
@@ -103,7 +120,8 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
     .. attribute:: id
        :type: int
 
-       The unique ID of this map region.
+       The unique ID of this map region. In the API payload, this
+       field is called ``map_region_id``.
 
     .. attribute:: zone_id
        :type: int
@@ -115,15 +133,23 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
 
        The ID of the associated facility.
 
+       .. note::
+
+          Facilities are not available as an API datatype, but are
+          referenced by facility capture events.
+
+          Use the :meth:`get_by_facility_id` method to look up a map
+          region by its associated facility ID.
+
     .. attribute:: facility_name
        :type: str
 
-       The name of the associated facility.
+       The display name of the associated facility.
 
     .. attribute:: facility_type_id
        :type: int | None
 
-       The type ID of the associated facility.
+       The ID of the :class:`FacilityType` of the map region.
 
     .. attribute:: facility_type
        :type: str | None
@@ -148,12 +174,12 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
     .. attribute:: reward_amount
        :type: int | None
 
-       (Unused)
+       Unused.
 
     .. attribute:: reward_currency_id
        :type: int | None
 
-       (Unused)
+       Unused.
     """
 
     collection = 'map_region'
@@ -173,6 +199,17 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
     location_z: Optional[float]
     reward_amount: Optional[int]
     reward_currency_id: Optional[int]
+
+    @classmethod
+    def get_by_facility_id(cls, facility_id: int, client: RequestClient
+                           ) -> InstanceProxy['MapRegion']:
+        """Return a map region by its facility ID.
+
+        This returns an :class:`auraxium.InstanceProxy`.
+        """
+        query = Query(cls.collection, service_id=client.service_id,
+                      facility_id=facility_id)
+        return InstanceProxy(MapRegion, query, client=client)
 
     async def get_connected(self) -> Set['MapRegion']:
         """Return the facilities connected to this region."""
@@ -218,7 +255,8 @@ class Region(Named, cache_size=100, cache_ttu=60.0):
     .. attribute:: region_id
        :type: int
 
-       The unique ID of the map region.
+       The unique ID of the map region. In the API payload, this
+       field is called ``region_id``.
 
     .. attribute:: zone_id
        :type: int
@@ -228,7 +266,7 @@ class Region(Named, cache_size=100, cache_ttu=60.0):
     .. attribute:: initial_faction_id
        :type: int
 
-       (Unused)
+       Unused.
 
     .. attribute:: name
        :type: auraxium.types.LocaleData

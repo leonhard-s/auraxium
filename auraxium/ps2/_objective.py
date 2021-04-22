@@ -1,10 +1,11 @@
 """Objective class definitions."""
 
-from typing import Optional
+from typing import Final, Optional
 from ..base import Cached
 from ..census import Query
 from ..models import ObjectiveData, ObjectiveTypeData
-from .._proxy import InstanceProxy
+from .._rest import RequestClient
+from .._proxy import InstanceProxy, SequenceProxy
 
 __all__ = [
     'Objective',
@@ -20,7 +21,8 @@ class ObjectiveType(Cached, cache_size=10, cache_ttu=60.0):
     .. attribute:: id
        :type: int
 
-       The unique ID of the objective type.
+       The unique ID of the objective type. In the API payload, this
+       field is called ``objective_type_id``.
 
     .. attribute:: description
        :type: str
@@ -59,18 +61,28 @@ class Objective(Cached, cache_size=10, cache_ttu=60.0):
     .. attribute:: id
        :type: int
 
-       The unique ID of this objective.
+       The unique ID of this objective. In the API payload, this
+       field is called ``objective_id``.
 
     .. attribute:: objective_type_id
        :type: int
 
-       The associated objective type for this objective.
+       The associated :class:`ObjectiveType` for this objective.
+
+       .. seealso::
+
+          :meth:`type` -- The type of objective.
 
     .. attribute:: objective_group_id
        :type: int
 
        The objective group this objective contributes to. Used to link
        objectives to directives.
+
+       .. seealso::
+
+          :meth:`get_by_objective_group` -- Get the list of objectives
+          for a given objective group.
 
     .. attribute:: param*
        :type: str | None
@@ -99,8 +111,40 @@ class Objective(Cached, cache_size=10, cache_ttu=60.0):
     param8: Optional[str]
     param9: Optional[str]
 
+    @classmethod
+    def get_by_objective_group(
+            cls, objective_group_id: int,
+            client: RequestClient) -> SequenceProxy['Objective']:
+        """Return any rewards contained from the given reward group.
+
+        This returns a :class:`auraxium.SequenceProxy`.
+        """
+        query = Query(Objective.collection, service_id=client.service_id,
+                      objective_group_id=objective_group_id)
+        query.limit(1000)
+        return SequenceProxy(Objective, query, client=client)
+
+    @classmethod
+    def get_by_objective_set(
+            cls, objective_set_id: int,
+            client: RequestClient) -> SequenceProxy['Objective']:
+        """Return any rewards contained in the given reward set.
+
+        This returns a :class:`auraxium.SequenceProxy`.
+        """
+        collection: Final[str] = 'objective_set_to_objective'
+        query = Query(collection, service_id=client.service_id,
+                      objective_set_id=objective_set_id)
+        query.limit(1000)
+        join = query.create_join(Objective.collection)
+        join.set_fields('objective_group_id').set_list(True)
+        return SequenceProxy(Objective, query, client=client)
+
     def type(self) -> InstanceProxy[ObjectiveType]:
-        """Return the objective type of this objective."""
+        """Return the objective type of this objective.
+
+         This returns an :class:`auraxium.InstanceProxy`.
+         """
         query = Query(
             ObjectiveType.collection, service_id=self._client.service_id)
         query.add_term(

@@ -33,7 +33,8 @@ class ItemCategory(Named, cache_size=32, cache_ttu=3600.0):
     .. attribute:: id
        :type: int
 
-       The unique ID of this item category.
+       The unique ID of this item category. In the API payload, this
+       field is called ``item_category_id``.
 
     .. attribute:: name
        :type: auraxium.types.LocaleData
@@ -63,18 +64,18 @@ class ItemType(Cached, cache_size=10, cache_ttu=60.0):
     .. attribute:: id
        :type: int
 
-       The unique ID of this item type.
+       The unique ID of this item type. In the API payload, this field
+       is called ``item_type_id``.
 
     .. attribute:: name
        :type: str
 
-       The identifying name of this item type.
+       The internal identifying name of this item type.
 
     .. attribute:: code
        :type: str
 
        The internal code used to describe this item type.
-
     """
 
     collection = 'item_type'
@@ -98,17 +99,26 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     .. attribute:: id
        :type: int
 
-       The unique ID of this item.
+       The unique ID of this item. In the API payload, this field is
+       called ``item_id``.
 
     .. attribute:: item_type_id
        :type: int | None
 
        The ID of the :class:`~auraxium.ps2.ItemType` for this item.
 
+       .. seealso::
+
+          :meth:`type` -- Retrieve the type of this item.
+
     .. attribute:: item_category_id
        :type: int | None
 
        The ID of the :class:`~auraxium.ps2.ItemCategory` for this item.
+
+       .. seealso::
+
+          :meth:`category` -- Retrieve the category of this item.
 
     .. attribute:: activatable_ability_id
        :type: int | None
@@ -133,7 +143,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     .. attribute:: faction_id
        :type: int | None
 
-       The faction that has access to this item.
+       The :class:`~auraxium.ps2.Faction` that has access to this item.
 
     .. attribute:: max_stack_size
        :type: int
@@ -148,8 +158,9 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     .. attribute:: skill_set_id
        :type: int | None
 
-       The skill set associated with this item. This is used for
-       upgradable items like the Medical Applicator or Repair Tool.
+       The :class:`~auraxium.ps2.SkillSet` associated with this item.
+       This is used for upgradable items like the Medical Applicator or
+       Repair Tool.
 
     .. attribute:: is_default_attachment
        :type: bool

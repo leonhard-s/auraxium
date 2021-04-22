@@ -22,12 +22,19 @@ log = logging.getLogger('auraxium.ps2')
 
 
 class Experience(Cached, cache_size=100, cache_ttu=3600.0):
-    """A type of experience tick.
+    """An experience type that can be earned by a character.
+
+    .. note::
+
+       Not all experience types returned through the WebSocket event
+       stream's :class:`~auraxium.event.GainExperience` event are
+       present in this table.
 
     .. attribute:: id
        :type: int
 
-       The unique ID of this experience tick.
+       The unique ID of this experience tick. In the API payload, this
+       field is called ``experience_id``.
 
     .. attribute:: description
        :type: str
@@ -62,7 +69,13 @@ class ExperienceRank:
     .. attribute:: xp_max
        :type: int
 
-       (Not yet documented)
+       The amount of experience needed to achieve this rank.
+
+       .. note::
+
+          Due to the BR 100 / BR 120 level caps, this may not correlate
+          estimate the rank of a given character as they might have
+          "lost" part of their experience to a level cap in the past.
 
     .. attribute:: vs
        :type: auraxium.models.ExperienceRankData.EmpireData

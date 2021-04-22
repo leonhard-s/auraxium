@@ -238,6 +238,8 @@ Map Screen
 
 .. autoclass:: MapRegion
 
+   .. automethod:: get_by_facility_id(facility_id: int, client: auraxium.Client) -> MapRegion
+
    .. automethod:: get_connected() -> set[MapRegion]
 
    .. automethod:: zone() -> auraxium.InstanceProxy[Zone]
@@ -274,6 +276,10 @@ Progression
 
 .. autoclass:: Achievement
 
+   .. automethod:: objectives() -> list[Objective]
+
+   .. automethod:: reward() -> auraxium.InstanceProxy[Reward]
+
 .. autoclass:: Experience
 
 .. autoclass:: ExperienceRank
@@ -292,6 +298,8 @@ Progression
 
    .. automethod:: directives() -> auraxium.SequenceProxy[Directive]
 
+   .. automethod:: rewards() -> list[Reward]
+
    .. automethod:: tree() -> auraxium.InstanceProxy[DirectiveTree]
 
 .. autoclass:: DirectiveTree
@@ -307,6 +315,8 @@ Progression
    .. automethod:: trees() -> auraxium.SequenceProxy[DirectiveTree]
 
 .. autoclass:: Objective
+
+   .. automethod:: get_by_objective_group(objective_group_id: int, client: auraxium.Client) -> auraxium.SequenceProxy[Objective]
 
    .. automethod:: type() -> auraxium.InstanceProxy[ObjectiveType]
 
@@ -339,6 +349,8 @@ Effects
 =======
 
 .. autoclass:: Effect
+
+   .. automethod:: resist_type() -> auraxium.InstanceProxy[ResistType]
 
    .. automethod:: target_type() -> TargetType | None
 

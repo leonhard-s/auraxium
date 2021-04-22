@@ -13,7 +13,16 @@ __all__ = [
 
 
 class ProjectileFlightType(enum.IntEnum):
-    """A projectile flight type."""
+    """A projectile flight type.
+    structable items.
+
+    Values:::
+
+       BALLISTIC = 1
+       TRUE_BALLISTIC = 3
+       DYNAMIC = 9
+       PROXIMITY_DETONATE = 10
+    """
 
     BALLISTIC = 1
     TRUE_BALLISTIC = 3
@@ -27,18 +36,33 @@ class Projectile(Cached, cache_size=100, cache_ttu=60.0):
     .. attribute:: id
        :type: int
 
-       The unique ID of this projectile.
+       The unique ID of this projectile. In the API payload, this
+       field is called ``projectile_id``.
 
     .. attribute:: projectile_flight_type_id
        :type: int
 
-       The ID of the associated
-       :class:`auraxium.ps2.ProjectileFlightType`.
+       The ID of the projectile's
+       :class:`~auraxium.ps2.ProjectileFlightType`.
+
+       .. seealso::
+
+          :meth:`flight_type` -- The enum value of the projectile's
+          flight type.
 
     .. attribute:: speed
        :type: int
 
        The projectile speed in meters per second.
+
+       .. note::
+
+          A :class:`~auraxium.ps2.FireMode` can override this value via
+          its :attr:`~auraxium.ps2.FireMode.projectile_speed_override`
+          field.
+
+          It is therefore recommended to use that field instead, if
+          available.
 
     .. attribute:: speed_max
        :type: int | None
@@ -67,7 +91,7 @@ class Projectile(Cached, cache_size=100, cache_ttu=60.0):
     .. attribute:: drag
        :type: float | None
 
-       The drag applied to the projectile.
+       The atmospheric drag applied to the projectile.
 
     .. attribute:: gravity
        :type: float | None
@@ -77,7 +101,7 @@ class Projectile(Cached, cache_size=100, cache_ttu=60.0):
     .. attribute:: lockon_acceleration
        :type: float | None
 
-       (Not yet documented)
+       Not yet documented.
 
     .. attribute:: lockon_lifespan
        :type: float | None
@@ -94,7 +118,7 @@ class Projectile(Cached, cache_size=100, cache_ttu=60.0):
     .. attribute:: tether_distance
        :type: float | None
 
-       (Not yet documented)
+       Not yet documented.
 
     .. attribute:: detonate_distance
        :type: float | None

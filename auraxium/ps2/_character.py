@@ -35,7 +35,8 @@ class Title(Named, cache_size=300, cache_ttu=300.0):
     .. attribute:: id
        :type: int
 
-       The identifier for this title.
+       The identifier for this title. In the API payload, this
+       field is called ``title_id``.
 
        .. important::
           Unlike most other forms of API data, the ID used by titles is
@@ -68,7 +69,8 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     .. attribute:: id
        :type: int
 
-       The unique identifier of the player.
+       The unique identifier of the player. In the API payload, this
+       field is called ``character_id``.
 
        .. note::
 
@@ -131,15 +133,16 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     .. attribute:: profile_id
        :type: int
 
-       ID of the last :class:`Profile` the character played as.
+       ID of the last :class:`~auraxium.ps2.Profile` the character
+       played as.
 
        This value is only updated on logout, polling it is not not a
        reliable way of determining a player's current class.
 
        .. seealso::
 
-          :meth:`Character.profile` -- Retrieve the :class:`Profile`
-          the character last played as.
+          :meth:`Character.profile` -- Retrieve the
+          :class:`~auraxium.ps2.Profile` the character last played as.
 
     .. attribute:: prestive_level
        :type: int
