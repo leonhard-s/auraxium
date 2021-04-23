@@ -62,6 +62,14 @@ class MapHex(Cached, cache_size=100, cache_ttu=60.0):
        from bottom left to top right, unlike the article above. All of
        the principles and transformations still apply.
 
+    Refer to the following link for a usage example of this type,
+    including converting from the hexgonal coordinate system to the
+    Cartesian coordinates used on the map screen.
+
+    The module's purpose is to generate serialised SVGs containing
+    merged base outlines for a given continent:
+    https://github.com/auto-pl/apl-api/blob/main/apl_api/hexgen.py
+
     .. attribute:: zone_id
        :type: int
 
