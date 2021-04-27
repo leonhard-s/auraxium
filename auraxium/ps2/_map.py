@@ -169,15 +169,28 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
 
        The X world position of the facility.
 
+       The coordinate system used goes from -4096 to +4096 for normal
+       continents, with the origin in the centre of the continent.
+
+       The map X axis points North (i.e. up on the map screen).
+
     .. attribute:: location_y
        :type: float | None
 
        The Y world position of the facility.
 
+       The map Y axis points upwards from the map plane and represents
+       the elevation of the base marker in the first person UI.
+
     .. attribute:: location_z
        :type: float | None
 
        The Z world position of the facility.
+
+       The coordinate system used goes from -4096 to +4096 for normal
+       continents, with the origin in the centre of the continent.
+
+       The map Z axis points East (i.e. right on the map screen).
 
     .. attribute:: reward_amount
        :type: int | None
