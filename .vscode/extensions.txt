@@ -1,5 +1,0 @@
-A list of recommended extensions:
-
-ms-python.python
-njpwerner.autodocstring
-lextudio.restructuredtext
