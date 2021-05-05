@@ -26,7 +26,7 @@ setuptools.setup(name='auraxium',
                                    'backoff',
                                    'pydantic',
                                    'yarl',
-                                   'websockets'],
+                                   'websockets==8.1'],
                  license='MIT',
                  include_package_data=True,
                  zip_safe=False)

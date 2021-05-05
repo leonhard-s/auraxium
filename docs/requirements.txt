@@ -4,4 +4,4 @@ backoff
 pydantic
 requests
 yarl
-websockets
+websockets == 8.1
