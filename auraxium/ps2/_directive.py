@@ -20,7 +20,7 @@ __all__ = [
 ]
 
 
-class DirectiveTreeCategory(Named, ImageMixin, cache_size=10, cache_ttu=300.0):
+class DirectiveTreeCategory(Named, cache_size=10, cache_ttu=300.0):
     """A category of directive.
 
     In-game, this is represented by the side bar to the left, e.g.
@@ -103,6 +103,9 @@ class DirectiveTree(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     directive_tree_category_id: int
     description: Optional[LocaleData]
     name: LocaleData
+    image_id: Optional[int]
+    image_set_id: Optional[int]
+    image_path: Optional[str]
 
     def category(self) -> InstanceProxy[DirectiveTreeCategory]:
         """Return the category of the directive tree.
@@ -200,6 +203,9 @@ class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     reward_set_id: Optional[int]
     directive_points: int
     completion_count: int
+    image_id: Optional[int]
+    image_set_id: Optional[int]
+    image_path: Optional[str]
 
     def directives(self) -> SequenceProxy['Directive']:
         """Return the list of directives in this tier.
@@ -297,6 +303,9 @@ class Directive(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     objective_set_id: int
     qualify_requirement_id: Optional[int]
     description: Optional[LocaleData]
+    image_id: Optional[int]
+    image_set_id: Optional[int]
+    image_path: Optional[str]
 
     def objectives(self) -> SequenceProxy[Objective]:
         """Return the objectives for this directive.

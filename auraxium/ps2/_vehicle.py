@@ -75,6 +75,9 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
     type_name: str
     cost: Optional[int]
     cost_resource_id: Optional[int]
+    image_id: Optional[int]
+    image_set_id: Optional[int]
+    image_path: Optional[str]
 
     def factions(self) -> SequenceProxy[Faction]:
         """Return the factions that have access to this vehicle.

@@ -189,6 +189,9 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     name: LocaleData
     skill_set_id: Optional[int]
     is_default_attachment: bool
+    image_id: Optional[int]
+    image_set_id: Optional[int]
+    image_path: Optional[str]
 
     def attachments(self) -> SequenceProxy['Item']:
         """Return the attachment options for this item.

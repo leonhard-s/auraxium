@@ -68,6 +68,9 @@ class SkillSet(Named, ImageMixin, cache_size=100, cache_ttu=60.0):
     skill_points: Optional[int]
     required_item_id: Optional[int]
     description: Optional[LocaleData]
+    image_id: Optional[int]
+    image_set_id: Optional[int]
+    image_path: Optional[str]
 
     def categories(self) -> SequenceProxy['SkillCategory']:
         """Return the skill categories in this skill set.
@@ -147,6 +150,9 @@ class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     skill_set_index: int
     skill_points: int
     description: Optional[LocaleData]
+    image_id: Optional[int]
+    image_set_id: Optional[int]
+    image_path: Optional[str]
 
     def skill_lines(self) -> SequenceProxy['SkillLine']:
         """Return the skill lines contained in this category.
@@ -223,6 +229,9 @@ class SkillLine(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     skill_category_id: Optional[int]
     skill_category_index: Optional[int]
     description: Optional[LocaleData]
+    image_id: Optional[int]
+    image_set_id: Optional[int]
+    image_path: Optional[str]
 
     def category(self) -> InstanceProxy[SkillCategory]:
         """Return the category this skill line belongs to.
@@ -308,6 +317,9 @@ class Skill(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     skill_points: int
     grant_item_id: Optional[int]
     description: Optional[LocaleData]
+    image_id: Optional[int]
+    image_set_id: Optional[int]
+    image_path: Optional[str]
 
     def grant_item(self) -> InstanceProxy[Item]:
         """Return the item unlocked by this skill.
