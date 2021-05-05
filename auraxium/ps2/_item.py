@@ -169,6 +169,21 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
        are used whenever nothing is selected. Examples include the
        default iron sights, or the regular ammo type for weapon
        supporting non-standard ammo types.
+
+    .. attribute:: image_id
+       :type: int | None
+
+       The image ID of the default image.
+
+    .. attribute:: image_set_id
+       :type: int | None
+
+       The corresponding image set.
+
+    .. attribute:: image_path
+       :type: str | None
+
+       The base path to the image with the default :attr:`image_id`.
     """
 
     collection = 'item'
@@ -189,6 +204,9 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
     name: LocaleData
     skill_set_id: Optional[int]
     is_default_attachment: bool
+    image_id: Optional[int]
+    image_set_id: Optional[int]
+    image_path: Optional[str]
 
     def attachments(self) -> SequenceProxy['Item']:
         """Return the attachment options for this item.

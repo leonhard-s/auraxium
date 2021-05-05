@@ -1,9 +1,7 @@
 """Data classes for :mod:`auraxium.ps2._achievement`."""
 
-from .base import ImageData
+from .base import ImageData, RESTPayload
 from ..types import LocaleData
-
-from .base import RESTPayload
 
 __all__ = [
     'AchievementData'

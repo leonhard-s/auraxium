@@ -1,5 +1,7 @@
 """Object definition for the faction type."""
 
+from typing import Optional
+
 from ..base import ImageMixin, Named
 from ..models import FactionData
 from ..types import LocaleData
@@ -37,6 +39,21 @@ class Faction(Named, ImageMixin, cache_size=10):
        :type: bool
 
        Whether this faction is playable.
+
+    .. attribute:: image_id
+       :type: int | None
+
+       The image ID of the default image.
+
+    .. attribute:: image_set_id
+       :type: int | None
+
+       The corresponding image set.
+
+    .. attribute:: image_path
+       :type: str | None
+
+       The base path to the image with the default :attr:`image_id`.
     """
 
     collection = 'faction'
@@ -49,6 +66,9 @@ class Faction(Named, ImageMixin, cache_size=10):
     code_tag: str
     name: LocaleData
     user_selectable: bool
+    image_id: Optional[int]
+    image_set_id: Optional[int]
+    image_path: Optional[str]
 
     def __repr__(self) -> str:
         """Return the unique string representation of the faction.

@@ -3,7 +3,7 @@
 Achievements include weapon medals and service ribbons.
 """
 
-from typing import List
+from typing import List, Optional
 
 from ..base import ImageMixin, Named
 from ..census import Query
@@ -83,6 +83,21 @@ class Achievement(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
        :type: auraxium.types.LocaleData
 
        The localised description of achievement.
+
+    .. attribute:: image_id
+       :type: int | None
+
+       The image ID of the default image.
+
+    .. attribute:: image_set_id
+       :type: int | None
+
+       The corresponding image set.
+
+    .. attribute:: image_path
+       :type: str | None
+
+       The base path to the image with the default :attr:`image_id`.
     """
 
     collection = 'achievement'
@@ -98,6 +113,9 @@ class Achievement(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     reward_id: int
     repeatable: bool
     description: LocaleData
+    image_id: Optional[int]
+    image_set_id: Optional[int]
+    image_path: Optional[str]
 
     async def objectives(self) -> List[Objective]:
         """Return any objectives in the given objective group."""

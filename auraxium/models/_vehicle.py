@@ -2,10 +2,8 @@
 
 from typing import Optional
 
-from .base import ImageData
+from .base import ImageData, RESTPayload
 from ..types import LocaleData
-
-from .base import RESTPayload
 
 __all__ = [
     'VehicleAttachmentData',
