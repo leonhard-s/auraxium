@@ -1,7 +1,6 @@
 """Shared base classes for API data model implementations."""
 
 import abc
-import dataclasses
 import datetime
 from typing import Optional, TypeVar
 
@@ -93,8 +92,7 @@ class FallbackMixin(metaclass=abc.ABCMeta):
         """
 
 
-@dataclasses.dataclass(frozen=True)
-class ImageData:
+class ImageData(pydantic.BaseModel):
     """Mixin dataclass for types supporting image access.
 
     .. attribute:: image_id
