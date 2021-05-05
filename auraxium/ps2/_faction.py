@@ -39,6 +39,21 @@ class Faction(Named, ImageMixin, cache_size=10):
        :type: bool
 
        Whether this faction is playable.
+
+    .. attribute:: image_id
+       :type: int | None
+
+       The image ID of the default image.
+
+    .. attribute:: image_set_id
+       :type: int | None
+
+       The corresponding image set.
+
+    .. attribute:: image_path
+       :type: str | None
+
+       The base path to the image with the default :attr:`image_id`.
     """
 
     collection = 'faction'

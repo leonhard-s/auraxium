@@ -60,6 +60,21 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
        :type: int | None
 
        The ID of the resource the vehicle costs.
+
+    .. attribute:: image_id
+       :type: int | None
+
+       The image ID of the default image.
+
+    .. attribute:: image_set_id
+       :type: int | None
+
+       The corresponding image set.
+
+    .. attribute:: image_path
+       :type: str | None
+
+       The base path to the image with the default :attr:`image_id`.
     """
 
     collection = 'vehicle'

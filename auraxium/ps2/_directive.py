@@ -91,6 +91,21 @@ class DirectiveTree(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
        :type: auraxium.types.LocaleData
 
        The localised name of the directive tree.
+
+    .. attribute:: image_id
+       :type: int | None
+
+       The image ID of the default image.
+
+    .. attribute:: image_set_id
+       :type: int | None
+
+       The corresponding image set.
+
+    .. attribute:: image_path
+       :type: str | None
+
+       The base path to the image with the default :attr:`image_id`.
     """
 
     collection = 'directive_tree'
@@ -189,6 +204,21 @@ class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
        :type: auraxium.types.LocaleData
 
        The localised name of the directive tier.
+
+    .. attribute:: image_id
+       :type: int | None
+
+       The image ID of the default image.
+
+    .. attribute:: image_set_id
+       :type: int | None
+
+       The corresponding image set.
+
+    .. attribute:: image_path
+       :type: str | None
+
+       The base path to the image with the default :attr:`image_id`.
     """
 
     collection = 'directive_tier'
@@ -288,6 +318,21 @@ class Directive(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
        :type: auraxium.types.LocaleData
 
        The localised description of the directive.
+
+    .. attribute:: image_id
+       :type: int | None
+
+       The image ID of the default image.
+
+    .. attribute:: image_set_id
+       :type: int | None
+
+       The corresponding image set.
+
+    .. attribute:: image_path
+       :type: str | None
+
+       The base path to the image with the default :attr:`image_id`.
     """
 
     collection = 'directive'

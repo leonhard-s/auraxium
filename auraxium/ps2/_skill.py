@@ -55,6 +55,21 @@ class SkillSet(Named, ImageMixin, cache_size=100, cache_ttu=60.0):
        :type: auraxium.types.LocaleData | None
 
        The localised description of the skill set.
+
+    .. attribute:: image_id
+       :type: int | None
+
+       The image ID of the default image.
+
+    .. attribute:: image_set_id
+       :type: int | None
+
+       The corresponding image set.
+
+    .. attribute:: image_path
+       :type: str | None
+
+       The base path to the image with the default :attr:`image_id`.
     """
 
     collection = 'skill_set'
@@ -136,6 +151,21 @@ class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
        :type: auraxium.types.LocaleData | None
 
        The localised description for this skill category.
+
+    .. attribute:: image_id
+       :type: int | None
+
+       The image ID of the default image.
+
+    .. attribute:: image_set_id
+       :type: int | None
+
+       The corresponding image set.
+
+    .. attribute:: image_path
+       :type: str | None
+
+       The base path to the image with the default :attr:`image_id`.
     """
 
     collection = 'skill_category'
@@ -215,6 +245,21 @@ class SkillLine(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
        :type: auraxium.types.LocaleData | None
 
        The localised description for this skill line.
+
+    .. attribute:: image_id
+       :type: int | None
+
+       The image ID of the default image.
+
+    .. attribute:: image_set_id
+       :type: int | None
+
+       The corresponding image set.
+
+    .. attribute:: image_path
+       :type: str | None
+
+       The base path to the image with the default :attr:`image_id`.
     """
 
     collection = 'skill_line'
@@ -302,6 +347,21 @@ class Skill(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
        :type: auraxium.types.LocaleData | None
 
        The localised description for this skill.
+
+    .. attribute:: image_id
+       :type: int | None
+
+       The image ID of the default image.
+
+    .. attribute:: image_set_id
+       :type: int | None
+
+       The corresponding image set.
+
+    .. attribute:: image_path
+       :type: str | None
+
+       The base path to the image with the default :attr:`image_id`.
     """
 
     collection = 'skill'

@@ -83,6 +83,21 @@ class Achievement(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
        :type: auraxium.types.LocaleData
 
        The localised description of achievement.
+
+    .. attribute:: image_id
+       :type: int | None
+
+       The image ID of the default image.
+
+    .. attribute:: image_set_id
+       :type: int | None
+
+       The corresponding image set.
+
+    .. attribute:: image_path
+       :type: str | None
+
+       The base path to the image with the default :attr:`image_id`.
     """
 
     collection = 'achievement'
