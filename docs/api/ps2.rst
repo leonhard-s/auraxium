@@ -84,7 +84,7 @@ Outfits
 
    .. automethod:: get_by_tag(tag: str, client: auraxium.Client) -> typing.Awaitable[Outfit | None]
 
-   .. automethod:: leader() -> auraxium.InstanceProxy[Character]
+   .. automethod:: leader() -> auraxium.InstanceProxy[OutfitMember]
 
    .. automethod:: members() -> auraxium.SequenceProxy[OutfitMember]
 
