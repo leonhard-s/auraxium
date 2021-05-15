@@ -5,6 +5,7 @@ import logging
 from typing import (Any, Callable, Coroutine, Dict, Iterator, List, Optional, Type, TypeVar, Union,
                     cast, overload)
 import backoff
+import pydantic
 
 import websockets
 
@@ -376,7 +377,16 @@ class EventClient(Client):
         # Event messages
         if service == 'event':
             if data['type'] == 'serviceMessage':
-                event = _event_factory(cast(CensusData, data['payload']))
+                try:
+                    event = _event_factory(cast(CensusData, data['payload']))
+                except pydantic.ValidationError:
+                    _log.warning(
+                        'Ignoring unsupported payload: %s\n'
+                        'This message means that the Auraxium data model must '
+                        'be updated. Please ensure you are on the latest '
+                        'version of the Auraxium library and report this '
+                        'message to the project maintainers.', data['payload'])
+                    return
                 _log.debug('%s event received, dispatching...',
                            event.event_name)
                 self.dispatch(event)

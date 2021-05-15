@@ -79,6 +79,12 @@ class Ps2Object(metaclass=abc.ABCMeta):
         try:
             self.data = self._model(**data)
         except pydantic.ValidationError as err:
+            _log.warning(
+                'Encountered unsupported payload: %s\n'
+                'This message means that the Auraxium data model must '
+                'be updated. Please ensure you are on the latest '
+                'version of the Auraxium library and report this '
+                'message to the project maintainers.', data)
             raise PayloadError(
                 f'Unable to instantiate {self.__class__.__name__} instance '
                 f'from given payload: {err}', data) from err
