@@ -59,7 +59,7 @@ class MetagameEvent(Cached, cache_size=100, cache_ttu=60.0):
        place on different continents.
 
     .. attribute:: experience_bonus
-       :type: int | None
+       :type: float | None
 
        The experience bonus applied to participating players in
        percent.
@@ -75,4 +75,4 @@ class MetagameEvent(Cached, cache_size=100, cache_ttu=60.0):
     name: LocaleData
     description: LocaleData
     type: int
-    experience_bonus: Optional[int]
+    experience_bonus: Optional[float]
