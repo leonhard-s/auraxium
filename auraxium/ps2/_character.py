@@ -38,14 +38,6 @@ class Title(Named, cache_size=300, cache_ttu=300.0):
        The identifier for this title. In the API payload, this
        field is called ``title_id``.
 
-       .. important::
-          Unlike most other forms of API data, the ID used by titles is
-          **not** unique.
-
-          This is due to the ASP system re-using the same title IDs
-          while introducing a different name (namely "A.S.P. Operative"
-          for all titles in the ``en`` locale).
-
     .. attribute:: name
        :type: auraxium.types.LocaleData
 
