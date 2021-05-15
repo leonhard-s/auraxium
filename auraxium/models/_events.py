@@ -456,7 +456,7 @@ class MetagameEvent(Event, WorldEvent):
        endpoint broadcast the event.
     """
 
-    experience_bonus: int
+    experience_bonus: float
     faction_nc: float
     faction_tr: float
     faction_vs: float
