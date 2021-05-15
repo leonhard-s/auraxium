@@ -23,4 +23,4 @@ class MetagameEventData(RESTPayload):
     name: LocaleData
     description: LocaleData
     type: int
-    experience_bonus: Optional[int] = None
+    experience_bonus: Optional[float] = None
