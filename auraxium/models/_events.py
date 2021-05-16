@@ -132,6 +132,16 @@ class Death(Event, CharacterEvent):
 
        ID of the :class:`~auraxium.ps2.Vehicle` of the attacker.
 
+    .. attribute:: attacker_weapon_id
+       :type: int
+
+       ID of the :class:`~auraxium.ps2.Item` used by the attacker.
+
+       .. important::
+
+         The reference above is not an error, this field reports the
+         item ID of the weapon, not the weapon ID.
+
     .. attribute:: character_id
        :type: int
 
@@ -637,10 +647,15 @@ class VehicleDestroy(Event, CharacterEvent):
 
        ID of the :class:`~auraxium.ps2.Vehicle` of the attacker.
 
-    .. attribute:: attacker_wepaon_id
+    .. attribute:: attacker_weapon_id
        :type: int
 
-       ID of the :class:`~auraxium.ps2.Weapon` used by the attacker.
+       ID of the :class:`~auraxium.ps2.Item` used by the attacker.
+
+       .. important::
+
+         The reference above is not an error, this field reports the
+         item ID of the weapon, not the weapon ID.
 
     .. attribute:: character_id
        :type: int
