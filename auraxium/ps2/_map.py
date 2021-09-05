@@ -68,7 +68,7 @@ class MapHex(Cached, cache_size=100, cache_ttu=60.0):
 
     The module's purpose is to generate serialised SVGs containing
     merged base outlines for a given continent:
-    https://github.com/auto-pl/apl-api/blob/main/apl_api/hexgen.py
+    https://github.com/auto-pl/apl-api/blob/main/tools/map_hex_generator.py
 
     .. attribute:: zone_id
        :type: int
