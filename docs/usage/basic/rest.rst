@@ -15,7 +15,7 @@ Retrieving Data
 
 .. note::
 
-   The game-specific object representations for PlanetSide 2 reside in the :mod:`auraxium.ps2` submodule. Refer to the `Object Model Documentation <api/ps2.html>`_  for details.
+   The game-specific object representations for PlanetSide 2 reside in the :mod:`auraxium.ps2` submodule. Refer to the `Object Model Documentation <api/ps2.html>`_ for details.
 
 The :class:`auraxium.Client` class exposes several methods used to access the REST API data, like :meth:`~auraxium.Client.get()`, used to return a single match, or :meth:`~auraxium.Client.find()`, used to return a list of matching entries.
 
@@ -33,7 +33,7 @@ This means that repeatedly accessing an object through :meth:`~auraxium.Client.g
        async with auraxium.Client() as client:
 
            char = await client.get_by_name(ps2.Character, 'auroram')
-           print(char.name))
+           print(char.name)
            print(char.data.prestige_level)
 
            # NOTE: Any methods that might incur network traffic are asynchronous.
