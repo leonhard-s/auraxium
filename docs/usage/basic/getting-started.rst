@@ -97,7 +97,7 @@ Service IDs
 
 The PlanetSide 2 API requires all client applications to register and use a service ID for all of its requests. Service IDs are used to identify your application and troubleshoot quality of service issues.
 
-You can apply for your own service ID `here <service ID signup>`_. The process is free and usually only takes an hour or two to complete.
+You can apply for your own service ID `here <service ID signup_>`_. The process is free and usually only takes an hour or two to complete.
 
 In Auraxium, the service ID is specified via the `service_id` argument of the :class:`auraxium.Client` instance.
 
