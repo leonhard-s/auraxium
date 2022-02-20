@@ -42,7 +42,7 @@ You can also use the following commands to install the latest development build 
 
 .. note::
 
-   When using pre-release versions of Auraxium as a dependency for your own packages, be sure to to pin the exact version used in ``setup.py`` or ``requirements.txt``.
+   When using pre-release versions of Auraxium as a dependency for your own packages, be sure to pin the exact version used in ``setup.py`` or ``requirements.txt``.
 
    The API for these versions should not be considered stable and could break your application with the next minor version upgrade.
 
@@ -51,14 +51,14 @@ Overview
 
 Auraxium can interface with the Daybreak Game Company's `Census API`_ in one of three ways. The first is the object model, which wraps the API's REST interface and allows accessing and navigating between specific pieces of data like character names or weapon statistics.
 
-The :class:`auraxium.event.EventClient` sub class additionally supports the event streaming interface, used to react to in-game events like continent locks or player deaths in next to real-time via a WebSocket connection.
+The :class:`auraxium.event.EventClient` subclass additionally supports the event streaming interface, used to react to in-game events like continent locks or player deaths in next to real-time via a WebSocket connection.
 
-Finally, the internal URL generator used to nevigate the object model can also be used on its own, allowing a high degree of customisation for the queries used. This lower-level access allows for optimisations not possible through the regular object-based REST interface.
+Finally, the internal URL generator used to navigate the object model can also be used on its own, allowing a high degree of customization for the queries used. This lower-level access allows for optimizations not possible through the regular object-based REST interface.
 
 Object Model
 ------------
 
-All API interactions are performed through :class:`auraxium.Client` or one of its sub classes. The class representations of in-game objects can be found in the :mod:`auraxium.ps2` module.
+All API interactions are performed through :class:`auraxium.Client` or one of its subclasses. The class representations of in-game objects can be found in the :mod:`auraxium.ps2` module.
 
 To retrieve in-game object instances, use :meth:`~auraxium.Client.get`, for single items, or :meth:`~auraxium.Client.find` for lists.
 
@@ -71,7 +71,7 @@ For more information on the available classes and the attributes they expose, re
 Event Stream
 ------------
 
-The :class:`auraxium.event.EventClient` sub class adds a trigger-action system allowing the user to trigger actions when certain in-game events occur:
+The :class:`auraxium.event.EventClient` subclass adds a trigger-action system allowing the user to trigger actions when certain in-game events occur:
 
 .. code-block:: python3
 
@@ -88,9 +88,9 @@ For more information on the event streaming system, refer to the :doc:`event str
 URL Generator
 -------------
 
-The URL generator used for low-level access to the PlanetSide 2 API resides in the :mod:`auraxium.census` sub module.
+The URL generator used for low-level access to the PlanetSide 2 API resides in the :mod:`auraxium.census` submodule.
 
-Note that this module is targeted at advanced users or ones familiar with the underlying Census API. An introduction into the module interface can be found :doc:`here <census>`.
+Note that this module is targeted at advanced users or anyone familiar with the underlying Census API. An introduction into the module interface can be found :doc:`here <census>`.
 
 Service IDs
 ===========
@@ -101,7 +101,7 @@ You can apply for your own service ID `here <service ID signup_>`_. The process 
 
 In Auraxium, the service ID is specified via the `service_id` argument of the :class:`auraxium.Client` instance.
 
-For casual use and development, the default ``s:example`` service ID is also avilable, but it is limited to 10 requests per minute per IP address.
+For casual use and development, the default ``s:example`` service ID is also available, but it is limited to 10 requests per minute and IP address.
 
 .. _Census API: https://census.daybreakgames.com/
 .. _Python: https://www.python.org/downloads/

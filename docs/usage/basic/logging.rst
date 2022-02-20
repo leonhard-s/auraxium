@@ -10,7 +10,7 @@ The following snippet will, if placed before your application code, log all but 
 
    import logging
 
-   logging.basicConfnig(level=logging.INFO)
+   logging.basicConfig(level=logging.INFO)
 
 Alternatively, the following snippet is an example of a more comprehensive logging setup, only keeping warnings and errors in the console while still logging to disk at full resolution. This option is recommended for troubleshooting:
 

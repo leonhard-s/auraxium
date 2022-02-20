@@ -1,5 +1,5 @@
 ==============================
-Optimising With Custom Queries
+Optimizing With Custom Queries
 ==============================
 
 This document covers how to improve performance for expensive requests that slow down your application.
@@ -8,14 +8,14 @@ It is therefore highly advisable to read the `Census API Primer`_ in the reposit
 
 .. note::
 
-   The optimisations explained herein are likely not needed unless you are sending out hundreds of requests a second and are already running into bottle necks.
+   The optimizations explained herein are likely not needed unless you are sending out hundreds of requests a second and are already running into bottlenecks.
 
 Motivation
 ==========
 
-The Auraxium object model makes the API more accessible and facilitates traversal of its relations, but in return gives up some of the flexibility of the original Daybreak Games Census API.
+The Auraxium object model makes the API more accessible and facilitates traversal of its relations, but in return gives up some flexibility of the original Daybreak Games Census API.
 
-One such optimisation are `Joins`_, a means of bundling multiple related queries into a single request, similar to how SQL joins allow returning data from multiple tables. This allows requesting a lot of data in a single query, like resolving particular statistics for outfit members of a particular rank.
+One such optimization are `Joins`_, a means of bundling multiple related queries into a single request, similar to how SQL joins allow returning data from multiple tables. This allows requesting a lot of data in a single query, like resolving particular statistics for outfit members of a particular rank.
 
 Due to their dynamic nature, joins are not available through the object model, but are fully supported by the :mod:`auraxium.census` module, which Auraxium uses to generate the URLs needed to access the Census API.
 
@@ -42,7 +42,7 @@ In this case, the created query is identical to this:
 
    query = auraxium.census.Query('character', character_id=5428072203494645969)
 
-This query can now be customised as per the :mod:`auraxium.census` module API.
+This query can now be customized as per the :mod:`auraxium.census` module API.
 
 For the purposes of this example, we will return the online status of all of a character's friends; an operation that is not possible in a single operation when using the object model:
 

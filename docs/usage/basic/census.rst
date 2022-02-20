@@ -4,7 +4,7 @@ Census URL Generator
 
 .. module:: auraxium.census
 
-The :mod:`auraxium.census` module provides a low-level Python wrapper around the PlanetSide 2 REST API. It is used internally by Auraxium to generate any URLs needed for traversal of the object model, but may also be used by advanced users to customise queries and increase performance of their apps.
+The :mod:`auraxium.census` module provides a low-level Python wrapper around the PlanetSide 2 REST API. It is used internally by Auraxium to generate any URLs needed for traversal of the object model, but may also be used by advanced users to customize queries and increase performance of their apps.
 
 The following pages cover the URL generator interface and usage, but the underlying REST endpoint's structure, functionality and limitations are outside the scope of this document. If you are unfamiliar with the Daybreak Game Company's Census API or would like a refresh, please refer to the `Census API Primer`_ in the repository Wiki.
 
@@ -12,7 +12,7 @@ For an example of how to use the URL generator and custom queries in conjunction
 
 .. note::
 
-   The URL generator is independent from the rest of the Auraxium package and may be imported separately. If your use case does not benefit from the object model or event streaming client, you can still use the URL generator on its own to keep your source code free of URL literals:
+   The URL generator is independent of the rest of the Auraxium package and may be imported separately. If your use case does not benefit from the object model or event streaming client, you can still use the URL generator on its own to keep your source code free of URL literals:
 
    .. code-block:: python3
 
@@ -72,7 +72,7 @@ The PlanetSide 2 API defines two distinct types of queries. The first is the mai
 
 To generate a URL from a query, run the :meth:`Query.url` method. By default, this uses the ``get`` query verb. This is the main endpoint used to retrieve data and supports the entire query interface, and will return actual matches for a given query. Alternatively, one can specify ``verb='count'`` to instead only return the number of potential matches. This is helpful when working with filtered data sets of unknown size, so that pagination or other custom formats can be used to display the requested data.
 
-Top level queries also support global flags (or `query commands`) that allow enable :meth:`case insensitive<Query.case>` string comparison, :meth:`sorting <Query.sort>` of results, or enable special query modes like :meth:`~Query.distinct`, illustrated below:
+Top level queries also support global flags (or `query commands`) that allow for :meth:`case insensitive<Query.case>` string comparison, :meth:`sorting <Query.sort>` of results, or enable special query modes like :meth:`~Query.distinct`, illustrated below:
 
 .. code-block:: python3
 
@@ -121,7 +121,7 @@ Joins are used to return data related to another query's return values as part o
 
 The relation between a join and its parent is defined by the :meth:`~JoinedQuery.set_fields` method. The joins data is then inserted into an extra field in the response, either named ``<parent_field>_join_<joined_collection>`` (default) or a custom name specified through the :meth:`JoinedQuery.set_inject_at` method.
 
-Joined queries can not be directly translated into a URL, the must be attached to a top level query instead. This can be done via the :meth:`QueryBase.add_join` (for existing joins) or :meth:`QueryBase.create_join` (for new joins) methods. The :meth:`JoinedQuery.serialise` method allows conersion of a :class:`JoinedQuery` into its URL-compatible, serialised format. This hook is used by the parent query when the top level query's :meth:`Query.url` method is called.
+Joined queries can not be directly translated into a URL, the must be attached to a top level query instead. This can be done via the :meth:`QueryBase.add_join` (for existing joins) or :meth:`QueryBase.create_join` (for new joins) methods. The :meth:`JoinedQuery.serialise` method allows conversion of a :class:`JoinedQuery` into its URL-compatible, serialized format. This hook is used by the parent query when the top level query's :meth:`Query.url` method is called.
 
 For more information on joined queries, pitfalls and examples, refer to the `Joined Queries`_ section of the aforementioned `Census API primer`_ Wiki article.
 
@@ -135,7 +135,7 @@ This conversion is done as part of the :meth:`Query.copy`/:meth:`JoinedQuery.cop
 Terms and search modifiers
 ==========================
 
-The key-value pairs used to filter queries (previously introduced as the query's `terms`) are represented by the :class:`SearchTerm` class, which provides facilities for parsing, serialising and formatting these terms for use in query strings.
+The key-value pairs used to filter queries (previously introduced as the query's `terms`) are represented by the :class:`SearchTerm` class, which provides facilities for parsing, serializing and formatting these terms for use in query strings.
 
 Terms can be added directly using a query's :meth:`QueryBase.add_term` method, or may alternatively be generated via keyword arguments as part of the query instantiation:
 
