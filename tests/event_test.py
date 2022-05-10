@@ -29,7 +29,8 @@ class EventClientTest(unittest.IsolatedAsyncioTestCase):
         """Reset the event streaming client before every test."""
         if self._client is not None:
             await self._client.close()
-        self._client = auraxium.event.EventClient(service_id=SERVICE_ID)
+        self._client = auraxium.event.EventClient(
+            service_id=SERVICE_ID, no_ssl_certs=True)
 
     async def asyncTearDown(self) -> None:
         """Close the event streaming client after every test."""
