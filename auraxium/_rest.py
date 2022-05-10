@@ -48,12 +48,13 @@ class RequestClient:
     """The REST request handler for Auraxium."""
 
     def __init__(self, loop: Optional[asyncio.AbstractEventLoop] = None,
-                 service_id: str = 's:example', profiling: bool = False
-                 ) -> None:
+                 service_id: str = 's:example', profiling: bool = False,
+                 no_ssl_certs: bool = False) -> None:
         self.loop = loop or asyncio.get_event_loop()
         self.profiling = profiling
         self.service_id = service_id
         self.session = aiohttp.ClientSession()
+        self._no_ssl_certs = no_ssl_certs
         self._timing_cache: List[float] = []
 
     async def __aenter__(self: _T) -> _T:
