@@ -2,7 +2,6 @@ import asyncio
 import contextlib
 import json
 import logging
-import ssl
 from typing import (Any, Callable, Coroutine, Dict, Iterator, List, Optional, Type, TypeVar, Union,
                     cast, overload)
 
@@ -265,11 +264,17 @@ class EventClient(Client):
         """
         _log.info('Connecting to WebSocket endpoint...')
         url = f'{_ESS_ENDPOINT}?environment=ps2&service-id={self.service_id}'
-        if self._no_ssl_certs:
-            ssl_ctx = ssl.SSLContext()
-        else:
-            ssl_ctx = None
-        async with ws_client.connect(url, ssl=ssl_ctx) as websocket:
+        # HACK: Recent updates to the WebSocket client library cause issues
+        # with the SSL certs bypass on some Python versions. They have been
+        # disabled for now and will be replaced with a more robust system down
+        # the road.
+
+        # if self._no_ssl_certs:
+        #     ssl_ctx = ssl.SSLContext()
+        # else:
+        #     ssl_ctx = None
+
+        async with ws_client.connect(url) as websocket:
             self.websocket = websocket
             _log.info('Connected to %s?environment=ps2&service-id=XXX',
                       _ESS_ENDPOINT)
