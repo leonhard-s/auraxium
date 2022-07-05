@@ -34,4 +34,4 @@ __all__ = [
 ]
 
 __author__ = 'Leonhard S.'
-__version__ = '0.2.1'
+__version__ = '0.2.2'

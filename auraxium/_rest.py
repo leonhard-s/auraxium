@@ -54,8 +54,13 @@ class RequestClient:
         self.profiling = profiling
         self.service_id = service_id
         self.session = aiohttp.ClientSession()
-        self._no_ssl_certs = no_ssl_certs
         self._timing_cache: List[float] = []
+        if no_ssl_certs:
+            warnings.warn('SSL certificate expiration bypass is disabled in '
+                          'this version of Auraxium due to compatibility '
+                          'issues. See '
+                          '<https://github.com/leonhard-s/auraxium/issues/56> '
+                          'for details.', FutureWarning)
 
     async def __aenter__(self: _T) -> _T:
         """Enter the context manager and return the client."""
