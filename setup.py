@@ -4,7 +4,7 @@
 import setuptools
 from auraxium import __version__ as version
 
-with open('README.md') as readme:
+with open('README.md', encoding='utf-8') as readme:
     long_description = readme.read()
 
 setuptools.setup(name='auraxium',
