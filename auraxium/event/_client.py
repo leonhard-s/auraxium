@@ -326,7 +326,7 @@ class EventClient(Client):
 
     @overload
     def trigger(self, event: Type[_EventT],
-                *args: Union[Type[_EventT], Type[_EventT2]],
+                arg1: Type[_EventT], *args: Type[_EventT2],
                 name: Optional[str] = None, **kwargs: Any) -> Callable[
                     [_CallbackT[Union[_EventT, _EventT2]]], None]:
         # Two event variant (checks callback argument type)
