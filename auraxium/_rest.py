@@ -17,12 +17,13 @@ import json
 import logging
 import sys
 import warnings
-from typing import Any, Dict, Iterator, Literal, List, Optional, Tuple, Type, TypeVar, cast
+from typing import Generator, Literal, List, Optional, Tuple, Type, TypeVar, cast
 from types import TracebackType
 
 import aiohttp
 import backoff
 import yarl
+from backoff.types import Details
 
 from .census import Query
 from .errors import (PayloadError, BadRequestSyntaxError, CensusError,
@@ -410,18 +411,18 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
 
     # TODO: Remove service ID from any URL literals outside of .census
 
-    def on_success(details: Dict[str, Any]) -> None:
+    def on_success(details: Details) -> None:
         if (tries := details['tries']) > 1:
             _log.debug('Query successful after %d attempt[s]: %s',
                        tries, url)
 
-    def on_backoff(details: Dict[str, Any]) -> None:
+    def on_backoff(details: Details) -> None:
         wait = details['wait']
         tries = details['tries']
         _log.debug('Backing off %.2f seconds after %d attempt[s]: %s',
                    wait, tries, url)
 
-    def on_giveup(details: Dict[str, Any]) -> None:
+    def on_giveup(details: Details) -> None:
         elapsed: float = details['elapsed']
         tries: int = details['tries']
         _log.warning('Giving up on query and re-raising exception after %.2f '
@@ -433,11 +434,16 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
     backoff_errors = (aiohttp.ClientResponseError,
                       aiohttp.ClientConnectionError,
                       MaintenanceError)
-    backoff_gen: Iterator[float] = backoff.expo(  # type: ignore
-        base=10, factor=0.001, max_value=5.0)
 
-    @backoff.on_exception(  # type: ignore
-        lambda: backoff_gen, backoff_errors, on_backoff=on_backoff,
+    # NOTE: As of backoff v2.1.2, "backoff.expo" only takes integer arguments.
+    # We therefore scale everything down to meet the original timings
+    def backoff_gen() -> Generator[float, None, None]:
+        for wait in backoff.expo(base=10, factor=1, max_value=10_000):
+            # NOTE: backoff returns None as the first send() - no idea why
+            yield wait * 0.001 if wait is not None else None  # type: ignore
+
+    @backoff.on_exception(
+        backoff_gen, backoff_errors, on_backoff=on_backoff,
         on_giveup=on_giveup, on_success=on_success, max_tries=5, jitter=None)
     async def retry_query() -> aiohttp.ClientResponse:
         """Request handling wrapper."""

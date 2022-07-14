@@ -2,13 +2,14 @@ import asyncio
 import contextlib
 import json
 import logging
-from typing import (Any, Callable, Coroutine, Dict, Iterator, List, Optional, Type, TypeVar, Union,
-                    cast, overload)
+from typing import (Any, Callable, Coroutine, Dict, Generator, List, Optional,
+                    Type, TypeVar, Union, cast, overload)
 
 import backoff
 import pydantic
 import websockets
 import websockets.exceptions
+from backoff.types import Details
 from websockets.legacy import client as ws_client
 
 from .._client import Client
@@ -184,11 +185,11 @@ class EventClient(Client):
             return
         await self._connect_lock.acquire()
 
-        def on_success(details: Dict[str, Any]) -> None:
+        def on_success(details: Details) -> None:
             tries = int(details['tries'])
             _log.debug('Connection successful after %d tries', tries)
 
-        def on_backoff(details: Dict[str, Any]) -> None:
+        def on_backoff(details: Details) -> None:
             wait = float(details['wait'])
             tries = int(details['tries'])
             _log.debug('Backing off %.2f seconds after %d failed attempt[s])',
@@ -197,10 +198,13 @@ class EventClient(Client):
         backoff_errors = (ConnectionRefusedError,
                           ConnectionResetError,
                           websockets.exceptions.ConnectionClosed)
-        backoff_gen: Iterator[float] = backoff.expo(  # type: ignore
-            base=10, factor=0.001, max_value=60.0)
+
+        def backoff_gen() -> Generator[float, None, None]:
+            for wait in backoff.expo(base=10, factor=1, max_value=60_000):
+                yield wait * 0.001 if wait is not None else None  # type: ignore
+
         backoff_wrap: _Decorator = backoff.on_exception(  # type: ignore
-            lambda: backoff_gen, backoff_errors, on_backoff=on_backoff,
+            backoff_gen, backoff_errors, on_backoff=on_backoff,
             on_success=on_success, jitter=None)
         await backoff_wrap(self._connection_handler)()
 
