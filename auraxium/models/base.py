@@ -2,7 +2,7 @@
 
 import abc
 import datetime
-from typing import Optional, TypeVar
+from typing import Any, Optional, TypeVar, cast
 
 import pydantic
 
@@ -27,12 +27,17 @@ class Payload(pydantic.BaseModel):
 
         allow_mutation = False
 
-    def __hash__(self) -> int:
+    # Weird workaround for pydantic.BaseModel overwriting __hash__ with
+    # None, at least according to Pylance.
+
+    def _override__hash__(self) -> int:
         # NOTE: pydantic has a beta setting called `frozen=True` that would
         # generate a hash method, but it is not part of the stable API and
         # therefore not used here.
         # It should replace allow_mutation here once it out of beta.
         return hash(tuple(self.dict().items()))
+
+    __hash__ = cast(Any, _override__hash__)
 
 
 class RESTPayload(Payload):
