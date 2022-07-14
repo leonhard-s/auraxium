@@ -1,7 +1,7 @@
 """Experience and rank class definitions."""
 
 import logging
-from typing import List, Union
+from typing import Any, List, Union, cast
 
 import pydantic
 
@@ -132,7 +132,7 @@ class ExperienceRank:
                   self.__class__.__name__, rank, data)
         self._client = client
         try:
-            self.data = ExperienceRankData(**data)
+            self.data = ExperienceRankData(**cast(Any, data))
         except pydantic.ValidationError as err:
             raise PayloadError(
                 f'Unable to populate {self.__class__.__name__} due to a '

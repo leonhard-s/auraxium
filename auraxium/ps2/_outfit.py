@@ -1,7 +1,8 @@
 """Outfit and outfit member class definitions."""
 
 import logging
-from typing import ClassVar, Final, List, Optional, TYPE_CHECKING, Type, Union
+from typing import (Any, ClassVar, Final, List, Optional, TYPE_CHECKING, Type,
+                    Union, cast)
 
 from ..base import Cached, Named, NamedT
 from .._cache import TLRUCache
@@ -243,4 +244,4 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         query.limit(20)
         data = await self._client.request(query)
         payload = extract_payload(data, collection)
-        return [OutfitRankData(**c) for c in payload]
+        return [OutfitRankData(**cast(Any, c)) for c in payload]

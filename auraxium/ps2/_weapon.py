@@ -1,7 +1,7 @@
 """Weapon class definition."""
 
 import logging
-from typing import Final, List, Optional
+from typing import Any, Final, List, Optional, cast
 
 from ..base import Cached
 from ..census import Query
@@ -148,7 +148,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
         query.limit(10).sort('weapon_slot_index')
         payload = await self._client.request(query)
         data = extract_payload(payload, collection)
-        return [WeaponAmmoSlot(**d) for d in data]
+        return [WeaponAmmoSlot(**cast(Any, d)) for d in data]
 
     def attachments(self) -> SequenceProxy[Item]:
         """Return the attachments available for this weapon.
@@ -174,7 +174,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
         query.add_term(field=Item.id_field, value=item.id)
         payload = await self._client.request(query)
         data = extract_single(payload, collection)
-        return WeaponDatasheet(**data)
+        return WeaponDatasheet(**cast(Any, data))
 
     def fire_groups(self) -> SequenceProxy[FireGroup]:
         """Return the fire groups for this weapon.

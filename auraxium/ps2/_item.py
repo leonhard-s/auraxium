@@ -1,6 +1,6 @@
 """Item and item attachment class definitions."""
 
-from typing import Final, Optional, TYPE_CHECKING
+from typing import Any, Final, Optional, TYPE_CHECKING, cast
 
 from ..base import Cached, ImageMixin, Named
 from ..census import Query
@@ -253,7 +253,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
         query.add_term(field=self.id_field, value=self.id)
         payload = await self._client.request(query)
         data = extract_single(payload, collection)
-        return WeaponDatasheet(**data)
+        return WeaponDatasheet(**cast(Any, data))
 
     def profiles(self) -> SequenceProxy[Profile]:
         """Return the profiles the item is available to.

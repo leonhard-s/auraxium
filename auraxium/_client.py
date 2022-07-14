@@ -151,7 +151,7 @@ class Client(RequestClient):
                 'please report this bug to the project maintainers')
         if data:
             return data[0]
-        hook: Callable[[int], CensusData]
+        hook: Callable[[int], CensusData] | None
         if (hook := getattr(type_, 'fallback_hook', None)) is not None:
             try:
                 fallback = hook(id_)

@@ -1,7 +1,8 @@
 """Character class definition."""
 
 import logging
-from typing import Any, ClassVar, Final, List, Optional, Tuple, Type, Union, cast
+from typing import (Any, ClassVar, Final, List, Optional, Tuple, Type, Union,
+                    cast)
 
 from ..base import Named, NamedT
 from .._cache import TLRUCache
@@ -178,7 +179,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.add_term(field=self.id_field, value=self.id)
         payload = await self._client.request(query)
         data = extract_payload(payload, collection)
-        return [CharacterAchievement(**d) for d in data]
+        return [CharacterAchievement(**cast(Any, d)) for d in data]
 
     async def currency(self) -> Tuple[int, int]:
         """Helper method for retrieving a character's balance.
@@ -217,7 +218,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.limit(results)
         payload = await self._client.request(query)
         data = extract_payload(payload, collection)
-        return [CharacterDirective(**d) for d in data]
+        return [CharacterDirective(**cast(Any, d)) for d in data]
 
     async def directive_objective(self, results: int = 1, **kwargs: Any
                                   ) -> List[CharacterDirectiveObjective]:
@@ -240,7 +241,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.limit(results)
         payload = await self._client.request(query)
         data = extract_payload(payload, collection)
-        return [CharacterDirectiveObjective(**d) for d in data]
+        return [CharacterDirectiveObjective(**cast(Any, d)) for d in data]
 
     async def directive_tier(self, results: int = 1,
                              **kwargs: Any) -> List[CharacterDirectiveTier]:
@@ -263,7 +264,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.limit(results)
         payload = await self._client.request(query)
         data = extract_payload(payload, collection)
-        return [CharacterDirectiveTier(**d) for d in data]
+        return [CharacterDirectiveTier(**cast(Any, d)) for d in data]
 
     async def directive_tree(self, results: int = 1,
                              **kwargs: Any) -> List[CharacterDirectiveTree]:
@@ -286,7 +287,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.limit(results)
         payload = await self._client.request(query)
         data = extract_payload(payload, collection)
-        return [CharacterDirectiveTree(**d) for d in data]
+        return [CharacterDirectiveTree(**cast(Any, d)) for d in data]
 
     async def events(self, **kwargs: Any) -> List[CensusData]:
         """Return and process past events for this character.

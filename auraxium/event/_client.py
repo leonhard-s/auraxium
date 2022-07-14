@@ -364,7 +364,7 @@ class EventClient(Client):
         trigger = Trigger(event, *args, name=name, **kwargs)
 
         def wrapper(func: _CallbackT[_EventT]) -> None:
-            trigger.action = func
+            trigger.action = func  # type: ignore
             # If the trigger name has not been specified, use the call-back
             # function's name instead
             if trigger.name is None:
@@ -523,5 +523,5 @@ def _event_factory(data: CensusData) -> Event:
     if (event_name := data.get('event_name')) is not None:
         for subclass in Event.__subclasses__():
             if subclass.__name__ == event_name:
-                return subclass(**data)
-    return Event(**data)
+                return subclass(**cast(Any, data))
+    return Event(**cast(Any, data))
