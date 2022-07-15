@@ -180,7 +180,7 @@ class EventClient(Client):
         """
         # NOTE: When multiple triggers are added to the bot without an active
         # websocket connection, this function may be scheduled multiple times.
-        if self._connect_lock.locked():
+        if self._connect_lock.locked():  # pragma: no cover
             _log.debug('Websocket already running')
             return
         await self._connect_lock.acquire()
@@ -295,7 +295,7 @@ class EventClient(Client):
         This method processes event payloads and sends messages added
         to :attr:`EventClient._send_queue`.
         """
-        if self.websocket is None:
+        if self.websocket is None:  # pragma: no cover
             return
         try:
             response = str(await asyncio.wait_for(
@@ -322,7 +322,7 @@ class EventClient(Client):
     def trigger(self, event: Type[_EventT], *, name: Optional[str] = None,
                 **kwargs: Any) -> Callable[[_CallbackT[_EventT]], None]:
         # Single event variant (checks callback argument type)
-        ...
+        ...   # pragma: no cover
 
     @overload
     def trigger(self, event: Type[_EventT],
@@ -330,14 +330,14 @@ class EventClient(Client):
                 name: Optional[str] = None, **kwargs: Any) -> Callable[
                     [_CallbackT[Union[_EventT, _EventT2]]], None]:
         # Two event variant (checks callback argument type)
-        ...
+        ...   # pragma: no cover
 
     @overload
     def trigger(self, event: Union[str, Type[Event]],
                 *args: Union[str, Type[Event]], name: Optional[str] = None,
                 **kwargs: Any) -> Callable[[_CallbackT[Event]], None]:
         # Generic fallback variant (callback argument type not checked)
-        ...
+        ...   # pragma: no cover
 
     def trigger(self, event: Union[str, Type[Event]],
                 *args: Union[str, Type[_EventT]], name: Optional[str] = None,
@@ -394,7 +394,7 @@ class EventClient(Client):
             if data['type'] == 'serviceMessage':
                 try:
                     event = _event_factory(cast(CensusData, data['payload']))
-                except pydantic.ValidationError:
+                except pydantic.ValidationError:  # pragma: no cover
                     _log.warning(
                         'Ignoring unsupported payload: %s\n'
                         'This message means that the Auraxium data model must '
@@ -405,7 +405,7 @@ class EventClient(Client):
                 _log.debug('%s event received, dispatching...',
                            event.event_name)
                 self.dispatch(event)
-            elif data['type'] == 'heartbeat':
+            elif data['type'] == 'heartbeat':  # pragma: no cover
                 servers = cast(Dict[str, str], data['online'])
                 self._endpoint_status = {
                     k.split('_', maxsplit=2)[1]: v == 'true'
@@ -415,7 +415,7 @@ class EventClient(Client):
         elif 'subscription' in data:
             _log.debug('Subscription echo: %s', data)
         # Service state
-        elif data.get('type') == 'serviceStateChange':
+        elif data.get('type') == 'serviceStateChange':  # pragma: no cover
             _log.info('Service state change: %s', data)
         # Push service
         elif service == 'push':
@@ -424,7 +424,7 @@ class EventClient(Client):
         elif 'send this for help' in data:
             _log.info('ESS welcome message: %s', data)
         # Other
-        else:
+        else:  # pragma: no cover
             _log.warning('Unhandled message: %s', data)
 
     async def wait_for(self, trigger: Trigger, *args: Trigger,
@@ -503,7 +503,7 @@ class EventClient(Client):
            WebSocket connection's status.
         """
         if self._connected:
-            return
+            return  # pragma: no cover
         while not self._connected:
             await asyncio.sleep(interval)
 
@@ -524,4 +524,5 @@ def _event_factory(data: CensusData) -> Event:
         for subclass in Event.__subclasses__():
             if subclass.__name__ == event_name:
                 return subclass(**cast(Any, data))
-    return Event(**cast(Any, data))
+    # Fallback if the API ever adds new event types
+    return Event(**cast(Any, data))  # pragma: no cover

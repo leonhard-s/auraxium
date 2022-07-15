@@ -160,7 +160,8 @@ class MaintenanceError(CensusError):
     """Raised if the API is down or undergoing maintenance."""
 
     def __init__(self, message: str, url: yarl.URL,
-                 response: Optional[aiohttp.ClientResponse]) -> None:
+                 response: Optional[aiohttp.ClientResponse]
+                 ) -> None:  # pragma: no cover
         super().__init__(message, url)
         self.response: Optional[aiohttp.ClientResponse] = response
 
