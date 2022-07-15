@@ -21,7 +21,7 @@ class TestRestClient(unittest.IsolatedAsyncioTestCase):
 
     async def asyncSetUp(self) -> None:
         await super().asyncSetUp()
-        self.client = auraxium.Client(service_id=SERVICE_ID)
+        self.client = auraxium.Client(service_id=SERVICE_ID, profiling=True)
 
     async def asyncTearDown(self) -> None:
         await super().asyncTearDown()
@@ -100,3 +100,21 @@ class TestRestClient(unittest.IsolatedAsyncioTestCase):
         if char is None:
             self.fail('Character not found')
         self.assertIsInstance(char, Character)
+
+    async def test_context_manager(self) -> None:
+        """Test the __aenter__ and __aexit__ interfaces."""
+        async with self.client as client:
+            self.assertIsInstance(client, auraxium.Client)
+            self.assertIs(client, self.client)
+            self.assertFalse(client.session.closed)
+        self.assertTrue(client.session.closed)
+
+    async def test_latency(self) -> None:
+        """Test the latency() helper method."""
+        # Initially less than 0
+        latency = self.client.latency
+        self.assertLess(latency, 0)
+        # After a call, it should be greater than 0
+        await self.client.get(Character)
+        latency = self.client.latency
+        self.assertGreater(latency, 0)
