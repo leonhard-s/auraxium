@@ -51,10 +51,10 @@ class RequestClient:
     def __init__(self, loop: Optional[asyncio.AbstractEventLoop] = None,
                  service_id: str = 's:example', profiling: bool = False,
                  no_ssl_certs: bool = False) -> None:
-        self.loop = loop or asyncio.get_event_loop()
-        self.profiling = profiling
-        self.service_id = service_id
-        self.session = aiohttp.ClientSession()
+        self.loop: asyncio.AbstractEventLoop = loop or asyncio.get_event_loop()
+        self.profiling: bool = profiling
+        self.service_id: str = service_id
+        self.session: aiohttp.ClientSession = aiohttp.ClientSession()
         self._timing_cache: List[float] = []
         if no_ssl_certs:
             warnings.warn('SSL certificate expiration bypass is disabled in '

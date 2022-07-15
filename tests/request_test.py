@@ -32,8 +32,8 @@ class DummyResponse:
 
     def __init__(self, is_json: bool, reports_json: bool = True) -> None:
         self._data = {'success': 'True'}
-        self.is_json = is_json
-        self.reports_json = reports_json
+        self.is_json: bool = is_json
+        self.reports_json: bool = reports_json
 
     @property
     def real_url(self) -> yarl.URL:

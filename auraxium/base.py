@@ -74,10 +74,10 @@ class Ps2Object(metaclass=abc.ABCMeta):
         id_ = int(str(data[self.id_field]))
         _log.debug('Instantiating <%s:%d> using payload: %s',
                    self.__class__.__name__, id_, data)
-        self.id = id_
+        self.id: int = id_  # pylint: disable=invalid-name
         self._client = client
         try:
-            self.data = self._model(**data)
+            self.data: RESTPayload = self._model(**data)
         except pydantic.ValidationError as err:
             _log.warning(
                 'Encountered unsupported payload: %s\n'

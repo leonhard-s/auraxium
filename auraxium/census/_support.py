@@ -202,9 +202,9 @@ class SearchTerm:
         :param SearchModifier modifier: The search modifier to use.
            Modifiers can be used to get non-exact or partial matches.
         """
-        self.field = field
-        self.value = value
-        self.modifier = modifier
+        self.field: str = field
+        self.value: CensusValue = value
+        self.modifier: SearchModifier = modifier
 
     def as_tuple(self) -> Tuple[str, str]:
         """Return a key/value pair representing the search term.

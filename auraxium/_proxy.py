@@ -50,7 +50,7 @@ class Proxy(Generic[_Ps2ObjectT]):
         :param float lifetime: The time-to-use of the retrieved data.
         """
         self._type = type_
-        self.query = query
+        self.query: Query = query
         self._client = client
         self._ttu = lifetime
         self._data: List[_Ps2ObjectT]

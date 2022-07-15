@@ -113,7 +113,7 @@ class Trigger:
         :param bool single_shot: If true, trigger will be removed from
            any client when it first fires.
         """
-        self.action = action
+        self.action: Optional[_Action] = action
         self.characters: List[int] = []
         if characters is not None:
             self.characters = [
@@ -121,8 +121,8 @@ class Trigger:
         self.conditions: List[Callable[[Event], bool]] = conditions or []
         self.events: Set[_EventType] = set((event, *args))
         self.last_run: Optional[datetime.datetime] = None
-        self.name = name
-        self.single_shot = single_shot
+        self.name: Optional[str] = name
+        self.single_shot: bool = single_shot
         self.worlds: List[int] = []
         if worlds is not None:
             self.worlds = [w if isinstance(w, int) else w.id for w in worlds]

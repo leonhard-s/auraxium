@@ -45,7 +45,7 @@ class CensusError(AuraxiumException):
 
     def __init__(self, message: str, url: yarl.URL) -> None:
         super().__init__(message)
-        self.url = url
+        self.url: yarl.URL = url
 
 
 class UnknownCollectionError(CensusError):
@@ -59,8 +59,8 @@ class UnknownCollectionError(CensusError):
     def __init__(self, message: str, url: yarl.URL, namespace: str,
                  collection: Optional[str]) -> None:
         super().__init__(message, url)
-        self.namespace = namespace
-        self.collection = collection
+        self.namespace: str = namespace
+        self.collection: Optional[str] = collection
 
 
 class ServiceUnavailableError(CensusError):
@@ -151,9 +151,9 @@ class InvalidSearchTermError(ServerError):
     def __init__(self, message: str, url: yarl.URL, namespace: str,
                  collection: str, field: Optional[str]) -> None:
         super().__init__(message, url)
-        self.namespace = namespace
-        self.collection = collection
-        self.field = field
+        self.namespace: str = namespace
+        self.collection: str = collection
+        self.field: Optional[str] = field
 
 
 class MaintenanceError(CensusError):
@@ -162,7 +162,7 @@ class MaintenanceError(CensusError):
     def __init__(self, message: str, url: yarl.URL,
                  response: Optional[aiohttp.ClientResponse]) -> None:
         super().__init__(message, url)
-        self.response = response
+        self.response: Optional[aiohttp.ClientResponse] = response
 
 
 class ResponseError(AuraxiumException):
@@ -186,7 +186,7 @@ class PayloadError(AuraxiumException):
 
     def __init__(self, message: str, payload: Dict[str, Any]) -> None:
         super().__init__(message)
-        self.payload = payload
+        self.payload: Dict[str, Any] = payload
 
 
 class NotFoundError(AuraxiumException):

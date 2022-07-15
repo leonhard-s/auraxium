@@ -61,7 +61,7 @@ class QueryBase:
            :meth:`SearchTerm.infer`.
         :type kwargs: float or int or str
         """
-        self.data = QueryBaseData(collection)
+        self.data: QueryBaseData = QueryBaseData(collection)
         self.joins: List[JoinedQuery] = []
         # Replace and double underscores with dots to allow accessing inner
         # fields like "name.first" or "battle_rank.value"
@@ -271,7 +271,7 @@ class Query(QueryBase):
         """
         super().__init__(collection, **kwargs)
         data: QueryBaseData = self.data  # type: ignore
-        self.data = QueryData.from_base(data)
+        self.data: QueryData = QueryData.from_base(data)
         self.data.namespace = namespace
         self.data.service_id = service_id
 
@@ -667,7 +667,7 @@ class JoinedQuery(QueryBase):
         """
         super().__init__(collection, **kwargs)
         data: QueryBaseData = self.data  # type: ignore
-        self.data = JoinedQueryData.from_base(data)
+        self.data: JoinedQueryData = JoinedQueryData.from_base(data)
 
     @classmethod
     def copy(cls, template: QueryBase,  # type: ignore

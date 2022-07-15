@@ -94,9 +94,9 @@ class TLRUCache(Generic[_K, _V]):
         # NOTE: Mypy currently does not support type hinting the OrderedDict
         # object in-code, hence the string literal type.
         self._data: 'OrderedDict[_K, _CacheItem[_V]]' = OrderedDict()
-        self.name = name or 'TLRUCache'
-        self.size = size
-        self.ttu = ttu
+        self.name: str = name or 'TLRUCache'
+        self.size: int = size
+        self.ttu: float = ttu
 
     def __contains__(self, key: str) -> bool:
         """Return whether the given key exists in the cache."""
