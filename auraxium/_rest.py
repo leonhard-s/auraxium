@@ -17,7 +17,8 @@ import json
 import logging
 import sys
 import warnings
-from typing import Generator, Literal, List, Optional, Tuple, Type, TypeVar, cast
+from typing import (Generator, Literal, List, Optional, Tuple, Type, TypeVar,
+                    cast)
 from types import TracebackType
 
 import aiohttp
@@ -51,7 +52,12 @@ class RequestClient:
     def __init__(self, loop: Optional[asyncio.AbstractEventLoop] = None,
                  service_id: str = 's:example', profiling: bool = False,
                  no_ssl_certs: bool = False) -> None:
-        self.loop: asyncio.AbstractEventLoop = loop or asyncio.get_event_loop()
+        if loop is None:
+            try:
+                loop = asyncio.get_running_loop()
+            except RuntimeError:
+                loop = asyncio.new_event_loop()
+        self.loop: asyncio.AbstractEventLoop = loop
         self.profiling: bool = profiling
         self.service_id: str = service_id
         self.session: aiohttp.ClientSession = aiohttp.ClientSession()
