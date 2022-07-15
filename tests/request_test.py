@@ -1,8 +1,4 @@
-"""Unit tests for the auraxium.request sub module.
-
-Some tests will be skipped if the SERVICE_ID environment variable has
-not been set.
-"""
+"""Unit tests for the auraxium.request sub module."""
 
 import json
 import os
