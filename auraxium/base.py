@@ -71,7 +71,11 @@ class Ps2Object(metaclass=abc.ABCMeta):
         :param auraxium.Client client: The client object to use for
            requests performed via this object.
         """
-        id_ = int(str(data[self.id_field]))
+        try:
+            id_ = int(str(data[self.id_field]))
+        except KeyError as err:
+            raise PayloadError(
+                f'Missing field "{self.id_field}"', data) from err
         _log.debug('Instantiating <%s:%d> using payload: %s',
                    self.__class__.__name__, id_, data)
         self.id: int = id_  # pylint: disable=invalid-name
@@ -79,12 +83,6 @@ class Ps2Object(metaclass=abc.ABCMeta):
         try:
             self.data: RESTPayload = self._model(**data)
         except pydantic.ValidationError as err:
-            _log.warning(
-                'Encountered unsupported payload: %s\n'
-                'This message means that the Auraxium data model must '
-                'be updated. Please ensure you are on the latest '
-                'version of the Auraxium library and report this '
-                'message to the project maintainers.', data)
             raise PayloadError(
                 f'Unable to instantiate {self.__class__.__name__} instance '
                 f'from given payload: {err}', data) from err
@@ -289,19 +287,6 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
         cls._cache.size = size
         if ttu is not None:
             cls._cache.ttu = ttu
-
-    @classmethod
-    def _check_cache(cls: Type[CachedT], id_: int) -> Optional[CachedT]:
-        """Attempt to restore an item from the cache.
-
-        If the item cannot be found, :obj:`None` will be returned
-        instead.
-
-        :param int id_: The unique identifier the item is cached by.
-        :return: An existing instance if found, or :obj:`None` if the
-           object has not been retrieved before or expired.
-        """
-        return cls._cache.get(id_)
 
     @classmethod
     @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
