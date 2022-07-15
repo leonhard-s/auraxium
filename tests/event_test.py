@@ -2,7 +2,6 @@
 
 import asyncio
 import unittest
-from typing import Any, Optional
 
 # pylint: disable=import-error
 import auraxium
@@ -14,32 +13,15 @@ from tests.utils import SERVICE_ID
 class EventClientTest(unittest.IsolatedAsyncioTestCase):
     """Live tests for the real-time event client component."""
 
-    # Infrastructure
-
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
-        super().__init__(*args, **kwargs)
-        self._client: Optional[auraxium.event.EventClient] = None
-
-    @property
-    def client(self) -> auraxium.event.EventClient:
-        """Shorthand for returning the active client."""
-        assert self._client is not None, 'test setup issue'
-        return self._client
+    client: auraxium.EventClient
 
     async def asyncSetUp(self) -> None:
-        """Reset the event streaming client before every test."""
-        if self._client is not None:
-            await self._client.close()
-        self._client = auraxium.event.EventClient(
-            service_id=SERVICE_ID, no_ssl_certs=True)
+        await super().asyncSetUp()
+        self.client = auraxium.EventClient(service_id=SERVICE_ID)
 
     async def asyncTearDown(self) -> None:
-        """Close the event streaming client after every test."""
-        if self._client is not None:
-            await self._client.close()
-        self._client = None
-
-    # Test cases
+        await super().asyncTearDown()
+        await self.client.close()
 
     def test_startup_defensive(self) -> None:
         """Ensure the client does not connect without any triggers."""
