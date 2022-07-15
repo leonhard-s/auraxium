@@ -6,6 +6,7 @@ from typing import Any, Optional
 
 # pylint: disable=import-error
 import auraxium
+
 from tests.utils import SERVICE_ID
 
 
@@ -67,6 +68,7 @@ class EventClientTest(unittest.IsolatedAsyncioTestCase):
                                   'non-event returned')
             flag.set()
 
+        # pylint: disable=not-callable
         self.client.trigger(auraxium.event.Death)(on_death)
         try:
             await asyncio.wait_for(flag.wait(), 5.0)

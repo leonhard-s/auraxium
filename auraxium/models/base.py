@@ -13,7 +13,7 @@ from ..types import CensusData
 _T = TypeVar('_T')
 
 
-class Payload(pydantic.BaseModel):
+class Payload(pydantic.BaseModel):  # pylint: disable=no-member
     """A payload received through the REST or WebSocket interface.
 
     Instances of this class are read-only.
@@ -97,7 +97,7 @@ class FallbackMixin(metaclass=abc.ABCMeta):
         """
 
 
-class ImageData(pydantic.BaseModel):
+class ImageData(pydantic.BaseModel):  # pylint: disable=no-member
     """Mixin dataclass for types supporting image access.
 
     .. attribute:: image_id
