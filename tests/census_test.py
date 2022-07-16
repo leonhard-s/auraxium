@@ -463,17 +463,16 @@ class TestURLs(unittest.TestCase):
     def test_search_modifier_shorthands(self) -> None:
         """Test the search modifier shorthand constants."""
         m = census.SearchModifier
-        shorthands = {m.EQ: m.EQUAL_TO,
-                      m.LT: m.LESS_THAN,
-                      m.LTE: m.LESS_THAN_OR_EQUAL,
-                      m.GT: m.GREATER_THAN,
-                      m.GTE: m.GREATER_THAN_OR_EQUAL,
-                      m.SW: m.STARTS_WITH,
-                      m.IN: m.CONTAINS,
-                      m.NE: m.NOT_EQUAL}
-        for property_, value in shorthands.items():
-            raw = property_
-            self.assertEqual(raw, value)
+        shorthands = {m.EQUAL_TO: m.EQ,
+                      m.LESS_THAN: m.LT,
+                      m.LESS_THAN_OR_EQUAL: m.LTE,
+                      m.GREATER_THAN: m.GT,
+                      m.GREATER_THAN_OR_EQUAL: m.GTE,
+                      m.STARTS_WITH: m.SW,
+                      m.CONTAINS: m.IN,
+                      m.NOT_EQUAL: m.NE}
+        for value, property_ in shorthands.items():
+            self.assertEqual(property_, value)
 
     def test_warning_from_value(self) -> None:
         """Cannot infer from an empty value."""
