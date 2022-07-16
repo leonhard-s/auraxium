@@ -153,7 +153,7 @@ class Event(Payload):
     @property
     def age(self) -> float:
         """The age of the event in seconds."""
-        now = datetime.datetime.now()
+        now = datetime.datetime.utcnow()
         return (self.timestamp - now).total_seconds()
 
 
