@@ -137,14 +137,15 @@ class EventClientTest(unittest.IsolatedAsyncioTestCase):
 class TriggerTest(unittest.TestCase):
     """Test cases for the auraxium.event.Trigger class."""
 
-    time = int(datetime.datetime.utcnow().timestamp())
+    time = datetime.datetime.utcnow()
 
     @classmethod
     def death_evt_factory(cls, attacker: int, victim: int, world: int,
                           is_headshot: bool = False) -> auraxium.event.Death:
         """Create a death event."""
+        timestamp: Any = int(cls.time.timestamp())
         return auraxium.event.Death(
-            event_name='Death', timestamp=cls.time, world_id=world,
+            event_name='Death', timestamp=timestamp, world_id=world,
             attacker_character_id=attacker, attacker_fire_mode_id=0,
             attacker_loadout_id=0, attacker_vehicle_id=0, attacker_weapon_id=0,
             character_id=victim, character_loadout_id=0, is_critical=False,
@@ -156,7 +157,7 @@ class TriggerTest(unittest.TestCase):
         fields = type_.__fields__
         params: Dict[str, Any] = {
             k: v for k, v in zip(fields, args) if k != 'timestamp'}
-        params['timestamp'] = TriggerTest.time
+        params['timestamp'] = str(int(TriggerTest.time.timestamp()))
         return type_(**params)
 
     def test_characters_init(self) -> None:
@@ -209,8 +210,9 @@ class TriggerTest(unittest.TestCase):
         """Successful filter for a custom GainExperience event."""
         trigger = auraxium.Trigger(
             auraxium.event.GainExperience.filter_experience(15))
+        time: Any = int(self.time.timestamp())
         event = auraxium.event.GainExperience(
-            event_name='GainExperience', timestamp=self.time, world_id=1,
+            event_name='GainExperience', timestamp=time, world_id=1,
             amount=10, character_id=1, experience_id=15, loadout_id=1,
             other_id=0, zone_id=2)
         self.assertTrue(trigger.check(event))
@@ -219,16 +221,18 @@ class TriggerTest(unittest.TestCase):
         """Failed filter for a custom GainExperience event."""
         trigger = auraxium.Trigger(
             auraxium.event.GainExperience.filter_experience(250))
+        time: Any = int(self.time.timestamp())
         event = auraxium.event.GainExperience(
-            event_name='GainExperience', timestamp=self.time, world_id=1,
+            event_name='GainExperience', timestamp=time, world_id=1,
             amount=10, character_id=1, experience_id=15, loadout_id=1,
             other_id=0, zone_id=2)
         self.assertFalse(trigger.check(event))
 
     def test_custom_condition(self) -> None:
         """Test custom trigger conditions."""
+        time: Any = int(self.time.timestamp())
         event = auraxium.event.PlayerLogin(event_name='PlayerLogin',
-                                           timestamp=self.time, world_id=1, character_id=1)
+                                           timestamp=time, world_id=1, character_id=1)
 
         # Various things to use as conditions
         list_: List[Any] = []
