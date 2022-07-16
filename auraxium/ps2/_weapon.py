@@ -1,7 +1,7 @@
 """Weapon class definition."""
 
 import logging
-from typing import Final, List, Optional
+from typing import Any, Final, List, Optional, cast
 
 from ..base import Cached
 from ..census import Query
@@ -148,7 +148,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
         query.limit(10).sort('weapon_slot_index')
         payload = await self._client.request(query)
         data = extract_payload(payload, collection)
-        return [WeaponAmmoSlot(**d) for d in data]
+        return [WeaponAmmoSlot(**cast(Any, d)) for d in data]
 
     def attachments(self) -> SequenceProxy[Item]:
         """Return the attachments available for this weapon.
@@ -168,13 +168,13 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
     async def datasheet(self) -> WeaponDatasheet:
         """Return the datasheet for the weapon."""
         collection: Final[str] = 'weapon_datasheet'
-        if (item := await self.item()) is None:
+        if (item := await self.item()) is None:  # pragma: no cover
             raise RuntimeError(f'Invalid item for weapon ID: {self.id}')
         query = Query(collection, service_id=self._client.service_id)
         query.add_term(field=Item.id_field, value=item.id)
         payload = await self._client.request(query)
         data = extract_single(payload, collection)
-        return WeaponDatasheet(**data)
+        return WeaponDatasheet(**cast(Any, data))
 
     def fire_groups(self) -> SequenceProxy[FireGroup]:
         """Return the fire groups for this weapon.
@@ -192,7 +192,8 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
     @classmethod
     @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')
     async def get_by_name(cls, name: str, *, locale: str = 'en',
-                          client: RequestClient) -> Optional['Weapon']:
+                          client: RequestClient
+                          ) -> Optional['Weapon']:  # pragma: no cover
         """Retrieve a weapon by name.
 
         This is a helper method provided as weapons themselves do not

@@ -65,10 +65,10 @@ class Client(RequestClient):
         result = await self.request(query, verb='count')
         try:
             return int(str(result['count']))
-        except KeyError as err:
+        except KeyError as err:  # pragma: no cover
             raise PayloadError(
                 'Missing key "count" in API response', result) from err
-        except ValueError as err:
+        except ValueError as err:  # pragma: no cover
             raise PayloadError(
                 f'Invalid count: {result["count"]}', result) from err
 
@@ -121,7 +121,7 @@ class Client(RequestClient):
             type_, results=1, check_case=check_case, **kwargs)
         if data:
             if not isinstance(data[0], type_):
-                raise RuntimeError(
+                raise RuntimeError(  # pragma: no cover
                     f'Expected {type_} instance, got {type(data[0])} instead, '
                     'please report this bug to the project maintainers')
             if len(data) > 1:
@@ -146,12 +146,12 @@ class Client(RequestClient):
         filters: CensusData = {type_.id_field: id_}
         data = await self.find(type_, results=1, **filters)
         if data and not isinstance(data[0], type_):
-            raise RuntimeError(
+            raise RuntimeError(  # pragma: no cover
                 f'Expected {type_} instance, got {type(data[0])} instead, '
                 'please report this bug to the project maintainers')
         if data:
             return data[0]
-        hook: Callable[[int], CensusData]
+        hook: Optional[Callable[[int], CensusData]]
         if (hook := getattr(type_, 'fallback_hook', None)) is not None:
             try:
                 fallback = hook(id_)
@@ -200,6 +200,6 @@ class Client(RequestClient):
         payload = await self.request(query)
         try:
             payload = extract_single(payload, type_.collection)
-        except NotFoundError:
+        except NotFoundError:  # pragma: no cover
             return None
         return cast(_NamedT, type_(payload, locale=locale, client=self))

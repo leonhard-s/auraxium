@@ -1,7 +1,8 @@
 """Outfit and outfit member class definitions."""
 
 import logging
-from typing import ClassVar, Final, List, Optional, TYPE_CHECKING, Type, Union
+from typing import (Any, ClassVar, Final, List, Optional, TYPE_CHECKING, Type,
+                    Union, cast)
 
 from ..base import Cached, Named, NamedT
 from .._cache import TLRUCache
@@ -175,7 +176,8 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
     @classmethod
     @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
-                          client: RequestClient) -> Optional[NamedT]:
+                          client: RequestClient
+                          ) -> Optional[NamedT]:  # pragma: no cover
         """Retrieve an outfit by its unique name.
 
         This query is always case-insensitive.
@@ -197,7 +199,8 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
 
     @classmethod
     @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')
-    async def get_by_tag(cls, tag: str, client: RequestClient) -> Optional['Outfit']:
+    async def get_by_tag(cls, tag: str, client: RequestClient
+                         ) -> Optional['Outfit']:  # pragma: no cover
         """Return an outfit by its unique tag.
 
         This query is always case-insensitive.
@@ -243,4 +246,4 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         query.limit(20)
         data = await self._client.request(query)
         payload = extract_payload(data, collection)
-        return [OutfitRankData(**c) for c in payload]
+        return [OutfitRankData(**cast(Any, c)) for c in payload]

@@ -5,7 +5,7 @@ import warnings
 from typing import Dict, Final, List, Optional, Tuple, Union
 
 from ..census import Query
-from ..errors import NotFoundError
+from ..errors import NotFoundError, ServerError
 from .._rest import RequestClient, extract_payload, extract_single
 
 from ._character import Character
@@ -73,7 +73,10 @@ async def by_char(stat: Stat, character: Union[int, Character],
     query.add_term(field=Character.id_field, value=char_id)
     query.add_term(field='name', value=_name_from_stat(stat))
     query.add_term(field='period', value=_period_from_enum(period))
-    payload = await client.request(query)
+    try:
+        payload = await client.request(query)
+    except ServerError:  # pragma: no cover
+        return None
     try:
         data = extract_single(payload, collection)
     except NotFoundError:
@@ -97,6 +100,10 @@ async def by_char_multi(stat: Stat, character: Union[int, Character],
     query.add_term(field=Character.id_field, value=value)
     query.add_term(field='name', value=_name_from_stat(stat))
     query.add_term(field='period', value=_period_from_enum(period))
+    try:
+        payload = await client.request(query)
+    except ServerError:  # pragma: no cover
+        return []
     payload = await client.request(query)
     data = extract_payload(payload, collection)
     return_: Dict[int, Tuple[int, int]] = {i: (-1, -1) for i in char_ids}
@@ -114,7 +121,7 @@ async def top(stat: Stat, period: Period = Period.FOREVER, matches: int = 10,
     Note that only the top 10'000 players are tracked by the
     leaderboard.
     """
-    if matches > 10_000:
+    if matches > 10_000:  # pragma: no cover
         warnings.warn('Results will been truncated to 10k elements due to '
                       'API limitations')
         matches = 10_000
@@ -129,7 +136,10 @@ async def top(stat: Stat, period: Period = Period.FOREVER, matches: int = 10,
     query.start(offset)
     join = query.create_join(Character.collection)
     join.set_fields(Character.id_field)
-    payload = await client.request(query)
+    try:
+        payload = await client.request(query)
+    except ServerError:  # pragma: no cover
+        return []
     key = 'character_id_join_character'
     return [(int(str(d['value'])), Character(d[key], client=client))
             for d in extract_payload(payload, collection=collection)]

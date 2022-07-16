@@ -2,13 +2,14 @@ import asyncio
 import contextlib
 import json
 import logging
-from typing import (Any, Callable, Coroutine, Dict, Iterator, List, Optional, Type, TypeVar, Union,
-                    cast, overload)
+from typing import (Any, Callable, Coroutine, Dict, Generator, List, Optional,
+                    Type, TypeVar, Union, cast, overload)
 
 import backoff
 import pydantic
 import websockets
 import websockets.exceptions
+from backoff.types import Details
 from websockets.legacy import client as ws_client
 
 from .._client import Client
@@ -147,7 +148,7 @@ class EventClient(Client):
         _log.debug('Removing trigger %s', trigger)
         try:
             self.triggers.remove(trigger)
-        except ValueError as err:
+        except ValueError as err:  # pragma: no cover
             raise RuntimeError('The given trigger is not registered for '
                                'this client') from err
         # If this was the only trigger registered, close the websocket
@@ -179,16 +180,16 @@ class EventClient(Client):
         """
         # NOTE: When multiple triggers are added to the bot without an active
         # websocket connection, this function may be scheduled multiple times.
-        if self._connect_lock.locked():
+        if self._connect_lock.locked():  # pragma: no cover
             _log.debug('Websocket already running')
             return
         await self._connect_lock.acquire()
 
-        def on_success(details: Dict[str, Any]) -> None:
+        def on_success(details: Details) -> None:
             tries = int(details['tries'])
             _log.debug('Connection successful after %d tries', tries)
 
-        def on_backoff(details: Dict[str, Any]) -> None:
+        def on_backoff(details: Details) -> None:
             wait = float(details['wait'])
             tries = int(details['tries'])
             _log.debug('Backing off %.2f seconds after %d failed attempt[s])',
@@ -197,10 +198,13 @@ class EventClient(Client):
         backoff_errors = (ConnectionRefusedError,
                           ConnectionResetError,
                           websockets.exceptions.ConnectionClosed)
-        backoff_gen: Iterator[float] = backoff.expo(  # type: ignore
-            base=10, factor=0.001, max_value=60.0)
+
+        def backoff_gen() -> Generator[float, None, None]:
+            for wait in backoff.expo(base=10, factor=1, max_value=60_000):
+                yield wait * 0.001 if wait is not None else None  # type: ignore
+
         backoff_wrap: _Decorator = backoff.on_exception(  # type: ignore
-            lambda: backoff_gen, backoff_errors, on_backoff=on_backoff,
+            backoff_gen, backoff_errors, on_backoff=on_backoff,
             on_success=on_success, jitter=None)
         await backoff_wrap(self._connection_handler)()
 
@@ -291,7 +295,7 @@ class EventClient(Client):
         This method processes event payloads and sends messages added
         to :attr:`EventClient._send_queue`.
         """
-        if self.websocket is None:
+        if self.websocket is None:  # pragma: no cover
             return
         try:
             response = str(await asyncio.wait_for(
@@ -318,22 +322,22 @@ class EventClient(Client):
     def trigger(self, event: Type[_EventT], *, name: Optional[str] = None,
                 **kwargs: Any) -> Callable[[_CallbackT[_EventT]], None]:
         # Single event variant (checks callback argument type)
-        ...
+        ...   # pragma: no cover
 
     @overload
     def trigger(self, event: Type[_EventT],
-                *args: Union[Type[_EventT], Type[_EventT2]],
+                arg1: Type[_EventT], *args: Type[_EventT2],
                 name: Optional[str] = None, **kwargs: Any) -> Callable[
                     [_CallbackT[Union[_EventT, _EventT2]]], None]:
         # Two event variant (checks callback argument type)
-        ...
+        ...   # pragma: no cover
 
     @overload
     def trigger(self, event: Union[str, Type[Event]],
                 *args: Union[str, Type[Event]], name: Optional[str] = None,
                 **kwargs: Any) -> Callable[[_CallbackT[Event]], None]:
         # Generic fallback variant (callback argument type not checked)
-        ...
+        ...   # pragma: no cover
 
     def trigger(self, event: Union[str, Type[Event]],
                 *args: Union[str, Type[_EventT]], name: Optional[str] = None,
@@ -360,7 +364,7 @@ class EventClient(Client):
         trigger = Trigger(event, *args, name=name, **kwargs)
 
         def wrapper(func: _CallbackT[_EventT]) -> None:
-            trigger.action = func
+            trigger.action = func  # type: ignore
             # If the trigger name has not been specified, use the call-back
             # function's name instead
             if trigger.name is None:
@@ -390,7 +394,7 @@ class EventClient(Client):
             if data['type'] == 'serviceMessage':
                 try:
                     event = _event_factory(cast(CensusData, data['payload']))
-                except pydantic.ValidationError:
+                except pydantic.ValidationError:  # pragma: no cover
                     _log.warning(
                         'Ignoring unsupported payload: %s\n'
                         'This message means that the Auraxium data model must '
@@ -401,7 +405,7 @@ class EventClient(Client):
                 _log.debug('%s event received, dispatching...',
                            event.event_name)
                 self.dispatch(event)
-            elif data['type'] == 'heartbeat':
+            elif data['type'] == 'heartbeat':  # pragma: no cover
                 servers = cast(Dict[str, str], data['online'])
                 self._endpoint_status = {
                     k.split('_', maxsplit=2)[1]: v == 'true'
@@ -411,7 +415,7 @@ class EventClient(Client):
         elif 'subscription' in data:
             _log.debug('Subscription echo: %s', data)
         # Service state
-        elif data.get('type') == 'serviceStateChange':
+        elif data.get('type') == 'serviceStateChange':  # pragma: no cover
             _log.info('Service state change: %s', data)
         # Push service
         elif service == 'push':
@@ -420,7 +424,7 @@ class EventClient(Client):
         elif 'send this for help' in data:
             _log.info('ESS welcome message: %s', data)
         # Other
-        else:
+        else:  # pragma: no cover
             _log.warning('Unhandled message: %s', data)
 
     async def wait_for(self, trigger: Trigger, *args: Trigger,
@@ -499,7 +503,7 @@ class EventClient(Client):
            WebSocket connection's status.
         """
         if self._connected:
-            return
+            return  # pragma: no cover
         while not self._connected:
             await asyncio.sleep(interval)
 
@@ -519,5 +523,6 @@ def _event_factory(data: CensusData) -> Event:
     if (event_name := data.get('event_name')) is not None:
         for subclass in Event.__subclasses__():
             if subclass.__name__ == event_name:
-                return subclass(**data)
-    return Event(**data)
+                return subclass(**cast(Any, data))
+    # Fallback if the API ever adds new event types
+    return Event(**cast(Any, data))  # pragma: no cover

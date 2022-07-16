@@ -15,7 +15,7 @@ CensusData = Dict[
     str, Union[str, int, float, 'CensusData', List['CensusData']]]
 
 
-class LocaleData(pydantic.BaseModel):
+class LocaleData(pydantic.BaseModel):  # pylint: disable=no-member
     """Container for localised strings.
 
     Note that the ``tr`` locale is ignored as it was abandoned by the
@@ -38,7 +38,7 @@ class LocaleData(pydantic.BaseModel):
     it: Optional[str] = None
 
     @deprecated('0.3.0', ':attr:`auraxium.types.LocaleData.name`')
-    def __call__(self, locale: str = 'en') -> str:
+    def __call__(self, locale: str = 'en') -> str:  # pragma: no cover
         return getattr(self, locale)
 
     def __str__(self) -> str:

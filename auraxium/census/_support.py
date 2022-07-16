@@ -45,69 +45,77 @@ class SearchModifier(enum.Enum):
     CONTAINS = 6
     NOT_EQUAL = 7
 
+    @classmethod
     @property
-    def EQ(self) -> 'SearchModifier':
+    def EQ(cls) -> 'SearchModifier':
         """Alias for :class:`EQUAL_TO <SearchModifier>`.
 
         .. versionadded:: 0.2
         """
-        return self.EQUAL_TO
+        return cls.EQUAL_TO
 
+    @classmethod
     @property
-    def LT(self) -> 'SearchModifier':
+    def LT(cls) -> 'SearchModifier':
         """Alias for :class:`LESS_THAN <SearchModifier>`.
 
         .. versionadded:: 0.2
         """
-        return self.LESS_THAN
+        return cls.LESS_THAN
 
+    @classmethod
     @property
-    def LTE(self) -> 'SearchModifier':
+    def LTE(cls) -> 'SearchModifier':
         """Alias for :class:`LESS_THAN_OR_EQUAL <SearchModifier>`.
 
         .. versionadded:: 0.2
         """
-        return self.LESS_THAN_OR_EQUAL
+        return cls.LESS_THAN_OR_EQUAL
 
+    @classmethod
     @property
-    def GT(self) -> 'SearchModifier':
+    def GT(cls) -> 'SearchModifier':
         """Alias for :class:`GREATER_THAN <SearchModifier>`.
 
         .. versionadded:: 0.2
         """
-        return self.GREATER_THAN
+        return cls.GREATER_THAN
 
+    @classmethod
     @property
-    def GTE(self) -> 'SearchModifier':
+    def GTE(cls) -> 'SearchModifier':
         """Alias for :class:`GREATER_THAN_OR_EQUAL <SearchModifier>`.
 
         .. versionadded:: 0.2
         """
-        return self.GREATER_THAN_OR_EQUAL
+        return cls.GREATER_THAN_OR_EQUAL
 
+    @classmethod
     @property
-    def SW(self) -> 'SearchModifier':
+    def SW(cls) -> 'SearchModifier':
         """Alias for :class:`STARTS_WITH <SearchModifier>`.
 
         .. versionadded:: 0.2
         """
-        return self.STARTS_WITH
+        return cls.STARTS_WITH
 
+    @classmethod
     @property
-    def IN(self) -> 'SearchModifier':
+    def IN(cls) -> 'SearchModifier':
         """Alias for :class:`CONTAINS <SearchModifier>`.
 
         .. versionadded:: 0.2
         """
-        return self.CONTAINS
+        return cls.CONTAINS
 
+    @classmethod
     @property
-    def NE(self) -> 'SearchModifier':
+    def NE(cls) -> 'SearchModifier':
         """Alias for :class:`NOT_EQUAL <SearchModifier>`.
 
         .. versionadded:: 0.2
         """
-        return self.NOT_EQUAL
+        return cls.NOT_EQUAL
 
     @classmethod
     def from_value(cls, value: CensusValue) -> 'SearchModifier':
@@ -202,9 +210,9 @@ class SearchTerm:
         :param SearchModifier modifier: The search modifier to use.
            Modifiers can be used to get non-exact or partial matches.
         """
-        self.field = field
-        self.value = value
-        self.modifier = modifier
+        self.field: str = field
+        self.value: CensusValue = value
+        self.modifier: SearchModifier = modifier
 
     def as_tuple(self) -> Tuple[str, str]:
         """Return a key/value pair representing the search term.

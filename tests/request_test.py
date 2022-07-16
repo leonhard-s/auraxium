@@ -1,8 +1,4 @@
-"""Unit tests for the auraxium.request sub module.
-
-Some tests will be skipped if the SERVICE_ID environment variable has
-not been set.
-"""
+"""Unit tests for the auraxium.request sub module."""
 
 import json
 import os
@@ -32,8 +28,8 @@ class DummyResponse:
 
     def __init__(self, is_json: bool, reports_json: bool = True) -> None:
         self._data = {'success': 'True'}
-        self.is_json = is_json
-        self.reports_json = reports_json
+        self.is_json: bool = is_json
+        self.reports_json: bool = reports_json
 
     @property
     def real_url(self) -> yarl.URL:
@@ -89,7 +85,7 @@ class TestPayloadParsing(unittest.IsolatedAsyncioTestCase):
 
         def raise_helper(name: str) -> None:
             filepath = os.path.join(PAYLOADS, 'errors', f'{name}.json')
-            with open(filepath) as payload_file:
+            with open(filepath, encoding='utf-8') as payload_file:
                 payload: Dict[str, Any] = json.load(payload_file)
             url = yarl.URL(payload.pop('_URL'))
             request.raise_for_dict(payload, url)
@@ -172,7 +168,7 @@ class TestPayloadParsing(unittest.IsolatedAsyncioTestCase):
         """Test payload extraction (multi)."""
         filepath = os.path.join(
             PAYLOADS, 'datatype_payloads', 'character.json')
-        with open(filepath) as file_data:
+        with open(filepath, encoding='utf-8') as file_data:
             data = json.load(file_data)
         data = request.extract_payload(data, 'character')
         self.assertTrue(len(data), 20)
@@ -185,7 +181,7 @@ class TestPayloadParsing(unittest.IsolatedAsyncioTestCase):
         """Test payload extraction (single)."""
         filepath = os.path.join(
             PAYLOADS, 'datatype_payloads', 'character.json')
-        with open(filepath) as file_data:
+        with open(filepath, encoding='utf-8') as file_data:
             data = json.load(file_data)
         # Ensure warnings are raised
         with warnings.catch_warnings(record=True) as caught:

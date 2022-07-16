@@ -1,7 +1,7 @@
 """Fire modes and group class definitions."""
 
 import enum
-from typing import Dict, Final, Optional
+from typing import Any, Dict, Final, Optional, cast
 
 from ..base import Cached
 from ..census import Query
@@ -854,7 +854,7 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
         data = extract_payload(payload, collection)
         states: Dict[PlayerState, PlayerStateGroup] = {}
         for group_data in data:
-            group = PlayerStateGroup(**group_data)
+            group = PlayerStateGroup(**cast(Any, group_data))
             state = PlayerState(group.player_state_id)
             states[state] = group
         return states

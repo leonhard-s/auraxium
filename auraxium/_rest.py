@@ -17,12 +17,14 @@ import json
 import logging
 import sys
 import warnings
-from typing import Any, Dict, Iterator, Literal, List, Optional, Tuple, Type, TypeVar, cast
+from typing import (Generator, Literal, List, Optional, Tuple, Type, TypeVar,
+                    cast)
 from types import TracebackType
 
 import aiohttp
 import backoff
 import yarl
+from backoff.types import Details
 
 from .census import Query
 from .errors import (PayloadError, BadRequestSyntaxError, CensusError,
@@ -31,6 +33,7 @@ from .errors import (PayloadError, BadRequestSyntaxError, CensusError,
                      ResponseError, ServerError, ServiceUnavailableError,
                      UnknownCollectionError)
 from .types import CensusData
+from ._support import deprecated
 
 __all__ = [
     'RequestClient',
@@ -50,12 +53,20 @@ class RequestClient:
     def __init__(self, loop: Optional[asyncio.AbstractEventLoop] = None,
                  service_id: str = 's:example', profiling: bool = False,
                  no_ssl_certs: bool = False) -> None:
-        self.loop = loop or asyncio.get_event_loop()
-        self.profiling = profiling
-        self.service_id = service_id
-        self.session = aiohttp.ClientSession()
+        if loop is None:
+            try:
+                loop = asyncio.get_running_loop()
+            except RuntimeError:  # pragma: no cover
+                # Hacky way to deprecate things that are not functions
+                deprecated('0.3', '0.4', ':meth:`asyncio.new_event_loop()')(
+                    lambda: None)()
+                loop = asyncio.new_event_loop()
+        self.loop: asyncio.AbstractEventLoop = loop
+        self.profiling: bool = profiling
+        self.service_id: str = service_id
+        self.session: aiohttp.ClientSession = aiohttp.ClientSession()
         self._timing_cache: List[float] = []
-        if no_ssl_certs:
+        if no_ssl_certs:  # pragma: no cover
             warnings.warn('SSL certificate expiration bypass is disabled in '
                           'this version of Auraxium due to compatibility '
                           'issues. See '
@@ -125,7 +136,7 @@ class RequestClient:
         data = await run_query(query, verb=verb, session=self.session)
         if self.profiling and verb == 'get':
             timing = cast(CensusData, data.pop('timing'))
-            if _log.level <= logging.DEBUG:
+            if _log.level <= logging.DEBUG:  # pragma: no cover
                 url = query.url()
                 _log.debug('Query times for "%s?%s": %s',
                            '/'.join(url.parts[-2:]), url.query_string,
@@ -410,18 +421,18 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
 
     # TODO: Remove service ID from any URL literals outside of .census
 
-    def on_success(details: Dict[str, Any]) -> None:
+    def on_success(details: Details) -> None:  # pragma: no cover
         if (tries := details['tries']) > 1:
             _log.debug('Query successful after %d attempt[s]: %s',
                        tries, url)
 
-    def on_backoff(details: Dict[str, Any]) -> None:
+    def on_backoff(details: Details) -> None:  # pragma: no cover
         wait = details['wait']
         tries = details['tries']
         _log.debug('Backing off %.2f seconds after %d attempt[s]: %s',
                    wait, tries, url)
 
-    def on_giveup(details: Dict[str, Any]) -> None:
+    def on_giveup(details: Details) -> None:  # pragma: no cover
         elapsed: float = details['elapsed']
         tries: int = details['tries']
         _log.warning('Giving up on query and re-raising exception after %.2f '
@@ -433,11 +444,16 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
     backoff_errors = (aiohttp.ClientResponseError,
                       aiohttp.ClientConnectionError,
                       MaintenanceError)
-    backoff_gen: Iterator[float] = backoff.expo(  # type: ignore
-        base=10, factor=0.001, max_value=5.0)
 
-    @backoff.on_exception(  # type: ignore
-        lambda: backoff_gen, backoff_errors, on_backoff=on_backoff,
+    # NOTE: As of backoff v2.1.2, "backoff.expo" only takes integer arguments.
+    # We therefore scale everything down to meet the original timings
+    def backoff_gen() -> Generator[float, None, None]:
+        for wait in backoff.expo(base=10, factor=1, max_value=10_000):
+            # NOTE: backoff returns None as the first send() - no idea why
+            yield wait * 0.001 if wait is not None else None  # type: ignore
+
+    @backoff.on_exception(
+        backoff_gen, backoff_errors, on_backoff=on_backoff,
         on_giveup=on_giveup, on_success=on_success, max_tries=5, jitter=None)
     async def retry_query() -> aiohttp.ClientResponse:
         """Request handling wrapper."""
@@ -446,7 +462,7 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
         # Trigger MaintenanceErrors from redirect response. This will also be
         # caught by the backoff decorator and will only reach the user if the
         # logic in the on_backoff callback re-raises it.
-        if 300 <= response.status < 400:
+        if 300 <= response.status < 400:  # pragma: no cover
             raise MaintenanceError(
                 'API redirection detected, API maintenance inferred',
                 url, response)
@@ -455,10 +471,10 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
     # Check for HTTP errors
     try:
         response = await retry_query()
-    except aiohttp.ClientResponseError as err:
+    except aiohttp.ClientResponseError as err:  # pragma: no cover
         raise ResponseError(
             f'An HTTP exception occurred: {err.args[0]}') from err
-    except aiohttp.ClientConnectionError as err:
+    except aiohttp.ClientConnectionError as err:  # pragma: no cover
         # The connection had issues.
         raise ResponseError(
             f'A network exception occurred: {err.args[0]}') from err

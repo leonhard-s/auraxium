@@ -10,6 +10,7 @@ showcases how to switch between the low-level queries used by the
 import asyncio
 from typing import List
 
+# pylint: disable=import-error
 import auraxium
 from auraxium import ps2
 
@@ -48,5 +49,4 @@ async def main():
     await client.close()
 
 if __name__ == '__main__':
-    loop = asyncio.get_event_loop()
-    loop.run_until_complete(main())
+    asyncio.run(main())

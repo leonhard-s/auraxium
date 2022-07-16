@@ -379,7 +379,7 @@ class TestURLs(unittest.TestCase):
             'Unexpected collection')
 
     def test_serialise(self) -> None:
-        """Test JoinedQuery.serialise()"""
+        """Test SearchModifier.serialise()"""
         # NOTE: The actual return value of the serialise function is not tested
         # here, that is instead done as part of the larger join checks.
         with self.assertRaises(ValueError):
@@ -459,6 +459,27 @@ class TestURLs(unittest.TestCase):
             self.assertDictEqual(
                 dict(url.query), {'field': f'{prefix}value'},
                 f'Incorrect search modifier prefix; expected {prefix}')
+
+    def test_search_modifier_shorthands(self) -> None:
+        """Test the search modifier shorthand constants."""
+        m = census.SearchModifier
+        shorthands = {m.EQUAL_TO: m.EQ,
+                      m.LESS_THAN: m.LT,
+                      m.LESS_THAN_OR_EQUAL: m.LTE,
+                      m.GREATER_THAN: m.GT,
+                      m.GREATER_THAN_OR_EQUAL: m.GTE,
+                      m.STARTS_WITH: m.SW,
+                      m.CONTAINS: m.IN,
+                      m.NOT_EQUAL: m.NE}
+        for value, property_ in shorthands.items():
+            mod1 = census.SearchTerm('field', 'value', modifier=value)
+            mod2 = census.SearchTerm('field', 'value', modifier=property_)
+            self.assertEqual(mod1.serialise(), mod2.serialise())
+
+    def test_warning_from_value(self) -> None:
+        """Cannot infer from an empty value."""
+        with self.assertRaises(ValueError):
+            _ = census.SearchModifier.from_value('')
 
     def test_warnings_empty_url(self) -> None:
         """Test warnings when using terms with empty collections."""

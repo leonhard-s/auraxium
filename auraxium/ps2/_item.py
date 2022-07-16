@@ -1,6 +1,6 @@
 """Item and item attachment class definitions."""
 
-from typing import Final, Optional, TYPE_CHECKING
+from typing import Any, Final, Optional, TYPE_CHECKING, cast
 
 from ..base import Cached, ImageMixin, Named
 from ..census import Query
@@ -226,7 +226,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
 
         This returns an :class:`auraxium.InstanceProxy`.
         """
-        if self.data.item_category_id is None:
+        if self.data.item_category_id is None:  # pragma: no cover
             raise ValueError(f'{self} does not define a category')
         query = Query(
             ItemCategory.collection, service_id=self._client.service_id)
@@ -253,7 +253,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
         query.add_term(field=self.id_field, value=self.id)
         payload = await self._client.request(query)
         data = extract_single(payload, collection)
-        return WeaponDatasheet(**data)
+        return WeaponDatasheet(**cast(Any, data))
 
     def profiles(self) -> SequenceProxy[Profile]:
         """Return the profiles the item is available to.
@@ -274,7 +274,8 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
         This returns an :class:`auraxium.InstanceProxy`.
         """
         if self.data.item_type_id is None:
-            raise ValueError(f'{self} does not define a type')
+            raise ValueError(
+                f'{self} does not define a type')  # pragma: no cover
         query = Query(ItemType.collection, service_id=self._client.service_id)
         query.add_term(field=ItemType.id_field, value=self.data.item_type_id)
         return InstanceProxy(ItemType, query, client=self._client)

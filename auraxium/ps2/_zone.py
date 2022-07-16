@@ -15,7 +15,8 @@ _STATIC_ZONES = [
     8,  # Esamir
     96,  # VR Training (NC)
     97,  # VR Training (TR)
-    98  # VR Training (VS)
+    98,  # VR Training (VS)
+    344,  # Oshur
 ]
 
 

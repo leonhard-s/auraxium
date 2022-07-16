@@ -26,7 +26,7 @@ To gain access to event streaming functionality in Auraxium, you must use the :c
 
    .. code-block:: python3
 
-      loop = asyncio.get_event_loop()
+      loop = asyncio.new_event_loop()
       loop.create_task(main())
       loop.run_forever()
 

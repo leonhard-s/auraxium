@@ -198,7 +198,7 @@ class CharacterData(RESTPayload):
 
         @deprecated('0.2', '0.3', replacement=':attr:`auraxium.models.'
                     'CharacterData.Name.name`')
-        def __call__(self, locale: str = 'en') -> str:
+        def __call__(self, locale: str = 'en') -> str:  # pragma: no cover
             return self.first
 
         def __str__(self) -> str:
@@ -346,7 +346,7 @@ class CharacterDirectiveObjective(RESTPayload):
     objective_id: int
     objective_group_id: int
     status: int
-    state_date: int
+    state_data: int
 
 
 class CharacterDirectiveTier(RESTPayload):

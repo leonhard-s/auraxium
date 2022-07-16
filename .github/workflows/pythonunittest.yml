@@ -11,21 +11,33 @@ jobs:
   test:
     runs-on: ubuntu-latest
 
+    strategy:
+      matrix:
+        python-version: ["3.9", "3.10"]
+
     steps:
       - uses: actions/checkout@v2
+
       - name: Set up Python
-        uses: actions/setup-python@v1
+        uses: actions/setup-python@v2
         with:
-          python-version: "3.8"
+          python-version: ${{ matrix.python-version }}
+
+      - name: Display Python version
+        run: python -c "import sys; print(sys.version)"
+
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
-          pip install aiohttp backoff coverage coveralls pydantic websockets>=9.1 yarl
+          python -m pip install -r ./requirements.txt
+          python -m pip install coveralls
+
       - name: Run tests
         env:
           SERVICE_ID: ${{secrets.REPO_SERVICE_ID}}
         run: |
           python -m coverage run --source auraxium/ -m unittest discover -p *_test.py tests/
+
       - name: Upload code coverage analysis
         env:
           COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}

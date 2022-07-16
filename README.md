@@ -6,6 +6,7 @@ It provides a simple object model that can be used by players and outfits withou
 ![PyPI - License](https://img.shields.io/pypi/l/auraxium)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/leonhard-s/auraxium/Run%20Python%20unit%20tests?label=tests)
 [![Coveralls github branch](https://img.shields.io/coveralls/github/leonhard-s/auraxium/master)](https://coveralls.io/github/leonhard-s/auraxium)
+![PyPI - Python Version](https://img.shields.io/pypi/pyversions/auraxium)
 ![GitHub Workflow Status](https://img.shields.io/github/workflow/status/leonhard-s/auraxium/Upload%20Python%20Package)
 [![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/leonhard-s/auraxium)](https://www.codefactor.io/repository/github/leonhard-s/auraxium)
 [![PyPI](https://img.shields.io/pypi/v/auraxium)](https://pypi.org/project/auraxium/)
@@ -13,12 +14,12 @@ It provides a simple object model that can be used by players and outfits withou
 
 ***
 
-- Clean, Pythonic API.
-- Asynchronous endpoints to keep apps **responsive** during high API load.
-- Low-level interface for more optimised, custom queries.
-- Support for the **real-time** event streaming service (ESS).
-- User-configurable **caching** system.
-- Fully type annotated.
+- Clean, Pythonic API
+- Asynchronous endpoints to keep apps responsive during high API load
+- Low-level interface for more optimised, custom queries
+- Support for the real-time event streaming service (ESS)
+- User-configurable caching system
+- Fully type annotated
 
 The documentation for this project is hosted at [Read the Docs](https://auraxium.readthedocs.io/en/latest/).
 
@@ -80,7 +81,7 @@ async def main():
     async with auraxium.Client() as client:
         # Your code here
 
-asyncio.get_event_loop().run_until_complete(main())
+asyncio.run(main())
 ```
 
 With that, the stage is set for some actual code.
@@ -125,7 +126,7 @@ async def main():
         # moment.
         print(await char.is_online())
 
-asyncio.get_event_loop().run_until_complete(main())
+asyncio.run(main())
 ```
 
 ## Event Streaming
@@ -186,8 +187,6 @@ The easiest way to register a trigger to the client is via the [`auraxium.event.
 import asyncio
 from auraxium import event, ps2
 
-loop = asyncio.get_event_loop()
-
 async def main():
     # NOTE: Depending on player activity, this script will likely exceed the
     # ~6 requests per minute and IP address limit for the default service ID.
@@ -203,6 +202,7 @@ async def main():
 
         print(f'{await char.name_long()} has reached BR {new_battle_rank}!')
 
+loop = asyncio.new_event_loop()
 loop.create_task(main())
 loop.run_forever()
 ```

@@ -22,10 +22,6 @@ The following is a set of guidelines and resources for contributing to Auraxium.
 
     Refer to the [Mypy docs](https://mypy.readthedocs.io/en/stable/protocols.html#protocol-types) for more information.
 
-- This project uses the [Google format](https://sphinxcontrib-napoleon.readthedocs.io/en/latest/example_google.html) for its docstrings. Make sure the source code version is easy on the eye; don't get carried away with the ReST directives.
-
-    Do not include type information in your docstrings as this information can be inferred via the type hints as well.
-
 ## Documentation
 
 This project is documented in three places:
@@ -42,10 +38,6 @@ This project uses the [`unittest` testing framework](https://docs.python.org/3/l
 
 The repository does have a workflow set up that will run `unittest` over any files matching `<module>_test.py` in the `tests/` directory. Add your own tests there and they should be picked up just fine.
 
-Currently, only `auraxium.census` and `auraxium.cache` are being tested at all, but higher coverage is always desirable.
-
 ## Environment
 
-Feel free to add development tools to the `tools/` directory, or any form of editor-specific settings to the respective subfolder (e.g. `.vscode/`) to help other contributors get started.
-
-Just make sure your tools are themselves well-documented, easy to use and provide some utility to other users.
+Feel free to add development tools to the `tools/` directory, just make sure your tools are themselves well-documented, easy to use and provide some utility to other users.
