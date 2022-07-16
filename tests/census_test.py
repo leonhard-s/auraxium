@@ -472,7 +472,9 @@ class TestURLs(unittest.TestCase):
                       m.CONTAINS: m.IN,
                       m.NOT_EQUAL: m.NE}
         for value, property_ in shorthands.items():
-            self.assertEqual(property_, value)
+            mod1 = census.SearchTerm('field', 'value', modifier=value)
+            mod2 = census.SearchTerm('field', 'value', modifier=property_)
+            self.assertEqual(mod1.serialise(), mod2.serialise())
 
     def test_warning_from_value(self) -> None:
         """Cannot infer from an empty value."""
