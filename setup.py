@@ -4,10 +4,10 @@
 import setuptools
 from auraxium import __version__ as version
 
-with open('README.md', encoding='utf-8') as file_:
+with open('./README.md', encoding='utf-8') as file_:
     long_description = file_.read()
 
-with open('requirements.txt', encoding='utf-8') as file_:
+with open('./requirements.txt', encoding='utf-8') as file_:
     install_requires = file_.read().splitlines()
 
 setuptools.setup(name='auraxium',

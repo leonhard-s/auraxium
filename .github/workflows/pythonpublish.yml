@@ -20,7 +20,7 @@ jobs:
       - name: Install dependencies
         run: |
           python -m pip install --upgrade pip setuptools wheel twine
-          python -m pip install aiohttp backoff coverage coveralls pydantic websockets>=9.1 yarl
+          python -m pip install -r ./requirements.txt
       - name: Build and publish
         env:
           TWINE_USERNAME: ${{ secrets.PYPI_USERNAME }}
