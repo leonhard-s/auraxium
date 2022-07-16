@@ -10,7 +10,7 @@ from ..models import CharacterEvent, Event, GainExperience
 from ..ps2 import Character, World
 
 _EventType = Union[Type[Event], str]
-_Condition = Callable[[Event], bool]
+_Condition = Union[Any, Callable[[Event], bool]]
 _Action = Callable[[Event], Union[Coroutine[Any, Any, None], None]]
 _CharConstraint = Union[Iterable[Character], Iterable[int]]
 _WorldConstraint = Union[Iterable[World], Iterable[int]]
