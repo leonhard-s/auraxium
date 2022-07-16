@@ -4,8 +4,11 @@
 import setuptools
 from auraxium import __version__ as version
 
-with open('README.md', encoding='utf-8') as readme:
-    long_description = readme.read()
+with open('README.md', encoding='utf-8') as file_:
+    long_description = file_.read()
+
+with open('requirements.txt', encoding='utf-8') as file_:
+    install_requires = file_.read().splitlines()
 
 setuptools.setup(name='auraxium',
                  version=version,
@@ -23,11 +26,7 @@ setuptools.setup(name='auraxium',
                               'Programming Language :: Python :: 3.10',
                               'License :: OSI Approved :: MIT License',
                               'Operating System :: OS Independent'],
-                 install_requires=['aiohttp',
-                                   'backoff>=2.1.2',
-                                   'pydantic',
-                                   'yarl',
-                                   'websockets>=9.1'],
+                 install_requires=install_requires,
                  license='MIT',
                  include_package_data=True,
                  zip_safe=False)
