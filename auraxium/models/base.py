@@ -30,7 +30,7 @@ class Payload(pydantic.BaseModel):  # pylint: disable=no-member
     # Weird workaround for pydantic.BaseModel overwriting __hash__ with
     # None, at least according to Pylance.
 
-    def _override__hash__(self) -> int:
+    def _override__hash__(self) -> int:  # pragma: no cover
         # NOTE: pydantic has a beta setting called `frozen=True` that would
         # generate a hash method, but it is not part of the stable API and
         # therefore not used here.
