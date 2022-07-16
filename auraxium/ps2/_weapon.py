@@ -168,7 +168,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
     async def datasheet(self) -> WeaponDatasheet:
         """Return the datasheet for the weapon."""
         collection: Final[str] = 'weapon_datasheet'
-        if (item := await self.item()) is None:
+        if (item := await self.item()) is None:  # pragma: no cover
             raise RuntimeError(f'Invalid item for weapon ID: {self.id}')
         query = Query(collection, service_id=self._client.service_id)
         query.add_term(field=Item.id_field, value=item.id)
