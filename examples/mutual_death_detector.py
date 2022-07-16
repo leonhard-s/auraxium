@@ -9,6 +9,7 @@ import asyncio
 import datetime
 from typing import Dict, Tuple
 
+# pylint: disable=import-error
 import auraxium
 from auraxium import event, ps2
 
