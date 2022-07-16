@@ -14,12 +14,12 @@ It provides a simple object model that can be used by players and outfits withou
 
 ***
 
-- Clean, Pythonic API.
-- Asynchronous endpoints to keep apps **responsive** during high API load.
-- Low-level interface for more optimised, custom queries.
-- Support for the **real-time** event streaming service (ESS).
-- User-configurable **caching** system.
-- Fully type annotated.
+- Clean, Pythonic API
+- Asynchronous endpoints to keep apps responsive during high API load
+- Low-level interface for more optimised, custom queries
+- Support for the real-time event streaming service (ESS)
+- User-configurable caching system
+- Fully type annotated
 
 The documentation for this project is hosted at [Read the Docs](https://auraxium.readthedocs.io/en/latest/).
 
