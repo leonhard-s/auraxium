@@ -13,7 +13,7 @@ _CallableT = TypeVar('_CallableT', bound=Callable[..., Any])
 
 
 def deprecated(start: str, removal_in: str, replacement: str = ''
-               ) -> Callable[[_CallableT], _CallableT]:
+               ) -> Callable[[_CallableT], _CallableT]:  # pragma: no cover
     """Mark the decorated function as deprecated.
 
     The `removal_in` argument may be used to specify a version at which

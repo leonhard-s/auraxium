@@ -168,7 +168,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
     async def datasheet(self) -> WeaponDatasheet:
         """Return the datasheet for the weapon."""
         collection: Final[str] = 'weapon_datasheet'
-        if (item := await self.item()) is None:
+        if (item := await self.item()) is None:  # pragma: no cover
             raise RuntimeError(f'Invalid item for weapon ID: {self.id}')
         query = Query(collection, service_id=self._client.service_id)
         query.add_term(field=Item.id_field, value=item.id)
@@ -192,7 +192,8 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
     @classmethod
     @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')
     async def get_by_name(cls, name: str, *, locale: str = 'en',
-                          client: RequestClient) -> Optional['Weapon']:
+                          client: RequestClient
+                          ) -> Optional['Weapon']:  # pragma: no cover
         """Retrieve a weapon by name.
 
         This is a helper method provided as weapons themselves do not

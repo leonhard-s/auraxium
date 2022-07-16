@@ -365,7 +365,8 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     @classmethod
     @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
-                          client: RequestClient) -> Optional[NamedT]:
+                          client: RequestClient
+                          ) -> Optional[NamedT]:  # pragma: no cover
         """Retrieve an object by its unique name.
 
         This query is always case-insensitive.
@@ -387,7 +388,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
     @classmethod
     async def get_online(cls, id_: int, *args: int, client: RequestClient
-                         ) -> List['Character']:
+                         ) -> List['Character']:  # pragma: no cover
         """Retrieve the characters that are online from a list."""
         char_ids = [id_]
         char_ids.extend(args)
@@ -400,7 +401,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         return [cls(c, client=client) for c in payload
                 if int(str(c['online_status']))]
 
-    def items(self) -> SequenceProxy[Item]:
+    def items(self, results: int = 5000) -> SequenceProxy[Item]:
         """Return the items available to the character.
 
         This returns a :class:`auraxium.SequenceProxy`.
@@ -408,7 +409,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         collection: Final[str] = 'characters_item'
         query = Query(collection, service_id=self._client.service_id)
         query.add_term(field=self.id_field, value=self.id)
-        query.limit(5000)
+        query.limit(results)
         join = query.create_join(Item.collection)
         join.set_fields(Item.id_field)
         return SequenceProxy(Item, query, client=self._client)

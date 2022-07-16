@@ -10,7 +10,7 @@ from ..models import CharacterEvent, Event, GainExperience
 from ..ps2 import Character, World
 
 _EventType = Union[Type[Event], str]
-_Condition = Callable[[Event], bool]
+_Condition = Union[Any, Callable[[Event], bool]]
 _Action = Callable[[Event], Union[Coroutine[Any, Any, None], None]]
 _CharConstraint = Union[Iterable[Character], Iterable[int]]
 _WorldConstraint = Union[Iterable[World], Iterable[int]]
@@ -113,7 +113,7 @@ class Trigger:
         :param bool single_shot: If true, trigger will be removed from
            any client when it first fires.
         """
-        self.action = action
+        self.action: Optional[_Action] = action
         self.characters: List[int] = []
         if characters is not None:
             self.characters = [
@@ -121,8 +121,8 @@ class Trigger:
         self.conditions: List[Callable[[Event], bool]] = conditions or []
         self.events: Set[_EventType] = set((event, *args))
         self.last_run: Optional[datetime.datetime] = None
-        self.name = name
-        self.single_shot = single_shot
+        self.name: Optional[str] = name
+        self.single_shot: bool = single_shot
         self.worlds: List[int] = []
         if worlds is not None:
             self.worlds = [w if isinstance(w, int) else w.id for w in worlds]
@@ -224,8 +224,8 @@ class Trigger:
 
         :param Event event: The event to pass to the trigger action.
         """
-        self.last_run = datetime.datetime.now()
-        if self.action is None:
+        self.last_run = datetime.datetime.utcnow()
+        if self.action is None:  # pragma: no cover
             warnings.warn(f'Trigger {self.name} run with no action specified')
             return
         try:
@@ -233,5 +233,5 @@ class Trigger:
             if asyncio.iscoroutinefunction(self.action):
                 assert ret is not None
                 await ret
-        except (MaintenanceError, CensusError) as err:
+        except (MaintenanceError, CensusError) as err:  # pragma: no cover
             warnings.warn(f'Trigger {self.name} callback cancelled: {err}')

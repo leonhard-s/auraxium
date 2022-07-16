@@ -226,7 +226,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
 
         This returns an :class:`auraxium.InstanceProxy`.
         """
-        if self.data.item_category_id is None:
+        if self.data.item_category_id is None:  # pragma: no cover
             raise ValueError(f'{self} does not define a category')
         query = Query(
             ItemCategory.collection, service_id=self._client.service_id)
@@ -274,7 +274,8 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
         This returns an :class:`auraxium.InstanceProxy`.
         """
         if self.data.item_type_id is None:
-            raise ValueError(f'{self} does not define a type')
+            raise ValueError(
+                f'{self} does not define a type')  # pragma: no cover
         query = Query(ItemType.collection, service_id=self._client.service_id)
         query.add_term(field=ItemType.id_field, value=self.data.item_type_id)
         return InstanceProxy(ItemType, query, client=self._client)

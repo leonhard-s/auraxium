@@ -71,25 +71,23 @@ class Ps2Object(metaclass=abc.ABCMeta):
         :param auraxium.Client client: The client object to use for
            requests performed via this object.
         """
-        id_ = int(str(data[self.id_field]))
+        try:
+            id_ = int(str(data[self.id_field]))
+        except KeyError as err:
+            raise PayloadError(
+                f'Missing field "{self.id_field}"', data) from err
         _log.debug('Instantiating <%s:%d> using payload: %s',
                    self.__class__.__name__, id_, data)
-        self.id = id_
+        self.id: int = id_  # pylint: disable=invalid-name
         self._client = client
         try:
-            self.data = self._model(**data)
+            self.data: RESTPayload = self._model(**data)
         except pydantic.ValidationError as err:
-            _log.warning(
-                'Encountered unsupported payload: %s\n'
-                'This message means that the Auraxium data model must '
-                'be updated. Please ensure you are on the latest '
-                'version of the Auraxium library and report this '
-                'message to the project maintainers.', data)
             raise PayloadError(
                 f'Unable to instantiate {self.__class__.__name__} instance '
                 f'from given payload: {err}', data) from err
 
-    def __eq__(self, o: Any) -> bool:
+    def __eq__(self, o: Any) -> bool:  # pylint: disable=invalid-name
         if not isinstance(o, self.__class__):
             return False
         return self.id == o.id
@@ -121,7 +119,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
         return f'<{self.__class__.__name__}:{self.id}>'
 
     @classmethod
-    @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.count`')
+    @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.count`')  # pragma: no cover
     async def count(cls, client: RequestClient, **kwargs: Any) -> int:
         """Return the number of items matching the given terms.
 
@@ -135,7 +133,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
         return await client.count(cls, **kwargs)  # type: ignore
 
     @classmethod
-    @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.find`')
+    @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.find`')  # pragma: no cover
     async def find(cls: Type[Ps2ObjectT], results: int = 10, *,
                    offset: int = 0, promote_exact: bool = False,
                    check_case: bool = True, client: RequestClient,
@@ -167,7 +165,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
             check_case=check_case, **kwargs)
 
     @classmethod
-    @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')
+    @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
     async def get(cls: Type[Ps2ObjectT], client: RequestClient,
                   check_case: bool = True, **kwargs: Any
                   ) -> Optional[Ps2ObjectT]:
@@ -188,7 +186,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
             cls, results=1, check_case=check_case, **kwargs)
 
     @classmethod
-    @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')
+    @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
     async def get_by_id(cls: Type[Ps2ObjectT], id_: int, *,
                         client: RequestClient) -> Optional[Ps2ObjectT]:
         """Retrieve an object by its unique Census ID.
@@ -250,8 +248,8 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
         self._cache.add(self.id, self)
 
     @classmethod
-    def __init_subclass__(cls, cache_size: int,
-                          cache_ttu: float = 0.0) -> None:
+    def __init_subclass__(  # pylint: disable=unexpected-special-method-signature
+            cls, cache_size: int, cache_ttu: float = 0.0) -> None:
         """Initialise a cacheable subclass.
 
         This sets up the TLRU cache for the given subclass using the
@@ -291,20 +289,7 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
             cls._cache.ttu = ttu
 
     @classmethod
-    def _check_cache(cls: Type[CachedT], id_: int) -> Optional[CachedT]:
-        """Attempt to restore an item from the cache.
-
-        If the item cannot be found, :obj:`None` will be returned
-        instead.
-
-        :param int id_: The unique identifier the item is cached by.
-        :return: An existing instance if found, or :obj:`None` if the
-           object has not been retrieved before or expired.
-        """
-        return cls._cache.get(id_)
-
-    @classmethod
-    @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')
+    @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
     async def get_by_id(cls: Type[CachedT], id_: int, *,  # type: ignore
                         client: RequestClient) -> Optional[CachedT]:
         """Retrieve an object by by ID.
@@ -375,7 +360,7 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
         return str(self.name)
 
     @classmethod
-    @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')
+    @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
                           client: RequestClient) -> Optional[NamedT]:
         """Retrieve an object by its unique name.

@@ -13,7 +13,7 @@ from ..types import CensusData
 _T = TypeVar('_T')
 
 
-class Payload(pydantic.BaseModel):
+class Payload(pydantic.BaseModel):  # pylint: disable=no-member
     """A payload received through the REST or WebSocket interface.
 
     Instances of this class are read-only.
@@ -30,7 +30,7 @@ class Payload(pydantic.BaseModel):
     # Weird workaround for pydantic.BaseModel overwriting __hash__ with
     # None, at least according to Pylance.
 
-    def _override__hash__(self) -> int:
+    def _override__hash__(self) -> int:  # pragma: no cover
         # NOTE: pydantic has a beta setting called `frozen=True` that would
         # generate a hash method, but it is not part of the stable API and
         # therefore not used here.
@@ -97,7 +97,7 @@ class FallbackMixin(metaclass=abc.ABCMeta):
         """
 
 
-class ImageData(pydantic.BaseModel):
+class ImageData(pydantic.BaseModel):  # pylint: disable=no-member
     """Mixin dataclass for types supporting image access.
 
     .. attribute:: image_id
@@ -150,11 +150,17 @@ class Event(Payload):
     timestamp: datetime.datetime
     world_id: int
 
+    @pydantic.validator('timestamp', pre=True)
+    @classmethod
+    def _utc_from_timestamp(cls, value: str) -> datetime.datetime:
+        """Convert timestamps to UTC datetimes."""
+        return datetime.datetime.utcfromtimestamp(int(value))
+
     @property
     def age(self) -> float:
         """The age of the event in seconds."""
-        now = datetime.datetime.now()
-        return (self.timestamp - now).total_seconds()
+        now = datetime.datetime.utcnow()
+        return (now - self.timestamp).total_seconds()
 
 
 class CharacterEvent:

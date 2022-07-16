@@ -50,14 +50,14 @@ class Proxy(Generic[_Ps2ObjectT]):
         :param float lifetime: The time-to-use of the retrieved data.
         """
         self._type = type_
-        self.query = query
+        self.query: Query = query
         self._client = client
         self._ttu = lifetime
         self._data: List[_Ps2ObjectT]
         self._index: int
         self._lock = asyncio.Lock()
         self._last_fetched = datetime.datetime.utcfromtimestamp(0)
-        max_age = datetime.datetime.now() - self._last_fetched
+        max_age = datetime.datetime.utcnow() - self._last_fetched
         assert self._ttu < max_age.total_seconds()
 
     async def _poll(self) -> None:
@@ -75,7 +75,7 @@ class Proxy(Generic[_Ps2ObjectT]):
             # Ps2Object subclass and then promptly ignored here.
             self._data = [self._type(  # type: ignore
                 data, client=self._client) for data in list_]
-            self._last_fetched = datetime.datetime.now()
+            self._last_fetched = datetime.datetime.utcnow()
 
     def _resolve_nested_payload(self, payload: CensusData) -> List[CensusData]:
         """Resolve the object payload.
@@ -103,7 +103,9 @@ class Proxy(Generic[_Ps2ObjectT]):
             # Filter out the payload sub-dict corresponding to the given join
             data: List[Dict[str, Any]] = []
             for element in parent:
-                value = element[f'{on_}_join_{join.data.collection}']
+                value = element.get(f'{on_}_join_{join.data.collection}')
+                if value is None:
+                    continue
                 if join.data.is_list:
                     data.extend(value)
                 else:
@@ -146,7 +148,7 @@ class SequenceProxy(Proxy[_Ps2ObjectT]):
         return self
 
     async def __anext__(self) -> _Ps2ObjectT:
-        age = datetime.datetime.now() - self._last_fetched
+        age = datetime.datetime.utcnow() - self._last_fetched
         if age.total_seconds() > self._ttu:
             if self._index > -1:
                 warnings.warn('Data went stale during iteration, polling new')
@@ -184,7 +186,7 @@ class InstanceProxy(Proxy[_Ps2ObjectT]):
 
         :return: The object, or :obj:`None` if no match was found.
         """
-        age = datetime.datetime.now() - self._last_fetched
+        age = datetime.datetime.utcnow() - self._last_fetched
         if age.total_seconds() > self._ttu:
             await self._poll()
         try:
