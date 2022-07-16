@@ -103,7 +103,9 @@ class Proxy(Generic[_Ps2ObjectT]):
             # Filter out the payload sub-dict corresponding to the given join
             data: List[Dict[str, Any]] = []
             for element in parent:
-                value = element[f'{on_}_join_{join.data.collection}']
+                value = element.get(f'{on_}_join_{join.data.collection}')
+                if value is None:
+                    continue
                 if join.data.is_list:
                     data.extend(value)
                 else:

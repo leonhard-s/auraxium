@@ -346,7 +346,7 @@ class CharacterDirectiveObjective(RESTPayload):
     objective_id: int
     objective_group_id: int
     status: int
-    state_date: int
+    state_data: int
 
 
 class CharacterDirectiveTier(RESTPayload):
