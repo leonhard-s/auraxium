@@ -148,7 +148,7 @@ class EventClient(Client):
         _log.debug('Removing trigger %s', trigger)
         try:
             self.triggers.remove(trigger)
-        except ValueError as err:
+        except ValueError as err:  # pragma: no cover
             raise RuntimeError('The given trigger is not registered for '
                                'this client') from err
         # If this was the only trigger registered, close the websocket

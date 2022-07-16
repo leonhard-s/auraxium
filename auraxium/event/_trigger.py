@@ -225,7 +225,7 @@ class Trigger:
         :param Event event: The event to pass to the trigger action.
         """
         self.last_run = datetime.datetime.now()
-        if self.action is None:
+        if self.action is None:  # pragma: no cover
             warnings.warn(f'Trigger {self.name} run with no action specified')
             return
         try:
@@ -233,5 +233,5 @@ class Trigger:
             if asyncio.iscoroutinefunction(self.action):
                 assert ret is not None
                 await ret
-        except (MaintenanceError, CensusError) as err:
+        except (MaintenanceError, CensusError) as err:  # pragma: no cover
             warnings.warn(f'Trigger {self.name} callback cancelled: {err}')

@@ -198,7 +198,7 @@ class CharacterData(RESTPayload):
 
         @deprecated('0.2', '0.3', replacement=':attr:`auraxium.models.'
                     'CharacterData.Name.name`')
-        def __call__(self, locale: str = 'en') -> str:
+        def __call__(self, locale: str = 'en') -> str:  # pragma: no cover
             return self.first
 
         def __str__(self) -> str:

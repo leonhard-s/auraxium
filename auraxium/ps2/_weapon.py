@@ -192,7 +192,8 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
     @classmethod
     @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')
     async def get_by_name(cls, name: str, *, locale: str = 'en',
-                          client: RequestClient) -> Optional['Weapon']:
+                          client: RequestClient
+                          ) -> Optional['Weapon']:  # pragma: no cover
         """Retrieve a weapon by name.
 
         This is a helper method provided as weapons themselves do not
