@@ -48,4 +48,4 @@ This means that repeatedly accessing an object through :meth:`~auraxium.Client.g
            # moment.
            print(await char.is_online())
 
-   asyncio.get_event_loop().run_until_complete(main())
+   asyncio.run(main())

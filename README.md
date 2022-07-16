@@ -81,7 +81,7 @@ async def main():
     async with auraxium.Client() as client:
         # Your code here
 
-asyncio.get_event_loop().run_until_complete(main())
+asyncio.run(main())
 ```
 
 With that, the stage is set for some actual code.
@@ -126,7 +126,7 @@ async def main():
         # moment.
         print(await char.is_online())
 
-asyncio.get_event_loop().run_until_complete(main())
+asyncio.run(main())
 ```
 
 ## Event Streaming
@@ -187,8 +187,6 @@ The easiest way to register a trigger to the client is via the [`auraxium.event.
 import asyncio
 from auraxium import event, ps2
 
-loop = asyncio.get_event_loop()
-
 async def main():
     # NOTE: Depending on player activity, this script will likely exceed the
     # ~6 requests per minute and IP address limit for the default service ID.
@@ -204,6 +202,7 @@ async def main():
 
         print(f'{await char.name_long()} has reached BR {new_battle_rank}!')
 
+loop = asyncio.new_event_loop()
 loop.create_task(main())
 loop.run_forever()
 ```

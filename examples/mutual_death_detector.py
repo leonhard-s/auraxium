@@ -78,6 +78,6 @@ if __name__ == '__main__':
     # when using the event client, otherwise the client would shut down as soon
     # as the `main()` method finishes.
 
-    loop = asyncio.get_event_loop()
+    loop = asyncio.new_event_loop()
     loop.create_task(main())
     loop.run_forever()
