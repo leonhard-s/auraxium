@@ -150,11 +150,17 @@ class Event(Payload):
     timestamp: datetime.datetime
     world_id: int
 
+    @pydantic.validator('timestamp', pre=True)
+    @classmethod
+    def _utc_from_timestamp(cls, value: str) -> datetime.datetime:
+        """Convert timestamps to UTC datetimes."""
+        return datetime.datetime.utcfromtimestamp(int(value))
+
     @property
     def age(self) -> float:
         """The age of the event in seconds."""
         now = datetime.datetime.utcnow()
-        return (self.timestamp - now).total_seconds()
+        return (now - self.timestamp).total_seconds()
 
 
 class CharacterEvent:
