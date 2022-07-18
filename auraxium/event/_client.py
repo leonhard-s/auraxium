@@ -2,17 +2,16 @@ import asyncio
 import contextlib
 import json
 import logging
-from typing import (Any, Callable, Coroutine, Dict, Generator, List, Optional,
-                    Type, TypeVar, Union, cast, overload)
+from typing import (Any, Callable, Coroutine, Dict, List, Optional, Type,
+                    TypeVar, Union, cast, overload)
 
-import backoff
 import pydantic
 import websockets
+import websockets.client
 import websockets.exceptions
-from backoff.types import Details
-from websockets.legacy import client as ws_client
 
 from .._client import Client
+from .._log import RedactingFilter
 from ..models import Event
 from ..types import CensusData
 from ._trigger import Trigger
@@ -27,8 +26,6 @@ _EventT = TypeVar('_EventT', bound=Event)
 _EventT2 = TypeVar('_EventT2', bound=Event)
 _CallbackT = Union[Callable[[_EventT], None],
                    Callable[[_EventT], Coroutine[Any, Any, None]]]
-_CallableT = TypeVar('_CallableT', bound=Callable[..., Any])
-_Decorator = Callable[[_CallableT], _CallableT]
 
 _log = logging.getLogger('auraxium.ess')
 
@@ -67,11 +64,11 @@ class EventClient(Client):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self.triggers: List[Trigger] = []
-        self.websocket: Optional[ws_client.WebSocketClientProtocol] = None
-        self._connect_lock = asyncio.Lock()
-        self._connected: bool = False
+        self.websocket: Optional[websockets.client.WebSocketClientProtocol] = None
         self._endpoint_status: Dict[str, bool] = {}
         self._send_queue: List[str] = []
+        self._open: bool = False
+        _log.addFilter(RedactingFilter(self.service_id))
 
     @property
     def endpoint_status(self) -> Dict[str, bool]:
@@ -103,7 +100,7 @@ class EventClient(Client):
         subscription = trigger.generate_subscription()
         self._send_queue.append(subscription)
         # Only queue the connect() method if it is not already running
-        if self.websocket is None and not self._connect_lock.locked():
+        if not self._open:
             _log.debug('Websocket not connected, scheduling connection')
             self.loop.create_task(self.connect())
 
@@ -180,33 +177,11 @@ class EventClient(Client):
         """
         # NOTE: When multiple triggers are added to the bot without an active
         # websocket connection, this function may be scheduled multiple times.
-        if self._connect_lock.locked():  # pragma: no cover
+        if self._open:  # pragma: no cover
             _log.debug('Websocket already running')
             return
-        await self._connect_lock.acquire()
-
-        def on_success(details: Details) -> None:
-            tries = int(details['tries'])
-            _log.debug('Connection successful after %d tries', tries)
-
-        def on_backoff(details: Details) -> None:
-            wait = float(details['wait'])
-            tries = int(details['tries'])
-            _log.debug('Backing off %.2f seconds after %d failed attempt[s])',
-                       wait, tries)
-
-        backoff_errors = (ConnectionRefusedError,
-                          ConnectionResetError,
-                          websockets.exceptions.ConnectionClosed)
-
-        def backoff_gen() -> Generator[float, None, None]:
-            for wait in backoff.expo(base=10, factor=1, max_value=60_000):
-                yield wait * 0.001 if wait is not None else None  # type: ignore
-
-        backoff_wrap: _Decorator = backoff.on_exception(  # type: ignore
-            backoff_gen, backoff_errors, on_backoff=on_backoff,
-            on_success=on_success, jitter=None)
-        await backoff_wrap(self._connection_handler)()
+        self._open = True
+        await self._connection_handler()
 
     async def disconnect(self) -> None:
         """Disconnect the WebSocket.
@@ -214,15 +189,12 @@ class EventClient(Client):
         Unlike :meth:`EventClient.close`, this does not affect the HTTP
         sessions used by regular REST requests.
         """
-        if self.websocket is None:
+        if not self._open:
             return
+        self._open = False
         _log.info('Closing websocket connection')
-        if self.websocket.open:
+        if self.websocket is not None and self.websocket.open:
             await self.websocket.close()
-        with contextlib.suppress(RuntimeError):
-            self._connect_lock.release()
-        self.websocket = None
-        self._connected = False
 
     def dispatch(self, event: Event) -> None:
         """Dispatch an event to the appropriate event triggers.
@@ -268,25 +240,27 @@ class EventClient(Client):
         """
         _log.info('Connecting to WebSocket endpoint...')
         url = f'{_ESS_ENDPOINT}?environment=ps2&service-id={self.service_id}'
-        # HACK: Recent updates to the WebSocket client library cause issues
-        # with the SSL certs bypass on some Python versions. They have been
-        # disabled for now and will be replaced with a more robust system down
-        # the road.
 
-        # if self._no_ssl_certs:
-        #     ssl_ctx = ssl.SSLContext()
-        # else:
-        #     ssl_ctx = None
+        # NOTE: The following "async for" loop will cleanly restart the
+        # connection should it go down. Invoking "continue" manually may be
+        # used to manually force a reconnect if needed.
 
-        async with ws_client.connect(url) as websocket:
+        async for websocket in websockets.client.connect(url):
+            _log.info('Connected to %s', url)
             self.websocket = websocket
-            _log.info('Connected to %s?environment=ps2&service-id=XXX',
-                      _ESS_ENDPOINT)
-            self._connected = True
-            # Keep processing websocket events until the connection dies or is
-            # closed by the user or trigger system.
-            while self._connect_lock.locked():
-                await self._handle_websocket()
+
+            try:
+                while self._open:
+                    await self._handle_websocket()
+
+            except websockets.exceptions.ConnectionClosed:
+                _log.info('Connection closed, restarting...')
+                continue
+
+            if not self._open:
+                break
+
+        self.websocket = None
         _log.info('Disconnected from WebSocket endpoint')
 
     async def _handle_websocket(self, timeout: float = 0.1) -> None:
@@ -301,16 +275,14 @@ class EventClient(Client):
             response = str(await asyncio.wait_for(
                 self.websocket.recv(), timeout=timeout))
         except asyncio.TimeoutError:
-            # NOTE: This inner timeout try block is used to ensure
-            # the websocket will regularly check for messages in
-            # the client's _send_queue even when no messages are
-            # being received.
-            # Without this, awaiting self.websocket.recv() would
-            # block events from being sent if no responses are
-            # received.
+            # NOTE: This inner timeout try block is used to ensure the
+            # websocket will regularly check for messages in the client's
+            # ``_send_queue`` even when no messages are received. Without this,
+            # awaiting ``self.websocket.recv()`` would block subscriptions from
+            # being sent until a heartbeat message is received, causing random
+            # delays.
             pass
         else:
-            _log.debug('Received response: %s', response)
             self._process_payload(response)
         finally:
             if self._send_queue:
@@ -387,6 +359,7 @@ class EventClient(Client):
         :param str response: The plain text response received through
            the ESS.
         """
+        _log.debug('Received response: %s', response)
         data: CensusData = json.loads(response)
         service = data.get('service')
         # Event messages
@@ -502,9 +475,7 @@ class EventClient(Client):
         :param float interval: The interval at which to check the
            WebSocket connection's status.
         """
-        if self._connected:
-            return  # pragma: no cover
-        while not self._connected:
+        while self.websocket is None or not self.websocket.open:
             await asyncio.sleep(interval)
 
 
