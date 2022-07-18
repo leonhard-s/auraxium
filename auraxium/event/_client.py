@@ -274,14 +274,25 @@ class EventClient(Client):
         # else:
         #     ssl_ctx = None
 
-        async with websockets.client.connect(url) as websocket:
-            self.websocket = websocket
-            _log.info('Connected to %s', url)
+        # NOTE: The following "async for" loop will cleanly restart the
+        # connection should it go down. Invoking "continue" manually may be
+        # used to manually force a reconnect if needed.
 
-            # Keep processing websocket events until the connection dies or is
-            # closed by the user or trigger system.
-            while self._open:
-                await self._handle_websocket()
+        async for websocket in websockets.client.connect(url):
+            _log.info('Connected to %s', url)
+            self.websocket = websocket
+
+            try:
+                while self._open:
+                    await self._handle_websocket()
+
+            except websockets.exceptions.ConnectionClosed:
+                _log.info('Connection closed, restarting...')
+                continue
+
+            if not self._open:
+                break
+
         self.websocket = None
         _log.info('Disconnected from WebSocket endpoint')
 
