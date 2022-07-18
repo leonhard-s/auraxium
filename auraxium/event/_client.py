@@ -26,8 +26,6 @@ _EventT = TypeVar('_EventT', bound=Event)
 _EventT2 = TypeVar('_EventT2', bound=Event)
 _CallbackT = Union[Callable[[_EventT], None],
                    Callable[[_EventT], Coroutine[Any, Any, None]]]
-_CallableT = TypeVar('_CallableT', bound=Callable[..., Any])
-_Decorator = Callable[[_CallableT], _CallableT]
 
 _log = logging.getLogger('auraxium.ess')
 
