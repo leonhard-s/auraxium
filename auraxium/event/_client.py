@@ -69,7 +69,6 @@ class EventClient(Client):
         self.triggers: List[Trigger] = []
         self.websocket: Optional[ws_client.WebSocketClientProtocol] = None
         self._connect_lock = asyncio.Lock()
-        self._connected: bool = False
         self._endpoint_status: Dict[str, bool] = {}
         self._send_queue: List[str] = []
 
@@ -222,7 +221,6 @@ class EventClient(Client):
         with contextlib.suppress(RuntimeError):
             self._connect_lock.release()
         self.websocket = None
-        self._connected = False
 
     def dispatch(self, event: Event) -> None:
         """Dispatch an event to the appropriate event triggers.
@@ -282,7 +280,6 @@ class EventClient(Client):
             self.websocket = websocket
             _log.info('Connected to %s?environment=ps2&service-id=XXX',
                       _ESS_ENDPOINT)
-            self._connected = True
             # Keep processing websocket events until the connection dies or is
             # closed by the user or trigger system.
             while self._connect_lock.locked():
@@ -502,9 +499,7 @@ class EventClient(Client):
         :param float interval: The interval at which to check the
            WebSocket connection's status.
         """
-        if self._connected:
-            return  # pragma: no cover
-        while not self._connected:
+        while self.websocket is None or not self.websocket.open:
             await asyncio.sleep(interval)
 
 
