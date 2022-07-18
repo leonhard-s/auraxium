@@ -32,6 +32,7 @@ from .errors import (PayloadError, BadRequestSyntaxError, CensusError,
                      MaintenanceError, MissingServiceIDError, NotFoundError,
                      ResponseError, ServerError, ServiceUnavailableError,
                      UnknownCollectionError)
+from ._log import RedactingFilter
 from .types import CensusData
 from ._support import deprecated
 
@@ -72,6 +73,7 @@ class RequestClient:
                           'issues. See '
                           '<https://github.com/leonhard-s/auraxium/issues/56> '
                           'for details.', FutureWarning)
+        _log.addFilter(RedactingFilter(self.service_id))
 
     async def __aenter__(self: _T) -> _T:
         """Enter the context manager and return the client."""
@@ -418,8 +420,6 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
     """
     url = query.url(verb=verb)
     _log.debug('Performing %s request: %s', verb.upper(), url)
-
-    # TODO: Remove service ID from any URL literals outside of .census
 
     def on_success(details: Details) -> None:  # pragma: no cover
         if (tries := details['tries']) > 1:

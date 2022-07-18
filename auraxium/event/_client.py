@@ -11,6 +11,7 @@ import websockets.client
 import websockets.exceptions
 
 from .._client import Client
+from .._log import RedactingFilter
 from ..models import Event
 from ..types import CensusData
 from ._trigger import Trigger
@@ -69,6 +70,7 @@ class EventClient(Client):
         self._endpoint_status: Dict[str, bool] = {}
         self._send_queue: List[str] = []
         self._open: bool = False
+        _log.addFilter(RedactingFilter(self.service_id))
 
     @property
     def endpoint_status(self) -> Dict[str, bool]:
