@@ -8,9 +8,9 @@ from typing import (Any, Callable, Coroutine, Dict, Generator, List, Optional,
 import backoff
 import pydantic
 import websockets
+import websockets.client
 import websockets.exceptions
 from backoff.types import Details
-from websockets.legacy import client as ws_client
 
 from .._client import Client
 from ..models import Event
@@ -67,10 +67,10 @@ class EventClient(Client):
     def __init__(self, *args: Any, **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
         self.triggers: List[Trigger] = []
-        self.websocket: Optional[ws_client.WebSocketClientProtocol] = None
-        self._connect_lock = asyncio.Lock()
+        self.websocket: Optional[websockets.client.WebSocketClientProtocol] = None
         self._endpoint_status: Dict[str, bool] = {}
         self._send_queue: List[str] = []
+        self._open: bool = False
 
     @property
     def endpoint_status(self) -> Dict[str, bool]:
@@ -102,7 +102,7 @@ class EventClient(Client):
         subscription = trigger.generate_subscription()
         self._send_queue.append(subscription)
         # Only queue the connect() method if it is not already running
-        if self.websocket is None and not self._connect_lock.locked():
+        if not self._open:
             _log.debug('Websocket not connected, scheduling connection')
             self.loop.create_task(self.connect())
 
@@ -179,10 +179,10 @@ class EventClient(Client):
         """
         # NOTE: When multiple triggers are added to the bot without an active
         # websocket connection, this function may be scheduled multiple times.
-        if self._connect_lock.locked():  # pragma: no cover
+        if self._open:  # pragma: no cover
             _log.debug('Websocket already running')
             return
-        await self._connect_lock.acquire()
+        self._open = True
 
         def on_success(details: Details) -> None:
             tries = int(details['tries'])
@@ -213,14 +213,12 @@ class EventClient(Client):
         Unlike :meth:`EventClient.close`, this does not affect the HTTP
         sessions used by regular REST requests.
         """
-        if self.websocket is None:
+        if not self._open:
             return
+        self._open = False
         _log.info('Closing websocket connection')
-        if self.websocket.open:
+        if self.websocket is not None and self.websocket.open:
             await self.websocket.close()
-        with contextlib.suppress(RuntimeError):
-            self._connect_lock.release()
-        self.websocket = None
 
     def dispatch(self, event: Event) -> None:
         """Dispatch an event to the appropriate event triggers.
@@ -276,14 +274,15 @@ class EventClient(Client):
         # else:
         #     ssl_ctx = None
 
-        async with ws_client.connect(url) as websocket:
+        async with websockets.client.connect(url) as websocket:
             self.websocket = websocket
-            _log.info('Connected to %s?environment=ps2&service-id=XXX',
-                      _ESS_ENDPOINT)
+            _log.info('Connected to %s', url)
+
             # Keep processing websocket events until the connection dies or is
             # closed by the user or trigger system.
-            while self._connect_lock.locked():
+            while self._open:
                 await self._handle_websocket()
+        self.websocket = None
         _log.info('Disconnected from WebSocket endpoint')
 
     async def _handle_websocket(self, timeout: float = 0.1) -> None:
@@ -298,16 +297,14 @@ class EventClient(Client):
             response = str(await asyncio.wait_for(
                 self.websocket.recv(), timeout=timeout))
         except asyncio.TimeoutError:
-            # NOTE: This inner timeout try block is used to ensure
-            # the websocket will regularly check for messages in
-            # the client's _send_queue even when no messages are
-            # being received.
-            # Without this, awaiting self.websocket.recv() would
-            # block events from being sent if no responses are
-            # received.
+            # NOTE: This inner timeout try block is used to ensure the
+            # websocket will regularly check for messages in the client's
+            # ``_send_queue`` even when no messages are received. Without this,
+            # awaiting ``self.websocket.recv()`` would block subscriptions from
+            # being sent until a heartbeat message is received, causing random
+            # delays.
             pass
         else:
-            _log.debug('Received response: %s', response)
             self._process_payload(response)
         finally:
             if self._send_queue:
@@ -384,6 +381,7 @@ class EventClient(Client):
         :param str response: The plain text response received through
            the ESS.
         """
+        _log.debug('Received response: %s', response)
         data: CensusData = json.loads(response)
         service = data.get('service')
         # Event messages
