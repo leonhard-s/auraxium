@@ -2,15 +2,13 @@ import asyncio
 import contextlib
 import json
 import logging
-from typing import (Any, Callable, Coroutine, Dict, Generator, List, Optional,
-                    Type, TypeVar, Union, cast, overload)
+from typing import (Any, Callable, Coroutine, Dict, List, Optional, Type,
+                    TypeVar, Union, cast, overload)
 
-import backoff
 import pydantic
 import websockets
 import websockets.client
 import websockets.exceptions
-from backoff.types import Details
 
 from .._client import Client
 from ..models import Event
@@ -183,29 +181,7 @@ class EventClient(Client):
             _log.debug('Websocket already running')
             return
         self._open = True
-
-        def on_success(details: Details) -> None:
-            tries = int(details['tries'])
-            _log.debug('Connection successful after %d tries', tries)
-
-        def on_backoff(details: Details) -> None:
-            wait = float(details['wait'])
-            tries = int(details['tries'])
-            _log.debug('Backing off %.2f seconds after %d failed attempt[s])',
-                       wait, tries)
-
-        backoff_errors = (ConnectionRefusedError,
-                          ConnectionResetError,
-                          websockets.exceptions.ConnectionClosed)
-
-        def backoff_gen() -> Generator[float, None, None]:
-            for wait in backoff.expo(base=10, factor=1, max_value=60_000):
-                yield wait * 0.001 if wait is not None else None  # type: ignore
-
-        backoff_wrap: _Decorator = backoff.on_exception(  # type: ignore
-            backoff_gen, backoff_errors, on_backoff=on_backoff,
-            on_success=on_success, jitter=None)
-        await backoff_wrap(self._connection_handler)()
+        await self._connection_handler()
 
     async def disconnect(self) -> None:
         """Disconnect the WebSocket.
