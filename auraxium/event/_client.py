@@ -242,15 +242,6 @@ class EventClient(Client):
         """
         _log.info('Connecting to WebSocket endpoint...')
         url = f'{_ESS_ENDPOINT}?environment=ps2&service-id={self.service_id}'
-        # HACK: Recent updates to the WebSocket client library cause issues
-        # with the SSL certs bypass on some Python versions. They have been
-        # disabled for now and will be replaced with a more robust system down
-        # the road.
-
-        # if self._no_ssl_certs:
-        #     ssl_ctx = ssl.SSLContext()
-        # else:
-        #     ssl_ctx = None
 
         # NOTE: The following "async for" loop will cleanly restart the
         # connection should it go down. Invoking "continue" manually may be

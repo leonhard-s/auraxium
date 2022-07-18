@@ -17,8 +17,8 @@ import json
 import logging
 import sys
 import warnings
-from typing import (Generator, Literal, List, Optional, Tuple, Type, TypeVar,
-                    cast)
+from typing import (Any, Generator, Literal, List, Optional, Tuple, Type,
+                    TypeVar, cast)
 from types import TracebackType
 
 import aiohttp
@@ -53,7 +53,7 @@ class RequestClient:
 
     def __init__(self, loop: Optional[asyncio.AbstractEventLoop] = None,
                  service_id: str = 's:example', profiling: bool = False,
-                 no_ssl_certs: bool = False) -> None:
+                 **_: Any) -> None:
         if loop is None:
             try:
                 loop = asyncio.get_running_loop()
@@ -67,12 +67,6 @@ class RequestClient:
         self.service_id: str = service_id
         self.session: aiohttp.ClientSession = aiohttp.ClientSession()
         self._timing_cache: List[float] = []
-        if no_ssl_certs:  # pragma: no cover
-            warnings.warn('SSL certificate expiration bypass is disabled in '
-                          'this version of Auraxium due to compatibility '
-                          'issues. See '
-                          '<https://github.com/leonhard-s/auraxium/issues/56> '
-                          'for details.', FutureWarning)
         _log.addFilter(RedactingFilter(self.service_id))
 
     async def __aenter__(self: _T) -> _T:
