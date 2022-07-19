@@ -14,7 +14,8 @@ __all__ = [
 ]
 
 
-def generate_url(query: QueryData, verb: str, validate: bool = True) -> yarl.URL:
+def generate_url(query: QueryData, verb: str, validate: bool = True,
+                 endpoint: Optional[yarl.URL] = None) -> yarl.URL:
     """Generate the URL for a given query.
 
     This will also recursively process any joined queries.
@@ -25,16 +26,22 @@ def generate_url(query: QueryData, verb: str, validate: bool = True) -> yarl.URL
        number of checks to validate the query, raising errors or
        warnings as necessary. Disabling this flag will skip these
        checks.
+    :param endpoint: The API endpoint to use. Allows use of community
+       APIs using the same syntax as the official API. If not set, will
+       default to the official API endpoint.
+    :type endpoint: :class:`yarl.URL` | :obj:`None`
     :return: A :class:`yarl.URL` representing the query.
     """
     # NOTE: The yarl.URL object uses the division operator to chain URI
     # components.
 
     # Census endpoint
-    url = yarl.URL(default_endpoints()[0])
+    default = default_endpoints()[0]
+    url = yarl.URL(endpoint or default)
     # Service ID
-    url /= query.service_id
-    if validate and query.service_id == 's:example':
+    if url == default:
+        url /= query.service_id
+    if validate and endpoint == default and query.service_id == 's:example':
         warnings.warn('The default service ID is heavily rate-limited. '
                       'Consider applying for your own service ID at '
                       'https://census.daybreakgames.com/#devSignup')

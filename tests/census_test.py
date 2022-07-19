@@ -9,7 +9,7 @@ import warnings
 from typing import Dict, List
 
 import yarl
-from auraxium import census  # pylint: disable=import-error
+from auraxium import census, endpoints  # pylint: disable=import-error
 
 ENDPOINT = 'https://census.daybreakgames.com/'
 
@@ -748,6 +748,25 @@ class TestURLsQueryCommands(unittest.TestCase):
         self.assertDictEqual(
             dict(url.query), {'c:retry': '0'},
             'Incorrect query command: c:retry')
+
+
+class TestCustomEndpoints(unittest.TestCase):
+    """Tests for URL generation with non-standard endpoints."""
+
+    def test_default(self) -> None:
+        """Ensure the default URL is still DBG's Census."""
+        url = census.Query('character').url()
+        self.assertEqual(url.scheme, 'https')
+        self.assertEqual(url.host, 'census.daybreakgames.com')
+        self.assertEqual(url.path, '/s:example/get/ps2:v2/character')
+
+    def test_custom(self) -> None:
+        """Ensure a custom URL is correctly generated."""
+        endpoint = endpoints.SANCTUARY_CENSUS
+        url = census.Query('character', endpoint=endpoint).url()
+        self.assertEqual(url.scheme, 'https')
+        self.assertEqual(url.host, 'census.lithafalcon.cc')
+        self.assertEqual(url.path, '/get/ps2:v2/character')
 
 
 def find_warning(caught: List[warnings.WarningMessage], msg: str) -> bool:
