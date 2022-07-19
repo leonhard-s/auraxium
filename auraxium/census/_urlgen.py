@@ -5,14 +5,13 @@ from typing import Dict, Iterable, List, Optional, Tuple, Union
 
 import yarl
 
+from ..endpoints import defaults as default_endpoints
 from ._support import JoinedQueryData, QueryData
 
 __all__ = [
     'generate_url',
     'process_join',
 ]
-
-_REST_ENDPOINT = 'https://census.daybreakgames.com'
 
 
 def generate_url(query: QueryData, verb: str, validate: bool = True) -> yarl.URL:
@@ -32,7 +31,7 @@ def generate_url(query: QueryData, verb: str, validate: bool = True) -> yarl.URL
     # components.
 
     # Census endpoint
-    url = yarl.URL(_REST_ENDPOINT)
+    url = yarl.URL(default_endpoints()[0])
     # Service ID
     url /= query.service_id
     if validate and query.service_id == 's:example':

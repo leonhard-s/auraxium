@@ -12,6 +12,7 @@ import websockets.exceptions
 
 from .._client import Client
 from .._log import RedactingFilter
+from ..endpoints import defaults as default_endpoints
 from ..models import Event
 from ..types import CensusData
 from ._trigger import Trigger
@@ -19,8 +20,6 @@ from ._trigger import Trigger
 __all__ = [
     'EventClient'
 ]
-
-_ESS_ENDPOINT = 'wss://push.planetside2.com/streaming'
 
 _EventT = TypeVar('_EventT', bound=Event)
 _EventT2 = TypeVar('_EventT2', bound=Event)
@@ -239,13 +238,15 @@ class EventClient(Client):
         This should therefore only be called through that method.
         """
         _log.info('Connecting to WebSocket endpoint...')
-        url = f'{_ESS_ENDPOINT}?environment=ps2&service-id={self.service_id}'
+        url = default_endpoints()[1]
+        url = url.with_query(
+            {'environment': 'ps2', 'service-id': self.service_id})
 
         # NOTE: The following "async for" loop will cleanly restart the
         # connection should it go down. Invoking "continue" manually may be
         # used to manually force a reconnect if needed.
 
-        async for websocket in websockets.client.connect(url):
+        async for websocket in websockets.client.connect(str(url)):
             _log.info('Connected to %s', url)
             self.websocket = websocket
 
