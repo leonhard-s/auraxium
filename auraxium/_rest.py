@@ -53,7 +53,9 @@ class RequestClient:
 
     def __init__(self, loop: Optional[asyncio.AbstractEventLoop] = None,
                  service_id: str = 's:example', profiling: bool = False,
-                 **_: Any) -> None:
+                 no_ssl_certs: bool = False) -> None:
+
+        _ = no_ssl_certs  # Currently unused but still supported
         if loop is None:
             try:
                 loop = asyncio.get_running_loop()
