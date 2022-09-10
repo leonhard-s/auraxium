@@ -14,6 +14,7 @@ import pydantic
 from .models.base import RESTPayload
 from ._cache import TLRUCache
 from .census import Query
+from .endpoints import DBG_FILES
 from .errors import PayloadError
 from ._rest import RequestClient
 from .types import CensusData
@@ -207,7 +208,8 @@ class Ps2Object(metaclass=abc.ABCMeta):
         This is a utility method targeted at advanced users and
         developers. It is generally not required for most use cases.
         """
-        query = Query(self.collection, service_id=self._client.service_id)
+        query = Query(self.collection, service_id=self._client.service_id,
+                      endpoint=self._client.endpoint)
         query.add_term(field=self.id_field, value=self.id)
         return query
 
@@ -393,5 +395,4 @@ class ImageMixin(Ps2Object, metaclass=abc.ABCMeta):
     @staticmethod
     def _image_url(image_id: int) -> str:
         """Return the URL for a given image ID."""
-        url = 'https://census.daybreakgames.com/files/ps2/images/static/'
-        return url + f'{image_id}.png'
+        return str(DBG_FILES / f'{image_id}.png')

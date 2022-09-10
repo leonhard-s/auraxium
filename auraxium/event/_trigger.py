@@ -5,7 +5,7 @@ import warnings
 from typing import (Any, Callable, Coroutine, Dict, Iterable, List, Optional,
                     Set, Type, Union)
 
-from ..errors import MaintenanceError, CensusError
+from ..errors import CensusError
 from ..models import CharacterEvent, Event, GainExperience
 from ..ps2 import Character, World
 
@@ -180,9 +180,8 @@ class Trigger:
             if not (char_id in self.characters or other_id in self.characters):
                 return False
         # Check world ID requirements
-        if self.worlds:
-            if event.world_id not in self.worlds:
-                return False
+        if self.worlds and event.world_id not in self.worlds:
+            return False
         # Check custom trigger conditions
         for condition in self.conditions:
             if callable(condition):
@@ -213,10 +212,10 @@ class Trigger:
         # When subscribing to character-centric events using only a world ID,
         # set the "logicalAnd*" flag to avoid subscribing to all characters on
         # all continents (characters would default to "all" if not specified).
-        elif self.worlds and not self.characters:
-            if any((issubclass(e, CharacterEvent)  # type: ignore
-                    for e in self.events)):
-                json_data['logicalAndCharactersWithWorlds'] = 'true'
+        elif (self.worlds and not self.characters
+                and any((issubclass(e, CharacterEvent))  # type: ignore
+                        for e in self.events)):
+            json_data['logicalAndCharactersWithWorlds'] = 'true'
         return json.dumps(json_data)
 
     async def run(self, event: Event) -> None:
@@ -233,5 +232,5 @@ class Trigger:
             if asyncio.iscoroutinefunction(self.action):
                 assert ret is not None
                 await ret
-        except (MaintenanceError, CensusError) as err:  # pragma: no cover
+        except CensusError as err:  # pragma: no cover
             warnings.warn(f'Trigger {self.name} callback cancelled: {err}')

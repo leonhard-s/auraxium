@@ -18,7 +18,7 @@ import logging
 import sys
 import warnings
 from typing import (Generator, Literal, List, Optional, Tuple, Type, TypeVar,
-                    cast)
+                    Union, cast)
 from types import TracebackType
 
 import aiohttp
@@ -27,6 +27,7 @@ import yarl
 from backoff.types import Details
 
 from .census import Query
+from .endpoints import defaults as default_endpoints
 from .errors import (PayloadError, BadRequestSyntaxError, CensusError,
                      InvalidSearchTermError, InvalidServiceIDError,
                      MaintenanceError, MissingServiceIDError, NotFoundError,
@@ -53,9 +54,16 @@ class RequestClient:
 
     def __init__(self, loop: Optional[asyncio.AbstractEventLoop] = None,
                  service_id: str = 's:example', profiling: bool = False,
-                 no_ssl_certs: bool = False) -> None:
+                 endpoints: Union[yarl.URL, str,
+                                  List[yarl.URL], List[str], None] = None
+                 ) -> None:
 
-        _ = no_ssl_certs  # Currently unused but still supported
+        self.endpoints: List[yarl.URL] = []
+        if endpoints is not None:
+            if isinstance(endpoints, (str, yarl.URL)):
+                self.endpoints = [yarl.URL(endpoints)]
+            else:
+                self.endpoints = [yarl.URL(e) for e in endpoints]
         if loop is None:
             try:
                 loop = asyncio.get_running_loop()
@@ -95,6 +103,16 @@ class RequestClient:
         return False  # Do not suppress any exceptions
 
     @property
+    def endpoint(self) -> yarl.URL:
+        """Return the default endpoint of the client.
+
+        Note that for failed queries, multiple endpoints may be tried.
+        See :attr:`endpoints` for the full list of endpoints, this only
+        returns the first.
+        """
+        return self.endpoints[0]
+
+    @property
     def latency(self) -> float:
         """Return the average request latency for the client.
 
@@ -131,7 +149,8 @@ class RequestClient:
             # Create a copy of the query before modifying it
             query = copy.copy(query)
             query.timing(True)
-        data = await run_query(query, verb=verb, session=self.session)
+        data = await run_query(query, verb=verb, session=self.session,
+                               endpoints=self.endpoints)
         if self.profiling and verb == 'get':
             timing = cast(CensusData, data.pop('timing'))
             if _log.level <= logging.DEBUG:  # pragma: no cover
@@ -400,7 +419,8 @@ def _process_invalid_search_term(msg: str, url: yarl.URL) -> None:
 
 
 async def run_query(query: Query, session: aiohttp.ClientSession,
-                    verb: str = 'get') -> CensusData:
+                    endpoints: List[yarl.URL], verb: str = 'get'
+                    ) -> CensusData:
     """Perform a top-level Query using the provided HTTP session.
 
     This will handle check both the HTTP response and JSON contents for
@@ -414,6 +434,8 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
        codes or could not be parsed.
     :return: The response dictionary received.
     """
+    query = copy.copy(query)
+    query.endpoint = endpoints[0]  # TODO: Support multiple endpoints
     url = query.url(verb=verb)
     _log.debug('Performing %s request: %s', verb.upper(), url)
 

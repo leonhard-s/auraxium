@@ -5,7 +5,7 @@ import unittest
 
 # pylint: disable=import-error
 import auraxium
-from auraxium import census
+from auraxium import census, endpoints
 from auraxium._cache import TLRUCache
 from auraxium.errors import PayloadError
 from auraxium.ps2 import DirectiveTreeCategory, Item, Loadout
@@ -20,6 +20,7 @@ class TestPs2Object(unittest.TestCase):
         class Dummy:
             """Stand-in for a Client, not worth building a real mock for."""
             service_id = 's:example'
+            endpoint = endpoints.DBG_CENSUS
 
         self.client = typing.cast(auraxium.Client, Dummy())
 

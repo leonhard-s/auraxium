@@ -9,9 +9,11 @@ import pydantic
 import websockets
 import websockets.client
 import websockets.exceptions
+import yarl
 
 from .._client import Client
 from .._log import RedactingFilter
+from ..endpoints import defaults as default_endpoints
 from ..models import Event
 from ..types import CensusData
 from ._trigger import Trigger
@@ -19,8 +21,6 @@ from ._trigger import Trigger
 __all__ = [
     'EventClient'
 ]
-
-_ESS_ENDPOINT = 'wss://push.planetside2.com/streaming'
 
 _EventT = TypeVar('_EventT', bound=Event)
 _EventT2 = TypeVar('_EventT2', bound=Event)
@@ -47,6 +47,12 @@ class EventClient(Client):
     Refer to the :class:`~auraxium.event.Trigger` class's documentation
     for details on how to use triggers and respond to events.
 
+    .. attribute:: ess_endpoint
+       :type: yarl.URL
+
+       The URL of the event streaming service endpoint. If not set,
+       defaults to the daybreak games streaming endpoint.
+
     .. attribute:: triggers
        :type: list[auraxium.event.Trigger]
 
@@ -61,8 +67,19 @@ class EventClient(Client):
        triggers are added and removed.
     """
 
-    def __init__(self, *args: Any, **kwargs: Any) -> None:
+    def __init__(self, *args: Any,
+                 ess_endpoint: Union[yarl.URL, str, None] = None,
+                 **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
+
+        self.ess_endpoint: yarl.URL
+        if ess_endpoint is None:
+            self.ess_endpoint = default_endpoints()[1]
+        elif isinstance(ess_endpoint, yarl.URL):
+            self.ess_endpoint = ess_endpoint
+        else:
+            self.ess_endpoint = yarl.URL(ess_endpoint)
+
         self.triggers: List[Trigger] = []
         self.websocket: Optional[websockets.client.WebSocketClientProtocol] = None
         self._endpoint_status: Dict[str, bool] = {}
@@ -239,13 +256,14 @@ class EventClient(Client):
         This should therefore only be called through that method.
         """
         _log.info('Connecting to WebSocket endpoint...')
-        url = f'{_ESS_ENDPOINT}?environment=ps2&service-id={self.service_id}'
+        url = self.ess_endpoint.with_query(
+            {'environment': 'ps2', 'service-id': self.service_id})
 
         # NOTE: The following "async for" loop will cleanly restart the
         # connection should it go down. Invoking "continue" manually may be
         # used to manually force a reconnect if needed.
 
-        async for websocket in websockets.client.connect(url):
+        async for websocket in websockets.client.connect(str(url)):
             _log.info('Connected to %s', url)
             self.websocket = websocket
 

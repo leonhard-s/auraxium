@@ -9,6 +9,7 @@ from typing import Any, List, Optional, Tuple, Type, TypeVar, Union
 
 import yarl
 
+from ..endpoints import defaults as default_endpoints
 from ._support import (CensusValue, JoinedQueryData, QueryBaseData, QueryData,
                        SearchModifier, SearchTerm)
 from ._urlgen import generate_url
@@ -256,6 +257,7 @@ class Query(QueryBase):
 
     def __init__(self, collection: Optional[str] = None,
                  namespace: str = 'ps2:v2', service_id: str = 's:example',
+                 endpoint: Optional[yarl.URL] = None,
                  **kwargs: CensusValue) -> None:
         """Create a new top-level query.
 
@@ -268,8 +270,12 @@ class Query(QueryBase):
         :type collection: str | None
         :param str namespace: The game namespace to access.
         :param str service_id: The service ID identifying this app.
+        :param endpoint: The endpoint to use for the API. Allows for
+           targeting community endpoints.
+        :type endpoint: yarl.URL or None
         """
         super().__init__(collection, **kwargs)
+        self.endpoint = endpoint or default_endpoints()[0]
         data: QueryBaseData = self.data  # type: ignore
         self.data: QueryData = QueryData.from_base(data)
         self.data.namespace = namespace
@@ -632,7 +638,8 @@ class Query(QueryBase):
            and all of its joins.
         """
         self.data.joins = [j.serialise() for j in self.joins]
-        return generate_url(self.data, verb, validate=not skip_checks)
+        return generate_url(self.data, verb, validate=not skip_checks,
+                            endpoint=self.endpoint)
 
 
 class JoinedQuery(QueryBase):
