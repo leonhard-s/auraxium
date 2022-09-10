@@ -330,7 +330,7 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
         This sets the object's id attribute and adds it to the cache.
 
         :param locale: The locale under which to cache this object.
-        :type locale: str or None
+        :type locale: str | None
         :param args: Any extra positional arguments are forwarded to
            the :class:`~auraxium.base.Cached` class's initialiser.
         :param kwargs: Any keyword arguments are forwarded to the

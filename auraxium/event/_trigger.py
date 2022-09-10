@@ -50,7 +50,7 @@ class Trigger:
        event types. Any callables used must be synchronous.
 
     .. attribute:: events
-       :type: set[typing.Type[auraxium.event.Event] | str]
+       :type: set[type[auraxium.event.Event] | str]
 
        A set of events that the trigger will listen for.
 
@@ -93,23 +93,23 @@ class Trigger:
            to define a trigger around a given function.
 
         :param event: The event type to trigger on.
-        :type event: typing.Type[Event] or str
+        :type event: type[Event] | str
         :param args: Additional events to trigger on.
-        :type args: typing.Type[Event] or str
+        :type args: type[Event] | str
         :param characters: A list of character constraints for the
            trigger.
-        :type characters: collections.abc.Iterable[
-           auraxium.ps2.Character] or collections.abc.Iterable[int] or None
+        :type characters: collections.abc.Iterable [
+           auraxium.ps2.Character] | collections.abc.Iterable [int] | None
         :param worlds: A list of world constraints for the trigger.
-        :type worlds: collections.abc.Iterable[auraxium.ps2.World] or collections.abc.Iterable[int] or None
+        :type worlds: collections.abc.Iterable[auraxium.ps2.World] | collections.abc.Iterable[int] | None
         :param conditions: A list of callables that must be true for
            the trigger to run.
-        :type conditions: list[collections.abc.Callable[[Event], bool]] or None
+        :type conditions: list [collections.abc.Callable [[Event], bool]] | None
         :param action: The method or coroutine to run if a matching
            event is encountered.
-        :type action: collections.abc.Callable[[Event], None] or collections.abc.Callable[[typing.Coroutine[None]], None]
+        :type action: collections.abc.Callable[[Event], None] | collections.abc.Callable[[typing.Coroutine[None]], None]
         :param name: The unique name of the trigger.
-        :type name: str or None
+        :type name: str | None
         :param bool single_shot: If true, trigger will be removed from
            any client when it first fires.
         """
@@ -147,7 +147,7 @@ class Trigger:
 
         :param func: The method or coroutine to call when the event
            trigger fires.
-        :type func: collections.abc.Callable[[Event], None] or collections.abc.Callable[[typing.Coroutine[None]], None]
+        :type func: collections.abc.Callable[[Event], None] | collections.abc.Callable[[typing.Coroutine[None]], None]
         """
         self.action = func
 

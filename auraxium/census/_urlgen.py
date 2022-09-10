@@ -187,7 +187,7 @@ def _process_sorts(sorts: Iterable[Union[str, Tuple[str, bool]]]) -> List[str]:
     This mostly handles the sorting direction tuples.
 
     :param sorts: The sorting values to process.
-    :type sorts: collections.abc.Iterable[str or tuple[str,bool]]
+    :type sorts: collections.abc.Iterable[str | tuple[str, bool]]
     :raises ValueError: Raised if an invalid sorting key is
        encountered.
     :return: A list of sorting fields with sort order tokens.
@@ -211,7 +211,7 @@ def _process_tree(tree: Dict[str, Optional[Union[str, bool]]]) -> str:
     """Process the dict created by the :meth:`Query.as_tree` method.
 
     :param tree: The dictionary to process.
-    :type tree: dict[str, str or bool or None]
+    :type tree: dict[str, str | bool | None]
     :return: The string representation of the tree.
     """
     string = str(tree['field'])

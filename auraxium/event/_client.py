@@ -131,7 +131,7 @@ class EventClient(Client):
         intend to immediately add another trigger.
 
         :param trigger: The trigger to remove, or its unique name.
-        :type trigger: Trigger or str
+        :type trigger: Trigger | str
         :param bool keep_websocket_alive: If true, the websocket
            connection will be kept open even if the client has zero
            triggers remaining.
@@ -324,12 +324,12 @@ class EventClient(Client):
         already exists.
 
         :param event: The event to trigger on.
-        :type event: str or typing.Type[auraxium.event.Event]
+        :type event: str | type[auraxium.event.Event]
         :param args: Additional events that also trigger the action.
-        :type args: str or typing.Type[auraxium.event.Event]
+        :type args: str | type[auraxium.event.Event]
         :param name: The name to assign to the trigger. If not
            specified, the decorated function's name will be used.
-        :type name: str or None
+        :type name: str | None
         :raises KeyError: Raised if a trigger with the given name
            already exists.
         """
@@ -416,7 +416,7 @@ class EventClient(Client):
            execution.
         :param timeout: The maximum number of seconds to wait for.
            Never expires if set to :obj:`None`.
-        :type timeout: float or None
+        :type timeout: float | None
         :raises TimeoutError: Raised if `timeout` is exceeded.
         :return: The first event matching the given trigger(s).
         """
@@ -488,7 +488,7 @@ def _event_factory(data: CensusData) -> Event:
     yet supported by the object model.
 
     :param data: The "payload" sub-key of an event stream message.
-    :type data: float or int or str
+    :type data: float | int | str
     :return: A pydantic model representing the given event.
     """
     if (event_name := data.get('event_name')) is not None:

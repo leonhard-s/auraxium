@@ -17,8 +17,8 @@ import json
 import logging
 import sys
 import warnings
-from typing import (Any, Generator, Literal, List, Optional, Tuple, Type,
-                    TypeVar, cast)
+from typing import (Generator, Literal, List, Optional, Tuple, Type, TypeVar,
+                    cast)
 from types import TracebackType
 
 import aiohttp
@@ -84,11 +84,11 @@ class RequestClient:
         handling will be performed.
 
         :param exc_type: The type of exception that was raised.
-        :type exc_type: typing.Type[BaseException] or None
+        :type exc_type: type[BaseException] | None
         :param exc_value: The exception value that was raised.
-        :type exc_value: BaseException or None
+        :type exc_value: BaseException | None
         :param traceback: The traceback type of the exception.
-        :type traceback: types.TracebackType or None
+        :type traceback: types.TracebackType | None
         :return: Always False, i.e. no error suppression.
         """
         await self.close()

@@ -301,8 +301,8 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
         .. warning::
 
-            This method is part of a provisional API and may be removed
-            or altered in upcoming versions.
+           This method is part of a provisional API and may be removed
+           or altered in upcoming versions.
         """
         collection: Final[str] = 'characters_event'
         query = Query(collection, service_id=self._client.service_id, **kwargs)
