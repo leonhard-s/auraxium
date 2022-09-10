@@ -59,7 +59,9 @@ class RequestClient:
                  ) -> None:
 
         self.endpoints: List[yarl.URL] = []
-        if endpoints is not None:
+        if endpoints is None:
+            self.endpoints = [default_endpoints()[0]]
+        else:
             if isinstance(endpoints, (str, yarl.URL)):
                 self.endpoints = [yarl.URL(endpoints)]
             else:
