@@ -83,7 +83,7 @@ Event Client
 
    .. automethod:: dispatch(event: Event) -> None
 
-   .. automethod:: trigger(self, event: str | typing.Type[Event], *args: str | typing.Type[Event], name: str | None = None, **kwargs) -> typing.Callable[typing.Callable[[Event], typing.Coroutine[None]], None]
+   .. automethod:: trigger(self, event: str | type[Event], *args: str | type[Event], name: str | None = None, **kwargs) -> typing.Callable[typing.Callable[[Event], typing.Coroutine[None]], None]
    
    .. automethod:: wait_for(trigger: Trigger, *args: Trigger, timeout: float | None = None) -> Event
 
@@ -94,7 +94,7 @@ Triggers
 
 .. autoclass:: Trigger
 
-   .. automethod:: __init__(event: typing.Type[Event] | str, *args: typing.Type[Event] | str, characters: collections.abc.Iterable[auraxium.ps2.Character | int] | None = None, worlds: collections.abc.Iterable[auraxium.ps2.World | str] | None = None, conditions: list[typing.Callable[[Event], bool]] | None = None, action: Callable[[Event], typing.Coroutine[None] | None] | None = None, name: str | None = None, single_shot: bool = False) -> None
+   .. automethod:: __init__(event: type[Event] | str, *args: type[Event] | str, characters: collections.abc.Iterable[auraxium.ps2.Character | int] | None = None, worlds: collections.abc.Iterable[auraxium.ps2.World | int] | None = None, conditions: list[typing.Callable[[Event], bool]] | None = None, action: typing.Callable[[Event], typing.Coroutine[None] | None] | None = None, name: str | None = None, single_shot: bool = False) -> None
 
    .. automethod:: callback(func: Callable[[Event], typing.Coroutine[None] | None]) -> None
 

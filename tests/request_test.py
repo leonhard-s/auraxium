@@ -189,8 +189,8 @@ class TestPayloadParsing(unittest.IsolatedAsyncioTestCase):
             _ = request.extract_single(data, 'character')
         warning = caught[0]
         self.assertTrue(
-            ((issubclass(warning.category, UserWarning)
-              and 'The dictionary passed' in str(warning))), 'Missing warning')
+            (issubclass(warning.category, UserWarning)
+             and 'The dictionary passed' in str(warning)), 'Missing warning')
         # Assert no warning with single-payloads
         first = cast(CensusData, data['character_list'][0])
         single: CensusData = {'character_list': [first], 'returned': 1}

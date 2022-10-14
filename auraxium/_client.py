@@ -57,7 +57,7 @@ class Client(RequestClient):
         """Return the number of items matching the given terms.
 
         :param type_: The object type to search for.
-        :type type_: typing.Type[auraxium.base.Ps2Object]
+        :type type_: type[auraxium.base.Ps2Object]
         :param kwargs: Any number of filters to apply.
         :return: The number of entries entries.
         """
@@ -81,7 +81,7 @@ class Client(RequestClient):
         argument. Note that it may be fewer.
 
         :param type_: The object type to search for.
-        :type type_: typing.Type[auraxium.base.Ps2Object]
+        :type type_: type[auraxium.base.Ps2Object]
         :param int results: The maximum number of results.
         :param int offset: The number of entries to skip. Useful for
            paginated views.
@@ -110,7 +110,7 @@ class Client(RequestClient):
         Like :meth:`Client.find`, but will only return one item.
 
         :param type_: The object type to search for.
-        :type type_: typing.Type[auraxium.base.Ps2Object]
+        :type type_: type[auraxium.base.Ps2Object]
         :param bool check_case: Whether to check case when comparing
            strings. Note that case-insensitive searches are much more
            expensive.
@@ -138,7 +138,7 @@ class Client(RequestClient):
         performing the query.
 
         :param type_: The object type to search for.
-        :type type_: typing.Type[auraxium.base.Ps2Object]
+        :type type_: type[auraxium.base.Ps2Object]
         :param int id_: The unique ID of the object.
         :return: The entry with the matching ID, or :obj:`None` if not
            found.
@@ -178,7 +178,7 @@ class Client(RequestClient):
         This query is always case-insensitive.
 
         :param type_: The object type to search for.
-        :type type_: typing.Type[auraxium.base.Ps2Object]
+        :type type_: type[auraxium.base.Ps2Object]
         :param str name: The name to search for.
         :param str locale: The locale of the search key.
         :return: The entry with the matching name, or :obj:`None` if

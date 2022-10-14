@@ -18,7 +18,7 @@ import logging
 import sys
 import warnings
 from typing import (Generator, Literal, List, Optional, Tuple, Type, TypeVar,
-                    cast)
+                    Union, cast)
 from types import TracebackType
 
 import aiohttp
@@ -27,11 +27,13 @@ import yarl
 from backoff.types import Details
 
 from .census import Query
+from .endpoints import defaults as default_endpoints
 from .errors import (PayloadError, BadRequestSyntaxError, CensusError,
                      InvalidSearchTermError, InvalidServiceIDError,
                      MaintenanceError, MissingServiceIDError, NotFoundError,
                      ResponseError, ServerError, ServiceUnavailableError,
                      UnknownCollectionError)
+from ._log import RedactingFilter
 from .types import CensusData
 from ._support import deprecated
 
@@ -52,7 +54,18 @@ class RequestClient:
 
     def __init__(self, loop: Optional[asyncio.AbstractEventLoop] = None,
                  service_id: str = 's:example', profiling: bool = False,
-                 no_ssl_certs: bool = False) -> None:
+                 endpoints: Union[yarl.URL, str,
+                                  List[yarl.URL], List[str], None] = None
+                 ) -> None:
+
+        self.endpoints: List[yarl.URL] = []
+        if endpoints is None:
+            self.endpoints = [default_endpoints()[0]]
+        else:
+            if isinstance(endpoints, (str, yarl.URL)):
+                self.endpoints = [yarl.URL(endpoints)]
+            else:
+                self.endpoints = [yarl.URL(e) for e in endpoints]
         if loop is None:
             try:
                 loop = asyncio.get_running_loop()
@@ -66,12 +79,7 @@ class RequestClient:
         self.service_id: str = service_id
         self.session: aiohttp.ClientSession = aiohttp.ClientSession()
         self._timing_cache: List[float] = []
-        if no_ssl_certs:  # pragma: no cover
-            warnings.warn('SSL certificate expiration bypass is disabled in '
-                          'this version of Auraxium due to compatibility '
-                          'issues. See '
-                          '<https://github.com/leonhard-s/auraxium/issues/56> '
-                          'for details.', FutureWarning)
+        _log.addFilter(RedactingFilter(self.service_id))
 
     async def __aenter__(self: _T) -> _T:
         """Enter the context manager and return the client."""
@@ -86,15 +94,25 @@ class RequestClient:
         handling will be performed.
 
         :param exc_type: The type of exception that was raised.
-        :type exc_type: typing.Type[BaseException] or None
+        :type exc_type: type[BaseException] | None
         :param exc_value: The exception value that was raised.
-        :type exc_value: BaseException or None
+        :type exc_value: BaseException | None
         :param traceback: The traceback type of the exception.
-        :type traceback: types.TracebackType or None
+        :type traceback: types.TracebackType | None
         :return: Always False, i.e. no error suppression.
         """
         await self.close()
         return False  # Do not suppress any exceptions
+
+    @property
+    def endpoint(self) -> yarl.URL:
+        """Return the default endpoint of the client.
+
+        Note that for failed queries, multiple endpoints may be tried.
+        See :attr:`endpoints` for the full list of endpoints, this only
+        returns the first.
+        """
+        return self.endpoints[0]
 
     @property
     def latency(self) -> float:
@@ -133,7 +151,8 @@ class RequestClient:
             # Create a copy of the query before modifying it
             query = copy.copy(query)
             query.timing(True)
-        data = await run_query(query, verb=verb, session=self.session)
+        data = await run_query(query, verb=verb, session=self.session,
+                               endpoints=self.endpoints)
         if self.profiling and verb == 'get':
             timing = cast(CensusData, data.pop('timing'))
             if _log.level <= logging.DEBUG:  # pragma: no cover
@@ -402,7 +421,8 @@ def _process_invalid_search_term(msg: str, url: yarl.URL) -> None:
 
 
 async def run_query(query: Query, session: aiohttp.ClientSession,
-                    verb: str = 'get') -> CensusData:
+                    endpoints: List[yarl.URL], verb: str = 'get'
+                    ) -> CensusData:
     """Perform a top-level Query using the provided HTTP session.
 
     This will handle check both the HTTP response and JSON contents for
@@ -416,10 +436,10 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
        codes or could not be parsed.
     :return: The response dictionary received.
     """
+    query = copy.copy(query)
+    query.endpoint = endpoints[0]  # TODO: Support multiple endpoints
     url = query.url(verb=verb)
     _log.debug('Performing %s request: %s', verb.upper(), url)
-
-    # TODO: Remove service ID from any URL literals outside of .census
 
     def on_success(details: Details) -> None:  # pragma: no cover
         if (tries := details['tries']) > 1:

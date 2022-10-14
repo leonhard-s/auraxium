@@ -9,6 +9,7 @@ from typing import Any, List, Optional, Tuple, Type, TypeVar, Union
 
 import yarl
 
+from ..endpoints import defaults as default_endpoints
 from ._support import (CensusValue, JoinedQueryData, QueryBaseData, QueryData,
                        SearchModifier, SearchTerm)
 from ._urlgen import generate_url
@@ -55,11 +56,11 @@ class QueryBase:
         :param collection: The API collection to access. Set to
            :obj:`None` to display the list of available collections in
            the given namespace (only allowed in top level queries).
-        :type collection: str or None
+        :type collection: str | None
         :param kwargs: Key-value pairs to add to the query. Any search
            modifier literals will first be parsed by
            :meth:`SearchTerm.infer`.
-        :type kwargs: float or int or str
+        :type kwargs: float | int | str
         """
         self.data: QueryBaseData = QueryBaseData(collection)
         self.joins: List[JoinedQuery] = []
@@ -100,7 +101,7 @@ class QueryBase:
 
         :param str field: The field to filter by.
         :param value: The value of the filter term.
-        :type value: float or int or str
+        :type value: float | int | str
         :param SearchModifier modifier: The search modifier to use.
            This will only be used if `parse_modifier` is false. By
            default :class:`SearchModifier.EQUAL_TO <SearchModifier>`.
@@ -256,6 +257,7 @@ class Query(QueryBase):
 
     def __init__(self, collection: Optional[str] = None,
                  namespace: str = 'ps2:v2', service_id: str = 's:example',
+                 endpoint: Optional[yarl.URL] = None,
                  **kwargs: CensusValue) -> None:
         """Create a new top-level query.
 
@@ -265,11 +267,15 @@ class Query(QueryBase):
         :param collection: The API collection to access. Set to
            :obj:`None` to display the list of available collections in
            the given `namespace`.
-        :type collection: str or None
+        :type collection: str | None
         :param str namespace: The game namespace to access.
         :param str service_id: The service ID identifying this app.
+        :param endpoint: The endpoint to use for the API. Allows for
+           targeting community endpoints.
+        :type endpoint: yarl.URL or None
         """
         super().__init__(collection, **kwargs)
+        self.endpoint = endpoint or default_endpoints()[0]
         data: QueryBaseData = self.data  # type: ignore
         self.data: QueryData = QueryData.from_base(data)
         self.data.namespace = namespace
@@ -390,7 +396,7 @@ class Query(QueryBase):
 
         :param distinct: The field to show unique values for. Set to
            :obj:`None` to disable.
-        :type distinct: str or None
+        :type distinct: str | None
         :return: The current query instance.
         """
         self.data.distinct = field
@@ -441,7 +447,7 @@ class Query(QueryBase):
            French: 'fr', Italian: 'it'
 
         :param lang: The locale identifier to filter by.
-        :type lang: str or None
+        :type lang: str | None
         :return: The current query instance.
         """
         self.data.lang = lang
@@ -574,9 +580,9 @@ class Query(QueryBase):
         will be performed in order to further refine the list returned.
 
         :param field: A field to sort by.
-        :type field: str or tuple[str, bool]
+        :type field: str | tuple[str, bool]
         :param args: Additional fields to sort by.
-        :type args: str or tuple[str, bool]
+        :type args: str | tuple[str, bool]
         :return: The current query instance.
         """
         self.data.sort = [field]
@@ -610,7 +616,7 @@ class Query(QueryBase):
            improve readability.
         :param start: Used to tell the tree where to start. If equal to
            :obj:`None`, the root result list will be reformatted.
-        :type start: str or None
+        :type start: str | None
         :return: The current query instance.
         """
         self.data.tree = {'field': field, 'is_list': is_list,
@@ -632,7 +638,8 @@ class Query(QueryBase):
            and all of its joins.
         """
         self.data.joins = [j.serialise() for j in self.joins]
-        return generate_url(self.data, verb, validate=not skip_checks)
+        return generate_url(self.data, verb, validate=not skip_checks,
+                            endpoint=self.endpoint)
 
 
 class JoinedQuery(QueryBase):
@@ -663,7 +670,7 @@ class JoinedQuery(QueryBase):
         :param kwargs: Key-value pairs to add to the query. Any search
            modifier literals will first be parsed by
            :meth:`SearchTerm.infer`.
-        :type kwargs: float or int or str
+        :type kwargs: float | int | str
         """
         super().__init__(collection, **kwargs)
         data: QueryBaseData = self.data  # type: ignore
@@ -772,9 +779,9 @@ class JoinedQuery(QueryBase):
         fields.
 
         :param parent: The field name on the parent collection.
-        :type parent: str or None
+        :type parent: str | None
         :param child: The field name on the child collection.
-        :type child: str or None
+        :type child: str | None
         :return: The current query instance.
         """
         if parent is not None:
@@ -812,7 +819,7 @@ class JoinedQuery(QueryBase):
         :param key: The name of the key to inject the joined query's
            return data at. If set to :obj:`None`, the default naming
            system is used.
-        :type key: str or None
+        :type key: str | None
         :return: The current query instance.
         """
         self.data.inject_at = key

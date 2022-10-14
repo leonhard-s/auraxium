@@ -44,7 +44,7 @@ class Proxy(Generic[_Ps2ObjectT]):
         seconds due to the way this value is initialised.
 
         :param type_: The object type represented by the proxy.
-        :type type_: typing.Type[auraxium.base.Ps2Object]
+        :type type_: type[auraxium.base.Ps2Object]
         :param auraxium.census.Query query: The query used to retrieve
            the data.
         :param float lifetime: The time-to-use of the retrieved data.

@@ -6,6 +6,7 @@ from typing import Any, List, Union, cast
 import pydantic
 
 from ..base import Cached
+from ..endpoints import DBG_FILES
 from ..errors import PayloadError
 from ..models import ExperienceData, ExperienceRankData
 from .._rest import RequestClient
@@ -144,8 +145,7 @@ class ExperienceRank:
             faction = faction.id
         internal_tag: List[str] = ['null', 'vs', 'nc', 'tr', 'nso']
         image_id = getattr(self.data, internal_tag[faction])
-        url = 'https://census.daybreakgames.com/files/ps2/images/static/'
-        return url + f'{image_id}.png'
+        return str(DBG_FILES / f'{image_id}.png')
 
     def __repr__(self) -> str:
         """Return the unique string representation of this object.

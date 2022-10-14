@@ -89,7 +89,7 @@ class TLRUCache(Generic[_K, _V]):
            to zero or less to cache objects indefinitely.
         :param name: A display name to use for this cache. Useful for
            debugging as this name will be used by the logs.
-        :type name: str or None
+        :type name: str | None
         """
         # NOTE: Mypy currently does not support type hinting the OrderedDict
         # object in-code, hence the string literal type.

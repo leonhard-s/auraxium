@@ -130,7 +130,7 @@ class SearchModifier(enum.Enum):
         :class:`SearchModifier.EQUAL_TO <SearchModifier>`.
 
         :param value: A value to infer the search modifier from.
-        :type value: float or int or str
+        :type value: float | int | str
         :raises ValueError: Raised if `value` is an empty string.
         :return: The search modifier for the value provided.
         """
@@ -150,7 +150,7 @@ class SearchModifier(enum.Enum):
         This is primarily used during URL generation.
 
         :param enum_value: The enum value or index to serialise.
-        :type enum_value: int or SearchModifier
+        :type enum_value: int | SearchModifier
         :raises ValueError: Raised if the provided integer exceeds the
            value range of the enum.
         :return: The string representation of the search modifier. This
@@ -206,7 +206,7 @@ class SearchTerm:
 
         :param str field: The field to compare.
         :param value: The value to compare the field against.
-        :type value: float or int or str
+        :type value: float | int | str
         :param SearchModifier modifier: The search modifier to use.
            Modifiers can be used to get non-exact or partial matches.
         """
@@ -244,7 +244,7 @@ class SearchTerm:
         :param value: The value to compare the field against. If
            `value` is a subclass of :class:`str`, its first character
            will be checked for search modifier literals.
-        :type value: float or int or str
+        :type value: float | int | str
         :return: A new :class:`SearchTerm` with a pre-defined
            :class:`SearchModifier`.
         """

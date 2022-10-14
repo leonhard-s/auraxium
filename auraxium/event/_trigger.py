@@ -5,7 +5,7 @@ import warnings
 from typing import (Any, Callable, Coroutine, Dict, Iterable, List, Optional,
                     Set, Type, Union)
 
-from ..errors import MaintenanceError, CensusError
+from ..errors import CensusError
 from ..models import CharacterEvent, Event, GainExperience
 from ..ps2 import Character, World
 
@@ -50,7 +50,7 @@ class Trigger:
        event types. Any callables used must be synchronous.
 
     .. attribute:: events
-       :type: set[typing.Type[auraxium.event.Event] | str]
+       :type: set[type[auraxium.event.Event] | str]
 
        A set of events that the trigger will listen for.
 
@@ -93,23 +93,23 @@ class Trigger:
            to define a trigger around a given function.
 
         :param event: The event type to trigger on.
-        :type event: typing.Type[Event] or str
+        :type event: type[Event] | str
         :param args: Additional events to trigger on.
-        :type args: typing.Type[Event] or str
+        :type args: type[Event] | str
         :param characters: A list of character constraints for the
            trigger.
-        :type characters: collections.abc.Iterable[
-           auraxium.ps2.Character] or collections.abc.Iterable[int] or None
+        :type characters: collections.abc.Iterable [
+           auraxium.ps2.Character] | collections.abc.Iterable [int] | None
         :param worlds: A list of world constraints for the trigger.
-        :type worlds: collections.abc.Iterable[auraxium.ps2.World] or collections.abc.Iterable[int] or None
+        :type worlds: collections.abc.Iterable[auraxium.ps2.World] | collections.abc.Iterable[int] | None
         :param conditions: A list of callables that must be true for
            the trigger to run.
-        :type conditions: list[collections.abc.Callable[[Event], bool]] or None
+        :type conditions: list [collections.abc.Callable [[Event], bool]] | None
         :param action: The method or coroutine to run if a matching
            event is encountered.
-        :type action: collections.abc.Callable[[Event], None] or collections.abc.Callable[[typing.Coroutine[None]], None]
+        :type action: collections.abc.Callable[[Event], None] | collections.abc.Callable[[typing.Coroutine[None]], None]
         :param name: The unique name of the trigger.
-        :type name: str or None
+        :type name: str | None
         :param bool single_shot: If true, trigger will be removed from
            any client when it first fires.
         """
@@ -147,7 +147,7 @@ class Trigger:
 
         :param func: The method or coroutine to call when the event
            trigger fires.
-        :type func: collections.abc.Callable[[Event], None] or collections.abc.Callable[[typing.Coroutine[None]], None]
+        :type func: collections.abc.Callable[[Event], None] | collections.abc.Callable[[typing.Coroutine[None]], None]
         """
         self.action = func
 
@@ -180,9 +180,8 @@ class Trigger:
             if not (char_id in self.characters or other_id in self.characters):
                 return False
         # Check world ID requirements
-        if self.worlds:
-            if event.world_id not in self.worlds:
-                return False
+        if self.worlds and event.world_id not in self.worlds:
+            return False
         # Check custom trigger conditions
         for condition in self.conditions:
             if callable(condition):
@@ -213,10 +212,10 @@ class Trigger:
         # When subscribing to character-centric events using only a world ID,
         # set the "logicalAnd*" flag to avoid subscribing to all characters on
         # all continents (characters would default to "all" if not specified).
-        elif self.worlds and not self.characters:
-            if any((issubclass(e, CharacterEvent)  # type: ignore
-                    for e in self.events)):
-                json_data['logicalAndCharactersWithWorlds'] = 'true'
+        elif (self.worlds and not self.characters
+                and any((issubclass(e, CharacterEvent))  # type: ignore
+                        for e in self.events)):
+            json_data['logicalAndCharactersWithWorlds'] = 'true'
         return json.dumps(json_data)
 
     async def run(self, event: Event) -> None:
@@ -233,5 +232,5 @@ class Trigger:
             if asyncio.iscoroutinefunction(self.action):
                 assert ret is not None
                 await ret
-        except (MaintenanceError, CensusError) as err:  # pragma: no cover
+        except CensusError as err:  # pragma: no cover
             warnings.warn(f'Trigger {self.name} callback cancelled: {err}')
