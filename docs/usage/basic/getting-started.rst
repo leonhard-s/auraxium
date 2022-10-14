@@ -81,7 +81,7 @@ The :class:`auraxium.event.EventClient` subclass adds a trigger-action system al
    async def on_death(event):
        victim_id = event.character_id
        victim = await client.get_by_id(auraxium.ps2.Character, victim_id)
-       print(f'Player {victim.name}' has died)
+       print(f'Player {victim.name} has died')
 
 For more information on the event streaming system, refer to the :doc:`event streaming documentation <event>`.
 
