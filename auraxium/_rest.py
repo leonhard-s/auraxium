@@ -450,7 +450,7 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
                        tries, url)
 
     def on_backoff(details: Details) -> None:  # pragma: no cover
-        wait = details['wait']
+        wait = details.get('wait', -1)
         tries = details['tries']
         _log.debug('Backing off %.2f seconds after %d attempt[s]: %s',
                    wait, tries, url)
