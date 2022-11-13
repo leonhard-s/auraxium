@@ -755,7 +755,7 @@ class TestCustomEndpoints(unittest.TestCase):
 
     def test_default(self) -> None:
         """Ensure the default URL is still DBG's Census."""
-        url = census.Query('character').url()
+        url = census.Query('character').url(skip_checks=True)
         self.assertEqual(url.scheme, 'https')
         self.assertEqual(url.host, 'census.daybreakgames.com')
         self.assertEqual(url.path, '/s:example/get/ps2:v2/character')
