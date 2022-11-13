@@ -357,10 +357,12 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         character_ids: List[str] = [
             str(d['character_id'])
             for d in cast(List[CensusData], data['friend_list'])]
-        characters = await Character.find(
-            results=len(character_ids), client=self._client,
-            character_id=','.join(character_ids))
-        return characters
+        query = Query(self.collection, service_id=self._client.service_id,
+                      endpoint=self._client.endpoints[0],
+                      character_id=','.join(character_ids))
+        payload = await self._client.request(query)
+        data = extract_payload(payload, self.collection)
+        return [Character(d, client=self._client) for d in data]
 
     @classmethod
     @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')
