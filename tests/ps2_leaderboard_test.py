@@ -9,7 +9,7 @@ from auraxium import ps2
 from tests.utils import SERVICE_ID
 
 
-@unittest.skipIf(SERVICE_ID == 's:example', 'missing service ID')
+@unittest.skipIf(SERVICE_ID in ['', 's:example'], 'missing service ID')
 class TestLeaderboard(unittest.IsolatedAsyncioTestCase):
     """Test the leaderboard query methods."""
 

@@ -13,7 +13,7 @@ from auraxium.ps2 import Achievement, Character, Loadout, Zone
 from tests.utils import SERVICE_ID
 
 
-@unittest.skipIf(SERVICE_ID == 's:example', 'missing service ID')
+@unittest.skipIf(SERVICE_ID in ['', 's:example'], 'missing service ID')
 class TestRestClient(unittest.IsolatedAsyncioTestCase):
     """Test the getX helper methods from the main REST client."""
 

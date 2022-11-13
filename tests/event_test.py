@@ -12,7 +12,7 @@ import auraxium
 from tests.utils import SERVICE_ID
 
 
-@unittest.skipIf(SERVICE_ID == 's:example', 'missing service ID')
+@unittest.skipIf(SERVICE_ID in ['', 's:example'], 'missing service ID')
 class EventClientTest(unittest.IsolatedAsyncioTestCase):
     """Live tests for the real-time event client component."""
 
