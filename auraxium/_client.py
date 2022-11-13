@@ -194,7 +194,7 @@ class Client(RequestClient):
                    type_.__name__, name, locale)
         query = Query(type_.collection, service_id=self.service_id)
         if issubclass(type_, Character):
-            query.case(False).add_term(field='name.first', value=name)
+            query.add_term(field='name.first_lower', value=name.lower())
         else:
             query.case(False).add_term(field=f'name.{locale}', value=name)
         payload = await self.request(query)
