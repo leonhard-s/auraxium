@@ -38,7 +38,7 @@ class ItemData(RESTPayload, ImageData):
     activatable_ability_id: Optional[int] = None
     passive_ability_id: Optional[int] = None
     is_vehicle_weapon: bool
-    name: LocaleData
+    name: Optional[LocaleData] = None
     description: Optional[LocaleData] = None
     faction_id: Optional[int] = None
     max_stack_size: int

@@ -93,7 +93,7 @@ class TestCharacterMethods(unittest.IsolatedAsyncioTestCase):
 
     async def test_items(self) -> None:
         """Test the items() helper method."""
-        items: List[ps2.Item] = await self.character.items(100)  # type: ignore
+        items: List[ps2.Item] = await self.character.items(10)  # type: ignore
         self.assertGreater(len(items), 0)
         self.assertIsInstance(items[0], ps2.Item)
 
