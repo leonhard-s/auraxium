@@ -136,6 +136,9 @@ class RequestClient:
         """
         _log.info('Shutting down client')
         await self.session.close()
+        # Sleep for a bit to allow the session to close properly
+        # https://docs.aiohttp.org/en/stable/client_advanced.html#graceful-shutdown
+        await asyncio.sleep(0.250)
 
     async def request(self, query: Query, verb: str = 'get') -> CensusData:
         """Perform a REST API request.
@@ -447,7 +450,7 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
                        tries, url)
 
     def on_backoff(details: Details) -> None:  # pragma: no cover
-        wait = details['wait']
+        wait = details.get('wait', -1)
         tries = details['tries']
         _log.debug('Backing off %.2f seconds after %d attempt[s]: %s',
                    wait, tries, url)

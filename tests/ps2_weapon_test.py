@@ -10,7 +10,7 @@ from auraxium import models, ps2
 from tests.utils import SERVICE_ID
 
 
-@unittest.skipIf(SERVICE_ID == 's:example', 'missing service ID')
+@unittest.skipIf(SERVICE_ID in ['', 's:example'], 'missing service ID')
 class TestWeaponMethods(unittest.IsolatedAsyncioTestCase):
     """Test weapon-specific helper methods for relational tables."""
 

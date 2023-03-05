@@ -10,7 +10,7 @@ from auraxium import models, ps2
 from tests.utils import SERVICE_ID
 
 
-@unittest.skipIf(SERVICE_ID == 's:example', 'missing service ID')
+@unittest.skipIf(SERVICE_ID in ['', 's:example'], 'missing service ID')
 class TestCharacterMethods(unittest.IsolatedAsyncioTestCase):
     """Test character-specific helper methods for relational tables."""
 
@@ -93,7 +93,7 @@ class TestCharacterMethods(unittest.IsolatedAsyncioTestCase):
 
     async def test_items(self) -> None:
         """Test the items() helper method."""
-        items: List[ps2.Item] = await self.character.items(100)  # type: ignore
+        items: List[ps2.Item] = await self.character.items(10)  # type: ignore
         self.assertGreater(len(items), 0)
         self.assertIsInstance(items[0], ps2.Item)
 

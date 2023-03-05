@@ -5,7 +5,7 @@ inner, nested queries respectively.
 """
 
 import copy
-from typing import Any, List, Optional, Tuple, Type, TypeVar, Union
+from typing import Any, List, Optional, Tuple, Type, TypeVar, Union, cast
 
 import yarl
 
@@ -745,7 +745,8 @@ class JoinedQuery(QueryBase):
         # If the original query had a non-default limit value, the join should
         # also return a list.
         elif isinstance(template, Query):
-            if template.data.limit > 1 or template.data.limit_per_db > 1:
+            data = cast(QueryData, template.data)
+            if data.limit > 1 or data.limit_per_db > 1:
                 instance.data.is_list = True
         return instance
 
