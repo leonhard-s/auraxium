@@ -751,11 +751,6 @@ class ContinentLock(Event, WorldEvent):
        The ID of the :class:`~auraxium.ps2.MetagameEvent` that caused
        the continent to lock.
 
-    .. attribute:: event_type:
-       :type: int
-
-       The event type of :attr:`metagame_event_id`.
-
     .. attribute:: timestamp
        :type: int
 
@@ -776,7 +771,6 @@ class ContinentLock(Event, WorldEvent):
     nc_population: float
     tr_population: float
     metagame_event_id: int
-    event_type: int
 
 
 class ContinentUnlock(Event, WorldEvent):
@@ -822,11 +816,6 @@ class ContinentUnlock(Event, WorldEvent):
 
        (Unknown due to event being broken)
 
-    .. attribute:: event_type:
-       :type: int
-
-       (Unknown due to event being broken)
-
     .. attribute:: timestamp
        :type: int
 
@@ -847,4 +836,3 @@ class ContinentUnlock(Event, WorldEvent):
     nc_population: float
     tr_population: float
     metagame_event_id: int
-    event_type: int
