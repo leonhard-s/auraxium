@@ -213,7 +213,7 @@ class Trigger:
         # set the "logicalAnd*" flag to avoid subscribing to all characters on
         # all continents (characters would default to "all" if not specified).
         elif (self.worlds and not self.characters
-                and any((issubclass(e, CharacterEvent))  # type: ignore
+                and any((isinstance(e, CharacterEvent))  # type: ignore
                         for e in self.events)):
             json_data['logicalAndCharactersWithWorlds'] = 'true'
         return json.dumps(json_data)
