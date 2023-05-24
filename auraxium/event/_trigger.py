@@ -215,7 +215,6 @@ class Trigger:
         elif (self.worlds and not self.characters
               and any(not isinstance(e, str) and issubclass(e, CharacterEvent)
                       for e in self.events)):
-                        for e in self.events)):
             json_data['logicalAndCharactersWithWorlds'] = 'true'
         return json.dumps(json_data)
 
