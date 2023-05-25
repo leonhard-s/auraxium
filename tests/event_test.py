@@ -287,3 +287,34 @@ class TriggerTest(unittest.TestCase):
         data = json.loads(trigger.generate_subscription(logical_and=False))
         self.assertSequenceEqual(
             data['logicalAndCharactersWithWorlds'], 'false')
+        
+
+    def test_regression_66_string_event_with_world_filter(self) -> None:
+        """https://github.com/leonhard-s/auraxium/issues/66"""
+        trigger = auraxium.Trigger('ContinentLock', worlds=[1])
+        _ = json.loads(trigger.generate_subscription())
+
+    def test_logical_and_autoselect(self) -> None:
+        """Test the auto-insertion of the logicalAnd flag."""
+
+        # TODO: Support logicalAnd* auto-insertion for triggers defined using
+        # event names rather than types
+
+        event_variants = (auraxium.event.Death,)
+        # Character-centric event with no filter -> no logicalAnd
+        for event in event_variants:
+            trigger = auraxium.Trigger(event)
+            data = json.loads(trigger.generate_subscription())
+            self.assertNotIn('logicalAndCharactersWithWorlds', data)
+        # Character-centric event with world filter -> logicalAnd
+        for event in event_variants:
+            trigger = auraxium.Trigger(event, worlds=[1])
+            data = json.loads(trigger.generate_subscription())
+            self.assertSequenceEqual(
+                data['logicalAndCharactersWithWorlds'], 'true')
+        # Character-centric event with character filter -> no logicalAnd
+        for event in event_variants:
+            trigger = auraxium.Trigger(event, characters=[1])
+            data = json.loads(trigger.generate_subscription())
+            self.assertNotIn('logicalAndCharactersWithWorlds', data)
+
