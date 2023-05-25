@@ -296,11 +296,8 @@ class TriggerTest(unittest.TestCase):
 
     def test_logical_and_autoselect(self) -> None:
         """Test the auto-insertion of the logicalAnd flag."""
-
-        # TODO: Support logicalAnd* auto-insertion for triggers defined using
-        # event names rather than types
-
-        event_variants = (auraxium.event.Death, "Death")
+        event_variants = (auraxium.event.Death, "Death",
+                          'GainExperience', 'GainExperience_experience_id_1')
         # Character-centric event with no filter -> no logicalAnd
         for event in event_variants:
             trigger = auraxium.Trigger(event)
@@ -317,4 +314,3 @@ class TriggerTest(unittest.TestCase):
             trigger = auraxium.Trigger(event, characters=[1])
             data = json.loads(trigger.generate_subscription())
             self.assertNotIn('logicalAndCharactersWithWorlds', data)
-
