@@ -217,9 +217,6 @@ class Trigger:
             charEventStrings = [event for event in self.events if isinstance(event, str) and event in charEventClsNames]
             if charEventStrings or any( isinstance(event, (CharacterEvent)) for event in self.events ):
                 json_data['logicalAndCharactersWithWorlds'] = 'true'
-            # else:
-            #     json_data['logicalAndCharactersWithWorlds'] = 'false'
-
         return json.dumps(json_data)
 
     async def run(self, event: Event) -> None:
