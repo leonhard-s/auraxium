@@ -300,7 +300,7 @@ class TriggerTest(unittest.TestCase):
         # TODO: Support logicalAnd* auto-insertion for triggers defined using
         # event names rather than types
 
-        event_variants = (auraxium.event.Death,)
+        event_variants = (auraxium.event.Death, "Death")
         # Character-centric event with no filter -> no logicalAnd
         for event in event_variants:
             trigger = auraxium.Trigger(event)
