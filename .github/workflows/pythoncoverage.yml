@@ -1,0 +1,37 @@
+# This workflow will run all test files with code coverage enabled and upload
+# the results to coveralls.io. Only enabled for the main repository.
+
+name: Generate Python code coverage report
+
+on: [push, pull_request]
+
+jobs:
+  coverage:
+    if: github.repository == 'leonhard-s/auraxium'
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install -r ./requirements.txt
+          python -m pip install coveralls
+
+      - name: Run tests
+        env:
+          SERVICE_ID: ${{secrets.REPO_SERVICE_ID}}
+        run: |
+          python -m coverage run --source auraxium/ -m unittest discover -p *_test.py tests/
+
+      - name: Upload code coverage analysis
+        env:
+          COVERALLS_REPO_TOKEN: ${{secrets.COVERALLS_REPO_TOKEN}}
+        run: |
+          python -m coveralls
