@@ -31,9 +31,9 @@ jobs:
         env:
           SERVICE_ID: ${{secrets.REPO_SERVICE_ID}}
         run: |
-          python -m coverage run --source auraxium/ -m unittest discover -p *_test.py tests/
+          python -m -m unittest discover -p *_test.py tests/
 
       - name: Run only offline tests
         if: github.repository != 'leonhard-s/auraxium'
         run: |
-          python -m coverage run --source auraxium/ -m unittest discover -p *_test.py tests/
+          python -m -m unittest discover -p *_test.py tests/
