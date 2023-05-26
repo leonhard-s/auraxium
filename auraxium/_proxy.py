@@ -4,7 +4,7 @@ import asyncio
 import copy
 import datetime
 import warnings
-from typing import (Any, Dict, Generator, Generic, Iterator, List, Optional,
+from typing import (Any, Awaitable, Dict, Generator, Generic, List, Optional,
                     Type, TypeVar)
 
 from .base import Ps2Object
@@ -127,7 +127,7 @@ class Proxy(Generic[_Ps2ObjectT]):
         return data
 
 
-class SequenceProxy(Proxy[_Ps2ObjectT]):
+class SequenceProxy(Proxy[_Ps2ObjectT], Awaitable[List[_Ps2ObjectT]]):
     """Proxy for lists of results.
 
     This object supports asynchronous iteration (in which case all
@@ -154,7 +154,7 @@ class SequenceProxy(Proxy[_Ps2ObjectT]):
         except IndexError as err:
             raise StopAsyncIteration from err
 
-    def __await__(self) -> Iterator[List[_Ps2ObjectT]]:
+    def __await__(self) -> Generator[Any, None, List[_Ps2ObjectT]]:
         return self.flatten().__await__()
 
     async def flatten(self) -> List[_Ps2ObjectT]:
