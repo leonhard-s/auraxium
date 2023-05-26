@@ -189,7 +189,7 @@ class Client(RequestClient):
         # pylint: disable=protected-access
         if (instance := type_._cache.get(key)) is not None:  # type: ignore
             _log.debug('%r restored from cache', instance)
-            return instance  # type: ignore
+            return instance
         _log.debug('%s "%s"[%s] not cached, generating API query...',
                    type_.__name__, name, locale)
         query = Query(type_.collection, service_id=self.service_id)

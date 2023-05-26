@@ -1,7 +1,6 @@
 """Test cases for the ps2.Weapon class."""
 
 import unittest
-from typing import List
 
 # pylint: disable=import-error
 import auraxium
@@ -42,7 +41,7 @@ class TestWeaponMethods(unittest.IsolatedAsyncioTestCase):
 
     async def test_attachments(self) -> None:
         """Test the attachments() helper method."""
-        att: List[ps2.Weapon] = await self.weapon.attachments()  # type: ignore
+        att = await self.weapon.attachments()
         self.assertGreater(len(att), 0)
         self.assertIsInstance(att[0], ps2.Item)
 
@@ -55,8 +54,7 @@ class TestWeaponMethods(unittest.IsolatedAsyncioTestCase):
 
     async def test_fire_groups(self) -> None:
         """Test the fire_groups() helper method."""
-        fire: List[ps2.FireGroup]
-        fire = await self.weapon.fire_groups()  # type: ignore
+        fire = await self.weapon.fire_groups()
         self.assertGreater(len(fire), 0)
         self.assertIsInstance(fire[0], ps2.FireGroup)
 

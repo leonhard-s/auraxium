@@ -7,7 +7,7 @@ throughout the PlanetSide 2 object model.
 
 import abc
 import logging
-from typing import Any, ClassVar, List, Optional, Type, TypeVar, Union
+from typing import Any, ClassVar, List, Optional, Type, TypeVar, Union, cast
 
 import pydantic
 
@@ -292,7 +292,7 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
 
     @classmethod
     @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
-    async def get_by_id(cls: Type[CachedT], id_: int, *,  # type: ignore
+    async def get_by_id(cls: Type[CachedT], id_: int, *,
                         client: RequestClient) -> Optional[CachedT]:
         """Retrieve an object by by ID.
 
@@ -308,10 +308,10 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
         _log.debug('<%s:%d> requested', cls.__name__, id_)
         if (instance := cls._cache.get(id_)) is not None:
             _log.debug('%r restored from cache', instance)
-            return instance  # type: ignore
+            return instance
         _log.debug('<%s:%d> not cached, generating API query...',
                    cls.__name__, id_)
-        return await super().get_by_id(id_, client=client)  # type: ignore
+        return await super().get_by_id(id_, client=client)
 
 
 class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
@@ -389,7 +389,7 @@ class ImageMixin(Ps2Object, metaclass=abc.ABCMeta):
 
     def image(self) -> str:
         """Return the default image for this type."""
-        image_id: int = self.data.image_id  # type: ignore
+        image_id = cast(int, getattr(self.data, 'image_id', 0))
         return self._image_url(image_id)
 
     @staticmethod

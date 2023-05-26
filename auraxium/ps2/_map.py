@@ -239,7 +239,7 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
         # NOTE: This operation cannot be done in a single query as there is no
         # "or" operator.
         collection: Final[str] = 'facility_link'
-        connected: Set['MapRegion'] = set()  # type: ignore
+        connected: Set['MapRegion'] = set()
         # Set up the base query
         query = Query(collection, service_id=self._client.service_id)
         query.limit(10)

@@ -69,12 +69,7 @@ class Proxy(Generic[_Ps2ObjectT]):
         async with self._lock:
             payload = await self._client.request(self.query)
             list_ = self._resolve_nested_payload(payload)
-            # NOTE: There does not appear to be an easy way to type something
-            # as "subclass of an abstract class and all abstract methods have
-            # been overwritten", which is why this is typed as being a
-            # Ps2Object subclass and then promptly ignored here.
-            self._data = [self._type(  # type: ignore
-                data, client=self._client) for data in list_]
+            self._data = [self._type(d, client=self._client) for d in list_]
             self._last_fetched = datetime.datetime.utcnow()
 
     def _resolve_nested_payload(self, payload: CensusData) -> List[CensusData]:
