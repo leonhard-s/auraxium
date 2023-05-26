@@ -5,6 +5,7 @@ from typing import Any, Final, List, Optional, cast
 
 from ..base import Cached
 from ..census import Query
+from ..errors import NotFoundError
 from ..models import WeaponAmmoSlot, WeaponData, WeaponDatasheet
 from .._proxy import InstanceProxy, SequenceProxy
 from .._rest import RequestClient, extract_payload, extract_single
@@ -165,7 +166,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
         join.set_outer(False)
         return SequenceProxy(Item, query, client=self._client)
 
-    async def datasheet(self) -> WeaponDatasheet:
+    async def datasheet(self) -> Optional[WeaponDatasheet]:
         """Return the datasheet for the weapon."""
         collection: Final[str] = 'weapon_datasheet'
         if (item := await self.item()) is None:  # pragma: no cover
@@ -173,7 +174,10 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
         query = Query(collection, service_id=self._client.service_id)
         query.add_term(field=Item.id_field, value=item.id)
         payload = await self._client.request(query)
-        data = extract_single(payload, collection)
+        try:
+            data = extract_single(payload, collection)
+        except NotFoundError:
+            return None
         return WeaponDatasheet(**cast(Any, data))
 
     def fire_groups(self) -> SequenceProxy[FireGroup]:

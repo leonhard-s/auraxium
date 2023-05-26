@@ -4,6 +4,7 @@ from typing import Any, Final, Optional, TYPE_CHECKING, cast
 
 from ..base import Cached, ImageMixin, Named
 from ..census import Query
+from ..errors import NotFoundError
 from ..models import ItemCategoryData, ItemData, ItemTypeData
 from .._rest import extract_single
 from .._proxy import InstanceProxy, SequenceProxy
@@ -244,7 +245,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
         query.add_term(field=Faction.id_field, value=value)
         return InstanceProxy(Faction, query, client=self._client)
 
-    async def datasheet(self) -> 'WeaponDatasheet':
+    async def datasheet(self) -> Optional['WeaponDatasheet']:
         """Return the datasheet for the weapon."""
         # pylint: disable=import-outside-toplevel
         from ._weapon import WeaponDatasheet
@@ -252,7 +253,10 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
         query = Query(collection, service_id=self._client.service_id)
         query.add_term(field=self.id_field, value=self.id)
         payload = await self._client.request(query)
-        data = extract_single(payload, collection)
+        try:
+            data = extract_single(payload, collection)
+        except NotFoundError:
+            return None
         return WeaponDatasheet(**cast(Any, data))
 
     def profiles(self) -> SequenceProxy[Profile]:
