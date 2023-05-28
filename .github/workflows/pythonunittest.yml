@@ -27,13 +27,13 @@ jobs:
           python -m pip install -r ./requirements.txt
 
       - name: Run all tests
-        if: github.repository == 'leonhard-s/auraxium'
+        if: github.repository == 'leonhard-s/auraxium' && github.event_name != 'pull_request'
         env:
           SERVICE_ID: ${{secrets.REPO_SERVICE_ID}}
         run: |
           python -m unittest discover -p *_test.py tests/
 
       - name: Run only offline tests
-        if: github.repository != 'leonhard-s/auraxium'
+        if: github.repository != 'leonhard-s/auraxium' || github.event_name == 'pull_request'
         run: |
           python -m unittest discover -p *_test.py tests/
