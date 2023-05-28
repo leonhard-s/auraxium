@@ -4,7 +4,7 @@ import asyncio
 import copy
 import datetime
 import warnings
-from typing import (Any, Dict, Generator, Generic, Iterator, List, Optional,
+from typing import (Any, Awaitable, Dict, Generator, Generic, List, Optional,
                     Type, TypeVar)
 
 from .base import Ps2Object
@@ -69,12 +69,7 @@ class Proxy(Generic[_Ps2ObjectT]):
         async with self._lock:
             payload = await self._client.request(self.query)
             list_ = self._resolve_nested_payload(payload)
-            # NOTE: There does not appear to be an easy way to type something
-            # as "subclass of an abstract class and all abstract methods have
-            # been overwritten", which is why this is typed as being a
-            # Ps2Object subclass and then promptly ignored here.
-            self._data = [self._type(  # type: ignore
-                data, client=self._client) for data in list_]
+            self._data = [self._type(d, client=self._client) for d in list_]
             self._last_fetched = datetime.datetime.utcnow()
 
     def _resolve_nested_payload(self, payload: CensusData) -> List[CensusData]:
@@ -132,7 +127,7 @@ class Proxy(Generic[_Ps2ObjectT]):
         return data
 
 
-class SequenceProxy(Proxy[_Ps2ObjectT]):
+class SequenceProxy(Proxy[_Ps2ObjectT], Awaitable[List[_Ps2ObjectT]]):
     """Proxy for lists of results.
 
     This object supports asynchronous iteration (in which case all
@@ -159,7 +154,7 @@ class SequenceProxy(Proxy[_Ps2ObjectT]):
         except IndexError as err:
             raise StopAsyncIteration from err
 
-    def __await__(self) -> Iterator[List[_Ps2ObjectT]]:
+    def __await__(self) -> Generator[Any, None, List[_Ps2ObjectT]]:
         return self.flatten().__await__()
 
     async def flatten(self) -> List[_Ps2ObjectT]:

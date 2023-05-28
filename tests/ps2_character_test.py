@@ -1,7 +1,6 @@
 """Test cases for the ps2.Character class."""
 
 import unittest
-from typing import List, cast
 
 # pylint: disable=import-error
 import auraxium
@@ -23,7 +22,7 @@ class TestCharacterMethods(unittest.IsolatedAsyncioTestCase):
         char = await self.client.get_by_id(ps2.Character, 5428072203494645969)
         if char is None:
             self.skipTest('Unable to find character used for tests')
-        self.character = cast(ps2.Character, char)
+        self.character = char
 
     async def asyncTearDown(self) -> None:
         await super().asyncTearDown()
@@ -93,7 +92,7 @@ class TestCharacterMethods(unittest.IsolatedAsyncioTestCase):
 
     async def test_items(self) -> None:
         """Test the items() helper method."""
-        items: List[ps2.Item] = await self.character.items(10)  # type: ignore
+        items = await self.character.items(10)
         self.assertGreater(len(items), 0)
         self.assertIsInstance(items[0], ps2.Item)
 

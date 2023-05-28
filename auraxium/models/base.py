@@ -47,7 +47,7 @@ class RESTPayload(Payload):
     :obj:`None`.
     """
 
-    @pydantic.validator('*', pre=True)
+    @pydantic.validator('*', pre=True)  # type: ignore
     @classmethod
     def _convert_null(cls, value: _T) -> Optional[_T]:
         """Replace any "NULL" string inputs with :obj:`None`.
@@ -150,7 +150,7 @@ class Event(Payload):
     timestamp: datetime.datetime
     world_id: int
 
-    @pydantic.validator('timestamp', pre=True)
+    @pydantic.validator('timestamp', pre=True)  # type: ignore
     @classmethod
     def _utc_from_timestamp(cls, value: str) -> datetime.datetime:
         """Convert timestamps to UTC datetimes."""

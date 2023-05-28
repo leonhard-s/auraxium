@@ -11,8 +11,7 @@ from ..models import (AchievementAdded, BattleRankUp, Death, Event,
                       FacilityControl, GainExperience, ItemAdded,
                       MetagameEvent, PlayerFacilityCapture,
                       PlayerFacilityDefend, PlayerLogin, PlayerLogout,
-                      SkillAdded, VehicleDestroy, ContinentLock,
-                      ContinentUnlock)
+                      SkillAdded, VehicleDestroy, ContinentLock)
 
 __all__ = [
     'Event',
@@ -23,7 +22,6 @@ __all__ = [
     'AchievementAdded',
     'BattleRankUp',
     'ContinentLock',
-    'ContinentUnlock',
     'Death',
     'FacilityControl',
     'GainExperience',

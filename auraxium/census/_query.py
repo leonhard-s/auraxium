@@ -276,7 +276,7 @@ class Query(QueryBase):
         """
         super().__init__(collection, **kwargs)
         self.endpoint = endpoint or default_endpoints()[0]
-        data: QueryBaseData = self.data  # type: ignore
+        data: QueryBaseData = self.data
         self.data: QueryData = QueryData.from_base(data)
         self.data.namespace = namespace
         self.data.service_id = service_id
@@ -305,7 +305,7 @@ class Query(QueryBase):
         return self
 
     @classmethod
-    def copy(cls, template: QueryBase,  # type: ignore
+    def copy(cls, template: QueryBase,
              copy_joins: bool = False, deep_copy: bool = False,
              **kwargs: Any) -> 'Query':
         """Create a new query, copying most data from the template.
@@ -673,11 +673,11 @@ class JoinedQuery(QueryBase):
         :type kwargs: float | int | str
         """
         super().__init__(collection, **kwargs)
-        data: QueryBaseData = self.data  # type: ignore
+        data: QueryBaseData = self.data
         self.data: JoinedQueryData = JoinedQueryData.from_base(data)
 
     @classmethod
-    def copy(cls, template: QueryBase,  # type: ignore
+    def copy(cls, template: QueryBase,
              copy_joins: bool = False,   deep_copy: bool = False,
              **kwargs: Any) -> 'JoinedQuery':
         """Create a new query, copying most data from the template.

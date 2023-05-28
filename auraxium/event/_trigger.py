@@ -212,10 +212,13 @@ class Trigger:
         # When subscribing to character-centric events using only a world ID,
         # set the "logicalAnd*" flag to avoid subscribing to all characters on
         # all continents (characters would default to "all" if not specified).
-        elif (self.worlds and not self.characters
-                and any((issubclass(e, CharacterEvent))  # type: ignore
-                        for e in self.events)):
-            json_data['logicalAndCharactersWithWorlds'] = 'true'
+        elif (self.worlds and not self.characters):
+            char_events = [s.__name__ for s in CharacterEvent.__subclasses__()]
+            event_names = [e if isinstance(e, str) else e.__name__
+                           for e in self.events]
+            if any((e.startswith('GainExperience_experience_id_')
+                   or e in char_events) for e in event_names):
+                json_data['logicalAndCharactersWithWorlds'] = 'true'
         return json.dumps(json_data)
 
     async def run(self, event: Event) -> None:

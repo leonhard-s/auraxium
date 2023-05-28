@@ -188,11 +188,6 @@ Events
 
    Alias of :class:`auraxium.event.ContinentLock`.
 
-.. class:: ContinentUnlock
-   :noindex:
-
-   Alias of :class:`auraxium.event.ContinentUnlock`.
-
 .. autoclass:: Death
    :noindex:
 

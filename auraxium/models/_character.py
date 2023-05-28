@@ -168,7 +168,7 @@ class CharacterData(RESTPayload):
             Human-readable version of :attr:`time`.
         """
 
-        count: int  # type: ignore
+        count: int
         time: Optional[int] = None
         date: Optional[str] = None
 
