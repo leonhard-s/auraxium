@@ -8,7 +8,6 @@ __all__ = [
     'AchievementAdded',
     'BattleRankUp',
     'ContinentLock',
-    'ContinentUnlock',
     'Death',
     'FacilityControl',
     'GainExperience',
@@ -750,71 +749,6 @@ class ContinentLock(Event, WorldEvent):
 
        The ID of the :class:`~auraxium.ps2.MetagameEvent` that caused
        the continent to lock.
-
-    .. attribute:: timestamp
-       :type: int
-
-       The UTC timestamp of the event. May be used to infer latency to
-       the event streaming endpoint.
-
-    .. attribute:: world_id
-       :type: int
-
-       ID of the :class:`~auraxium.ps2.World` whose event streaming
-       endpoint broadcast the event.
-    """
-
-    zone_id: int
-    triggering_faction: int
-    previous_faction: int
-    vs_population: float
-    nc_population: float
-    tr_population: float
-    metagame_event_id: int
-
-
-class ContinentUnlock(Event, WorldEvent):
-    """A continent has been unlocked.
-
-    .. note::
-
-       As of March 2021, this event is broken and never actually gets
-       broadcast via the event streaming service.
-
-    .. attribute:: zone_id
-       :type: int
-
-       ID of the :class:`~auraxium.ps2.Zone` that unlocked.
-
-    .. attribute:: triggering_faction
-       :type: int
-
-       (Unknown due to event being broken)
-
-    .. attribute:: previous_faction
-       :type: int
-
-       (Unknown due to event being broken)
-
-    .. attribute:: vs_population
-       :type: float
-
-       (Unknown due to event being broken)
-
-    .. attribute:: nc_population
-       :type: float
-
-       (Unknown due to event being broken)
-
-    .. attribute:: tr_population
-       :type: float
-
-       (Unknown due to event being broken)
-
-    .. attribute:: metagame_event_id
-       :type: int
-
-       (Unknown due to event being broken)
 
     .. attribute:: timestamp
        :type: int

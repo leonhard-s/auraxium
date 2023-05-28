@@ -22,9 +22,6 @@ Event Types
 .. autoclass:: ContinentLock
    :show-inheritance:
 
-.. autoclass:: ContinentUnlock
-   :show-inheritance:
-
 .. autoclass:: Death
    :show-inheritance:
 

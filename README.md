@@ -149,8 +149,6 @@ To receive data through the event stream, you must define a trigger. A trigger i
 
 The event type definitions are available in the [`auraxium.event`](https://auraxium.readthedocs.io/en/latest/api/event.html#event-types) namespace.
 
-> **Note:** The `ContinentUnlock` event is currently broken on Daybreak's side.
-
 #### Conditions
 
 Trigger conditions can be attached to a trigger to limit what events it will respond to, in addition to the event type.

@@ -17,8 +17,7 @@ from ._effect import (EffectData, EffectTypeData, ZoneEffectData,
 from ._events import (AchievementAdded, BattleRankUp, Death, FacilityControl,
                       GainExperience, ItemAdded, MetagameEvent,
                       PlayerFacilityCapture, PlayerFacilityDefend, PlayerLogin,
-                      PlayerLogout, SkillAdded, VehicleDestroy, ContinentLock,
-                      ContinentUnlock)
+                      PlayerLogout, SkillAdded, VehicleDestroy, ContinentLock)
 from ._experience import ExperienceData, ExperienceRankData
 from ._faction import FactionData
 from ._fire import FireGroupData, FireModeData
@@ -53,7 +52,6 @@ __all__ = [
     'CharacterDirectiveTree',
     'CharacterEvent',
     'ContinentLock',
-    'ContinentUnlock',
     'CurrencyData',
     'Death',
     'DirectiveData',
