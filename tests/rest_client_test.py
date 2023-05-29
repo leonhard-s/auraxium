@@ -8,7 +8,7 @@ import unittest
 
 # pylint: disable=import-error
 import auraxium
-from auraxium.ps2 import Achievement, Character, Loadout, Zone
+from auraxium.ps2 import Achievement, Character, Loadout, World, Zone
 
 from tests.utils import SERVICE_ID
 
@@ -100,6 +100,10 @@ class TestRestClient(unittest.IsolatedAsyncioTestCase):
         if char is None:
             self.fail('Character not found')
         self.assertIsInstance(char, Character)
+        world = await self.client.get_by_name(World, 'Cobalt')
+        if world is None:
+            self.fail('World not found')
+        self.assertIsInstance(world, World)
 
     async def test_context_manager(self) -> None:
         """Test the __aenter__ and __aexit__ interfaces."""
