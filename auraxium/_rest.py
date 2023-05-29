@@ -321,7 +321,9 @@ def raise_for_dict(data: CensusData, url: yarl.URL) -> None:
                 raise UnknownCollectionError(
                     f'The namespace "{namespace}" does not exist.',
                     url, namespace, collection)
-            help_url = Query(namespace=namespace)
+            with warnings.catch_warnings():
+                warnings.simplefilter('ignore', UserWarning)
+                help_url = Query(namespace=namespace).url()
             raise UnknownCollectionError(
                 f'No collection at "{namespace}/{collection}", try {help_url} '
                 f'for a the list of valid collections, or an error message if '
