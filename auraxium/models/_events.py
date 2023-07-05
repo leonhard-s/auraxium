@@ -141,6 +141,11 @@ class Death(Event, CharacterEvent):
          The reference above is not an error, this field reports the
          item ID of the weapon, not the weapon ID.
 
+    .. attribute:: attacker_team_id
+         :type: int
+
+            ID of the team of the attacker.
+
     .. attribute:: character_id
        :type: int
 
@@ -194,6 +199,7 @@ class Death(Event, CharacterEvent):
     attacker_loadout_id: int
     attacker_vehicle_id: int
     attacker_weapon_id: int
+    attacker_team_id: int
     character_id: int
     character_loadout_id: int
     is_critical: Optional[bool]  # Always false
@@ -656,6 +662,11 @@ class VehicleDestroy(Event, CharacterEvent):
          The reference above is not an error, this field reports the
          item ID of the weapon, not the weapon ID.
 
+    .. attribute:: attacker_team_id
+         :type: int
+
+         The ID of the team of the attacker
+
     .. attribute:: character_id
        :type: int
 
@@ -704,6 +715,7 @@ class VehicleDestroy(Event, CharacterEvent):
     attacker_loadout_id: int
     attacker_vehicle_id: int
     attacker_weapon_id: int
+    attacker_team_id: int
     character_id: int
     facility_id: int
     faction_id: int
