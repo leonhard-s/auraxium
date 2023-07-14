@@ -38,7 +38,8 @@ class DummyResponse:
     @property
     def request_info(self) -> aiohttp.RequestInfo:
         """Return a container with generic request information."""
-        return aiohttp.RequestInfo(self.real_url, 'get', {})  # type: ignore
+        empty: Any = {}
+        return aiohttp.RequestInfo(self.real_url, 'get', empty, self.real_url)
 
     async def json(self) -> Any:
         """Return the JSON data contained in the response.
@@ -207,15 +208,19 @@ class TestPayloadParsing(unittest.IsolatedAsyncioTestCase):
 
     async def test_response_to_dict(self) -> None:
         """Test dict conversion of HTTP responses."""
+        response: Any
+
         # JSON as JSON
         response = DummyResponse(is_json=True, reports_json=True)
-        dict_ = await request.response_to_dict(response)  # type: ignore
+        dict_ = await request.response_to_dict(response)
         self.assertDictEqual(dict_, await response.json())
+
         # JSON as text
         response = DummyResponse(is_json=True, reports_json=False)
-        dict_ = await request.response_to_dict(response)  # type: ignore
+        dict_ = await request.response_to_dict(response)
         self.assertDictEqual(dict_, json.loads(await response.text()))
+
         # Invalid
         response = DummyResponse(is_json=False, reports_json=False)
         with self.assertRaises(errors.ResponseError):
-            _ = await request.response_to_dict(response)  # type: ignore
+            _ = await request.response_to_dict(response)
