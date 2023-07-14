@@ -24,7 +24,7 @@ import auraxium
 # -- Project information -----------------------------------------------------
 
 project = 'Auraxium'
-copyright = '2018-2022, Leonhard S.'
+copyright = '2018-2023, Leonhard S.'
 author = 'Leonhard S.'
 version = auraxium.__version__
 
@@ -53,6 +53,12 @@ add_function_parentheses = True
 
 # Report broken links and other grievences
 nitpicky = True
+
+# Fix for Sphinx failing to resolve type aliases
+nitpick_ignore = [
+    ('py:class', 'CensusData'),
+    ('py:class', 'auraxium.types.CensusData'),
+]
 
 
 # -- Options for HTML output -------------------------------------------------

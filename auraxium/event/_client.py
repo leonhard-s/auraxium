@@ -60,7 +60,7 @@ class EventClient(Client):
        registered for the client.
 
     .. attribute:: websocket
-       :type: websockets.client.legacy.WebSocketClientProtocol | None
+       :type: websockets.client.WebSocketClientProtocol | None
 
        The websocket client used for the real-time event stream. This
        will be automatically opened and closed by the client as event

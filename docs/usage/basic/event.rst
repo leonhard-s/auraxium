@@ -123,7 +123,7 @@ Actions
 
 A trigger action is a method or function that will be run when the corresponding trigger fires (i.e. a matching event is encountered and all conditions were met).
 
-Actions may be synchronous functions or coroutines; anything that is a coroutine as determined by :func:`asyncio.iscoroutinefunction` will be awaited.
+Actions may be synchronous functions or coroutines; anything that is a coroutine as determined by :func:`inspect.iscoroutinefunction` will be awaited.
 
 The only argument passed to the trigger action is the :class:`auraxium.event.Event` received.
 

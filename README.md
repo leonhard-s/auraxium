@@ -159,7 +159,7 @@ This is useful if you have a commonly encountered event (like [`event.DEATH`](ht
 
 The trigger's action is a method or function that will be run when the event fires and all conditions evaluate to True.
 
-If the action is a coroutine according to [`asyncio.iscoroutinefunction()`](https://docs.python.org/3/library/asyncio-task.html#asyncio.iscoroutinefunction), it will be awaited.
+If the action is a coroutine according to [`inspect.iscoroutinefunction()`](https://docs.python.org/3/library/inspect.html#inspect.iscoroutinefunction), it will be awaited.
 
 The only argument passed to the function set as the trigger action is the event received:
 
