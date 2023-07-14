@@ -9,7 +9,7 @@ import warnings
 from typing import Dict, List
 
 import yarl
-from auraxium import census, endpoints  # pylint: disable=import-error
+from auraxium import census, endpoints
 
 ENDPOINT = 'https://census.daybreakgames.com/'
 

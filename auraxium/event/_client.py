@@ -330,7 +330,7 @@ class EventClient(Client):
         ...   # pragma: no cover
 
     def trigger(self, event: Union[str, Type[Event]],
-                *args: Union[str, Type[_EventT]], name: Optional[str] = None,
+                *args: Union[str, Type[Event]], name: Optional[str] = None,
                 **kwargs: Any) -> Callable[[_CallbackT[Event]], None]:
         """Create and add a trigger for the given action.
 
@@ -353,8 +353,8 @@ class EventClient(Client):
         """
         trigger = Trigger(event, *args, name=name, **kwargs)
 
-        def wrapper(func: _CallbackT[_EventT]) -> None:
-            trigger.action = func  # type: ignore
+        def wrapper(func: _CallbackT[Event]) -> None:
+            trigger.action = func
             # If the trigger name has not been specified, use the call-back
             # function's name instead
             if trigger.name is None:

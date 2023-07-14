@@ -15,13 +15,12 @@ CensusData = Dict[
     str, Union[str, int, float, 'CensusData', List['CensusData']]]
 
 
-class LocaleData(pydantic.BaseModel):  # pylint: disable=no-member
+class LocaleData(pydantic.BaseModel):
     """Container for localised strings.
 
     Note that the ``tr`` locale is ignored as it was abandoned by the
     developers and is generally either missing or unpopulated.
     """
-    # pylint: disable=too-few-public-methods
 
     class Config:
         """Pydantic model configuration.

@@ -143,7 +143,7 @@ class Client(RequestClient):
         :return: The entry with the matching ID, or :obj:`None` if not
            found.
         """
-        filters: CensusData = {type_.id_field: id_}
+        filters: dict[str, Any] = {type_.id_field: id_}
         data = await self.find(type_, results=1, **filters)
         if data and not isinstance(data[0], type_):
             raise RuntimeError(  # pragma: no cover

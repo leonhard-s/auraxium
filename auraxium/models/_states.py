@@ -8,8 +8,6 @@ __all__ = [
     'PlayerStateGroup'
 ]
 
-# pylint: disable=too-few-public-methods
-
 
 class PlayerStateGroup(RESTPayload):
     """A fire-mode-specific state group.

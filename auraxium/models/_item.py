@@ -11,8 +11,6 @@ __all__ = [
     'ItemTypeData'
 ]
 
-# pylint: disable=too-few-public-methods
-
 
 class ItemCategoryData(RESTPayload):
     """Data class for :class:`auraxium.ps2.ItemCategory`.

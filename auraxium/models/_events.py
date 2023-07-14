@@ -21,8 +21,6 @@ __all__ = [
     'VehicleDestroy'
 ]
 
-# pylint: disable=too-few-public-methods
-
 
 class AchievementAdded(Event, CharacterEvent):
     """A character has earned a new achievement.

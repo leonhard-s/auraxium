@@ -7,8 +7,6 @@ __all__ = [
     'CurrencyData'
 ]
 
-# pylint: disable=too-few-public-methods
-
 
 class CurrencyData(RESTPayload):
     """Data class for :class:`auraxium.ps2.Currency`.

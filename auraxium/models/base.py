@@ -8,12 +8,10 @@ import pydantic
 
 from ..types import CensusData
 
-# pylint: disable=too-few-public-methods
-
 _T = TypeVar('_T')
 
 
-class Payload(pydantic.BaseModel):  # pylint: disable=no-member
+class Payload(pydantic.BaseModel):
     """A payload received through the REST or WebSocket interface.
 
     Instances of this class are read-only.
@@ -47,7 +45,7 @@ class RESTPayload(Payload):
     :obj:`None`.
     """
 
-    @pydantic.validator('*', pre=True)  # type: ignore
+    @pydantic.validator('*', pre=True)
     @classmethod
     def _convert_null(cls, value: _T) -> Optional[_T]:
         """Replace any "NULL" string inputs with :obj:`None`.
@@ -97,7 +95,7 @@ class FallbackMixin(metaclass=abc.ABCMeta):
         """
 
 
-class ImageData(pydantic.BaseModel):  # pylint: disable=no-member
+class ImageData(pydantic.BaseModel):
     """Mixin dataclass for types supporting image access.
 
     .. attribute:: image_id
@@ -150,7 +148,7 @@ class Event(Payload):
     timestamp: datetime.datetime
     world_id: int
 
-    @pydantic.validator('timestamp', pre=True)  # type: ignore
+    @pydantic.validator('timestamp', pre=True)
     @classmethod
     def _utc_from_timestamp(cls, value: str) -> datetime.datetime:
         """Convert timestamps to UTC datetimes."""

@@ -250,7 +250,7 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
         self._cache.add(self.id, self)
 
     @classmethod
-    def __init_subclass__(  # pylint: disable=unexpected-special-method-signature
+    def __init_subclass__(
             cls, cache_size: int, cache_ttu: float = 0.0) -> None:
         """Initialise a cacheable subclass.
 

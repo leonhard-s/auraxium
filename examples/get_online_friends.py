@@ -10,7 +10,6 @@ showcases how to switch between the low-level queries used by the
 import asyncio
 from typing import List
 
-# pylint: disable=import-error
 import auraxium
 from auraxium import ps2
 

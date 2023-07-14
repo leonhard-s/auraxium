@@ -9,7 +9,6 @@ import warnings
 import aiohttp
 import yarl
 
-# pylint: disable=import-error
 from auraxium import errors, _rest as request
 from auraxium.types import CensusData
 

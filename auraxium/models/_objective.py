@@ -9,8 +9,6 @@ __all__ = [
     'ObjectiveTypeData'
 ]
 
-# pylint: disable=too-few-public-methods
-
 
 class ObjectiveData(RESTPayload):
     """Data class for :class:`auraxium.ps2.Objective`.

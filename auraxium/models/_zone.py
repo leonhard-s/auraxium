@@ -7,8 +7,6 @@ __all__ = [
     'ZoneData'
 ]
 
-# pylint: disable=too-few-public-methods
-
 
 class ZoneData(RESTPayload):
     """Data class for :class:`auraxium.ps2.Zone`.

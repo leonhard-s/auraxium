@@ -12,8 +12,6 @@ __all__ = [
     'RegionData'
 ]
 
-# pylint: disable=too-few-public-methods
-
 
 class FacilityTypeData(RESTPayload):
     """Data class for :class:`auraxium.ps2.FacilityType`.

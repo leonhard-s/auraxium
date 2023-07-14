@@ -5,7 +5,6 @@ import os
 import unittest
 from typing import Any, Dict, List, Optional, Type
 
-# pylint: disable=import-error
 from auraxium.base import Ps2Object
 from auraxium.models.base import RESTPayload
 from auraxium import ps2
@@ -28,7 +27,7 @@ class TestModels(unittest.TestCase):
         for filename in os.listdir(directory):
             filepath = os.path.join(directory, filename)
             # Load the payload
-            with open(filepath) as payload_file:
+            with open(filepath, encoding='utf-8') as payload_file:
                 payload: Dict[str, Any] = json.load(payload_file)
             # Extract the collection name
             _ = payload.pop('returned')
@@ -63,7 +62,7 @@ class TestModels(unittest.TestCase):
         # ArmorFacing
         filepath = os.path.join(directory, 'armor_facing.json')
         type_name = 'armor_facing'
-        with open(filepath) as payload_file:
+        with open(filepath, encoding='utf-8') as payload_file:
             payload: Dict[str, Any] = json.load(payload_file)
         type_list: List[Dict[str, str]] = payload[f'{type_name}_list']
         self.assertEqual(get_id(type_list[0]), ps2.ArmourFacing.FRONT)
@@ -77,7 +76,7 @@ class TestModels(unittest.TestCase):
         # FireModeType
         filepath = os.path.join(directory, 'fire_mode_type.json')
         type_name = 'fire_mode_type'
-        with open(filepath) as payload_file:
+        with open(filepath, encoding='utf-8') as payload_file:
             payload: Dict[str, Any] = json.load(payload_file)
         type_list: List[Dict[str, str]] = payload[f'{type_name}_list']
         self.assertEqual(get_id(type_list[0]), ps2.FireModeType.PROJECTILE)
@@ -90,7 +89,7 @@ class TestModels(unittest.TestCase):
         # MetagameEventState
         filepath = os.path.join(directory, 'metagame_event_state.json')
         type_name = 'metagame_event_state'
-        with open(filepath) as payload_file:
+        with open(filepath, encoding='utf-8') as payload_file:
             payload: Dict[str, Any] = json.load(payload_file)
         type_list: List[Dict[str, str]] = payload[f'{type_name}_list']
         self.assertEqual(get_id(type_list[0]), ps2.MetagameEventState.STARTED)
@@ -105,7 +104,7 @@ class TestModels(unittest.TestCase):
         # TargetType
         filepath = os.path.join(directory, 'target_type.json')
         type_name = 'target_type'
-        with open(filepath) as payload_file:
+        with open(filepath, encoding='utf-8') as payload_file:
             payload: Dict[str, Any] = json.load(payload_file)
         type_list: List[Dict[str, str]] = payload[f'{type_name}_list']
         self.assertEqual(get_id(type_list[0]), ps2.TargetType.SELF)

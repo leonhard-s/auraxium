@@ -8,8 +8,6 @@ __all__ = [
     'ProjectileData'
 ]
 
-# pylint: disable=too-few-public-methods
-
 
 class ProjectileData(RESTPayload):
     """Data class for :class:`auraxium.ps2.Projectile`.
