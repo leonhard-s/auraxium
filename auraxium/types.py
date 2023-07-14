@@ -22,13 +22,7 @@ class LocaleData(pydantic.BaseModel):
     developers and is generally either missing or unpopulated.
     """
 
-    class Config:
-        """Pydantic model configuration.
-
-        This inner class is used to namespace the pydantic
-        configuration options.
-        """
-        allow_mutation = False
+    model_config = pydantic.ConfigDict(extra='ignore', frozen=True)
 
     de: Optional[str] = None
     en: Optional[str] = None

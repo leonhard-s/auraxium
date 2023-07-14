@@ -13,7 +13,7 @@ Custom Types
 
 .. autoclass:: LocaleData
    :members:
-   :exclude-members: Config
+   :exclude-members: model_config
 
    .. attribute:: de
       :type: str | None

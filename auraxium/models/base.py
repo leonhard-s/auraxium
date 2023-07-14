@@ -2,7 +2,7 @@
 
 import abc
 import datetime
-from typing import Any, Optional, TypeVar, cast
+from typing import Optional, TypeVar
 
 import pydantic
 
@@ -17,25 +17,7 @@ class Payload(pydantic.BaseModel):
     Instances of this class are read-only.
     """
 
-    class Config:
-        """Pydantic model configuration.
-
-        :meta private:
-        """
-
-        allow_mutation = False
-
-    # Weird workaround for pydantic.BaseModel overwriting __hash__ with
-    # None, at least according to Pylance.
-
-    def _override__hash__(self) -> int:  # pragma: no cover
-        # NOTE: pydantic has a beta setting called `frozen=True` that would
-        # generate a hash method, but it is not part of the stable API and
-        # therefore not used here.
-        # It should replace allow_mutation here once it out of beta.
-        return hash(tuple(self.dict().items()))
-
-    __hash__ = cast(Any, _override__hash__)
+    model_config = pydantic.ConfigDict(extra='ignore', frozen=True)
 
 
 class RESTPayload(Payload):
