@@ -1,0 +1,30 @@
+# This workflow builds the docs on every push to validate them. These
+# are not published to ReadTheDocs, the production docs are still built
+# by ReadTheDocs tracking the default branch.
+
+name: Build Docs
+
+on: [push]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Setup Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          python -m pip install --user -r docs/requirements.txt
+          python -m pip install --user sphinx_rtd_theme
+
+      - name: Build docs
+        run: |
+          cat ./docs/
+          python -m sphinx -T -E -W -b html . ./build/html
