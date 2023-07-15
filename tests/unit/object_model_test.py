@@ -3,7 +3,6 @@
 import typing
 import unittest
 
-# pylint: disable=import-error
 import auraxium
 from auraxium import census, endpoints
 from auraxium._cache import TLRUCache

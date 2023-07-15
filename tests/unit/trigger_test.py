@@ -5,7 +5,6 @@ import json
 import unittest
 from typing import Any, Dict, List, Type
 
-# pylint: disable=import-error
 import auraxium
 
 
@@ -28,7 +27,8 @@ class TriggerTest(unittest.TestCase):
             vehicle_id=0, zone_id=2)
 
     @staticmethod
-    def payload_factory(type_: Type[auraxium.event.Event], *args: Any) -> auraxium.event.Event:
+    def payload_factory(type_: Type[auraxium.event.Event],
+                        *args: Any) -> auraxium.event.Event:
         """Create a payload for the given event type."""
         fields = type_.model_fields
         params: Dict[str, Any] = {

@@ -11,7 +11,6 @@ class RedactingFilter(logging.Filter):
         logger.addFilter(RedactingFilter(['password', 'token'])
 
     """
-    # pylint: disable=too-few-public-methods
 
     def __init__(self, secrets: Union[List[str], str], *args: str) -> None:
         super().__init__()

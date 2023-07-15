@@ -3,7 +3,6 @@
 import asyncio
 import unittest
 
-# pylint: disable=import-error
 import auraxium
 
 from tests.utils import SERVICE_ID

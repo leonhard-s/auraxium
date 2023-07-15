@@ -6,7 +6,6 @@ not been set.
 
 import unittest
 
-# pylint: disable=import-error
 import auraxium
 from auraxium.ps2 import Achievement, Character, Loadout, World, Zone
 

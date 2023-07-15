@@ -1,5 +1,4 @@
 # type: ignore
-# pylint: disable=unused-variable
 """Example for creating custom helper functions via low-level queries.
 
 This script is part of the "Custom Queries" section in the docs and
@@ -40,7 +39,6 @@ async def main():
     """Main script method."""
     client = auraxium.Client(service_id='s:example')
     char = await client.get_by_name(ps2.Character, 'Auroram')
-    char_query = char.query()
 
     online_friends = await get_online_friends(char, client)
     print(online_friends)
