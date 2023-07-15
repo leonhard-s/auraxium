@@ -7,7 +7,7 @@ from ..types import LocaleData
 
 __all__ = [
     'FireModeData',
-    'FireGroupData'
+    'FireGroupData',
 ]
 
 

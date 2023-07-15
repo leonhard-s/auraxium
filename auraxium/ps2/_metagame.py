@@ -9,7 +9,7 @@ from ..types import LocaleData
 
 __all__ = [
     'MetagameEvent',
-    'MetagameEventState'
+    'MetagameEventState',
 ]
 
 

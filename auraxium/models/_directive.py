@@ -9,7 +9,7 @@ __all__ = [
     'DirectiveData',
     'DirectiveTierData',
     'DirectiveTreeData',
-    'DirectiveTreeCategoryData'
+    'DirectiveTreeCategoryData',
 ]
 
 

@@ -8,7 +8,7 @@ from ..models import ArmourInfoData
 
 __all__ = [
     'ArmourFacing',
-    'ArmourInfo'
+    'ArmourInfo',
 ]
 
 

@@ -7,7 +7,7 @@ from .base import RESTPayload
 __all__ = [
     'AbilityData',
     'AbilityTypeData',
-    'ResourceTypeData'
+    'ResourceTypeData',
 ]
 
 

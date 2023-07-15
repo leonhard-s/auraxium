@@ -16,7 +16,7 @@ __all__ = [
     'by_char_multi',
     'Period',
     'Stat',
-    'top'
+    'top',
 ]
 
 

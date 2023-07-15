@@ -1,5 +1,8 @@
 import logging
 from typing import List, Union
+__all__ = [
+    'RedactingFilter',
+]
 
 
 class RedactingFilter(logging.Filter):

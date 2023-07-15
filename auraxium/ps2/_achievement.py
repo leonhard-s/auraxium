@@ -16,7 +16,7 @@ from ._objective import Objective
 from ._reward import Reward
 
 __all__ = [
-    'Achievement'
+    'Achievement',
 ]
 
 

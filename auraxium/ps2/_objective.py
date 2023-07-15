@@ -9,7 +9,7 @@ from .._proxy import InstanceProxy, SequenceProxy
 
 __all__ = [
     'Objective',
-    'ObjectiveType'
+    'ObjectiveType',
 ]
 
 

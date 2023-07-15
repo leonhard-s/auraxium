@@ -21,7 +21,7 @@ if TYPE_CHECKING:  # pragma: no cover
 __all__ = [
     'Item',
     'ItemCategory',
-    'ItemType'
+    'ItemType',
 ]
 
 

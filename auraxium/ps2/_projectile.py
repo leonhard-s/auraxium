@@ -8,7 +8,7 @@ from ..models import ProjectileData
 
 __all__ = [
     'Projectile',
-    'ProjectileFlightType'
+    'ProjectileFlightType',
 ]
 
 

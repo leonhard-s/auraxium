@@ -8,7 +8,7 @@ from .._proxy import InstanceProxy
 
 __all__ = [
     'ResistInfo',
-    'ResistType'
+    'ResistType',
 ]
 
 

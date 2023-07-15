@@ -5,7 +5,7 @@ from ..models import ZoneData
 from ..types import LocaleData
 
 __all__ = [
-    'Zone'
+    'Zone',
 ]
 
 _STATIC_ZONES = [

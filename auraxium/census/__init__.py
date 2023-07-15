@@ -64,7 +64,7 @@ __all__ = [
     'QueryBase',
     'QueryBaseData',
     'SearchModifier',
-    'SearchTerm'
+    'SearchTerm',
 ]
 
 __version__ = '0.3.0'

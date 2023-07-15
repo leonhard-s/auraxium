@@ -5,7 +5,7 @@ from .base import RESTPayload
 __all__ = [
     'OutfitData',
     'OutfitMemberData',
-    'OutfitRankData'
+    'OutfitRankData',
 ]
 
 

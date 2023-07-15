@@ -16,7 +16,7 @@ from ._faction import Faction
 
 __all__ = [
     'Experience',
-    'ExperienceRank'
+    'ExperienceRank',
 ]
 
 log = logging.getLogger('auraxium.ps2')

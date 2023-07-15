@@ -17,7 +17,7 @@ __all__ = [
     'EffectType',
     'TargetType',
     'ZoneEffect',
-    'ZoneEffectType'
+    'ZoneEffectType',
 ]
 
 

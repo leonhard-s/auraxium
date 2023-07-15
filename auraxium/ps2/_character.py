@@ -21,7 +21,7 @@ from ._world import World
 
 __all__ = [
     'Character',
-    'Title'
+    'Title',
 ]
 
 log = logging.getLogger('auraxium.ps2')

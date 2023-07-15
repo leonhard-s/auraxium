@@ -114,5 +114,5 @@ __all__ = [
     'WorldEvent',
     'ZoneData',
     'ZoneEffectData',
-    'ZoneEffectTypeData'
+    'ZoneEffectTypeData',
 ]

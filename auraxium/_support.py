@@ -6,7 +6,7 @@ import warnings
 from typing import Any, Callable, TypeVar, cast
 
 __all__ = [
-    'deprecated'
+    'deprecated',
 ]
 
 _CallableT = TypeVar('_CallableT', bound=Callable[..., Any])

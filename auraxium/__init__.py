@@ -30,7 +30,7 @@ __all__ = [
     'ps2',
     'Ps2Object',
     'SequenceProxy',
-    'Trigger'
+    'Trigger',
 ]
 
 __author__ = 'Leonhard S.'

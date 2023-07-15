@@ -8,7 +8,7 @@ __all__ = [
     'EffectData',
     'EffectTypeData',
     'ZoneEffectData',
-    'ZoneEffectTypeData'
+    'ZoneEffectTypeData',
 ]
 
 

@@ -17,7 +17,7 @@ if TYPE_CHECKING:  # pragma: no cover
 
 __all__ = [
     'Outfit',
-    'OutfitMember'
+    'OutfitMember',
 ]
 
 log = logging.getLogger('auraxium.ps2')

@@ -9,7 +9,7 @@ __all__ = [
     'CharacterAchievement',
     'CharacterData',
     'CharacterDirective',
-    'TitleData'
+    'TitleData',
 ]
 
 

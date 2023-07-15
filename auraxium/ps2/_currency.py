@@ -5,7 +5,7 @@ from ..models import CurrencyData
 from ..types import LocaleData
 
 __all__ = [
-    'Currency'
+    'Currency',
 ]
 
 

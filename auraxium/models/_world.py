@@ -6,7 +6,7 @@ from .base import RESTPayload
 from ..types import LocaleData
 
 __all__ = [
-    'WorldData'
+    'WorldData',
 ]
 
 

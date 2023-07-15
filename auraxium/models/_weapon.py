@@ -8,7 +8,7 @@ from ..types import LocaleData
 __all__ = [
     'WeaponAmmoSlot',
     'WeaponData',
-    'WeaponDatasheet'
+    'WeaponDatasheet',
 ]
 
 

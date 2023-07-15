@@ -10,7 +10,7 @@ __all__ = [
     'QueryBaseData',
     'QueryData',
     'SearchModifier',
-    'SearchTerm'
+    'SearchTerm',
 ]
 
 # This list connects the string literals to the enum values. The index of the

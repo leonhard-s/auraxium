@@ -8,7 +8,7 @@ from ._support import deprecated
 
 __all__ = [
     'CensusData',
-    'LocaleData'
+    'LocaleData',
 ]
 
 CensusData = Dict[

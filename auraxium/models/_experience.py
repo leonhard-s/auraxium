@@ -5,7 +5,7 @@ from ..types import LocaleData
 
 __all__ = [
     'ExperienceData',
-    'ExperienceRankData'
+    'ExperienceRankData',
 ]
 
 
