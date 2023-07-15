@@ -7,7 +7,7 @@ __all__ = [
     'LocaleData',
 ]
 
-CensusData = dict[str, str | int | float | 'CensusData' | list['CensusData']]
+CensusData = dict[str, 'str | int | float | CensusData | list[CensusData]']
 
 
 class LocaleData(pydantic.BaseModel):
