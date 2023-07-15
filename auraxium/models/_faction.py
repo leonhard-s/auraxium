@@ -4,7 +4,7 @@ from .base import ImageData, RESTPayload
 from ..types import LocaleData
 
 __all__ = [
-    'FactionData'
+    'FactionData',
 ]
 
 

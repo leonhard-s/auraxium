@@ -17,7 +17,7 @@ from ._rest import RequestClient, extract_payload, extract_single
 from .types import CensusData
 
 __all__ = [
-    'Client'
+    'Client',
 ]
 
 _NamedT = TypeVar('_NamedT', bound=Named)

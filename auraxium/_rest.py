@@ -41,7 +41,7 @@ __all__ = [
     'RequestClient',
     'extract_payload',
     'extract_single',
-    'run_query'
+    'run_query',
 ]
 
 _T = TypeVar('_T')

@@ -16,7 +16,7 @@ from ._item import Item
 __all__ = [
     'Weapon',
     'WeaponAmmoSlot',
-    'WeaponDatasheet'
+    'WeaponDatasheet',
 ]
 
 log = logging.getLogger('auraxium')

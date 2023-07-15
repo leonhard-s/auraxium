@@ -9,7 +9,7 @@ __all__ = [
     'FacilityTypeData',
     'MapHexData',
     'MapRegionData',
-    'RegionData'
+    'RegionData',
 ]
 
 

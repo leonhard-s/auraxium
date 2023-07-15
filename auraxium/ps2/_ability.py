@@ -11,7 +11,7 @@ __all__ = [
     'Ability',
     'AbilityData',
     'AbilityType',
-    'ResourceType'
+    'ResourceType',
 ]
 
 

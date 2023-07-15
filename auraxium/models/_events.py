@@ -18,7 +18,7 @@ __all__ = [
     'PlayerLogin',
     'PlayerLogout',
     'SkillAdded',
-    'VehicleDestroy'
+    'VehicleDestroy',
 ]
 
 

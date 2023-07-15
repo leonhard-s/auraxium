@@ -6,7 +6,7 @@ from .base import RESTPayload
 
 __all__ = [
     'ObjectiveData',
-    'ObjectiveTypeData'
+    'ObjectiveTypeData',
 ]
 
 

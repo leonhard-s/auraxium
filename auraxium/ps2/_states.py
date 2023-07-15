@@ -5,7 +5,7 @@ from ..models import PlayerStateGroup
 
 __all__ = [
     'PlayerState',
-    'PlayerStateGroup'
+    'PlayerStateGroup',
 ]
 
 

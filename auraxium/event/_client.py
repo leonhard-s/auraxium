@@ -19,7 +19,7 @@ from ..types import CensusData
 from ._trigger import Trigger
 
 __all__ = [
-    'EventClient'
+    'EventClient',
 ]
 
 _EventT = TypeVar('_EventT', bound=Event)

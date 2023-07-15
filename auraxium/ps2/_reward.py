@@ -10,7 +10,7 @@ from .._proxy import InstanceProxy, SequenceProxy
 
 __all__ = [
     'Reward',
-    'RewardType'
+    'RewardType',
 ]
 
 

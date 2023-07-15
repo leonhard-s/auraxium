@@ -15,7 +15,7 @@ __all__ = [
     'FacilityType',
     'MapHex',
     'MapRegion',
-    'Region'
+    'Region',
 ]
 
 

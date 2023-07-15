@@ -17,7 +17,7 @@ from ._urlgen import generate_url
 __all__ = [
     'JoinedQuery',
     'Query',
-    'QueryBase'
+    'QueryBase',
 ]
 
 _QueryBaseT = TypeVar('_QueryBaseT', bound='QueryBase')

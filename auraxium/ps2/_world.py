@@ -12,7 +12,7 @@ from ..types import CensusData, LocaleData
 from ._zone import Zone
 
 __all__ = [
-    'World'
+    'World',
 ]
 
 

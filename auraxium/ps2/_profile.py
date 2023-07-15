@@ -15,7 +15,7 @@ from ._resist import ResistInfo
 
 __all__ = [
     'Loadout',
-    'Profile'
+    'Profile',
 ]
 
 

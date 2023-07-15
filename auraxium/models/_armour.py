@@ -5,7 +5,7 @@ from typing import Optional
 from .base import RESTPayload
 
 __all__ = [
-    'ArmourInfoData'
+    'ArmourInfoData',
 ]
 
 

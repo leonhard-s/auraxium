@@ -16,7 +16,7 @@ __all__ = [
     'Directive',
     'DirectiveTier',
     'DirectiveTree',
-    'DirectiveTreeCategory'
+    'DirectiveTreeCategory',
 ]
 
 

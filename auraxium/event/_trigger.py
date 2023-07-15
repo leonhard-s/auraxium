@@ -14,6 +14,9 @@ _Condition = Union[Any, Callable[[Event], bool]]
 _Action = Callable[[Event], Union[Coroutine[Any, Any, None], None]]
 _CharConstraint = Union[Iterable[Character], Iterable[int]]
 _WorldConstraint = Union[Iterable[World], Iterable[int]]
+__all__ = [
+    'Trigger',
+]
 
 
 class Trigger:

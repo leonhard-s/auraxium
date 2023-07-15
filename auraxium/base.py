@@ -22,7 +22,7 @@ from .types import CensusData
 __all__ = [
     'Ps2Object',
     'Cached',
-    'Named'
+    'Named',
 ]
 
 CachedT = TypeVar('CachedT', bound='Cached')

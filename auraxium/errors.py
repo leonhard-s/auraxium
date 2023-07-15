@@ -18,7 +18,7 @@ __all__ = [
     'MaintenanceError',
     'NotFoundError',
     'ResponseError',
-    'PayloadError'
+    'PayloadError',
 ]
 
 

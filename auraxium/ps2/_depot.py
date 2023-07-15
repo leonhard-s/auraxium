@@ -14,7 +14,7 @@ from ._item import Item
 
 __all__ = [
     'MarketingBundle',
-    'MarketingBundleSingle'
+    'MarketingBundleSingle',
 ]
 
 

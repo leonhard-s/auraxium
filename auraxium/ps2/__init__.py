@@ -95,5 +95,5 @@ __all__ = [
     'World',
     'Zone',
     'ZoneEffect',
-    'ZoneEffectType'
+    'ZoneEffectType',
 ]

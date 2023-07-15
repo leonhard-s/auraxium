@@ -16,7 +16,7 @@ from ._states import PlayerState, PlayerStateGroup
 __all__ = [
     'FireGroup',
     'FireMode',
-    'FireModeType'
+    'FireModeType',
 ]
 
 

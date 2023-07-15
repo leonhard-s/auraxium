@@ -15,7 +15,7 @@ from .types import CensusData
 __all__ = [
     'InstanceProxy',
     'Proxy',
-    'SequenceProxy'
+    'SequenceProxy',
 ]
 
 _Ps2ObjectT = TypeVar('_Ps2ObjectT', bound=Ps2Object)

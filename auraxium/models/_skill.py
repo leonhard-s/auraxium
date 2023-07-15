@@ -9,7 +9,7 @@ __all__ = [
     'SkillData',
     'SkillCategoryData',
     'SkillLineData',
-    'SkillSetData'
+    'SkillSetData',
 ]
 
 

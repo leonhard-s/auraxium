@@ -15,7 +15,7 @@ from ._skill import SkillSet
 
 __all__ = [
     'Vehicle',
-    'VehicleAttachment'
+    'VehicleAttachment',
 ]
 
 

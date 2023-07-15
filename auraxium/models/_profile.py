@@ -4,7 +4,7 @@ from .base import RESTPayload
 
 __all__ = [
     'LoadoutData',
-    'ProfileData'
+    'ProfileData',
 ]
 
 
