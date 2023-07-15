@@ -7,7 +7,7 @@ throughout the PlanetSide 2 object model.
 
 import abc
 import logging
-from typing import Any, ClassVar, List, Optional, Type, TypeVar, Union, cast
+from typing import Any, ClassVar, Optional, Type, TypeVar, Union, cast
 
 import pydantic
 
@@ -18,7 +18,6 @@ from .endpoints import DBG_FILES
 from .errors import PayloadError
 from ._rest import RequestClient
 from .types import CensusData
-from ._support import deprecated
 
 __all__ = [
     'Ps2Object',
@@ -119,89 +118,6 @@ class Ps2Object(metaclass=abc.ABCMeta):
         """
         return f'<{self.__class__.__name__}:{self.id}>'
 
-    @classmethod
-    @deprecated('0.2', '0.4', replacement=':meth:`auraxium.Client.count`')  # pragma: no cover
-    async def count(cls, client: RequestClient, **kwargs: Any) -> int:
-        """Return the number of items matching the given terms.
-
-        :param auraxium.Client client: The client through which to
-           perform the request.
-        :param kwargs: Any number of query filters to apply.
-        :return: The number of entries entries.
-        """
-        # NOTE: The following is a runtime-only compatibility hack and violates
-        # type hinting. This is scheduled for removal as per the decorator.
-        return await client.count(cls, **kwargs)  # type: ignore
-
-    @classmethod
-    @deprecated('0.2', '0.4', replacement=':meth:`auraxium.Client.find`')  # pragma: no cover
-    async def find(cls: Type[Ps2ObjectT], results: int = 10, *,
-                   offset: int = 0, promote_exact: bool = False,
-                   check_case: bool = True, client: RequestClient,
-                   **kwargs: Any) -> List[Ps2ObjectT]:
-        """Return a list of entries matching the given terms.
-
-        This returns up to as many entries as indicated by the results
-        argument. Note that it may be fewer if not enough matches are
-        found.
-
-        :param int results: The maximum number of results.
-        :param int offset: The number of entries to skip. Useful for
-           paginated views.
-        :param bool promote_exact: If enabled, exact matches to
-           non-exact searches will always come first in the return
-           list.
-        :param bool check_case: Whether to check case when comparing
-           strings. Note that case-insensitive searches are much more
-           expensive.
-        :param auraxium.Client client: The client through which to
-           perform the request.
-        :param kwargs: Any number of filters to apply.
-        :return: A list of matching entries.
-        """
-        # NOTE: The following is a runtime-only compatibility hack and violates
-        # type hinting. This is scheduled for removal as per the decorator.
-        return await client.find(  # type: ignore
-            cls, results=results, offset=offset, promote_exact=promote_exact,
-            check_case=check_case, **kwargs)
-
-    @classmethod
-    @deprecated('0.2', '0.4', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
-    async def get(cls: Type[Ps2ObjectT], client: RequestClient,
-                  check_case: bool = True, **kwargs: Any
-                  ) -> Optional[Ps2ObjectT]:
-        """Return the first entry matching the given terms.
-
-        Like :meth:`Ps2Object.get`, but will only return one item.
-
-        :param auraxium.Client client: The client through which to
-           perform the request.
-        :param bool check_case: Whether to check case when comparing
-           strings. Note that case-insensitive searches are much more
-           expensive.
-        :return: A matching entry, or :obj:`None` if not found.
-        """
-        # NOTE: The following is a runtime-only compatibility hack and violates
-        # type hinting. This is scheduled for removal as per the decorator.
-        return await client.get(  # type: ignore
-            cls, results=1, check_case=check_case, **kwargs)
-
-    @classmethod
-    @deprecated('0.2', '0.4', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
-    async def get_by_id(cls: Type[Ps2ObjectT], id_: int, *,
-                        client: RequestClient) -> Optional[Ps2ObjectT]:
-        """Retrieve an object by its unique Census ID.
-
-        :param int id\\_: The unique ID of the object.
-        :param auraxium.Client client: The client through which to
-           perform the request.
-        :return: The entry with the matching ID, or :obj:`None` if not
-           found.
-        """
-        # NOTE: The following is a runtime-only compatibility hack and violates
-        # type hinting. This is scheduled for removal as per the decorator.
-        return await client.get_by_id(cls, id_)  # type: ignore
-
     def query(self) -> Query:
         """Return a query from the current object.
 
@@ -290,29 +206,6 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
         if ttu is not None:
             cls._cache.ttu = ttu
 
-    @classmethod
-    @deprecated('0.2', '0.4', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
-    async def get_by_id(cls: Type[CachedT], id_: int, *,
-                        client: RequestClient) -> Optional[CachedT]:
-        """Retrieve an object by by ID.
-
-        This query uses caches and might return an existing instance if
-        the object has been recently retrieved.
-
-        :param int id\\_: The unique id of the object.
-        :param auraxium.Client client: The client through which to
-           perform the request.
-        :return: The object matching the given ID or :obj:`None` if no
-           match was found.
-        """
-        _log.debug('<%s:%d> requested', cls.__name__, id_)
-        if (instance := cls._cache.get(id_)) is not None:
-            _log.debug('%r restored from cache', instance)
-            return instance
-        _log.debug('<%s:%d> not cached, generating API query...',
-                   cls.__name__, id_)
-        return await super().get_by_id(id_, client=client)
-
 
 class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
     """Mix-in class for named objects.
@@ -360,28 +253,6 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
         English locale.
         """
         return str(self.name)
-
-    @classmethod
-    @deprecated('0.2', '0.4', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
-    async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
-                          client: RequestClient) -> Optional[NamedT]:
-        """Retrieve an object by its unique name.
-
-        If the same query has been performed recently, it may be
-        restored from cache instead.
-
-        This query is always case-insensitive.
-
-        :param str name: The name to search for.
-        :param str locale: The locale of the search key.
-        :param auraxium.Client client: The client through which to
-           perform the request.
-        :return: The entry with the matching name, or :obj:`None` if
-           not found.
-        """
-        # NOTE: The following is a runtime-only compatibility hack and violates
-        # type hinting. This is scheduled for removal as per the decorator.
-        return client.get_by_name(cls, name, locale=locale)  # type: ignore
 
 
 class ImageMixin(Ps2Object, metaclass=abc.ABCMeta):

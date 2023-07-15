@@ -4,7 +4,6 @@ from typing import Optional
 
 from .base import RESTPayload
 from ..types import LocaleData
-from .._support import deprecated
 
 __all__ = [
     'CharacterAchievement',
@@ -193,11 +192,6 @@ class CharacterData(RESTPayload):
 
         first: str
         first_lower: str
-
-        @deprecated('0.2', '0.4', replacement=':attr:`auraxium.models.'
-                    'CharacterData.Name.name`')
-        def __call__(self, locale: str = 'en') -> str:  # pragma: no cover
-            return self.first
 
         def __str__(self) -> str:
             return self.first
