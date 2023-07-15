@@ -7,7 +7,7 @@ It provides a simple object model that can be used by players and outfits withou
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/leonhard-s/auraxium/pythonunittest.yml?label=tests)
 [![Coveralls github branch](https://img.shields.io/coveralls/github/leonhard-s/auraxium/master)](https://coveralls.io/github/leonhard-s/auraxium)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/auraxium)
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/leonhard-s/auraxium/pythonpublish.yml)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/leonhard-s/auraxium/publish-package.yaml)
 [![CodeFactor Grade](https://img.shields.io/codefactor/grade/github/leonhard-s/auraxium)](https://www.codefactor.io/repository/github/leonhard-s/auraxium)
 [![PyPI](https://img.shields.io/pypi/v/auraxium)](https://pypi.org/project/auraxium/)
 [![Read the Docs](https://img.shields.io/readthedocs/auraxium)](https://auraxium.readthedocs.io/en/latest/)
