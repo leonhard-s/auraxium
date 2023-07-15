@@ -466,9 +466,12 @@ async def run_query(query: Query, session: aiohttp.ClientSession,
         assert exc_value is not None
         raise exc_value
 
-    backoff_errors = (aiohttp.ClientResponseError,
-                      aiohttp.ClientConnectionError,
-                      MaintenanceError)
+    backoff_errors = (
+        aiohttp.ClientResponseError,
+        aiohttp.ClientConnectionError,
+        MaintenanceError,
+        ServiceUnavailableError,
+    )
 
     # NOTE: As of backoff v2.1.2, "backoff.expo" only takes integer arguments.
     # We therefore scale everything down to meet the original timings
