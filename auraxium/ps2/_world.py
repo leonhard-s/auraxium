@@ -1,14 +1,13 @@
 """World class definition."""
 
 import datetime
-from typing import Any, Final, List, Optional, Tuple, Type, Union
+from typing import Any, Final, List, Optional, Tuple, Union
 
-from ..base import Named, NamedT
+from ..base import Named
 from ..census import Query
 from ..models import WorldData
-from .._rest import RequestClient, extract_payload, extract_single
+from .._rest import extract_payload, extract_single
 from ..types import CensusData, LocaleData
-from .._support import deprecated
 
 from ._zone import Zone
 
@@ -69,29 +68,6 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
         payload = await self._client.request(query)
         data = extract_payload(payload, collection=collection)
         return data
-
-    @classmethod
-    @deprecated('0.2', '0.4', replacement=':meth:`auraxium.Client.get`')
-    async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
-                          client: RequestClient
-                          ) -> Optional[NamedT]:  # pragma: no cover
-        """Retrieve a world by name.
-
-        This query is always case-insensitive.
-        """
-        # NOTE: The world collection may only be queried by the world_id field
-        # due to API limitations. This method works around this by first
-        # retrieving all worlds, then looking the returned list up by name.
-        data = await cls.find(20, client=client)
-        if data and not isinstance(data[0], cls):
-            raise RuntimeError(
-                f'Expected {cls} instance, got {type(data[0])} instead, '
-                'please report this bug to the project maintainers')
-        name = name.lower()
-        for world in data:
-            if getattr(world.name, locale.lower(), '') == name:
-                return world
-        return None
 
     async def map(self, zone: Union[int, Zone],
                   *args: Union[int, Zone]) -> List[CensusData]:

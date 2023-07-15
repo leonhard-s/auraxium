@@ -1,17 +1,14 @@
 """Outfit and outfit member class definitions."""
 
 import logging
-from typing import (Any, ClassVar, Final, List, Optional, TYPE_CHECKING, Type,
-                    Union, cast)
+from typing import Any, ClassVar, Final, List, TYPE_CHECKING, Union, cast
 
-from ..base import Cached, Named, NamedT
+from ..base import Cached, Named
 from .._cache import TLRUCache
 from ..census import Query
-from ..errors import NotFoundError
 from ..models import OutfitData, OutfitMemberData, OutfitRankData
 from .._proxy import InstanceProxy, SequenceProxy
-from .._rest import RequestClient, extract_payload, extract_single
-from .._support import deprecated
+from .._rest import extract_payload
 
 if TYPE_CHECKING:  # pragma: no cover
     # This is only imported during static type checking to resolve the
@@ -172,49 +169,6 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
     def tag(self) -> str:
         """Alias of :attr:`alias`."""
         return self.alias
-
-    @classmethod
-    @deprecated('0.2', '0.4', replacement=':meth:`auraxium.Client.get`')
-    async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
-                          client: RequestClient
-                          ) -> Optional[NamedT]:  # pragma: no cover
-        """Retrieve an outfit by its unique name.
-
-        This query is always case-insensitive.
-        """
-        log.debug('%s "%s"[%s] requested', cls.__name__, name, locale)
-        if (instance := cls._cache.get(f'_{name.lower()}')) is not None:
-            log.debug('%r restored from cache', instance)
-            return instance
-        log.debug('%s "%s"[%s] not cached, generating API query...',
-                  cls.__name__, name, locale)
-        query = Query(cls.collection, service_id=client.service_id,
-                      name_lower=name.lower()).limit(1)
-        data = await client.request(query)
-        try:
-            payload = extract_single(data, cls.collection)
-        except NotFoundError:
-            return None
-        return cls(payload, client=client)
-
-    @classmethod
-    @deprecated('0.2', '0.4', replacement=':meth:`auraxium.Client.get`')
-    async def get_by_tag(cls, tag: str, client: RequestClient
-                         ) -> Optional['Outfit']:  # pragma: no cover
-        """Return an outfit by its unique tag.
-
-        This query is always case-insensitive.
-        """
-        log.debug('%s with tag "%s" requested, generating API query...',
-                  cls.__name__, tag)
-        query = Query(cls.collection, service_id=client.service_id,
-                      alias_lower=tag.lower()).limit(1)
-        data = await client.request(query)
-        try:
-            payload = extract_single(data, cls.collection)
-        except NotFoundError:
-            return None
-        return cls(payload, client=client)
 
     def leader(self) -> InstanceProxy[OutfitMember]:
         """Return the current leader of the outfit.
