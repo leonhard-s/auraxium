@@ -10,6 +10,8 @@ from auraxium import endpoints, ps2
 class EndpointConfigurationTest(unittest.IsolatedAsyncioTestCase):
     """Local test testing endpoint configuration."""
 
+    client: auraxium.Client
+
     async def asyncTearDown(self) -> None:
         await self.client.close()
 

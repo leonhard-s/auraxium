@@ -80,12 +80,12 @@ class EventClientTest(unittest.IsolatedAsyncioTestCase):
                           'is the game in maintenance?')
         self.assertEqual(len(self.client.triggers), 0)
 
-    async def test_endpoint_status(self) -> None:
+    def test_endpoint_status(self) -> None:
         """Test the endpoint status."""
         status = self.client.endpoint_status
         self.assertIsInstance(status, dict)
 
-    async def test_get_trigger(self) -> None:
+    def test_get_trigger(self) -> None:
         """Test the get_trigger method."""
         trigger = auraxium.Trigger(auraxium.event.Death, name='on_death')
         self.client.add_trigger(trigger)
@@ -93,7 +93,7 @@ class EventClientTest(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(KeyError):
             self.client.get_trigger('on_death2')
 
-    async def test_remove_trigger(self) -> None:
+    def test_remove_trigger(self) -> None:
         """Test the remove_trigger method."""
         trigger = auraxium.Trigger(auraxium.event.Death, name='on_death')
         self.client.add_trigger(trigger)
@@ -103,7 +103,7 @@ class EventClientTest(unittest.IsolatedAsyncioTestCase):
         with self.assertRaises(KeyError):
             self.client.remove_trigger('does_not_exist')
 
-    async def test_trigger_decorator(self) -> None:
+    def test_trigger_decorator(self) -> None:
         """Test extra overloads of the trigger() decorator helper."""
 
         def test(_: auraxium.event.Death) -> None:
