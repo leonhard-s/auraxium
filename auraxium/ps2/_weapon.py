@@ -194,7 +194,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
         return SequenceProxy(FireGroup, query, client=self._client)
 
     @classmethod
-    @deprecated('0.2', '0.3', replacement=':meth:`auraxium.Client.get`')
+    @deprecated('0.2', '0.4', replacement=':meth:`auraxium.Client.get`')
     async def get_by_name(cls, name: str, *, locale: str = 'en',
                           client: RequestClient
                           ) -> Optional['Weapon']:  # pragma: no cover
