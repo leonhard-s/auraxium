@@ -2,7 +2,6 @@
 
 import asyncio
 
-# pylint: disable=import-error
 import auraxium
 from auraxium import event, ps2
 

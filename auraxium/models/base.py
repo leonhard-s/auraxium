@@ -2,42 +2,22 @@
 
 import abc
 import datetime
-from typing import Any, Optional, TypeVar, cast
+from typing import Optional, TypeVar
 
 import pydantic
 
 from ..types import CensusData
 
-# pylint: disable=too-few-public-methods
-
 _T = TypeVar('_T')
 
 
-class Payload(pydantic.BaseModel):  # pylint: disable=no-member
+class Payload(pydantic.BaseModel):
     """A payload received through the REST or WebSocket interface.
 
     Instances of this class are read-only.
     """
 
-    class Config:
-        """Pydantic model configuration.
-
-        :meta private:
-        """
-
-        allow_mutation = False
-
-    # Weird workaround for pydantic.BaseModel overwriting __hash__ with
-    # None, at least according to Pylance.
-
-    def _override__hash__(self) -> int:  # pragma: no cover
-        # NOTE: pydantic has a beta setting called `frozen=True` that would
-        # generate a hash method, but it is not part of the stable API and
-        # therefore not used here.
-        # It should replace allow_mutation here once it out of beta.
-        return hash(tuple(self.dict().items()))
-
-    __hash__ = cast(Any, _override__hash__)
+    model_config = pydantic.ConfigDict(extra='ignore', frozen=True)
 
 
 class RESTPayload(Payload):
@@ -47,9 +27,11 @@ class RESTPayload(Payload):
     :obj:`None`.
     """
 
-    @pydantic.validator('*', pre=True)  # type: ignore
+    @pydantic.field_validator('*', mode='before')
     @classmethod
-    def _convert_null(cls, value: _T) -> Optional[_T]:
+    def _convert_null(cls, value: _T,
+                      info: pydantic.FieldValidationInfo,
+                      ) -> Optional[_T]:
         """Replace any "NULL" string inputs with :obj:`None`.
 
         This is a pre-validator; it is run before any other validation
@@ -61,7 +43,7 @@ class RESTPayload(Payload):
         values can be type-hinted with :obj:`typing.Optional` without
         risk of errors.
         """
-        _ = cls
+        _ = cls, info
         if value == 'NULL':
             return None
         return value
@@ -97,7 +79,7 @@ class FallbackMixin(metaclass=abc.ABCMeta):
         """
 
 
-class ImageData(pydantic.BaseModel):  # pylint: disable=no-member
+class ImageData(pydantic.BaseModel):
     """Mixin dataclass for types supporting image access.
 
     .. attribute:: image_id
@@ -150,10 +132,13 @@ class Event(Payload):
     timestamp: datetime.datetime
     world_id: int
 
-    @pydantic.validator('timestamp', pre=True)  # type: ignore
+    @pydantic.field_validator('timestamp', mode='before')
     @classmethod
-    def _utc_from_timestamp(cls, value: str) -> datetime.datetime:
+    def _utc_from_timestamp(cls, value: str,
+                            info: pydantic.FieldValidationInfo,
+                            ) -> datetime.datetime:
         """Convert timestamps to UTC datetimes."""
+        _ = info
         return datetime.datetime.utcfromtimestamp(int(value))
 
     @property

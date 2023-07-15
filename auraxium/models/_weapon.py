@@ -11,8 +11,6 @@ __all__ = [
     'WeaponDatasheet'
 ]
 
-# pylint: disable=too-few-public-methods
-
 
 class WeaponAmmoSlot(RESTPayload):
     """Data class for weapon ammo slot data.

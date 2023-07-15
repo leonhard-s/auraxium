@@ -7,8 +7,6 @@ __all__ = [
     'FactionData'
 ]
 
-# pylint: disable=too-few-public-methods
-
 
 class FactionData(RESTPayload, ImageData):
     """Data class for :class:`auraxium.ps2.Faction`.

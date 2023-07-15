@@ -3,7 +3,6 @@
 import typing
 import unittest
 
-# pylint: disable=import-error
 import auraxium
 from auraxium import census, endpoints
 from auraxium._cache import TLRUCache
@@ -61,7 +60,7 @@ class TestPs2Object(unittest.TestCase):
             'loadout_id': '2', 'profile_id': '4', 'faction_id': '8',
             'code_name': 'Different'}, client=self.client)
         # Directive category (not a loadout)
-        names = {s: 'Test' for s in LocaleData.__fields__}
+        names = {s: 'Test' for s in LocaleData.model_fields}
         cat = DirectiveTreeCategory(
             {'directive_tree_category_id': '1', 'name': names},
             client=self.client)
@@ -134,7 +133,7 @@ class TestNamedObject(unittest.TestCase):
 
     def test_dunder_repr(self) -> None:
         """Test the __repr__ dunder method."""
-        names = {s: f'Test_{s}' for s in LocaleData.__fields__}
+        names = {s: f'Test_{s}' for s in LocaleData.model_fields}
         cat = DirectiveTreeCategory(
             {'directive_tree_category_id': '12', 'name': names},
             client=self.client)
@@ -143,7 +142,7 @@ class TestNamedObject(unittest.TestCase):
 
     def test_dunder_str(self) -> None:
         """Test the __str__ dunder method."""
-        names = {s: f'Test_{s}' for s in LocaleData.__fields__}
+        names = {s: f'Test_{s}' for s in LocaleData.model_fields}
         cat = DirectiveTreeCategory(
             {'directive_tree_category_id': '12', 'name': names},
             client=self.client)
@@ -163,7 +162,7 @@ class TestImageMixin(unittest.TestCase):
 
     def test_image(self) -> None:
         """Test the image() method."""
-        names = {s: f'Test_{s}' for s in LocaleData.__fields__}
+        names = {s: f'Test_{s}' for s in LocaleData.model_fields}
         item = Item(
             {'item_id': '1', 'is_vehicle_weapon': '0', 'max_stack_size': '1',
              'name': names, 'is_default_attachment': '0', 'image_id': '123'},

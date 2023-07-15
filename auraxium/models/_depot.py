@@ -10,8 +10,6 @@ __all__ = [
     'MarketingBundleSingleData'
 ]
 
-# pylint: disable=too-few-public-methods
-
 
 class MarketingBundleData(RESTPayload):
     """Data class for :class:`auraxium.ps2.MarketingBundle`.

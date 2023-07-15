@@ -10,8 +10,6 @@ __all__ = [
     'FireGroupData'
 ]
 
-# pylint: disable=too-few-public-methods
-
 
 class FireModeData(RESTPayload):
     """Data class for :class:`auraxium.ps2.FireMode`.

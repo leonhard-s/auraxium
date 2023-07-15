@@ -12,7 +12,7 @@ from typing import Any, Callable, List, Optional, Type, TypeVar, cast
 from .base import Named, Ps2Object
 from .census import Query
 from .errors import NotFoundError, PayloadError
-from .ps2 import Character
+from .ps2 import Character, World
 from ._rest import RequestClient, extract_payload, extract_single
 from .types import CensusData
 
@@ -143,7 +143,7 @@ class Client(RequestClient):
         :return: The entry with the matching ID, or :obj:`None` if not
            found.
         """
-        filters: CensusData = {type_.id_field: id_}
+        filters: dict[str, Any] = {type_.id_field: id_}
         data = await self.find(type_, results=1, **filters)
         if data and not isinstance(data[0], type_):
             raise RuntimeError(  # pragma: no cover
@@ -195,6 +195,8 @@ class Client(RequestClient):
         query = Query(type_.collection, service_id=self.service_id)
         if issubclass(type_, Character):
             query.add_term(field='name.first_lower', value=name.lower())
+        elif issubclass(type_, World):
+            return cast(_NamedT, await self._get_world_by_name(name, locale))
         else:
             query.case(False).add_term(field=f'name.{locale}', value=name)
         payload = await self.request(query)
@@ -203,3 +205,11 @@ class Client(RequestClient):
         except NotFoundError:  # pragma: no cover
             return None
         return cast(_NamedT, type_(payload, locale=locale, client=self))
+
+    async def _get_world_by_name(self, name: str, locale: str = 'en',
+                                 ) -> Optional[World]:
+        all_worlds = await self.find(World, results=100)
+        for world in all_worlds:
+            if getattr(world.name, locale).lower() == name.lower():
+                return world
+        return None

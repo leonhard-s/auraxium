@@ -1,7 +1,7 @@
 # This workflow will run any files matching "tests/*_test.py" using the Python
 # unittest module.
 
-name: Run Python unit tests
+name: CI Testing
 
 on: [push, pull_request]
 
@@ -26,14 +26,17 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r ./requirements.txt
 
-      - name: Run all tests
+      - name: Run unit tests
+        run: |
+          python -m unittest discover -p *_test.py tests/unit/
+
+      - name: Run integration tests
+        run: |
+          python -m unittest discover -p *_test.py tests/integration/
+
+      - name: Run live tests
         if: github.repository == 'leonhard-s/auraxium' && github.event_name != 'pull_request'
         env:
           SERVICE_ID: ${{secrets.REPO_SERVICE_ID}}
         run: |
-          python -m unittest discover -p *_test.py tests/
-
-      - name: Run only offline tests
-        if: github.repository != 'leonhard-s/auraxium' || github.event_name == 'pull_request'
-        run: |
-          python -m unittest discover -p *_test.py tests/
+          python -m unittest discover -p *_test.py tests/live/

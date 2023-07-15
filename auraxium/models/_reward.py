@@ -9,8 +9,6 @@ __all__ = [
     'RewardTypeData'
 ]
 
-# pylint: disable=too-few-public-methods
-
 
 class RewardData(RESTPayload):
     """Data class for :class:`auraxium.ps2.Reward`.

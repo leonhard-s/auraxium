@@ -11,8 +11,6 @@ __all__ = [
     'ZoneEffectTypeData'
 ]
 
-# pylint: disable=too-few-public-methods
-
 
 class EffectData(RESTPayload):
     """Data class for :class:`auraxium.ps2.Effect`.

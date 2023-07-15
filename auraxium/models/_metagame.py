@@ -9,8 +9,6 @@ __all__ = [
     'MetagameEventData'
 ]
 
-# pylint: disable=too-few-public-methods
-
 
 class MetagameEventData(RESTPayload):
     """Data class for :class:`auraxium.ps2.MetagameEvent`.

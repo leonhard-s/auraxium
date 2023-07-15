@@ -21,8 +21,6 @@ __all__ = [
     'VehicleDestroy'
 ]
 
-# pylint: disable=too-few-public-methods
-
 
 class AchievementAdded(Event, CharacterEvent):
     """A character has earned a new achievement.
@@ -141,6 +139,11 @@ class Death(Event, CharacterEvent):
          The reference above is not an error, this field reports the
          item ID of the weapon, not the weapon ID.
 
+    .. attribute:: attacker_team_id
+       :type: int
+
+       ID of the team of the attacker.
+
     .. attribute:: character_id
        :type: int
 
@@ -164,6 +167,11 @@ class Death(Event, CharacterEvent):
        :type: bool
 
        Whether the killing blow was dealt via headshot.
+
+    .. attribute:: team_id
+       :type: int
+
+       Team ID of the victim.
 
     .. attribute:: vehicle_id
        :type: int | None
@@ -194,11 +202,13 @@ class Death(Event, CharacterEvent):
     attacker_loadout_id: int
     attacker_vehicle_id: int
     attacker_weapon_id: int
+    attacker_team_id: int
     character_id: int
     character_loadout_id: int
-    is_critical: Optional[bool]  # Always false
+    is_critical: Optional[bool] = None  # Always false
     is_headshot: bool
-    vehicle_id: Optional[int]
+    team_id: int
+    vehicle_id: Optional[int] = None
     zone_id: int
 
 
@@ -656,6 +666,11 @@ class VehicleDestroy(Event, CharacterEvent):
          The reference above is not an error, this field reports the
          item ID of the weapon, not the weapon ID.
 
+    .. attribute:: attacker_team_id
+       :type: int
+
+       The ID of the team of the attacker
+
     .. attribute:: character_id
        :type: int
 
@@ -676,6 +691,11 @@ class VehicleDestroy(Event, CharacterEvent):
        :type: int
 
        The :class:`~auraxium.ps2.Faction` of the vehicle.
+
+    .. attribute:: team_id
+       :type: int
+
+       Team ID of the destroyed vehicle.
 
     .. attribute:: vehicle_id
        :type: int | None
@@ -704,9 +724,11 @@ class VehicleDestroy(Event, CharacterEvent):
     attacker_loadout_id: int
     attacker_vehicle_id: int
     attacker_weapon_id: int
+    attacker_team_id: int
     character_id: int
     facility_id: int
     faction_id: int
+    team_id: int
     vehicle_id: int
     zone_id: int
 

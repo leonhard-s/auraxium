@@ -1,7 +1,7 @@
 # This workflow will run all test files with code coverage enabled and upload
 # the results to coveralls.io. Only enabled for the main repository.
 
-name: Generate Python code coverage report
+name: Code Coverage
 
 on: [push, pull_request]
 
@@ -28,7 +28,9 @@ jobs:
         env:
           SERVICE_ID: ${{secrets.REPO_SERVICE_ID}}
         run: |
-          python -m coverage run --source auraxium/ -m unittest discover -p *_test.py tests/
+          python -m coverage run --source auraxium/ -m unittest discover -p *_test.py tests/unit/
+          python -m coverage run --append --source auraxium/ -m unittest discover -p *_test.py tests/integration/
+          python -m coverage run --append --source auraxium/ -m unittest discover -p *_test.py tests/live/
 
       - name: Upload code coverage analysis
         env:

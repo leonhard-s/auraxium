@@ -9,8 +9,6 @@ __all__ = [
     'WorldData'
 ]
 
-# pylint: disable=too-few-public-methods
-
 
 class WorldData(RESTPayload):
     """Data class for :class:`auraxium.ps2.World`.

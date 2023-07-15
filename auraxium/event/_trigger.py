@@ -1,5 +1,5 @@
-import asyncio
 import datetime
+import inspect
 import json
 import warnings
 from typing import (Any, Callable, Coroutine, Dict, Iterable, List, Optional,
@@ -132,7 +132,7 @@ class Trigger:
 
         The action may be a regular callable or a coroutine.
         Any callable that is a coroutine function according to
-        :func:`asyncio.iscoroutinefunction` will be awaited.
+        :func:`inspect.iscoroutinefunction` will be awaited.
 
         This method can be used as a decorator.
 
@@ -232,7 +232,7 @@ class Trigger:
             return
         try:
             ret = self.action(event)
-            if asyncio.iscoroutinefunction(self.action):
+            if inspect.iscoroutinefunction(self.action):
                 assert ret is not None
                 await ret
         except CensusError as err:  # pragma: no cover

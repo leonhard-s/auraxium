@@ -8,8 +8,6 @@ __all__ = [
     'OutfitRankData'
 ]
 
-# pylint: disable=too-few-public-methods
-
 
 class OutfitData(RESTPayload):
     """Data class for :class:`auraxium.ps2.Outfit`.

@@ -13,8 +13,6 @@ __all__ = [
     'TitleData'
 ]
 
-# pylint: disable=too-few-public-methods
-
 
 class CharacterAchievement(RESTPayload):
     """Data container for a character's achievement status.

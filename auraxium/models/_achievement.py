@@ -7,8 +7,6 @@ __all__ = [
     'AchievementData'
 ]
 
-# pylint: disable=too-few-public-methods
-
 
 class AchievementData(RESTPayload, ImageData):
     """Data class for :class:`auraxium.ps2.Achievement`.

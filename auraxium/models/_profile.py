@@ -7,8 +7,6 @@ __all__ = [
     'ProfileData'
 ]
 
-# pylint: disable=too-few-public-methods
-
 
 class LoadoutData(RESTPayload):
     """Data class for :class:`auraxium.ps2.Loadout`.
