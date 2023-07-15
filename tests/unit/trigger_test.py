@@ -22,8 +22,8 @@ class TriggerTest(unittest.TestCase):
             event_name='Death', timestamp=timestamp, world_id=world,
             attacker_character_id=attacker, attacker_fire_mode_id=0,
             attacker_loadout_id=0, attacker_vehicle_id=0, attacker_weapon_id=0,
-            character_id=victim, character_loadout_id=0,
-            is_critical=False, is_headshot=is_headshot,
+            attacker_team_id=2, character_id=victim, character_loadout_id=0,
+            is_critical=False, is_headshot=is_headshot, team_id=1,
             vehicle_id=0, zone_id=2)
 
     @staticmethod
