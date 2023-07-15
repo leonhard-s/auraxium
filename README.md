@@ -4,7 +4,7 @@ Auraxium is an object-oriented, pure-Python wrapper for the [PlanetSide 2](https
 It provides a simple object model that can be used by players and outfits without requiring deep knowledge of the API and its idiosyncrasies.
 
 ![PyPI - License](https://img.shields.io/pypi/l/auraxium)
-![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/leonhard-s/auraxium/pythonunittest.yml?label=tests)
+![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/leonhard-s/auraxium/ci-testing.yaml?label=tests)
 [![Coveralls github branch](https://img.shields.io/coveralls/github/leonhard-s/auraxium/master)](https://coveralls.io/github/leonhard-s/auraxium)
 ![PyPI - Python Version](https://img.shields.io/pypi/pyversions/auraxium)
 ![GitHub Workflow Status](https://img.shields.io/github/actions/workflow/status/leonhard-s/auraxium/publish-package.yaml)
