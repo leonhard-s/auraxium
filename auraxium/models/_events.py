@@ -140,9 +140,9 @@ class Death(Event, CharacterEvent):
          item ID of the weapon, not the weapon ID.
 
     .. attribute:: attacker_team_id
-         :type: int
+       :type: int
 
-            ID of the team of the attacker.
+       ID of the team of the attacker.
 
     .. attribute:: character_id
        :type: int
@@ -167,6 +167,11 @@ class Death(Event, CharacterEvent):
        :type: bool
 
        Whether the killing blow was dealt via headshot.
+
+    .. attribute:: team_id
+       :type: int
+
+       Team ID of the victim.
 
     .. attribute:: vehicle_id
        :type: int | None
@@ -202,6 +207,7 @@ class Death(Event, CharacterEvent):
     character_loadout_id: int
     is_critical: Optional[bool] = None  # Always false
     is_headshot: bool
+    team_id: int
     vehicle_id: Optional[int] = None
     zone_id: int
 
@@ -661,9 +667,9 @@ class VehicleDestroy(Event, CharacterEvent):
          item ID of the weapon, not the weapon ID.
 
     .. attribute:: attacker_team_id
-         :type: int
+       :type: int
 
-         The ID of the team of the attacker
+       The ID of the team of the attacker
 
     .. attribute:: character_id
        :type: int
@@ -685,6 +691,11 @@ class VehicleDestroy(Event, CharacterEvent):
        :type: int
 
        The :class:`~auraxium.ps2.Faction` of the vehicle.
+
+    .. attribute:: team_id
+       :type: int
+
+       Team ID of the destroyed vehicle.
 
     .. attribute:: vehicle_id
        :type: int | None
@@ -717,6 +728,7 @@ class VehicleDestroy(Event, CharacterEvent):
     character_id: int
     facility_id: int
     faction_id: int
+    team_id: int
     vehicle_id: int
     zone_id: int
 
