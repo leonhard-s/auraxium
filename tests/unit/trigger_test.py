@@ -14,8 +14,12 @@ class TriggerTest(unittest.TestCase):
     time = datetime.datetime.utcnow()
 
     @classmethod
-    def death_evt_factory(cls, attacker: int, victim: int, world: int,
-                          is_headshot: bool = False) -> auraxium.event.Death:
+    def death_evt_factory(cls,
+                          attacker: int,
+                          victim: int,
+                          world: int,
+                          is_headshot: bool = False,
+                          ) -> auraxium.event.Death:
         """Create a death event."""
         timestamp: Any = int(cls.time.timestamp())
         return auraxium.event.Death(

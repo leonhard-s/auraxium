@@ -1,6 +1,6 @@
 """Item and item attachment class definitions."""
 
-from typing import Any, Final, Optional, TYPE_CHECKING, cast
+from typing import Any, Final, TYPE_CHECKING, cast
 
 from ..base import Cached, ImageMixin, Named
 from ..census import Query
@@ -194,20 +194,20 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
 
     # Type hints for data class fallback attributes
     id: int
-    item_type_id: Optional[int]
-    item_category_id: Optional[int]
-    activatable_ability_id: Optional[int]
-    passive_ability_id: Optional[int]
+    item_type_id: int | None
+    item_category_id: int | None
+    activatable_ability_id: int | None
+    passive_ability_id: int | None
     is_vehicle_weapon: bool
-    description: Optional[LocaleData]
-    faction_id: Optional[int]
+    description: LocaleData | None
+    faction_id: int | None
     max_stack_size: int
     name: LocaleData
-    skill_set_id: Optional[int]
+    skill_set_id: int | None
     is_default_attachment: bool
-    image_id: Optional[int]
-    image_set_id: Optional[int]
-    image_path: Optional[str]
+    image_id: int | None
+    image_set_id: int | None
+    image_path: str | None
 
     def attachments(self) -> SequenceProxy['Item']:
         """Return the attachment options for this item.
@@ -245,7 +245,7 @@ class Item(Named, ImageMixin, cache_size=128, cache_ttu=3600.0):
         query.add_term(field=Faction.id_field, value=value)
         return InstanceProxy(Faction, query, client=self._client)
 
-    async def datasheet(self) -> Optional['WeaponDatasheet']:
+    async def datasheet(self) -> 'WeaponDatasheet | None':
         """Return the datasheet for the weapon."""
         # pylint: disable=import-outside-toplevel
         from ._weapon import WeaponDatasheet

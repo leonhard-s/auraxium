@@ -5,7 +5,7 @@ inner, nested queries respectively.
 """
 
 import copy
-from typing import Any, List, Optional, Tuple, Type, TypeVar, Union, cast
+from typing import Any, TypeVar, cast
 
 import yarl
 
@@ -49,8 +49,10 @@ class QueryBase:
        added to this query.
     """
 
-    def __init__(self, collection: Optional[str] = None,
-                 **kwargs: CensusValue) -> None:
+    def __init__(self,
+                 collection: str | None = None,
+                 **kwargs: CensusValue,
+                 ) -> None:
         """Initialise a new query.
 
         :param collection: The API collection to access. Set to
@@ -63,7 +65,7 @@ class QueryBase:
         :type kwargs: float | int | str
         """
         self.data: QueryBaseData = QueryBaseData(collection)
-        self.joins: List[JoinedQuery] = []
+        self.joins: list[JoinedQuery] = []
         # Replace and double underscores with dots to allow accessing inner
         # fields like "name.first" or "battle_rank.value"
         kwargs = {k.replace('__', '.'): v for k, v in kwargs.items()}
@@ -71,8 +73,10 @@ class QueryBase:
         _ = [self.add_term(k, v, parse_modifier=True)
              for k, v in kwargs.items()]
 
-    def add_join(self: _QueryBaseT, query: 'QueryBase',
-                 **kwargs: Any) -> _QueryBaseT:
+    def add_join(self: _QueryBaseT,
+                 query: 'QueryBase',
+                 **kwargs: Any,
+                 ) -> _QueryBaseT:
         """Add an existing :class:`JoinedQuery` to this query.
 
         This converts an existing :class:`QueryBase` instance to a
@@ -90,9 +94,13 @@ class QueryBase:
         self.joins.append(JoinedQuery.copy(query, **kwargs))
         return self
 
-    def add_term(self: _QueryBaseT, field: str, value: CensusValue,
-                 modifier: SearchModifier = SearchModifier.EQUAL_TO, *,
-                 parse_modifier: bool = False) -> _QueryBaseT:
+    def add_term(self: _QueryBaseT,
+                 field: str,
+                 value: CensusValue,
+                 modifier: SearchModifier = SearchModifier.EQUAL_TO,
+                 *,
+                 parse_modifier: bool = False,
+                 ) -> _QueryBaseT:
         """Add a new filter term to the query.
 
         Filter terms are used to either reduce the number of results
@@ -118,9 +126,12 @@ class QueryBase:
         return self
 
     @classmethod
-    def copy(cls: Type[_QueryBaseT], template: 'QueryBase',
-             copy_joins: bool = False, deep_copy: bool = False,
-             **kwargs: Any) -> _QueryBaseT:
+    def copy(cls: type[_QueryBaseT],
+             template: 'QueryBase',
+             copy_joins: bool = False,
+             deep_copy: bool = False,
+             **kwargs: Any,
+             ) -> _QueryBaseT:
         """Create a new query, copying most data from the template.
 
         The new query will share the collection, terms and show/hide
@@ -180,8 +191,11 @@ class QueryBase:
             instance.joins = copy_func(template.joins)
         return instance
 
-    def create_join(self, collection: str, *args: Any,
-                    **kwargs: Any) -> 'JoinedQuery':
+    def create_join(self,
+                    collection: str,
+                    *args: Any,
+                    **kwargs: Any,
+                    ) -> 'JoinedQuery':
         """Create a new joined query and add it to the current one.
 
         See the initialiser for :class:`JoinedQuery` for parameter,
@@ -255,10 +269,13 @@ class Query(QueryBase):
 
     """
 
-    def __init__(self, collection: Optional[str] = None,
-                 namespace: str = 'ps2:v2', service_id: str = 's:example',
-                 endpoint: Optional[yarl.URL] = None,
-                 **kwargs: CensusValue) -> None:
+    def __init__(self,
+                 collection: str | None = None,
+                 namespace: str = 'ps2:v2',
+                 service_id: str = 's:example',
+                 endpoint: yarl.URL | None = None,
+                 **kwargs: CensusValue,
+                 ) -> None:
         """Create a new top-level query.
 
         The collection argument, as well as any keyword arguments, are
@@ -305,9 +322,12 @@ class Query(QueryBase):
         return self
 
     @classmethod
-    def copy(cls, template: QueryBase,
-             copy_joins: bool = False, deep_copy: bool = False,
-             **kwargs: Any) -> 'Query':
+    def copy(cls,
+             template: QueryBase,
+             copy_joins: bool = False,
+             deep_copy: bool = False,
+             **kwargs: Any,
+             ) -> 'Query':
         """Create a new query, copying most data from the template.
 
         The new query will share the collection, terms and show/hide
@@ -391,7 +411,7 @@ class Query(QueryBase):
         self.data.has.extend(args)
         return self
 
-    def distinct(self, field: Optional[str]) -> 'Query':
+    def distinct(self, field: str | None) -> 'Query':
         """Query command used to show all unique values for a field.
 
         :param distinct: The field to show unique values for. Set to
@@ -434,7 +454,7 @@ class Query(QueryBase):
         self.data.include_null = value
         return self
 
-    def lang(self, lang: Optional[str] = None) -> 'Query':
+    def lang(self, lang: str | None = None) -> 'Query':
         """Set the locale to user for the query.
 
         By default, queries return all locales for localised strings.
@@ -564,8 +584,10 @@ class Query(QueryBase):
             self.data.start = start
         return self
 
-    def sort(self, field: Union[str, Tuple[str, bool]],
-             *args: Union[str, Tuple[str, bool]]) -> 'Query':
+    def sort(self,
+             field: str | tuple[str, bool],
+             *args: str | tuple[str, bool],
+             ) -> 'Query':
         """Sort the results by one or more fields.
 
         By default, this uses ascending sort order. For descending
@@ -602,8 +624,12 @@ class Query(QueryBase):
         self.data.timing = value
         return self
 
-    def tree(self, field: str, is_list: bool = False, prefix: str = '',
-             start: Optional[str] = None) -> 'Query':
+    def tree(self,
+             field: str,
+             is_list: bool = False,
+             prefix: str = '',
+             start: str | None = None,
+             ) -> 'Query':
         """Reformat a result list into a data tree.
 
         This is useful for lists of data with obvious categorisation,
@@ -677,9 +703,12 @@ class JoinedQuery(QueryBase):
         self.data: JoinedQueryData = JoinedQueryData.from_base(data)
 
     @classmethod
-    def copy(cls, template: QueryBase,
-             copy_joins: bool = False,   deep_copy: bool = False,
-             **kwargs: Any) -> 'JoinedQuery':
+    def copy(cls,
+             template: QueryBase,
+             copy_joins: bool = False,
+             deep_copy: bool = False,
+             **kwargs: Any,
+             ) -> 'JoinedQuery':
         """Create a new query, copying most data from the template.
 
         The new query will share the collection, terms and show/hide
@@ -764,7 +793,9 @@ class JoinedQuery(QueryBase):
         data.joins = [j.serialise() for j in self.joins]
         return data
 
-    def set_fields(self, parent: Optional[str], child: Optional[str] = None
+    def set_fields(self,
+                   parent: str | None,
+                   child: str | None = None,
                    ) -> 'JoinedQuery':
         """Set the field names to use for the join.
 
@@ -793,7 +824,7 @@ class JoinedQuery(QueryBase):
             self.data.field_to = child
         return self
 
-    def set_inject_at(self, key: Optional[str]) -> 'JoinedQuery':
+    def set_inject_at(self, key: str | None) -> 'JoinedQuery':
         """Set the name of the field to insert the joined data at.
 
         By default, the inserted is added to a dynamically generated

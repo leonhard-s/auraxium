@@ -1,7 +1,5 @@
 """Data classes for :mod:`auraxium.ps2._weapon`."""
 
-from typing import Optional
-
 from .base import RESTPayload
 from ..types import LocaleData
 
@@ -53,8 +51,8 @@ class WeaponAmmoSlot(RESTPayload):
     weapon_slot_index: int
     clip_size: int
     capacity: int
-    refill_ammo_rate: Optional[int] = None
-    refill_ammo_delay_ms: Optional[int] = None
+    refill_ammo_rate: int | None = None
+    refill_ammo_delay_ms: int | None = None
 
 
 class WeaponData(RESTPayload):
@@ -65,19 +63,19 @@ class WeaponData(RESTPayload):
     """
 
     weapon_id: int
-    weapon_group_id: Optional[int] = None
+    weapon_group_id: int | None = None
     turn_modifier: float
     move_modifier: float
-    sprint_recovery_ms: Optional[int] = None
-    equip_ms: Optional[int]
-    unequip_ms: Optional[int] = None
-    to_iron_sights_ms: Optional[int] = None
-    from_iron_sights_ms: Optional[int] = None
-    heat_capacity: Optional[int] = None
-    heat_bleed_off_rate: Optional[float] = None
-    heat_overheat_penalty_ms: Optional[int] = None
-    melee_detect_width: Optional[float] = None
-    melee_detect_height: Optional[float] = None
+    sprint_recovery_ms: int | None = None
+    equip_ms: int | None
+    unequip_ms: int | None = None
+    to_iron_sights_ms: int | None = None
+    from_iron_sights_ms: int | None = None
+    heat_capacity: int | None = None
+    heat_bleed_off_rate: float | None = None
+    heat_overheat_penalty_ms: int | None = None
+    melee_detect_width: float | None = None
+    melee_detect_height: float | None = None
 
 
 class WeaponDatasheet(RESTPayload):
@@ -204,8 +202,8 @@ class WeaponDatasheet(RESTPayload):
     """
 
     item_id: int
-    direct_damage: Optional[int] = None
-    indirect_damage: Optional[int] = None
+    direct_damage: int | None = None
+    indirect_damage: int | None = None
     damage: int
     damage_min: int
     damage_max: int

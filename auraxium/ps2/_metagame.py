@@ -1,7 +1,6 @@
 """Alert and alert state class definitions."""
 
 import enum
-from typing import Optional
 
 from ..base import Cached
 from ..models import MetagameEventData
@@ -75,4 +74,4 @@ class MetagameEvent(Cached, cache_size=100, cache_ttu=60.0):
     name: LocaleData
     description: LocaleData
     type: int
-    experience_bonus: Optional[float]
+    experience_bonus: float | None

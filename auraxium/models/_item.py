@@ -1,7 +1,5 @@
 """Data classes for :mod:`auraxium.ps2._item`."""
 
-from typing import Optional
-
 from .base import ImageData, RESTPayload
 from ..types import LocaleData
 
@@ -31,16 +29,16 @@ class ItemData(RESTPayload, ImageData):
     """
 
     item_id: int
-    item_type_id: Optional[int] = None
-    item_category_id: Optional[int] = None
-    activatable_ability_id: Optional[int] = None
-    passive_ability_id: Optional[int] = None
+    item_type_id: int | None = None
+    item_category_id: int | None = None
+    activatable_ability_id: int | None = None
+    passive_ability_id: int | None = None
     is_vehicle_weapon: bool
-    name: Optional[LocaleData] = None
-    description: Optional[LocaleData] = None
-    faction_id: Optional[int] = None
+    name: LocaleData | None = None
+    description: LocaleData | None = None
+    faction_id: int | None = None
     max_stack_size: int
-    skill_set_id: Optional[int] = None
+    skill_set_id: int | None = None
     is_default_attachment: bool
 
 

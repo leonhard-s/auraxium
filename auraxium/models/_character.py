@@ -1,7 +1,5 @@
 """Data classes for :mod:`auraxium.ps2._character`."""
 
-from typing import Optional
-
 from .base import RESTPayload
 from ..types import LocaleData
 
@@ -166,8 +164,8 @@ class CharacterData(RESTPayload):
         """
 
         count: int
-        time: Optional[int] = None
-        date: Optional[str] = None
+        time: int | None = None
+        date: str | None = None
 
     class Name(RESTPayload):
         """Object representation of the "name" sub-key.

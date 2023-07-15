@@ -1,7 +1,5 @@
 """Data classes for :mod:`auraxium.ps2._reward`."""
 
-from typing import Optional
-
 from .base import RESTPayload
 
 __all__ = [
@@ -22,10 +20,10 @@ class RewardData(RESTPayload):
     count_min: int
     count_max: int
     param1: str
-    param2: Optional[str] = None
-    param3: Optional[str] = None
-    param4: Optional[str] = None
-    param5: Optional[str] = None
+    param2: str | None = None
+    param3: str | None = None
+    param4: str | None = None
+    param5: str | None = None
 
 
 class RewardTypeData(RESTPayload):
@@ -37,10 +35,10 @@ class RewardTypeData(RESTPayload):
 
     reward_type_id: int
     description: str
-    count_min: Optional[str]
-    count_max: Optional[str]
+    count_min: str | None
+    count_max: str | None
     param1: str
-    param2: Optional[str] = None
-    param3: Optional[str] = None
-    param4: Optional[str] = None
-    param5: Optional[str] = None
+    param2: str | None = None
+    param3: str | None = None
+    param4: str | None = None
+    param5: str | None = None

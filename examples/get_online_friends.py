@@ -13,7 +13,8 @@ import auraxium
 from auraxium import ps2
 
 
-async def get_online_friends(char: ps2.Character, client: auraxium.Client
+async def get_online_friends(char: ps2.Character,
+                             client: auraxium.Client,
                              ) -> List[ps2.Character]:
     """Return the online friends of the given character."""
     query = char.query()
