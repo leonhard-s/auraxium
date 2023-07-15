@@ -7,7 +7,7 @@ throughout the PlanetSide 2 object model.
 
 import abc
 import logging
-from typing import Any, ClassVar, Optional, Type, TypeVar, Union, cast
+from typing import Any, ClassVar, TypeVar, cast
 
 import pydantic
 
@@ -57,7 +57,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
     """
 
     collection: ClassVar[str] = 'bogus'
-    _model: ClassVar[Type[RESTPayload]]
+    _model: ClassVar[type[RESTPayload]]
     id_field: ClassVar[str] = 'bogus_id'
 
     def __init__(self, data: CensusData, client: RequestClient) -> None:
@@ -188,7 +188,7 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
                                name=f'{cls.__name__}_Cache')
 
     @classmethod
-    def alter_cache(cls, size: int, ttu: Optional[float] = None) -> None:
+    def alter_cache(cls, size: int, ttu: float | None = None) -> None:
         """Modify the class cache to use a new size and TTU.
 
         This will update and clear the cache for the current class.
@@ -216,10 +216,13 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
     used for the request.
     """
 
-    _cache: ClassVar[TLRUCache[Union[int, str], Any]]  # type: ignore
+    _cache: ClassVar[TLRUCache[int | str, Any]]  # type: ignore
 
-    def __init__(self, *args: Any, locale: Optional[str] = None,
-                 **kwargs: Any) -> None:
+    def __init__(self,
+                 *args: Any,
+                 locale: str | None = None,
+                 **kwargs: Any,
+                 ) -> None:
         """Initialise the named object.
 
         This sets the object's id attribute and adds it to the cache.

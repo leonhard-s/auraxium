@@ -1,7 +1,5 @@
 """Skill and skill line class definitions."""
 
-from typing import Optional
-
 from ..base import ImageMixin, Named
 from ..census import Query
 from ..models import SkillData, SkillCategoryData, SkillLineData, SkillSetData
@@ -80,12 +78,12 @@ class SkillSet(Named, ImageMixin, cache_size=100, cache_ttu=60.0):
     # Type hints for data class fallback attributes
     id: int
     name: LocaleData
-    skill_points: Optional[int]
-    required_item_id: Optional[int]
-    description: Optional[LocaleData]
-    image_id: Optional[int]
-    image_set_id: Optional[int]
-    image_path: Optional[str]
+    skill_points: int | None
+    required_item_id: int | None
+    description: LocaleData | None
+    image_id: int | None
+    image_set_id: int | None
+    image_path: str | None
 
     def categories(self) -> SequenceProxy['SkillCategory']:
         """Return the skill categories in this skill set.
@@ -179,10 +177,10 @@ class SkillCategory(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     skill_set_id: int
     skill_set_index: int
     skill_points: int
-    description: Optional[LocaleData]
-    image_id: Optional[int]
-    image_set_id: Optional[int]
-    image_path: Optional[str]
+    description: LocaleData | None
+    image_id: int | None
+    image_set_id: int | None
+    image_path: str | None
 
     def skill_lines(self) -> SequenceProxy['SkillLine']:
         """Return the skill lines contained in this category.
@@ -271,12 +269,12 @@ class SkillLine(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     id: int
     name: LocaleData
     skill_points: int
-    skill_category_id: Optional[int]
-    skill_category_index: Optional[int]
-    description: Optional[LocaleData]
-    image_id: Optional[int]
-    image_set_id: Optional[int]
-    image_path: Optional[str]
+    skill_category_id: int | None
+    skill_category_index: int | None
+    description: LocaleData | None
+    image_id: int | None
+    image_set_id: int | None
+    image_path: str | None
 
     def category(self) -> InstanceProxy[SkillCategory]:
         """Return the category this skill line belongs to.
@@ -375,11 +373,11 @@ class Skill(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     skill_line_id: int
     skill_line_index: int
     skill_points: int
-    grant_item_id: Optional[int]
-    description: Optional[LocaleData]
-    image_id: Optional[int]
-    image_set_id: Optional[int]
-    image_path: Optional[str]
+    grant_item_id: int | None
+    description: LocaleData | None
+    image_id: int | None
+    image_set_id: int | None
+    image_path: str | None
 
     def grant_item(self) -> InstanceProxy[Item]:
         """Return the item unlocked by this skill.

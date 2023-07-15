@@ -1,7 +1,5 @@
 """Data classes for :mod:`auraxium.ps2._vehicle`."""
 
-from typing import Optional
-
 from .base import ImageData, RESTPayload
 from ..types import LocaleData
 
@@ -34,8 +32,8 @@ class VehicleData(RESTPayload, ImageData):
 
     vehicle_id: int
     name: LocaleData
-    description: Optional[LocaleData] = None
+    description: LocaleData | None = None
     type_id: int
     type_name: str
-    cost: Optional[int] = None
-    cost_resource_id: Optional[int] = None
+    cost: int | None = None
+    cost_resource_id: int | None = None

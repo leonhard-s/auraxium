@@ -1,7 +1,7 @@
 """Experience and rank class definitions."""
 
 import logging
-from typing import Any, List, Union, cast
+from typing import Any, cast
 
 import pydantic
 
@@ -139,11 +139,11 @@ class ExperienceRank:
                 f'Unable to populate {self.__class__.__name__} due to a '
                 f'missing key: {err.args[0]}', data) from err
 
-    def image(self, faction: Union[int, Faction]) -> str:
+    def image(self, faction: int | Faction) -> str:
         """Return the default image for this type."""
         if isinstance(faction, Faction):
             faction = faction.id
-        internal_tag: List[str] = ['null', 'vs', 'nc', 'tr', 'nso']
+        internal_tag: list[str] = ['null', 'vs', 'nc', 'tr', 'nso']
         image_id = getattr(self.data, internal_tag[faction])
         return str(DBG_FILES / f'{image_id}.png')
 

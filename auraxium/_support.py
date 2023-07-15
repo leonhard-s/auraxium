@@ -3,17 +3,20 @@
 import functools
 import inspect
 import warnings
-from typing import Any, Callable, TypeVar, cast
+from collections import abc
+from typing import Any, TypeVar, cast
 
 __all__ = [
     'deprecated',
 ]
 
-_CallableT = TypeVar('_CallableT', bound=Callable[..., Any])
+_CallableT = TypeVar('_CallableT', bound=abc.Callable[..., Any])
 
 
-def deprecated(start: str, removal_in: str, replacement: str = ''
-               ) -> Callable[[_CallableT], _CallableT]:  # pragma: no cover
+def deprecated(start: str,
+               removal_in: str,
+               replacement: str = '',
+               ) -> abc.Callable[[_CallableT], _CallableT]:  # pragma: no cover
     """Mark the decorated function as deprecated.
 
     The `removal_in` argument may be used to specify a version at which

@@ -1,6 +1,6 @@
 """Reward and reward type class definitions."""
 
-from typing import Final, Optional
+from typing import Final
 
 from ..base import Cached
 from ..census import Query
@@ -55,13 +55,13 @@ class RewardType(Cached, cache_size=10, cache_ttu=3600.0):
     # Type hints for data class fallback attributes
     id: int
     description: str
-    count_min: Optional[str]
-    count_max: Optional[str]
+    count_min: str | None
+    count_max: str | None
     param1: str
-    param2: Optional[str]
-    param3: Optional[str]
-    param4: Optional[str]
-    param5: Optional[str]
+    param2: str | None
+    param3: str | None
+    param4: str | None
+    param5: str | None
 
 
 class Reward(Cached, cache_size=50, cache_ttu=60.0):
@@ -114,13 +114,15 @@ class Reward(Cached, cache_size=50, cache_ttu=60.0):
     count_min: int
     count_max: int
     param1: str
-    param2: Optional[str]
-    param3: Optional[str]
-    param4: Optional[str]
-    param5: Optional[str]
+    param2: str | None
+    param3: str | None
+    param4: str | None
+    param5: str | None
 
     @classmethod
-    def get_by_reward_group(cls, reward_group_id: int, client: RequestClient
+    def get_by_reward_group(cls,
+                            reward_group_id: int,
+                            client: RequestClient,
                             ) -> SequenceProxy['Reward']:
         """Return any rewards contained in the given reward group.
 
@@ -135,7 +137,9 @@ class Reward(Cached, cache_size=50, cache_ttu=60.0):
         return SequenceProxy(Reward, query, client=client)
 
     @classmethod
-    def get_by_reward_set(cls, reward_set_id: int, client: RequestClient
+    def get_by_reward_set(cls,
+                          reward_set_id: int,
+                          client: RequestClient,
                           ) -> SequenceProxy['Reward']:
         """Return any rewards contained in the given reward set.
 

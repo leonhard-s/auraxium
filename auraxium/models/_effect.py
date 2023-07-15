@@ -1,7 +1,5 @@
 """Data classes for :mod:`auraxium.ps2._effect`."""
 
-from typing import Optional
-
 from .base import RESTPayload
 
 __all__ = [
@@ -21,24 +19,24 @@ class EffectData(RESTPayload):
 
     effect_id: int
     effect_type_id: int
-    ability_id: Optional[int]
-    target_type_id: Optional[int]
+    ability_id: int | None
+    target_type_id: int | None
     resist_type_id: int
-    is_drain: Optional[bool]
-    duration_seconds: Optional[float]
-    param1: Optional[str]
-    param2: Optional[str]
-    param3: Optional[str]
-    param4: Optional[str]
-    param5: Optional[str]
-    param6: Optional[str]
-    param7: Optional[str]
-    param8: Optional[str]
-    param9: Optional[str]
-    param10: Optional[str]
-    param11: Optional[str]
-    param12: Optional[str]
-    param13: Optional[str]
+    is_drain: bool | None
+    duration_seconds: float | None
+    param1: str | None
+    param2: str | None
+    param3: str | None
+    param4: str | None
+    param5: str | None
+    param6: str | None
+    param7: str | None
+    param8: str | None
+    param9: str | None
+    param10: str | None
+    param11: str | None
+    param12: str | None
+    param13: str | None
 
 
 class EffectTypeData(RESTPayload):
@@ -50,19 +48,19 @@ class EffectTypeData(RESTPayload):
 
     effect_type_id: int
     description: str
-    param1: Optional[str]
-    param2: Optional[str]
-    param3: Optional[str]
-    param4: Optional[str]
-    param5: Optional[str]
-    param6: Optional[str]
-    param7: Optional[str]
-    param8: Optional[str]
-    param9: Optional[str]
-    param10: Optional[str]
-    param11: Optional[str]
-    param12: Optional[str]
-    param13: Optional[str]
+    param1: str | None
+    param2: str | None
+    param3: str | None
+    param4: str | None
+    param5: str | None
+    param6: str | None
+    param7: str | None
+    param8: str | None
+    param9: str | None
+    param10: str | None
+    param11: str | None
+    param12: str | None
+    param13: str | None
 
 
 class ZoneEffectData(RESTPayload):
@@ -75,12 +73,12 @@ class ZoneEffectData(RESTPayload):
     zone_effect_id: int
     zone_effect_type_id: int
     ability_id: int
-    param1: Optional[str] = None
-    param2: Optional[str] = None
-    param3: Optional[str] = None
-    param4: Optional[str] = None
-    param5: Optional[str] = None
-    param6: Optional[str] = None
+    param1: str | None = None
+    param2: str | None = None
+    param3: str | None = None
+    param4: str | None = None
+    param5: str | None = None
+    param6: str | None = None
 
 
 class ZoneEffectTypeData(RESTPayload):
@@ -92,9 +90,9 @@ class ZoneEffectTypeData(RESTPayload):
 
     zone_effect_type_id: int
     description: str
-    param1: Optional[str]
-    param2: Optional[str]
-    param3: Optional[str]
-    param4: Optional[str]
-    param5: Optional[str]
-    param6: Optional[str]
+    param1: str | None
+    param2: str | None
+    param3: str | None
+    param4: str | None
+    param5: str | None
+    param6: str | None

@@ -9,15 +9,14 @@ import dataclasses
 import datetime
 import logging
 import sys
-from collections import OrderedDict
-from typing import (Dict, Generic, Hashable, Iterable, Iterator, List,
-                    Optional, Tuple, TypeVar)
+from collections import abc, OrderedDict
+from typing import Generic, TypeVar
 
 __all__ = [
     'TLRUCache',
 ]
 
-_K = TypeVar('_K', bound=Hashable)
+_K = TypeVar('_K', bound=abc.Hashable)
 _V = TypeVar('_V')
 log = logging.getLogger('auraxium.cache')
 
@@ -80,8 +79,7 @@ class TLRUCache(Generic[_K, _V]):
        zero or less, the cache will behave like a regular LRU cache.
     """
 
-    def __init__(self, size: int, ttu: float,
-                 name: Optional[str] = None) -> None:
+    def __init__(self, size: int, ttu: float, name: str | None = None) -> None:
         """Initialise a new, empty TLRU cache.
 
         :param int size: The maximum number of items in the cache.
@@ -102,7 +100,7 @@ class TLRUCache(Generic[_K, _V]):
         """Return whether the given key exists in the cache."""
         return key in self._data.keys()
 
-    def __iter__(self) -> Iterator[_K]:
+    def __iter__(self) -> abc.Iterator[_K]:
         """Return an iterator over the cache keys."""
         return iter(self._data)
 
@@ -132,7 +130,7 @@ class TLRUCache(Generic[_K, _V]):
         self.free(count=1)
         self._data[key] = _CacheItem(item, 0, now, now)
 
-    def add_many(self, items: Iterable[Tuple[_K, _V]]) -> None:
+    def add_many(self, items: abc.Iterable[tuple[_K, _V]]) -> None:
         """Add multiple items to the cache.
 
         If the cache is full, this will clear any expired items (i.e.
@@ -207,7 +205,7 @@ class TLRUCache(Generic[_K, _V]):
         self.remove_lru(count=count-available)
         return count
 
-    def get(self, key: _K) -> Optional[_V]:
+    def get(self, key: _K) -> _V | None:
         """Retrieve an item from the cache.
 
         :param key: The unique identifier of the object to retrieve.
@@ -239,7 +237,7 @@ class TLRUCache(Generic[_K, _V]):
         self._data[key] = item
         return item.value
 
-    def items(self) -> Dict[_K, _V]:
+    def items(self) -> dict[_K, _V]:
         """Return a mapping of all key/value pairs in the cache.
 
         Note that this is mostly intended for introspection and
@@ -286,7 +284,7 @@ class TLRUCache(Generic[_K, _V]):
                             self.name)
             return 0
         now = datetime.datetime.now()
-        keys_to_remove: List[_K] = []
+        keys_to_remove: list[_K] = []
         for key, data in self._data.items():
             age = now - data.first_added
             if age.total_seconds() > self.ttu:
@@ -315,7 +313,7 @@ class TLRUCache(Generic[_K, _V]):
         for _ in range(count):
             _ = self._data.popitem(last=True)
 
-    def values(self) -> List[_V]:
+    def values(self) -> list[_V]:
         """Return a list of all items in the cache.
 
         Note that this is mostly intended for introspection and

@@ -2,8 +2,8 @@ import asyncio
 import contextlib
 import json
 import logging
-from typing import (Any, Callable, Coroutine, Dict, List, Optional, Type,
-                    TypeVar, Union, cast, overload)
+from collections import abc
+from typing import Any, TypeVar, cast, overload
 
 import pydantic
 import websockets
@@ -24,8 +24,8 @@ __all__ = [
 
 _EventT = TypeVar('_EventT', bound=Event)
 _EventT2 = TypeVar('_EventT2', bound=Event)
-_CallbackT = Union[Callable[[_EventT], None],
-Callable[[_EventT], Coroutine[Any, Any, None]]]
+_CallbackT = (abc.Callable[[_EventT], None]
+              | abc.Callable[[_EventT], abc.Coroutine[Any, Any, None]])
 
 _log = logging.getLogger('auraxium.ess')
 
@@ -67,9 +67,11 @@ class EventClient(Client):
        triggers are added and removed.
     """
 
-    def __init__(self, *args: Any,
-                 ess_endpoint: Union[yarl.URL, str, None] = None,
-                 **kwargs: Any) -> None:
+    def __init__(self,
+                 *args: Any,
+                 ess_endpoint: yarl.URL | str | None = None,
+                 **kwargs: Any,
+                 ) -> None:
         super().__init__(*args, **kwargs)
 
         self.ess_endpoint: yarl.URL
@@ -80,15 +82,15 @@ class EventClient(Client):
         else:
             self.ess_endpoint = yarl.URL(ess_endpoint)
 
-        self.triggers: List[Trigger] = []
-        self.websocket: Optional[websockets.client.WebSocketClientProtocol] = None
-        self._endpoint_status: Dict[str, bool] = {}
-        self._send_queue: List[str] = []
+        self.triggers: list[Trigger] = []
+        self.websocket: websockets.client.WebSocketClientProtocol | None = None
+        self._endpoint_status: dict[str, bool] = {}
+        self._send_queue: list[str] = []
         self._open: bool = False
         _log.addFilter(RedactingFilter(self.service_id))
 
     @property
-    def endpoint_status(self) -> Dict[str, bool]:
+    def endpoint_status(self) -> dict[str, bool]:
         """Return endpoint status info.
 
         This returns a dictionary mapping API event server endpoints to
@@ -135,8 +137,11 @@ class EventClient(Client):
                 return trigger
         raise KeyError(f'No trigger with name "{name}" found')
 
-    def remove_trigger(self, trigger: Union[Trigger, str], *,
-                       keep_websocket_alive: bool = False) -> None:
+    def remove_trigger(self,
+                       trigger: Trigger | str,
+                       *,
+                       keep_websocket_alive: bool = False,
+                       ) -> None:
         """Remove an existing event trigger.
 
         You can either provide the trigger instance to remove, or
@@ -320,30 +325,47 @@ class EventClient(Client):
                 _log.info('Sending message: %s', msg)
                 await self.websocket.send(msg)
 
+    # TODO (leonhard-s): The typing overloads here are a mess and need to be
+    # tidied up. Way too many overloads and variants going on considering that
+    # this method is not the primary way to add triggers in the first place.
+
     @overload
-    def trigger(self, event: Type[_EventT], *, name: Optional[str] = None,
-                **kwargs: Any) -> Callable[[_CallbackT[_EventT]], None]:
+    def trigger(self,
+                event: type[_EventT],
+                *,
+                name: str | None = None,
+                **kwargs: Any,
+                ) -> abc.Callable[[_CallbackT[_EventT]], None]:
         # Single event variant (checks callback argument type)
         ...  # pragma: no cover
 
     @overload
-    def trigger(self, event: Type[_EventT],
-                arg1: Type[_EventT], *args: Type[_EventT2],
-                name: Optional[str] = None, **kwargs: Any) -> Callable[
-        [_CallbackT[Union[_EventT, _EventT2]]], None]:
+    def trigger(self,
+                event: type[_EventT],
+                arg1: type[_EventT],
+                *args: type[_EventT2],
+                name: str | None = None,
+                **kwargs: Any,
+                ) -> abc.Callable[[_CallbackT[_EventT | _EventT2]], None]:
         # Two event variant (checks callback argument type)
         ...  # pragma: no cover
 
     @overload
-    def trigger(self, event: Union[str, Type[Event]],
-                *args: Union[str, Type[Event]], name: Optional[str] = None,
-                **kwargs: Any) -> Callable[[_CallbackT[Event]], None]:
+    def trigger(self,
+                event: str | type[Event],
+                *args: str | type[Event],
+                name: str | None = None,
+                **kwargs: Any,
+                ) -> abc.Callable[[_CallbackT[Event]], None]:
         # Generic fallback variant (callback argument type not checked)
         ...  # pragma: no cover
 
-    def trigger(self, event: Union[str, Type[Event]],
-                *args: Union[str, Type[Event]], name: Optional[str] = None,
-                **kwargs: Any) -> Callable[[_CallbackT[Event]], None]:
+    def trigger(self,
+                event: str | type[Event],
+                *args: str | type[Event],
+                name: str | None = None,
+                **kwargs: Any,
+                ) -> abc.Callable[[_CallbackT[Event]], None]:
         """Create and add a trigger for the given action.
 
         If no name is specified, the call-back function's name will be
@@ -406,7 +428,7 @@ class EventClient(Client):
                            event.event_name)
                 self.dispatch(event)
             elif data['type'] == 'heartbeat':  # pragma: no cover
-                servers = cast(Dict[str, str], data['online'])
+                servers = cast(dict[str, str], data['online'])
                 self._endpoint_status = {
                     k.split('_', maxsplit=2)[1]: v == 'true'
                     for k, v in servers.items()}
@@ -427,8 +449,11 @@ class EventClient(Client):
         else:  # pragma: no cover
             _log.warning('Unhandled message: %s', data)
 
-    async def wait_for(self, trigger: Trigger, *args: Trigger,
-                       timeout: Optional[float] = None) -> Event:
+    async def wait_for(self,
+                       trigger: Trigger,
+                       *args: Trigger,
+                       timeout: float | None = None,
+                       ) -> Event:
         """Wait for one or more triggers to fire.
 
         This method will wait until any of the given triggers have
@@ -451,9 +476,9 @@ class EventClient(Client):
         # fires or expires. Think of it as an asynchronous flag.
         async_flag = asyncio.Event()
         # Used to store the event received
-        received_event: Optional[Event] = None
+        received_event: Event | None = None
 
-        triggers: List[Trigger] = [trigger]
+        triggers: list[Trigger] = [trigger]
         triggers.extend(args)
 
         def callback(event: Event) -> None:

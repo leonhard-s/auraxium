@@ -2,7 +2,7 @@
 
 import abc
 import datetime
-from typing import Optional, TypeVar
+from typing import TypeVar
 
 import pydantic
 
@@ -39,9 +39,10 @@ class RESTPayload(Payload):
 
     @pydantic.field_validator('*', mode='before')
     @classmethod
-    def _convert_null(cls, value: _T,
+    def _convert_null(cls,
+                      value: _T,
                       info: pydantic.FieldValidationInfo,
-                      ) -> Optional[_T]:
+                      ) -> _T | None:
         """Replace any "NULL" string inputs with :obj:`None`.
 
         This is a pre-validator; it is run before any other validation
@@ -108,9 +109,9 @@ class ImageData(pydantic.BaseModel):
        The base path to the default :attr:`image_id`.
     """
 
-    image_id: Optional[int] = None
-    image_set_id: Optional[int] = None
-    image_path: Optional[str] = None
+    image_id: int | None = None
+    image_set_id: int | None = None
+    image_path: str | None = None
 
 
 class Event(Payload):
@@ -144,7 +145,8 @@ class Event(Payload):
 
     @pydantic.field_validator('timestamp', mode='before')
     @classmethod
-    def _utc_from_timestamp(cls, value: str,
+    def _utc_from_timestamp(cls,
+                            value: str,
                             info: pydantic.FieldValidationInfo,
                             ) -> datetime.datetime:
         """Convert timestamps to UTC datetimes."""

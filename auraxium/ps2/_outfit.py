@@ -1,7 +1,7 @@
 """Outfit and outfit member class definitions."""
 
 import logging
-from typing import Any, ClassVar, Final, List, TYPE_CHECKING, Union, cast
+from typing import Any, ClassVar, Final, TYPE_CHECKING, cast
 
 from ..base import Cached, Named
 from .._cache import TLRUCache
@@ -150,7 +150,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
        The number of members in the outfit.
     """
 
-    _cache: ClassVar[TLRUCache[Union[int, str], 'Outfit']]
+    _cache: ClassVar[TLRUCache[int | str, 'Outfit']]
     collection = 'outfit'
     data: OutfitData
     id_field = 'outfit_id'
@@ -192,7 +192,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         query.limit(5000)
         return SequenceProxy(OutfitMember, query, client=self._client)
 
-    async def ranks(self) -> List[OutfitRankData]:
+    async def ranks(self) -> list[OutfitRankData]:
         """Return the list of ranks for the outfit."""
         collection: Final[str] = 'outfit_rank'
         query = Query(collection, service_id=self._client.service_id)

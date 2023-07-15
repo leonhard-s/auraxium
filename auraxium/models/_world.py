@@ -1,7 +1,5 @@
 """Data classes for :mod:`auraxium.ps2._world`."""
 
-from typing import Optional
-
 from .base import RESTPayload
 from ..types import LocaleData
 
@@ -20,4 +18,4 @@ class WorldData(RESTPayload):
     world_id: int
     state: str
     name: LocaleData
-    description: Optional[LocaleData] = None
+    description: LocaleData | None = None

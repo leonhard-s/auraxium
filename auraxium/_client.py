@@ -7,7 +7,8 @@ streaming service (ESS).
 
 import logging
 import warnings
-from typing import Any, Callable, List, Optional, Type, TypeVar, cast
+from collections import abc
+from typing import Any, TypeVar, cast
 
 from .base import Named, Ps2Object
 from .census import Query
@@ -53,7 +54,7 @@ class Client(RequestClient):
        The :class:`aiohttp.ClientSession` used for REST API requests.
     """
 
-    async def count(self, type_: Type[Ps2Object], **kwargs: Any) -> int:
+    async def count(self, type_: type[Ps2Object], **kwargs: Any) -> int:
         """Return the number of items matching the given terms.
 
         :param type_: The object type to search for.
@@ -72,9 +73,14 @@ class Client(RequestClient):
             raise PayloadError(
                 f'Invalid count: {result["count"]}', result) from err
 
-    async def find(self, type_: Type[_Ps2ObjectT], results: int = 10,
-                   offset: int = 0, promote_exact: bool = False,
-                   check_case: bool = True, **kwargs: Any) -> List[_Ps2ObjectT]:
+    async def find(self,
+                   type_: type[_Ps2ObjectT],
+                   results: int = 10,
+                   offset: int = 0,
+                   promote_exact: bool = False,
+                   check_case: bool = True,
+                   **kwargs: Any,
+                   ) -> list[_Ps2ObjectT]:
         """Return a list of entries matching the given terms.
 
         This returns up to as many entries as indicated by the results
@@ -103,8 +109,11 @@ class Client(RequestClient):
         return [type_(i, client=self) for i in extract_payload(
             matches, type_.collection)]
 
-    async def get(self, type_: Type[_Ps2ObjectT], check_case: bool = True,
-                  **kwargs: Any) -> Optional[_Ps2ObjectT]:
+    async def get(self,
+                  type_: type[_Ps2ObjectT],
+                  check_case: bool = True,
+                  **kwargs: Any,
+                  ) -> _Ps2ObjectT | None:
         """Return the first entry matching the given terms.
 
         Like :meth:`Client.find`, but will only return one item.
@@ -130,8 +139,10 @@ class Client(RequestClient):
             return data[0]
         return None
 
-    async def get_by_id(self, type_: Type[_Ps2ObjectT], id_: int
-                        ) -> Optional[_Ps2ObjectT]:
+    async def get_by_id(self,
+                        type_: type[_Ps2ObjectT],
+                        id_: int,
+                        ) -> _Ps2ObjectT | None:
         """Retrieve an object by its unique Census ID.
 
         Like :meth:`Client.get`, but checks the local cache before
@@ -151,7 +162,7 @@ class Client(RequestClient):
                 'please report this bug to the project maintainers')
         if data:
             return data[0]
-        hook: Optional[Callable[[int], CensusData]]
+        hook: abc.Callable[[int], CensusData] | None
         if (hook := getattr(type_, 'fallback_hook', None)) is not None:
             try:
                 fallback = hook(id_)
@@ -164,8 +175,12 @@ class Client(RequestClient):
             return type_(fallback, client=self)
         return None
 
-    async def get_by_name(self, type_: Type[_NamedT], name: str, *,
-                          locale: str = 'en') -> Optional[_NamedT]:
+    async def get_by_name(self,
+                          type_: type[_NamedT],
+                          name: str,
+                          *,
+                          locale: str = 'en',
+                          ) -> _NamedT | None:
         """Retrieve an object by its unique name.
 
         Depending on the `type_` specified, this may retrieve a cached
@@ -206,8 +221,10 @@ class Client(RequestClient):
             return None
         return cast(_NamedT, type_(payload, locale=locale, client=self))
 
-    async def _get_world_by_name(self, name: str, locale: str = 'en',
-                                 ) -> Optional[World]:
+    async def _get_world_by_name(self,
+                                 name: str,
+                                 locale: str = 'en',
+                                 ) -> World | None:
         all_worlds = await self.find(World, results=100)
         for world in all_worlds:
             if getattr(world.name, locale).lower() == name.lower():
