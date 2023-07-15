@@ -27,9 +27,11 @@ class RESTPayload(Payload):
     :obj:`None`.
     """
 
-    @pydantic.validator('*', pre=True)
+    @pydantic.field_validator('*', mode='before')
     @classmethod
-    def _convert_null(cls, value: _T) -> Optional[_T]:
+    def _convert_null(cls, value: _T,
+                      info: pydantic.FieldValidationInfo,
+                      ) -> Optional[_T]:
         """Replace any "NULL" string inputs with :obj:`None`.
 
         This is a pre-validator; it is run before any other validation
@@ -41,7 +43,7 @@ class RESTPayload(Payload):
         values can be type-hinted with :obj:`typing.Optional` without
         risk of errors.
         """
-        _ = cls
+        _ = cls, info
         if value == 'NULL':
             return None
         return value
@@ -130,10 +132,13 @@ class Event(Payload):
     timestamp: datetime.datetime
     world_id: int
 
-    @pydantic.validator('timestamp', pre=True)
+    @pydantic.field_validator('timestamp', mode='before')
     @classmethod
-    def _utc_from_timestamp(cls, value: str) -> datetime.datetime:
+    def _utc_from_timestamp(cls, value: str,
+                            info: pydantic.FieldValidationInfo,
+                            ) -> datetime.datetime:
         """Convert timestamps to UTC datetimes."""
+        _ = info
         return datetime.datetime.utcfromtimestamp(int(value))
 
     @property

@@ -385,13 +385,10 @@ class EventClient(Client):
             if data['type'] == 'serviceMessage':
                 try:
                     event = _event_factory(cast(CensusData, data['payload']))
-                except pydantic.ValidationError:  # pragma: no cover
+                except pydantic.ValidationError as err:  # pragma: no cover
                     _log.warning(
-                        'Ignoring unsupported payload: %s\n'
-                        'This message means that the Auraxium data model must '
-                        'be updated. Please ensure you are on the latest '
-                        'version of the Auraxium library and report this '
-                        'message to the project maintainers.', data['payload'])
+                        'Ignoring unsupported payload: %s\nPayload: %s\n',
+                        err, data['payload'])
                     return
                 _log.debug('%s event received, dispatching...',
                            event.event_name)
