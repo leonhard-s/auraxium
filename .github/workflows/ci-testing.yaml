@@ -1,7 +1,7 @@
 # This workflow will run any files matching "tests/*_test.py" using the Python
 # unittest module.
 
-name: Run Python unit tests
+name: CI Testing
 
 on: [push, pull_request]
 
