@@ -212,8 +212,8 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
 
     This extends the functionality provided by
     :class:`~auraxium.base.Cached` to also cache objects retrieved via
-    :meth:`Named.get_by_name`. The cache will also store the locale
-    used for the request.
+    :meth:`~auraxium.Client.get_by_name`. The cache will also store the
+    locale used for the request.
     """
 
     _cache: ClassVar[TLRUCache[int | str, Any]]  # type: ignore
