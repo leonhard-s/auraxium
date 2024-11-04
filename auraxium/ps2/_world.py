@@ -122,4 +122,5 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
         data = extract_single(payload, 'game_server_status')
         status = str(data['last_reported_state'])
         last_updated = int(str(data['last_reported_time']))
-        return status, datetime.datetime.utcfromtimestamp(last_updated)
+        return status, datetime.datetime.fromtimestamp(
+            last_updated, datetime.timezone.utc)

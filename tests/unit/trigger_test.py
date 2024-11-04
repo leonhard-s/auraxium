@@ -11,7 +11,7 @@ import auraxium
 class TriggerTest(unittest.TestCase):
     """Test cases for the auraxium.event.Trigger class."""
 
-    time = datetime.datetime.utcnow()
+    time = datetime.datetime.now(datetime.timezone.utc)
 
     @classmethod
     def death_evt_factory(cls, attacker: int, victim: int, world: int,

@@ -139,12 +139,12 @@ class Event(Payload):
                             ) -> datetime.datetime:
         """Convert timestamps to UTC datetimes."""
         _ = info
-        return datetime.datetime.utcfromtimestamp(int(value))
+        return datetime.datetime.fromtimestamp(int(value), datetime.timezone.utc)
 
     @property
     def age(self) -> float:
         """The age of the event in seconds."""
-        now = datetime.datetime.utcnow()
+        now = datetime.datetime.now(datetime.timezone.utc)
         return (now - self.timestamp).total_seconds()
 
 
