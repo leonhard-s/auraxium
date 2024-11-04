@@ -226,7 +226,7 @@ class Trigger:
 
         :param Event event: The event to pass to the trigger action.
         """
-        self.last_run = datetime.datetime.now(datetime.UTC)
+        self.last_run = datetime.datetime.now(datetime.timezone.utc)
         if self.action is None:  # pragma: no cover
             warnings.warn(f'Trigger {self.name} run with no action specified')
             return
