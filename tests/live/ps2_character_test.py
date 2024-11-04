@@ -153,4 +153,4 @@ class TestCharacterMethods(unittest.IsolatedAsyncioTestCase):
         if world is None:
             self.fail('Unable to get character world')
         self.assertIsInstance(world, ps2.World)
-        self.assertEqual(world.id, 13)
+        self.assertEqual(world.id, 10)
