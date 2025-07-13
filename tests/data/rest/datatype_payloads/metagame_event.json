@@ -3,65 +3,68 @@
         {
             "metagame_event_id": "1",
             "name": {
-                "de": "Sp\u00fcre die Hitze",
+                "de": "Spüre die Hitze",
                 "en": "Feeling the Heat",
                 "es": "Siente el calor",
                 "fr": "Sentir la pression",
                 "it": "Sotto pressione",
-                "tr": "S\u0131ca\u011f\u0131 Hissetmek"
+                "tr": "Sıcağı Hissetmek"
             },
             "description": {
                 "de": "Erobere Indar innerhalb des Zeitlimits.",
                 "en": "Capture Indar within the time limit",
-                "es": "Captura Indar sin pasarte del l\u00edmite de tiempo",
+                "es": "Captura Indar sin pasarte del límite de tiempo",
                 "fr": "Capturer Indar dans la limite de temps",
                 "it": "Conquista Indar nei limiti di tempo",
-                "tr": "Zaman s\u0131n\u0131r\u0131 i\u00e7inde Indar'\u0131 Ele Ge\u00e7ir"
+                "tr": "Zaman sınırı içinde Indar'ı Ele Geçir"
             },
             "type": "1",
-            "experience_bonus": "30"
+            "experience_bonus": "30",
+            "duration_minutes": "90"
         },
         {
             "metagame_event_id": "2",
             "name": {
                 "de": "Kalter Krieg",
                 "en": "Cold War",
-                "es": "Guerra fr\u00eda",
+                "es": "Guerra fría",
                 "fr": "Guerre froide",
                 "it": "Guerra fredda",
-                "tr": "So\u011fuk Sava\u015f"
+                "tr": "Soğuk Savaş"
             },
             "description": {
                 "de": "Erobere Esamir innerhalb des Zeitlimits.",
                 "en": "Capture Esamir within the time limit",
-                "es": "Captura Esamir sin pasarte del l\u00edmite de tiempo",
+                "es": "Captura Esamir sin pasarte del límite de tiempo",
                 "fr": "Capturer Esamir dans la limite de temps",
                 "it": "Conquista Esamir nei limiti di tempo",
-                "tr": "Zaman s\u0131n\u0131r\u0131 i\u00e7inde Esamir'i El Ge\u00e7ir"
+                "tr": "Zaman sınırı içinde Esamir'i El Geçir"
             },
             "type": "1",
-            "experience_bonus": "30"
+            "experience_bonus": "30",
+            "duration_minutes": "90"
         },
         {
             "metagame_event_id": "3",
             "name": {
-                "de": "Gr\u00fcn sehen",
+                "de": "Grün sehen",
                 "en": "Seeing Green",
                 "es": "Ver en verde",
                 "fr": "Voir vert",
                 "it": "Vedo verde",
-                "tr": "Ye\u015fil G\u00f6rme"
+                "tr": "Yeşil Görme"
             },
             "description": {
                 "de": "Erobere Amerish innerhalb des Zeitlimits.",
                 "en": "Capture Amerish within the time limit",
-                "es": "Captura Amerish sin pasarte del l\u00edmite de tiempo",
+                "es": "Captura Amerish sin pasarte del límite de tiempo",
                 "fr": "Capturer Amerish dans la limite de temps",
                 "it": "Conquista Amerish nei limiti di tempo",
-                "tr": "Zaman s\u0131n\u0131r\u0131 i\u00e7inde Amerish'i Ele Ge\u00e7ir"
+                "tr": "Zaman sınırı içinde Amerish'i Ele Geçir"
             },
             "type": "1",
-            "experience_bonus": "30"
+            "experience_bonus": "30",
+            "duration_minutes": "90"
         },
         {
             "metagame_event_id": "4",
@@ -76,55 +79,58 @@
             "description": {
                 "de": "Erobere Hossin innerhalb des Zeitlimits.",
                 "en": "Capture Hossin within the time limit",
-                "es": "Captura Hossin sin pasarte del l\u00edmite de tiempo",
+                "es": "Captura Hossin sin pasarte del límite de tiempo",
                 "fr": "Capturer Hossin dans la limite de temps",
                 "it": "Conquista Hossin nei limiti di tempo",
                 "tr": "Capture Hossin within the time limit"
             },
             "type": "1",
-            "experience_bonus": "30"
+            "experience_bonus": "30",
+            "duration_minutes": "90"
         },
         {
             "metagame_event_id": "7",
             "name": {
                 "de": "Dom-Herrschaft",
                 "en": "Dome Domination",
-                "es": "Dominio de c\u00fapula",
-                "fr": "Domination du D\u00f4me",
+                "es": "Dominio de cúpula",
+                "fr": "Domination du Dôme",
                 "it": "Dominio della cupola",
                 "tr": "Dome Domination"
             },
             "description": {
                 "de": "Erobere und halte Stellung bei allen 3 Biolaboren auf Amerish.",
                 "en": "Capture and hold all 3 Biolabs on Amerish",
-                "es": "Conquista 3 Biolabs en Amerish y mant\u00e9n el control",
+                "es": "Conquista 3 Biolabs en Amerish y mantén el control",
                 "fr": "Capturer et garder les 3 Biolabs sur Amerish",
                 "it": "Conquista e difendi tutti e 3 i Biolab di Amerish",
                 "tr": "Capture and hold all 3 Biolabs on Amerish"
             },
             "type": "2",
-            "experience_bonus": "NULL"
+            "experience_bonus": "NULL",
+            "duration_minutes": "45"
         },
         {
             "metagame_event_id": "8",
             "name": {
                 "de": "Technologischer Fortschritt",
                 "en": "Technological Advancement",
-                "es": "Avance tecnol\u00f3gico",
-                "fr": "\u00c9volution technologique",
+                "es": "Avance tecnológico",
+                "fr": "Évolution technologique",
                 "it": "Progresso tecnologico",
                 "tr": "Technological Advancement"
             },
             "description": {
                 "de": "Erobere und halte Stellung bei allen 3 Technikanlagen auf Amerish.",
                 "en": "Capture and hold all 3 Tech Plants on Amerish",
-                "es": "Conquista 3 Tech Plants en Amerish y mant\u00e9n el control",
+                "es": "Conquista 3 Tech Plants en Amerish y mantén el control",
                 "fr": "Capturer et garder les 3 Tech Plants sur Amerish",
                 "it": "Conquista e difendi tutti e 3 i Tech Plant di Amerish",
                 "tr": "Capture and hold all 3 Tech Plants on Amerish"
             },
             "type": "2",
-            "experience_bonus": "NULL"
+            "experience_bonus": "NULL",
+            "duration_minutes": "45"
         },
         {
             "metagame_event_id": "9",
@@ -132,62 +138,65 @@
                 "de": "Machtrausch",
                 "en": "Power Rush",
                 "es": "Avalancha de poder",
-                "fr": "Acc\u00e9leration de pouvoir",
+                "fr": "Accéleration de pouvoir",
                 "it": "Corsa al potere",
                 "tr": "Power Rush"
             },
             "description": {
-                "de": "Erobere und halte Stellung bei allen 3 Verst\u00e4rker-Stationen auf Amerish.",
+                "de": "Erobere und halte Stellung bei allen 3 Verstärker-Stationen auf Amerish.",
                 "en": "Capture and hold all 3 Amp Stations on Amerish",
-                "es": "Conquista 3 Amp Stations en Amerish y mant\u00e9n el control",
+                "es": "Conquista 3 Amp Stations en Amerish y mantén el control",
                 "fr": "Capturer et garder les 3 Amp Stations sur Amerish",
                 "it": "Conquista e difendi tutte e 3 le Amp Station di Amerish",
                 "tr": "Capture and hold all 3 Amp Stations on Amerish"
             },
             "type": "2",
-            "experience_bonus": "NULL"
+            "experience_bonus": "NULL",
+            "duration_minutes": "45"
         },
         {
             "metagame_event_id": "10",
             "name": {
                 "de": "Dom-Herrschaft",
                 "en": "Dome Domination",
-                "es": "Dominio de c\u00fapula",
-                "fr": "Domination du D\u00f4me",
+                "es": "Dominio de cúpula",
+                "fr": "Domination du Dôme",
                 "it": "Dominio della cupola",
                 "tr": "Dome Domination"
             },
             "description": {
                 "de": "Erobere und halte Stellung bei allen 3 Biolaboren auf Indar.",
                 "en": "Capture and hold all 3 Biolabs on Indar",
-                "es": "Conquista 3 Biolabs en Indar y mant\u00e9n el control",
+                "es": "Conquista 3 Biolabs en Indar y mantén el control",
                 "fr": "Capturer et garder les 3 Biolabs sur Indar",
                 "it": "Conquista e difendi tutti e 3 i Biolab di Indar",
                 "tr": "Capture and hold all 3 Biolabs on Indar"
             },
             "type": "2",
-            "experience_bonus": "NULL"
+            "experience_bonus": "NULL",
+            "duration_minutes": "45"
         },
         {
             "metagame_event_id": "11",
             "name": {
                 "de": "Technologischer Fortschritt",
                 "en": "Technological Advancement",
-                "es": "Avance tecnol\u00f3gico",
-                "fr": "\u00c9volution technologique",
+                "es": "Avance tecnológico",
+                "fr": "Évolution technologique",
                 "it": "Progresso tecnologico",
                 "tr": "Technological Advancement"
             },
             "description": {
                 "de": "Erobere und halte Stellung bei allen 3 Technikanlagen auf Indar.",
                 "en": "Capture and hold all 3 Tech Plants on Indar",
-                "es": "Conquista 3 Tech Plants en Indar y mant\u00e9n el control",
+                "es": "Conquista 3 Tech Plants en Indar y mantén el control",
                 "fr": "Capturer et garder les 3 Tech Plants sur Indar",
                 "it": "Conquista e difendi tutti e 3 i Tech Plant di Indar",
                 "tr": "Capture and hold all 3 Tech Plants on Indar"
             },
             "type": "2",
-            "experience_bonus": "NULL"
+            "experience_bonus": "NULL",
+            "duration_minutes": "45"
         },
         {
             "metagame_event_id": "12",
@@ -195,41 +204,43 @@
                 "de": "Machtrausch",
                 "en": "Power Rush",
                 "es": "Avalancha de poder",
-                "fr": "Acc\u00e9leration de pouvoir",
+                "fr": "Accéleration de pouvoir",
                 "it": "Corsa al potere",
                 "tr": "Power Rush"
             },
             "description": {
-                "de": "Erobere und halte Stellung bei allen 3 Verst\u00e4rker-Stationen auf Indar.",
+                "de": "Erobere und halte Stellung bei allen 3 Verstärker-Stationen auf Indar.",
                 "en": "Capture and hold all 3 Amp Stations on Indar",
-                "es": "Conquista 3 Amp Stations en Indar y mant\u00e9n el control",
+                "es": "Conquista 3 Amp Stations en Indar y mantén el control",
                 "fr": "Capturer et garder les 3 Amp Stations sur Indar",
                 "it": "Conquista e difendi tutte e 3 le Amp Station di Indar",
                 "tr": "Capture and hold all 3 Amp Stations on Indar"
             },
             "type": "2",
-            "experience_bonus": "NULL"
+            "experience_bonus": "NULL",
+            "duration_minutes": "45"
         },
         {
             "metagame_event_id": "13",
             "name": {
                 "de": "Dom-Herrschaft",
                 "en": "Dome Domination",
-                "es": "Dominio de c\u00fapula",
-                "fr": "Domination du D\u00f4me",
+                "es": "Dominio de cúpula",
+                "fr": "Domination du Dôme",
                 "it": "Dominio della cupola",
                 "tr": "Dome Domination"
             },
             "description": {
                 "de": "Erobere und halte Stellung bei allen 3 Biolaboren auf Esamir.",
                 "en": "Capture and hold all 3 Biolabs on Esamir",
-                "es": "Conquista 3 Biolabs en Esamir y mant\u00e9n el control",
+                "es": "Conquista 3 Biolabs en Esamir y mantén el control",
                 "fr": "Capturer et garder les 3 Biolabs sur Esamir",
                 "it": "Conquista e difendi tutti e 3 i Biolab di Esamir",
                 "tr": "Capture and hold all 3 Biolabs on Esamir"
             },
             "type": "2",
-            "experience_bonus": "NULL"
+            "experience_bonus": "NULL",
+            "duration_minutes": "45"
         },
         {
             "metagame_event_id": "14",
@@ -237,62 +248,65 @@
                 "de": "Machtrausch",
                 "en": "Power Rush",
                 "es": "Avalancha de poder",
-                "fr": "Acc\u00e9leration de pouvoir",
+                "fr": "Accéleration de pouvoir",
                 "it": "Corsa al potere",
                 "tr": "Power Rush"
             },
             "description": {
-                "de": "Erobere und halte Stellung bei allen 3 Verst\u00e4rker-Stationen auf Esamir.",
+                "de": "Erobere und halte Stellung bei allen 3 Verstärker-Stationen auf Esamir.",
                 "en": "Capture and hold all 3 Amp Stations on Esamir",
-                "es": "Conquista 3 Amp Stations en Esamir y mant\u00e9n el control",
+                "es": "Conquista 3 Amp Stations en Esamir y mantén el control",
                 "fr": "Capturer et garder les 3 Amp Stations sur Esamir",
                 "it": "Conquista e difendi tutte e 3 le Amp Station di Esamir",
                 "tr": "Capture and hold all 3 Amp Stations on Esamir"
             },
             "type": "2",
-            "experience_bonus": "NULL"
+            "experience_bonus": "NULL",
+            "duration_minutes": "45"
         },
         {
             "metagame_event_id": "16",
             "name": {
                 "de": "Dom-Herrschaft",
                 "en": "Dome Domination",
-                "es": "Dominio de c\u00fapula",
-                "fr": "Domination du D\u00f4me",
+                "es": "Dominio de cúpula",
+                "fr": "Domination du Dôme",
                 "it": "Dominio della cupola",
                 "tr": "Dome Domination"
             },
             "description": {
                 "de": "Erobere und halte Stellung bei allen 3 Biolaboren auf Hossin.",
                 "en": "Capture and hold all 3 Biolabs on Hossin",
-                "es": "Conquista 3 Biolabs en Hossin y mant\u00e9n el control",
+                "es": "Conquista 3 Biolabs en Hossin y mantén el control",
                 "fr": "Capturer et garder les 3 Biolabs sur Hossin",
                 "it": "Conquista e difendi tutti e 3 i Biolab di Hossin",
                 "tr": "Capture and hold all 3 Biolabs on Hossin"
             },
             "type": "2",
-            "experience_bonus": "NULL"
+            "experience_bonus": "NULL",
+            "duration_minutes": "45"
         },
         {
             "metagame_event_id": "17",
             "name": {
                 "de": "Technologischer Fortschritt",
                 "en": "Technological Advancement",
-                "es": "Avance tecnol\u00f3gico",
-                "fr": "\u00c9volution technologique",
+                "es": "Avance tecnológico",
+                "fr": "Évolution technologique",
                 "it": "Progresso tecnologico",
                 "tr": "Technological Advancement"
             },
             "description": {
                 "de": "Erobere und halte Stellung bei allen 3 Technikanlagen auf Hossin.",
                 "en": "Capture and hold all 3 Tech Plants on Hossin",
-                "es": "Conquista 3 Tech Plants en Hossin y mant\u00e9n el control",
+                "es": "Conquista 3 Tech Plants en Hossin y mantén el control",
                 "fr": "Capturer et garder les 3 Tech Plants sur Hossin",
                 "it": "Conquista e difendi tutti e 3 i Tech Plant di Hossin",
                 "tr": "Capture and hold all 3 Tech Plants on Hossin"
             },
             "type": "2",
-            "experience_bonus": "NULL"
+            "experience_bonus": "NULL",
+            "duration_minutes": "45"
         },
         {
             "metagame_event_id": "18",
@@ -300,20 +314,21 @@
                 "de": "Machtrausch",
                 "en": "Power Rush",
                 "es": "Avalancha de poder",
-                "fr": "Acc\u00e9leration de pouvoir",
+                "fr": "Accéleration de pouvoir",
                 "it": "Corsa al potere",
                 "tr": "Power Rush"
             },
             "description": {
-                "de": "Erobere und halte Stellung bei allen 3 Verst\u00e4rker-Stationen auf Hossin.",
+                "de": "Erobere und halte Stellung bei allen 3 Verstärker-Stationen auf Hossin.",
                 "en": "Capture and hold all 3 Amp Stations on Hossin",
-                "es": "Conquista 3 Amp Stations en Hossin y mant\u00e9n el control",
+                "es": "Conquista 3 Amp Stations en Hossin y mantén el control",
                 "fr": "Capturer et garder les 3 Amp Stations sur Hossin",
                 "it": "Conquista e difendi tutte e 3 le Amp Station di Hossin",
                 "tr": "Capture and hold all 3 Amp Stations on Hossin"
             },
             "type": "2",
-            "experience_bonus": "NULL"
+            "experience_bonus": "NULL",
+            "duration_minutes": "45"
         },
         {
             "metagame_event_id": "106",
@@ -321,12 +336,12 @@
                 "de": "Eroberung",
                 "en": "Conquest",
                 "es": "Conquista",
-                "fr": "Conqu\u00eate",
+                "fr": "Conquête",
                 "it": "Conquista",
                 "tr": "NULL"
             },
             "description": {
-                "de": "Erobere Basen und t\u00f6te Feinde, um Punkte zu erhalten.",
+                "de": "Erobere Basen und töte Feinde, um Punkte zu erhalten.",
                 "en": "Capture bases and kill enemies to earn points.",
                 "es": "Captura bases y acaba con los enemigos para conseguir puntos.",
                 "fr": "Capturer des bases et tuer des ennemis afin de remporter des points.",
@@ -334,35 +349,37 @@
                 "tr": "NULL"
             },
             "type": "6",
-            "experience_bonus": "NULL"
+            "experience_bonus": "NULL",
+            "duration_minutes": "120"
         },
         {
             "metagame_event_id": "123",
             "name": {
-                "de": "\u00dcberlegenheit von Indar",
+                "de": "Überlegenheit von Indar",
                 "en": "Indar Superiority",
-                "es": "Supremac\u00eda en Indar",
-                "fr": "Sup\u00e9riorit\u00e9 d'Indar",
-                "it": "Superiorit\u00e0 di Indar",
+                "es": "Supremacía en Indar",
+                "fr": "Supériorité d'Indar",
+                "it": "Superiorità di Indar",
                 "tr": "NULL"
             },
             "description": {
                 "de": "Kontrolliere das Gebiet, um Indar zu sperren.",
                 "en": "Control territory to lock Indar",
                 "es": "Control del territorio para bloquear Indar",
-                "fr": "Contr\u00f4lez du territoire pour verrouiller Indar",
+                "fr": "Contrôlez le territoire pour verrouiller Indar",
                 "it": "Controlla il territorio per bloccare Indar",
                 "tr": "NULL"
             },
             "type": "8",
-            "experience_bonus": "30"
+            "experience_bonus": "30",
+            "duration_minutes": "45"
         },
         {
             "metagame_event_id": "124",
             "name": {
                 "de": "Erleuchtung von Indar",
                 "en": "Indar Enlightenment",
-                "es": "Iluminaci\u00f3n de Indar",
+                "es": "Iluminación de Indar",
                 "fr": "Savoir d'Indar",
                 "it": "Risveglio di Indar",
                 "tr": "NULL"
@@ -371,20 +388,21 @@
                 "de": "Kontrolliere das Gebiet, um Indar zu sperren.",
                 "en": "Control territory to lock Indar",
                 "es": "Control del territorio para bloquear Indar",
-                "fr": "Contr\u00f4lez du territoire pour verrouiller Indar",
+                "fr": "Contrôlez le territoire pour verrouiller Indar",
                 "it": "Controlla il territorio per bloccare Indar",
                 "tr": "NULL"
             },
             "type": "8",
-            "experience_bonus": "30"
+            "experience_bonus": "30",
+            "duration_minutes": "45"
         },
         {
             "metagame_event_id": "125",
             "name": {
                 "de": "Befreiung von Indar",
                 "en": "Indar Liberation",
-                "es": "Liberaci\u00f3n de Indar",
-                "fr": "Lib\u00e9ration d'Indar",
+                "es": "Liberación de Indar",
+                "fr": "Libération d'Indar",
                 "it": "Liberazione di Indar",
                 "tr": "NULL"
             },
@@ -392,33 +410,35 @@
                 "de": "Kontrolliere das Gebiet, um Indar zu sperren.",
                 "en": "Control territory to lock Indar",
                 "es": "Control del territorio para bloquear Indar",
-                "fr": "Contr\u00f4lez du territoire pour verrouiller Indar",
+                "fr": "Contrôlez le territoire pour verrouiller Indar",
                 "it": "Controlla il territorio per bloccare Indar",
                 "tr": "NULL"
             },
             "type": "8",
-            "experience_bonus": "30"
+            "experience_bonus": "30",
+            "duration_minutes": "45"
         },
         {
             "metagame_event_id": "126",
             "name": {
-                "de": "\u00dcberlegenheit von Esamir",
+                "de": "Überlegenheit von Esamir",
                 "en": "Esamir Superiority",
                 "es": "Superioridad en Esamir",
-                "fr": "Sup\u00e9riorit\u00e9 d'Esamir",
-                "it": "Superiorit\u00e0 di Esamir",
+                "fr": "Supériorité d'Esamir",
+                "it": "Superiorità di Esamir",
                 "tr": "NULL"
             },
             "description": {
                 "de": "Kontrolliere das Territorium, um Esamir zu sperren.",
                 "en": "Control territory to lock Esamir",
                 "es": "Control del territorio para bloquear Esamir",
-                "fr": "Contr\u00f4lez du territoire pour verrouiller Esamir",
+                "fr": "Contrôlez le territoire pour verrouiller Esamir",
                 "it": "Controlla il territorio per bloccare Esamir",
                 "tr": "NULL"
             },
             "type": "8",
-            "experience_bonus": "30"
+            "experience_bonus": "30",
+            "duration_minutes": "45"
         }
     ],
     "returned": 20
