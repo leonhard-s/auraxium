@@ -277,6 +277,7 @@ class EventClient(Client):
 
         connection_failed: bool = False  # Flag to re-subscribe on reconnect
         while self._open:
+            connection_sleep = 10.0
             try:
                 websocket = await asyncio.wait_for(
                     websockets.client.connect(str(url)),
@@ -286,8 +287,9 @@ class EventClient(Client):
                     _log.warning(
                         'Connection attempt timed out, retrying (%d/%d)...',
                         attempt, max_connection_attempts)
-                    await asyncio.sleep(10.0)
                     attempt += 1
+                    await asyncio.sleep(connection_sleep)
+                    connection_sleep = min(connection_sleep * 2, 300.0)
                     continue
 
                 _log.error(
