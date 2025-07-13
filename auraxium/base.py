@@ -120,7 +120,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
         return f'<{self.__class__.__name__}:{self.id}>'
 
     @classmethod
-    @deprecated('0.2', '0.4', replacement=':meth:`auraxium.Client.count`')  # pragma: no cover
+    @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.count`')  # pragma: no cover
     async def count(cls, client: RequestClient, **kwargs: Any) -> int:
         """Return the number of items matching the given terms.
 
@@ -134,7 +134,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
         return await client.count(cls, **kwargs)  # type: ignore
 
     @classmethod
-    @deprecated('0.2', '0.4', replacement=':meth:`auraxium.Client.find`')  # pragma: no cover
+    @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.find`')  # pragma: no cover
     async def find(cls: Type[Ps2ObjectT], results: int = 10, *,
                    offset: int = 0, promote_exact: bool = False,
                    check_case: bool = True, client: RequestClient,
@@ -166,7 +166,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
             check_case=check_case, **kwargs)
 
     @classmethod
-    @deprecated('0.2', '0.4', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
+    @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
     async def get(cls: Type[Ps2ObjectT], client: RequestClient,
                   check_case: bool = True, **kwargs: Any
                   ) -> Optional[Ps2ObjectT]:
@@ -187,7 +187,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
             cls, results=1, check_case=check_case, **kwargs)
 
     @classmethod
-    @deprecated('0.2', '0.4', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
+    @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
     async def get_by_id(cls: Type[Ps2ObjectT], id_: int, *,
                         client: RequestClient) -> Optional[Ps2ObjectT]:
         """Retrieve an object by its unique Census ID.
@@ -291,7 +291,7 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
             cls._cache.ttu = ttu
 
     @classmethod
-    @deprecated('0.2', '0.4', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
+    @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
     async def get_by_id(cls: Type[CachedT], id_: int, *,
                         client: RequestClient) -> Optional[CachedT]:
         """Retrieve an object by by ID.
@@ -362,7 +362,7 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
         return str(self.name)
 
     @classmethod
-    @deprecated('0.2', '0.4', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
+    @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
                           client: RequestClient) -> Optional[NamedT]:
         """Retrieve an object by its unique name.

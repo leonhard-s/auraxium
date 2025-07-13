@@ -194,7 +194,7 @@ class CharacterData(RESTPayload):
         first: str
         first_lower: str
 
-        @deprecated('0.2', '0.4', replacement=':attr:`auraxium.models.'
+        @deprecated('0.2', '0.5', replacement=':attr:`auraxium.models.'
                     'CharacterData.Name.name`')
         def __call__(self, locale: str = 'en') -> str:  # pragma: no cover
             return self.first
