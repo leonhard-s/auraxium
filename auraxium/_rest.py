@@ -71,7 +71,7 @@ class RequestClient:
                 loop = asyncio.get_running_loop()
             except RuntimeError:  # pragma: no cover
                 # Hacky way to deprecate things that are not functions
-                deprecated('0.3', '0.4', ':meth:`asyncio.new_event_loop()')(
+                deprecated('0.3', '0.5', ':meth:`asyncio.new_event_loop()')(
                     lambda: None)()
                 loop = asyncio.new_event_loop()
         self.loop: asyncio.AbstractEventLoop = loop

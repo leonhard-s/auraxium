@@ -64,7 +64,7 @@ To retrieve in-game object instances, use :meth:`~auraxium.Client.get`, for sing
 
 .. note::
 
-   The ``auraxium.Ps2Object.get_by_*`` interface has been deprecated and is scheduled for removal in version 0.3. Please use the :class:`auraxium.Client` methods instead.
+   The ``auraxium.Ps2Object.get_by_*`` interface has been deprecated and is scheduled for removal in version 0.5. Please use the :class:`auraxium.Client` methods instead.
 
 For more information on the available classes and the attributes they expose, refer to the :doc:`Object Model Reference <../../api/ps2>`.
 
