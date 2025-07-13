@@ -1,15 +1,13 @@
 """Test cases for ps2.leaderboard query functions."""
 
-import unittest
-
 import auraxium
 from auraxium import ps2
 
+from tests.live._base import LiveApiTestCase
 from tests.utils import SERVICE_ID
 
 
-@unittest.skipIf(SERVICE_ID in ['', 's:example'], 'missing service ID')
-class TestLeaderboard(unittest.IsolatedAsyncioTestCase):
+class TestLeaderboard(LiveApiTestCase):
     """Test the leaderboard query methods."""
 
     client: auraxium.Client

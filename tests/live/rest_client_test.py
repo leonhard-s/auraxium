@@ -4,16 +4,14 @@ Some tests will be skipped if the SERVICE_ID environment variable has
 not been set.
 """
 
-import unittest
-
 import auraxium
 from auraxium.ps2 import Achievement, Character, Loadout, World, Zone
 
+from tests.live._base import LiveApiTestCase
 from tests.utils import SERVICE_ID
 
 
-@unittest.skipIf(SERVICE_ID in ['', 's:example'], 'missing service ID')
-class TestRestClient(unittest.IsolatedAsyncioTestCase):
+class TestRestClient(LiveApiTestCase):
     """Test the getX helper methods from the main REST client."""
 
     client: auraxium.Client

@@ -1,15 +1,13 @@
 """Test cases for the ps2.Weapon class."""
 
-import unittest
-
 import auraxium
 from auraxium import models, ps2
 
+from tests.live._base import LiveApiTestCase
 from tests.utils import SERVICE_ID
 
 
-@unittest.skipIf(SERVICE_ID in ['', 's:example'], 'missing service ID')
-class TestWeaponMethods(unittest.IsolatedAsyncioTestCase):
+class TestWeaponMethods(LiveApiTestCase):
     """Test weapon-specific helper methods for relational tables."""
 
     client: auraxium.Client

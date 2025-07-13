@@ -1,15 +1,13 @@
 """Test cases for the ps2.Item class."""
 
-import unittest
-
 import auraxium
 from auraxium import models, ps2
 
+from tests.live._base import LiveApiTestCase
 from tests.utils import SERVICE_ID
 
 
-@unittest.skipIf(SERVICE_ID in ['', 's:example'], 'missing service ID')
-class TestItemMethods(unittest.IsolatedAsyncioTestCase):
+class TestItemMethods(LiveApiTestCase):
     """Test item-specific helper methods for relational tables."""
 
     client: auraxium.Client
