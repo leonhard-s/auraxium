@@ -271,8 +271,8 @@ class EventClient(Client):
         # this retry logic. To be replaced with a cleaner solution once we move
         # away from the deprecated legacy websockets interface; assuming the
         # issue persists.
-        connection_timeout = 10.0
-        max_connection_attempts = 5
+        connection_timeout = 30.0
+        max_connection_attempts = 10
         attempt = 1
 
         connection_failed: bool = False  # Flag to re-subscribe on reconnect
@@ -286,7 +286,7 @@ class EventClient(Client):
                     _log.warning(
                         'Connection attempt timed out, retrying (%d/%d)...',
                         attempt, max_connection_attempts)
-                    await asyncio.sleep(1.0)
+                    await asyncio.sleep(10.0)
                     attempt += 1
                     continue
 
