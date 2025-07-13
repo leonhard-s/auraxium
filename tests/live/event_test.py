@@ -1,6 +1,7 @@
 """Tests for the real-time event client module."""
 
 import asyncio
+import logging
 import unittest
 
 import auraxium
@@ -13,14 +14,26 @@ class EventClientTest(unittest.IsolatedAsyncioTestCase):
     """Live tests for the real-time event client component."""
 
     client: auraxium.EventClient
+    _ess_handler: logging.Handler
 
     async def asyncSetUp(self) -> None:
         await super().asyncSetUp()
+
+        ess_logger = logging.getLogger("auraxium.ess")
+        self._ess_handler = logging.StreamHandler()
+        self._ess_handler.setLevel(logging.DEBUG)
+        ess_logger.setLevel(logging.DEBUG)
+        ess_logger.addHandler(self._ess_handler)
+
         self.client = auraxium.EventClient(service_id=SERVICE_ID)
 
     async def asyncTearDown(self) -> None:
         await super().asyncTearDown()
         await self.client.close()
+
+        ess_logger = logging.getLogger("auraxium.ess")
+        ess_logger.removeHandler(self._ess_handler)
+        self._ess_handler.close()
 
     def test_startup_defensive(self) -> None:
         """Ensure the client does not connect without any triggers."""
