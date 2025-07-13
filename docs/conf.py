@@ -101,7 +101,7 @@ autodoc_member_order = 'groupwise'
 intersphinx_mapping = {
     'python': ('https://docs.python.org/3', None),
     'aiohttp': ('https://docs.aiohttp.org/en/stable/', None),
-    'requests': ('https://docs.python-requests.org/en/master/', None),
+    'requests': ('https://requests.readthedocs.io/en/latest/', None),
     'yarl': ('https://yarl.readthedocs.io/en/latest/', None),
     'websockets': ('https://websockets.readthedocs.io/en/stable/', None)
 }
