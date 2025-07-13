@@ -109,7 +109,7 @@ class TestCharacterMethods(unittest.IsolatedAsyncioTestCase):
 
     async def test_online_status(self) -> None:
         """Test the online_status() helper method."""
-        expected = 13 if await self.character.is_online() else 0
+        expected = 10 if await self.character.is_online() else 0
         self.assertEqual(await self.character.online_status(), expected)
 
     async def test_outfit(self) -> None:

@@ -99,7 +99,7 @@ class TestRestClient(unittest.IsolatedAsyncioTestCase):
         if char is None:
             self.fail('Character not found')
         self.assertIsInstance(char, Character)
-        world = await self.client.get_by_name(World, 'Miller')
+        world = await self.client.get_by_name(World, 'Wainwright')
         if world is None:
             self.fail('World not found')
         self.assertIsInstance(world, World)
