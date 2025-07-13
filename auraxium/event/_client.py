@@ -267,11 +267,37 @@ class EventClient(Client):
         url = self.ess_endpoint.with_query(
             {'environment': 'ps2', 'service-id': self.service_id})
 
-        # NOTE: The following "async for" loop will cleanly restart the
-        # connection should it go down. Invoking "continue" manually may be
-        # used to manually force a reconnect if needed.
-        connection_failed = False
-        async for websocket in websockets.client.connect(str(url)):
+        # HACK: The initial connection attempt sometimes fails in CI, hence
+        # this retry logic. To be replaced with a cleaner solution once we move
+        # away from the deprecated legacy websockets interface; assuming the
+        # issue persists.
+        connection_timeout = 10.0
+        max_connection_attempts = 5
+        attempt = 1
+
+        connection_failed: bool = False  # Flag to re-subscribe on reconnect
+        while self._open:
+            try:
+                websocket = await asyncio.wait_for(
+                    websockets.client.connect(str(url)),
+                    timeout=connection_timeout)
+            except asyncio.TimeoutError:
+                if attempt < max_connection_attempts:
+                    _log.warning(
+                        'Connection attempt timed out, retrying (%d/%d)...',
+                        attempt, max_connection_attempts)
+                    await asyncio.sleep(1.0)
+                    attempt += 1
+                    continue
+
+                _log.error(
+                    'Failed to connect to WebSocket endpoint after %d '
+                    'attempts', max_connection_attempts)
+                raise
+
+            # On success, reset the retry counter
+            attempt = 1
+
             _log.info('Connected to %s', url)
             if connection_failed:
                 self._subscribe_all()
