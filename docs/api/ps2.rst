@@ -282,6 +282,10 @@ Progression
 
 .. autoclass:: Experience
 
+   .. automethod:: experience_award_type() -> auraxium.InstanceProxy[ExperienceAwardType]
+
+.. autoclass:: ExperienceAwardType
+
 .. autoclass:: ExperienceRank
 
    .. automethod:: image(faction: int | Faction) -> str
@@ -331,6 +335,11 @@ Progression
    .. automethod:: type() -> auraxium.InstanceProxy[RewardType]
 
 .. autoclass:: RewardType
+
+Special Interest
+================
+
+.. autoclass:: Fish
 
 Abilities
 =========

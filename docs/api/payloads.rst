@@ -66,6 +66,8 @@ The following payloads are used as the underlying data container for the objects
 
 .. autoclass:: ExperienceData
 
+.. autoclass:: ExperienceAwardTypeData
+
 .. autoclass:: ExperienceRankData
    :members: EmpireData
 
@@ -76,6 +78,8 @@ The following payloads are used as the underlying data container for the objects
 .. autoclass:: FireGroupData
 
 .. autoclass:: FireModeData
+
+.. autoclass:: FishData
 
 .. autoclass:: ItemCategoryData
 
