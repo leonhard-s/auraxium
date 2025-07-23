@@ -7,8 +7,6 @@ from typing import (Any, Callable, Coroutine, Dict, List, Optional, Type,
 
 import pydantic
 import websockets
-import websockets.client
-import websockets.exceptions
 import yarl
 
 from .._client import Client
@@ -60,7 +58,7 @@ class EventClient(Client):
        registered for the client.
 
     .. attribute:: websocket
-       :type: typing.Any | None
+       :type: websockets.asyncio.client.ClientConnection | None
 
        The websocket client used for the real-time event stream. This
        will be automatically opened and closed by the client as event
@@ -81,7 +79,7 @@ class EventClient(Client):
             self.ess_endpoint = yarl.URL(ess_endpoint)
 
         self.triggers: List[Trigger] = []
-        self.websocket: Optional[websockets.client.WebSocketClientProtocol] = None
+        self.websocket: Optional[websockets.ClientConnection] = None
         self._endpoint_status: Dict[str, bool] = {}
         self._send_queue: List[str] = []
         self._open: bool = False
@@ -218,7 +216,8 @@ class EventClient(Client):
             return
         self._open = False
         _log.info('Closing websocket connection')
-        if self.websocket is not None and self.websocket.open:
+        if (self.websocket is not None
+                and self.websocket.state == websockets.State.OPEN):
             await self.websocket.close()
 
     def dispatch(self, event: Event) -> None:
@@ -271,7 +270,7 @@ class EventClient(Client):
         # connection should it go down. Invoking "continue" manually may be
         # used to manually force a reconnect if needed.
         connection_failed = False
-        async for websocket in websockets.client.connect(str(url)):
+        async for websocket in websockets.connect(str(url)):
             _log.info('Connected to %s', url)
             if connection_failed:
                 self._subscribe_all()
@@ -502,7 +501,8 @@ class EventClient(Client):
         :param float interval: The interval at which to check the
            WebSocket connection's status.
         """
-        while self.websocket is None or not self.websocket.open:
+        while (self.websocket is None
+               or self.websocket.state != websockets.State.OPEN):
             await asyncio.sleep(interval)
 
 

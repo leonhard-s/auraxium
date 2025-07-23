@@ -1,5 +1,7 @@
 """Test cases for the ps2.Character class."""
 
+import asyncio
+
 import auraxium
 from auraxium import models, ps2
 
@@ -12,6 +14,22 @@ class TestCharacterMethods(LiveApiTestCase):
 
     client: auraxium.Client
     character: ps2.Character
+    original_slow_callback_duration: float
+
+    def setUp(self) -> None:
+        # NOTE (leonhard-s): Some tests, like Character.items(), may take a
+        # long time to complete, so we increase the "slow" callback warning
+        # threshold to for this test suite.
+        new_slow_callback_duration = 0.5  # seconds
+        super().setUp()
+        loop = asyncio.get_event_loop()
+        self.original_slow_callback_duration = loop.slow_callback_duration
+        loop.slow_callback_duration = new_slow_callback_duration
+
+    def tearDown(self) -> None:
+        super().tearDown()
+        loop = asyncio.get_event_loop()
+        loop.slow_callback_duration = self.original_slow_callback_duration
 
     async def asyncSetUp(self) -> None:
         await super().asyncSetUp()
