@@ -22,6 +22,7 @@ from ._experience import (ExperienceAwardTypeData, ExperienceData,
                           ExperienceRankData)
 from ._faction import FactionData
 from ._fire import FireGroupData, FireModeData
+from ._fish import FishData
 from ._item import ItemCategoryData, ItemData, ItemTypeData
 from ._map import FacilityTypeData, MapHexData, MapRegionData, RegionData
 from ._metagame import MetagameEventData
@@ -70,6 +71,7 @@ __all__ = [
     'FactionData',
     'FireGroupData',
     'FireModeData',
+    'FishData',
     'GainExperience',
     'ItemAdded',
     'ItemCategoryData',

@@ -17,6 +17,7 @@ from ._effect import Effect, EffectType, TargetType, ZoneEffect, ZoneEffectType
 from ._experience import Experience, ExperienceAwardType, ExperienceRank
 from ._faction import Faction
 from ._fire import FireGroup, FireMode, FireModeType
+from ._fish import Fish
 from ._item import Item, ItemCategory, ItemType
 from . import leaderboard
 from ._map import FacilityType, MapHex, MapRegion, Region
@@ -58,6 +59,7 @@ __all__ = [
     'FireGroup',
     'FireMode',
     'FireModeType',
+    'Fish',
     'Item',
     'ItemCategory',
     'ItemType',
