@@ -8,7 +8,8 @@ import pydantic
 from ..base import Cached
 from ..endpoints import DBG_FILES
 from ..errors import PayloadError
-from ..models import ExperienceData, ExperienceRankData
+from ..models import (ExperienceAwardTypeData, ExperienceData,
+                      ExperienceRankData)
 from .._rest import RequestClient
 from ..types import CensusData
 
@@ -16,6 +17,7 @@ from ._faction import Faction
 
 __all__ = [
     'Experience',
+    'ExperienceAwardType',
     'ExperienceRank'
 ]
 
@@ -57,6 +59,32 @@ class Experience(Cached, cache_size=100, cache_ttu=3600.0):
     id: int
     description: str
     xp: int
+
+
+class ExperienceAwardType(Cached, cache_size=100, cache_ttu=3600.0):
+    """A collection of related experience types.
+    
+    .. attribute:: id
+       :type: int
+       
+       The unique ID of this experience award type. In the API payload,
+       this field is called ``experience_award_type_id``.
+
+    .. attribute:: name
+       :type: str
+
+       Internal name of this experience award type. Not localised or
+       designed to be user-facing.
+    """
+
+    collection = 'experience_award_type'
+    data: ExperienceAwardTypeData
+    id_field = 'experience_award_type_id'
+    _model = ExperienceAwardTypeData
+
+    # Type hints for data class fallback attributes
+    id: int
+    name: str
 
 
 class ExperienceRank:
