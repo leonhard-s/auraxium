@@ -1,15 +1,17 @@
 """Experience and rank class definitions."""
 
 import logging
-from typing import Any, List, Union, cast
+from typing import Any, List, Optional, Union, cast
 
 import pydantic
 
 from ..base import Cached
+from ..census import Query
 from ..endpoints import DBG_FILES
 from ..errors import PayloadError
 from ..models import (ExperienceAwardTypeData, ExperienceData,
                       ExperienceRankData)
+from .._proxy import InstanceProxy
 from .._rest import RequestClient
 from ..types import CensusData
 
@@ -44,6 +46,12 @@ class Experience(Cached, cache_size=100, cache_ttu=3600.0):
 
        A description of when this experience reward is granted.
 
+    .. attribute:: experience_award_type_id
+       :type: int | None
+
+       The ID of the :class:`ExperienceAwardType` this experience type
+       belongs to. Not set for all experience types.
+
     .. attribute:: xp
        :type: int
 
@@ -59,6 +67,17 @@ class Experience(Cached, cache_size=100, cache_ttu=3600.0):
     id: int
     description: str
     xp: int
+    experience_award_type_id: Optional[int]
+
+    def experience_award_type(self) -> InstanceProxy['ExperienceAwardType']:
+        """Return the faction that has access to this item.
+
+        This returns an :class:`auraxium.InstanceProxy`.
+        """
+        value = self.data.experience_award_type_id or -1
+        query = Query(ExperienceAwardType.collection, self._client.service_id)
+        query.add_term(field=ExperienceAwardType.id_field, value=value)
+        return InstanceProxy(ExperienceAwardType, query, client=self._client)
 
 
 class ExperienceAwardType(Cached, cache_size=100, cache_ttu=3600.0):

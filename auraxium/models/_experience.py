@@ -1,5 +1,7 @@
 """Data classes for :mod:`auraxium.ps2._experience`."""
 
+from typing import Optional
+
 from .base import RESTPayload
 from ..types import LocaleData
 
@@ -31,6 +33,7 @@ class ExperienceData(RESTPayload):
     experience_id: int
     description: str
     xp: int
+    experience_award_type_id: Optional[int]
 
 
 class ExperienceRankData(RESTPayload):
