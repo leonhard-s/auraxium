@@ -3,102 +3,122 @@
         {
             "experience_id": "1",
             "description": "Kill Player",
-            "xp": "100"
+            "xp": "100",
+            "experience_award_type_id": "1"
         },
         {
             "experience_id": "2",
             "description": "Kill Player Assist",
-            "xp": "100"
+            "xp": "100",
+            "experience_award_type_id": "2"
         },
         {
             "experience_id": "3",
             "description": "Kill Player Spawn Assist",
-            "xp": "0"
+            "xp": "0",
+            "experience_award_type_id": "3"
         },
         {
             "experience_id": "4",
             "description": "Heal Player",
-            "xp": "10"
+            "xp": "10",
+            "experience_award_type_id": "4"
         },
         {
             "experience_id": "5",
             "description": "Heal Assist",
-            "xp": "5"
+            "xp": "5",
+            "experience_award_type_id": "5"
         },
         {
             "experience_id": "6",
             "description": "MAX Repair",
-            "xp": "5"
+            "xp": "5",
+            "experience_award_type_id": "6"
         },
         {
             "experience_id": "7",
             "description": "Revive",
-            "xp": "75"
+            "xp": "75",
+            "experience_award_type_id": "9"
         },
         {
             "experience_id": "8",
             "description": "Kill Streak",
-            "xp": "10"
+            "xp": "10",
+            "experience_award_type_id": "10"
         },
         {
             "experience_id": "10",
             "description": "Domination Kill",
-            "xp": "25"
+            "xp": "25",
+            "experience_award_type_id": "12"
         },
         {
             "experience_id": "11",
             "description": "Revenge Kill",
-            "xp": "50"
+            "xp": "50",
+            "experience_award_type_id": "13"
         },
         {
             "experience_id": "15",
             "description": "Control Point - Defend",
-            "xp": "100"
+            "xp": "100",
+            "experience_award_type_id": "18"
         },
         {
             "experience_id": "16",
             "description": "Control Point - Attack",
-            "xp": "100"
+            "xp": "100",
+            "experience_award_type_id": "19"
         },
         {
             "experience_id": "19",
             "description": "Facility Captured (Not Used)",
-            "xp": "250"
+            "xp": "250",
+            "experience_award_type_id": "23"
         },
         {
             "experience_id": "21",
             "description": "Destroy Secondary Objective",
-            "xp": "500"
+            "xp": "500",
+            "experience_award_type_id": "25"
         },
         {
             "experience_id": "22",
             "description": "Destroy SecondaryObjectiveAssist",
-            "xp": "75"
+            "xp": "75",
+            "experience_award_type_id": "26"
         },
         {
             "experience_id": "24",
             "description": "Vehicle Destruction - Flash",
-            "xp": "100"
+            "xp": "100",
+            "experience_award_type_id": "1"
         },
         {
             "experience_id": "25",
             "description": "Multiple Kill",
-            "xp": "25"
+            "xp": "25",
+            "experience_award_type_id": "28"
         },
         {
             "experience_id": "26",
             "description": "Vehicle RoadKill",
-            "xp": "25"
+            "xp": "25",
+            "experience_award_type_id": "37"
         },
         {
             "experience_id": "28",
             "description": "Squad Repair - Flash",
-            "xp": "10"
+            "xp": "10",
+            "experience_award_type_id": "40"
         },
         {
             "experience_id": "29",
             "description": "Kill Player Class MAX",
-            "xp": "200"
+            "xp": "200",
+            "experience_award_type_id": "33"
         }
     ],
     "returned": 20

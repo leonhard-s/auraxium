@@ -1,12 +1,26 @@
 """Data classes for :mod:`auraxium.ps2._experience`."""
 
+from typing import Optional
+
 from .base import RESTPayload
 from ..types import LocaleData
 
 __all__ = [
+    'ExperienceAwardTypeData',
     'ExperienceData',
     'ExperienceRankData'
 ]
+
+
+class ExperienceAwardTypeData(RESTPayload):
+    """Data class for :class:`auraxium.ps2.ExperienceAwardType`.
+
+    This class mirrors the payload data returned by the API, you may
+    use its attributes as keys in filters or queries.
+    """
+
+    experience_award_type_id: int
+    name: str
 
 
 class ExperienceData(RESTPayload):
@@ -19,10 +33,11 @@ class ExperienceData(RESTPayload):
     experience_id: int
     description: str
     xp: int
+    experience_award_type_id: Optional[int]
 
 
 class ExperienceRankData(RESTPayload):
-    """Data class for :class:`auraxium.ps2.Experience`.
+    """Data class for :class:`auraxium.ps2.ExperienceRank`.
 
     This class mirrors the payload data returned by the API, you may
     use its attributes as keys in filters or queries.

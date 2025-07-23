@@ -1,14 +1,17 @@
 """Experience and rank class definitions."""
 
 import logging
-from typing import Any, List, Union, cast
+from typing import Any, List, Optional, Union, cast
 
 import pydantic
 
 from ..base import Cached
+from ..census import Query
 from ..endpoints import DBG_FILES
 from ..errors import PayloadError
-from ..models import ExperienceData, ExperienceRankData
+from ..models import (ExperienceAwardTypeData, ExperienceData,
+                      ExperienceRankData)
+from .._proxy import InstanceProxy
 from .._rest import RequestClient
 from ..types import CensusData
 
@@ -16,6 +19,7 @@ from ._faction import Faction
 
 __all__ = [
     'Experience',
+    'ExperienceAwardType',
     'ExperienceRank'
 ]
 
@@ -42,6 +46,12 @@ class Experience(Cached, cache_size=100, cache_ttu=3600.0):
 
        A description of when this experience reward is granted.
 
+    .. attribute:: experience_award_type_id
+       :type: int | None
+
+       The ID of the :class:`ExperienceAwardType` this experience type
+       belongs to. Not set for all experience types.
+
     .. attribute:: xp
        :type: int
 
@@ -57,6 +67,43 @@ class Experience(Cached, cache_size=100, cache_ttu=3600.0):
     id: int
     description: str
     xp: int
+    experience_award_type_id: Optional[int]
+
+    def experience_award_type(self) -> InstanceProxy['ExperienceAwardType']:
+        """Return the faction that has access to this item.
+
+        This returns an :class:`auraxium.InstanceProxy`.
+        """
+        value = self.data.experience_award_type_id or -1
+        query = Query(ExperienceAwardType.collection, self._client.service_id)
+        query.add_term(field=ExperienceAwardType.id_field, value=value)
+        return InstanceProxy(ExperienceAwardType, query, client=self._client)
+
+
+class ExperienceAwardType(Cached, cache_size=100, cache_ttu=3600.0):
+    """A collection of related experience types.
+    
+    .. attribute:: id
+       :type: int
+       
+       The unique ID of this experience award type. In the API payload,
+       this field is called ``experience_award_type_id``.
+
+    .. attribute:: name
+       :type: str
+
+       Internal name of this experience award type. Not localised or
+       designed to be user-facing.
+    """
+
+    collection = 'experience_award_type'
+    data: ExperienceAwardTypeData
+    id_field = 'experience_award_type_id'
+    _model = ExperienceAwardTypeData
+
+    # Type hints for data class fallback attributes
+    id: int
+    name: str
 
 
 class ExperienceRank:

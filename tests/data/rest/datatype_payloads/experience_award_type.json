@@ -1,0 +1,85 @@
+{
+    "experience_award_type_list": [
+        {
+            "experience_award_type_id": "1",
+            "name": "Kill"
+        },
+        {
+            "experience_award_type_id": "2",
+            "name": "KillAssist"
+        },
+        {
+            "experience_award_type_id": "3",
+            "name": "SpawnKilllAssist"
+        },
+        {
+            "experience_award_type_id": "4",
+            "name": "Heal"
+        },
+        {
+            "experience_award_type_id": "5",
+            "name": "HealAssist"
+        },
+        {
+            "experience_award_type_id": "6",
+            "name": "Repair"
+        },
+        {
+            "experience_award_type_id": "9",
+            "name": "Revive"
+        },
+        {
+            "experience_award_type_id": "10",
+            "name": "KillStreak"
+        },
+        {
+            "experience_award_type_id": "12",
+            "name": "DominationKill"
+        },
+        {
+            "experience_award_type_id": "13",
+            "name": "RevengeKill"
+        },
+        {
+            "experience_award_type_id": "15",
+            "name": "Achievement"
+        },
+        {
+            "experience_award_type_id": "18",
+            "name": "DefendControlPoint"
+        },
+        {
+            "experience_award_type_id": "19",
+            "name": "AttackControlPoint"
+        },
+        {
+            "experience_award_type_id": "21",
+            "name": "ControlPointConverted"
+        },
+        {
+            "experience_award_type_id": "23",
+            "name": "FacilityCaptured"
+        },
+        {
+            "experience_award_type_id": "25",
+            "name": "FacilityDestroySecondaryObjective"
+        },
+        {
+            "experience_award_type_id": "26",
+            "name": "FacilityDestroySecondaryObjectiveAssist"
+        },
+        {
+            "experience_award_type_id": "28",
+            "name": "MultipleKill"
+        },
+        {
+            "experience_award_type_id": "29",
+            "name": "NemesisKill"
+        },
+        {
+            "experience_award_type_id": "30",
+            "name": "Headshot"
+        }
+    ],
+    "returned": 20
+}

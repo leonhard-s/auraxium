@@ -21,4 +21,5 @@ class MetagameEventData(RESTPayload):
     name: LocaleData
     description: LocaleData
     type: int
+    duration_minutes: float
     experience_bonus: Optional[float] = None

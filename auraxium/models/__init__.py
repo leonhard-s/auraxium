@@ -18,9 +18,11 @@ from ._events import (AchievementAdded, BattleRankUp, Death, FacilityControl,
                       GainExperience, ItemAdded, MetagameEvent,
                       PlayerFacilityCapture, PlayerFacilityDefend, PlayerLogin,
                       PlayerLogout, SkillAdded, VehicleDestroy, ContinentLock)
-from ._experience import ExperienceData, ExperienceRankData
+from ._experience import (ExperienceAwardTypeData, ExperienceData,
+                          ExperienceRankData)
 from ._faction import FactionData
 from ._fire import FireGroupData, FireModeData
+from ._fish import FishData
 from ._item import ItemCategoryData, ItemData, ItemTypeData
 from ._map import FacilityTypeData, MapHexData, MapRegionData, RegionData
 from ._metagame import MetagameEventData
@@ -60,6 +62,7 @@ __all__ = [
     'DirectiveTreeData',
     'EffectData',
     'EffectTypeData',
+    'ExperienceAwardTypeData',
     'ExperienceData',
     'ExperienceRankData',
     'Event',
@@ -68,6 +71,7 @@ __all__ = [
     'FactionData',
     'FireGroupData',
     'FireModeData',
+    'FishData',
     'GainExperience',
     'ItemAdded',
     'ItemCategoryData',

@@ -14,9 +14,10 @@ from ._depot import MarketingBundle, MarketingBundleSingle
 from ._directive import (Directive, DirectiveTier, DirectiveTree,
                          DirectiveTreeCategory)
 from ._effect import Effect, EffectType, TargetType, ZoneEffect, ZoneEffectType
-from ._experience import Experience, ExperienceRank
+from ._experience import Experience, ExperienceAwardType, ExperienceRank
 from ._faction import Faction
 from ._fire import FireGroup, FireMode, FireModeType
+from ._fish import Fish
 from ._item import Item, ItemCategory, ItemType
 from . import leaderboard
 from ._map import FacilityType, MapHex, MapRegion, Region
@@ -51,12 +52,14 @@ __all__ = [
     'Effect',
     'EffectType',
     'Experience',
+    'ExperienceAwardType',
     'ExperienceRank',
     'FacilityType',
     'Faction',
     'FireGroup',
     'FireMode',
     'FireModeType',
+    'Fish',
     'Item',
     'ItemCategory',
     'ItemType',
