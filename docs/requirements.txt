@@ -1,7 +1,2 @@
 sphinx>=8.2
-aiohttp>=3.12
-backoff>=2.2
-pydantic>=2.11
-yarl>=1.20
-websockets>=15.0
 sphinx_rtd_theme>=3.0
