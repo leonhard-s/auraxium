@@ -2,7 +2,7 @@
 
 import dataclasses
 import enum
-from typing import Any, Dict, List, Tuple, Type, TypeVar, Union
+from typing import Any, Dict, List, Tuple, Type, TypeVar
 
 __all__ = [
     'CensusValue',
@@ -17,7 +17,7 @@ __all__ = [
 # list element must match the corresponding enum value.
 _MODIFIER_LITERALS: List[str] = ['', '<', '[', '>', ']', '^', '*', '!']
 
-CensusValue = Union[float, int, str]
+CensusValue = float | int | str
 _QueryBaseDataT = TypeVar('_QueryBaseDataT', bound='QueryBaseData')
 
 
@@ -119,7 +119,7 @@ class SearchModifier(enum.Enum):
             return cls(cls.EQUAL_TO)
 
     @staticmethod
-    def serialise(enum_value: Union[int, 'SearchModifier']) -> str:
+    def serialise(enum_value: 'int | SearchModifier') -> str:
         """Return the string literal for the given enum value.
 
         This is primarily used during URL generation.
@@ -286,7 +286,7 @@ class QueryData(QueryBaseData):
     resolve: List[str] = dataclasses.field(default_factory=list)
     retry: bool = True
     service_id: str = 's:example'
-    sort: List[Union[str, Tuple[str, bool]]] = dataclasses.field(
+    sort: List[str | Tuple[str, bool]] = dataclasses.field(
         default_factory=list)
     start: int = 0
     timing: bool = False

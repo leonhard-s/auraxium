@@ -1,6 +1,6 @@
 """Vehicle class definitions."""
 
-from typing import Final, List, Union
+from typing import Final, List
 
 from ..base import Cached, ImageMixin, Named
 from ..census import Query
@@ -106,7 +106,7 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
         return SequenceProxy(Faction, query, client=self._client)
 
     @classmethod
-    async def get_by_faction(cls, faction: Union[Faction, int], *,
+    async def get_by_faction(cls, faction: Faction | int, *,
                              client: RequestClient) -> List['Vehicle']:
         """Return all vehicles available to the given faction."""
         collection: Final[str] = 'vehicle_faction'
@@ -120,7 +120,7 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
             cls, query, client=client)
         return await proxy.flatten()
 
-    def skill_sets(self, faction: Union[Faction, int] | None = None
+    def skill_sets(self, faction: Faction | int | None = None
                    ) -> SequenceProxy[SkillSet]:
         """Return the skill sets associated with this vehicle.
 

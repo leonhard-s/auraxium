@@ -1,7 +1,7 @@
 """World class definition."""
 
 import datetime
-from typing import Any, Final, List, Tuple, Type, Union
+from typing import Any, Final, List, Tuple, Type
 
 from ..base import Named, NamedT
 from ..census import Query
@@ -93,8 +93,8 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
                 return world
         return None
 
-    async def map(self, zone: Union[int, Zone],
-                  *args: Union[int, Zone]) -> List[CensusData]:
+    async def map(self, zone: int | Zone,
+                  *args: int | Zone) -> List[CensusData]:
         """Return the map status of a given zone."""
         collection: Final[str] = 'map'
         query = Query(collection, service_id=self._client.service_id)

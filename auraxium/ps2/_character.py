@@ -1,7 +1,7 @@
 """Character class definition."""
 
 import logging
-from typing import Any, ClassVar, Final, List, Tuple, Type, Union, cast
+from typing import Any, ClassVar, Final, List, Tuple, Type, cast
 
 from ..base import Named, NamedT
 from .._cache import TLRUCache
@@ -142,7 +142,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
        The prestige (or A.S.P.) rank for the character.
     """
 
-    _cache: ClassVar[TLRUCache[Union[int, str], 'Character']]
+    _cache: ClassVar[TLRUCache[int | str, 'Character']]
     collection = 'character'
     data: CharacterData
     id_field = 'character_id'

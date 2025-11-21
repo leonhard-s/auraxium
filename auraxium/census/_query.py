@@ -5,7 +5,7 @@ inner, nested queries respectively.
 """
 
 import copy
-from typing import Any, List, Tuple, Type, TypeVar, Union, cast
+from typing import Any, List, Tuple, Type, TypeVar, cast
 
 import yarl
 
@@ -564,8 +564,8 @@ class Query(QueryBase):
             self.data.start = start
         return self
 
-    def sort(self, field: Union[str, Tuple[str, bool]],
-             *args: Union[str, Tuple[str, bool]]) -> 'Query':
+    def sort(self, field: str | Tuple[str, bool],
+             *args: str | Tuple[str, bool]) -> 'Query':
         """Sort the results by one or more fields.
 
         By default, this uses ascending sort order. For descending

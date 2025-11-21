@@ -1,7 +1,7 @@
 """URL generation and validation utility."""
 
 import warnings
-from typing import Dict, Iterable, List, Tuple, Union
+from typing import Dict, Iterable, List, Tuple
 
 import yarl
 
@@ -187,7 +187,7 @@ def _process_query_commands(data: QueryData,
     return commands
 
 
-def _process_sorts(sorts: Iterable[Union[str, Tuple[str, bool]]]) -> List[str]:
+def _process_sorts(sorts: Iterable[str | Tuple[str, bool]]) -> List[str]:
     """Process a top-level query's sort_by attribute into a list.
 
     This mostly handles the sorting direction tuples.
@@ -213,7 +213,7 @@ def _process_sorts(sorts: Iterable[Union[str, Tuple[str, bool]]]) -> List[str]:
     return processed
 
 
-def _process_tree(tree: Dict[str, Union[str, bool] | None]) -> str:
+def _process_tree(tree: Dict[str, str | bool | None]) -> str:
     """Process the dict created by the :meth:`Query.as_tree` method.
 
     :param tree: The dictionary to process.

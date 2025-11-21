@@ -1,7 +1,7 @@
 """Outfit and outfit member class definitions."""
 
 import logging
-from typing import Any, ClassVar, Final, List, TYPE_CHECKING, Type, Union, cast
+from typing import Any, ClassVar, Final, List, TYPE_CHECKING, Type, cast
 
 from ..base import Cached, Named, NamedT
 from .._cache import TLRUCache
@@ -152,7 +152,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
        The number of members in the outfit.
     """
 
-    _cache: ClassVar[TLRUCache[Union[int, str], 'Outfit']]
+    _cache: ClassVar[TLRUCache[int | str, 'Outfit']]
     collection = 'outfit'
     data: OutfitData
     id_field = 'outfit_id'

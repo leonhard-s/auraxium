@@ -1,6 +1,6 @@
 """Shared custom types and global type aliases."""
 
-from typing import Dict, List, Union
+from typing import Dict, List
 
 import pydantic
 
@@ -11,8 +11,7 @@ __all__ = [
     'LocaleData'
 ]
 
-CensusData = Dict[
-    str, Union[str, int, float, 'CensusData', List['CensusData']]]
+CensusData = Dict[str, 'str | int | float | CensusData | List[CensusData]']
 
 
 class LocaleData(pydantic.BaseModel):

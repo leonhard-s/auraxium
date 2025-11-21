@@ -3,17 +3,17 @@ import inspect
 import json
 import warnings
 from typing import (Any, Callable, Coroutine, Dict, Iterable, List,
-                    Set, Type, Union)
+                    Set, Type)
 
 from ..errors import CensusError
 from ..models import CharacterEvent, Event, GainExperience
 from ..ps2 import Character, World
 
-_EventType = Union[Type[Event], str]
-_Condition = Union[Any, Callable[[Event], bool]]
-_Action = Callable[[Event], Union[Coroutine[Any, Any, None], None]]
-_CharConstraint = Union[Iterable[Character], Iterable[int]]
-_WorldConstraint = Union[Iterable[World], Iterable[int]]
+_EventType = Type[Event] | str
+_Condition = Any | Callable[[Event], bool]
+_Action = Callable[[Event], Coroutine[Any, Any, None] | None]
+_CharConstraint = Iterable[Character] | Iterable[int]
+_WorldConstraint = Iterable[World] | Iterable[int]
 
 
 class Trigger:
@@ -193,7 +193,7 @@ class Trigger:
 
     def generate_subscription(self, logical_and: bool | None = None) -> str:
         """Generate the appropriate subscription for this trigger."""
-        json_data: Dict[str, Union[str, List[str]]] = {
+        json_data: Dict[str, str | List[str]] = {
             'action': 'subscribe',
             'eventNames': [e if isinstance(e, str) else e.__name__
                            for e in self.events],

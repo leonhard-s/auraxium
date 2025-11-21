@@ -2,7 +2,7 @@
 
 import enum
 import warnings
-from typing import Dict, Final, List, Tuple, Union
+from typing import Dict, Final, List, Tuple
 
 from ..census import Query
 from ..errors import NotFoundError, ServerError
@@ -57,7 +57,7 @@ class Stat(enum.Enum):
     DEATHS = 3
 
 
-async def by_char(stat: Stat, character: Union[int, Character],
+async def by_char(stat: Stat, character: int | Character,
                   period: Period = Period.FOREVER,
                   *, client: RequestClient) -> Tuple[int, int] | None:
     """Return the rank of the player on the leaderboard.
@@ -84,8 +84,8 @@ async def by_char(stat: Stat, character: Union[int, Character],
     return int(str(data['rank'])), int(str(data['value']))
 
 
-async def by_char_multi(stat: Stat, character: Union[int, Character],
-                        *args: Union[int, Character],
+async def by_char_multi(stat: Stat, character: int | Character,
+                        *args: int | Character,
                         period: Period = Period.FOREVER,
                         client: RequestClient) -> List[Tuple[int, int]]:
     """Return the rank of the players on the leaderboard.
@@ -114,7 +114,7 @@ async def by_char_multi(stat: Stat, character: Union[int, Character],
 
 
 async def top(stat: Stat, period: Period = Period.FOREVER, matches: int = 10,
-              offset: int = 0, world: Union[int, World] | None = None,
+              offset: int = 0, world: int | World | None = None,
               *, client: RequestClient) -> List[Tuple[int, Character]]:
     """Retrieve the top entries on the leaderboard for the given stat.
 

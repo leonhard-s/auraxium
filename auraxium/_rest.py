@@ -17,7 +17,7 @@ import json
 import logging
 import sys
 import warnings
-from typing import Literal, List, Tuple, Type, TypeVar, Union, cast
+from typing import Literal, List, Tuple, Type, TypeVar, cast
 from types import TracebackType
 
 import aiohttp
@@ -52,8 +52,7 @@ class RequestClient:
 
     def __init__(self, loop: asyncio.AbstractEventLoop | None = None,
                  service_id: str = 's:example', profiling: bool = False,
-                 endpoints: Union[yarl.URL, str,
-                                  List[yarl.URL], List[str], None] = None
+                 endpoints: yarl.URL | str | List[yarl.URL] | List[str] | None = None,
                  ) -> None:
 
         self.endpoints: List[yarl.URL] = []

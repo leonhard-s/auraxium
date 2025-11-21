@@ -3,7 +3,7 @@ import contextlib
 import json
 import logging
 from typing import (Any, Callable, Coroutine, Dict, List, Type,
-                    TypeVar, Union, cast, overload)
+                    TypeVar, cast, overload)
 
 import pydantic
 import websockets
@@ -22,8 +22,8 @@ __all__ = [
 
 _EventT = TypeVar('_EventT', bound=Event)
 _EventT2 = TypeVar('_EventT2', bound=Event)
-_CallbackT = Union[Callable[[_EventT], None],
-Callable[[_EventT], Coroutine[Any, Any, None]]]
+_CallbackT = (Callable[[_EventT], None]
+              | Callable[[_EventT], Coroutine[Any, Any, None]])
 
 _log = logging.getLogger('auraxium.ess')
 
@@ -66,7 +66,7 @@ class EventClient(Client):
     """
 
     def __init__(self, *args: Any,
-                 ess_endpoint: Union[yarl.URL, str, None] = None,
+                 ess_endpoint: yarl.URL | str | None = None,
                  **kwargs: Any) -> None:
         super().__init__(*args, **kwargs)
 
@@ -133,7 +133,7 @@ class EventClient(Client):
                 return trigger
         raise KeyError(f'No trigger with name "{name}" found')
 
-    def remove_trigger(self, trigger: Union[Trigger, str], *,
+    def remove_trigger(self, trigger: Trigger | str, *,
                        keep_websocket_alive: bool = False) -> None:
         """Remove an existing event trigger.
 
@@ -329,19 +329,19 @@ class EventClient(Client):
     def trigger(self, event: Type[_EventT],
                 arg1: Type[_EventT], *args: Type[_EventT2],
                 name: str | None = None, **kwargs: Any) -> Callable[
-        [_CallbackT[Union[_EventT, _EventT2]]], None]:
+        [_CallbackT[_EventT | _EventT2]], None]:
         # Two event variant (checks callback argument type)
         ...  # pragma: no cover
 
     @overload
-    def trigger(self, event: Union[str, Type[Event]],
-                *args: Union[str, Type[Event]], name: str | None = None,
+    def trigger(self, event: str | Type[Event],
+                *args: str | Type[Event], name: str | None = None,
                 **kwargs: Any) -> Callable[[_CallbackT[Event]], None]:
         # Generic fallback variant (callback argument type not checked)
         ...  # pragma: no cover
 
-    def trigger(self, event: Union[str, Type[Event]],
-                *args: Union[str, Type[Event]], name: str | None = None,
+    def trigger(self, event: str | Type[Event],
+                *args: str | Type[Event], name: str | None = None,
                 **kwargs: Any) -> Callable[[_CallbackT[Event]], None]:
         """Create and add a trigger for the given action.
 

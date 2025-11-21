@@ -7,7 +7,7 @@ throughout the PlanetSide 2 object model.
 
 import abc
 import logging
-from typing import Any, ClassVar, List, Type, TypeVar, Union, cast
+from typing import Any, ClassVar, List, Type, TypeVar, cast
 
 import pydantic
 
@@ -323,7 +323,7 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
     used for the request.
     """
 
-    _cache: ClassVar[TLRUCache[Union[int, str], Any]]  # type: ignore
+    _cache: ClassVar[TLRUCache[int | str, Any]]  # type: ignore
 
     def __init__(self, *args: Any, locale: str | None = None,
                  **kwargs: Any) -> None:
