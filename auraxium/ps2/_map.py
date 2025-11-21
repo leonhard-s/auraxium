@@ -1,6 +1,6 @@
 """Facility and map class definitions."""
 
-from typing import Final, Optional, Set
+from typing import Final, Set
 
 from ..base import Cached, Named
 from ..census import Query
@@ -211,15 +211,15 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
     # Type hints for data class fallback attributes
     id: int
     zone_id: int
-    facility_id: Optional[int]
+    facility_id: int | None
     facility_name: str
-    facility_type_id: Optional[int]
-    facility_type: Optional[str]
-    location_x: Optional[float]
-    location_y: Optional[float]
-    location_z: Optional[float]
-    reward_amount: Optional[int]
-    reward_currency_id: Optional[int]
+    facility_type_id: int | None
+    facility_type: str | None
+    location_x: float | None
+    location_y: float | None
+    location_z: float | None
+    reward_amount: int | None
+    reward_currency_id: int | None
 
     @classmethod
     def get_by_facility_id(cls, facility_id: int, client: RequestClient

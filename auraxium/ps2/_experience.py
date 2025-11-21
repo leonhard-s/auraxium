@@ -1,7 +1,7 @@
 """Experience and rank class definitions."""
 
 import logging
-from typing import Any, List, Optional, Union, cast
+from typing import Any, List, Union, cast
 
 import pydantic
 
@@ -67,7 +67,7 @@ class Experience(Cached, cache_size=100, cache_ttu=3600.0):
     id: int
     description: str
     xp: int
-    experience_award_type_id: Optional[int]
+    experience_award_type_id: int | None
 
     def experience_award_type(self) -> InstanceProxy['ExperienceAwardType']:
         """Return the faction that has access to this item.

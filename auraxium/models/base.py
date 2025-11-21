@@ -2,7 +2,7 @@
 
 import abc
 import datetime
-from typing import Optional, TypeVar
+from typing import TypeVar
 
 import pydantic
 
@@ -31,7 +31,7 @@ class RESTPayload(Payload):
     @classmethod
     def _convert_null(cls, value: _T,
                       info: pydantic.FieldValidationInfo,
-                      ) -> Optional[_T]:
+                      ) -> _T | None:
         """Replace any "NULL" string inputs with :obj:`None`.
 
         This is a pre-validator; it is run before any other validation
@@ -39,8 +39,8 @@ class RESTPayload(Payload):
 
         By default, the API will omit any NULL fields in the
         response unless the ``c:includeNull`` flag is set. In Python,
-        a missing value is instead. This also ensures that optional
-        values can be type-hinted with :obj:`typing.Optional` without
+        a missing value is instead :obj:`None`. This also ensures that
+        optional values can be type-hinted with :obj:`X | None` without
         risk of errors.
         """
         _ = cls, info
@@ -98,9 +98,9 @@ class ImageData(pydantic.BaseModel):
        The base path to the default :attr:`image_id`.
     """
 
-    image_id: Optional[int] = None
-    image_set_id: Optional[int] = None
-    image_path: Optional[str] = None
+    image_id: int | None = None
+    image_set_id: int | None = None
+    image_path: str | None = None
 
 
 class Event(Payload):

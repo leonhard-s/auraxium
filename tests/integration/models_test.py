@@ -3,7 +3,7 @@
 import json
 import os
 import unittest
-from typing import Any, Dict, List, Optional, Type
+from typing import Any, Dict, List, Type
 
 from auraxium.base import Ps2Object
 from auraxium.models.base import RESTPayload
@@ -35,7 +35,7 @@ class TestModels(unittest.TestCase):
             collection = list(payload.keys())[0][:-5]
             # Find the appropriate class for this collection
             type_: Ps2Object
-            cls_: Optional[Type[RESTPayload]] = None
+            cls_: Type[RESTPayload] | None = None
             for name in ps2.__dict__['__all__']:
                 type_ = getattr(ps2, name)
                 if not hasattr(type_, 'collection'):

@@ -1,7 +1,7 @@
 """URL generation and validation utility."""
 
 import warnings
-from typing import Dict, Iterable, List, Optional, Tuple, Union
+from typing import Dict, Iterable, List, Tuple, Union
 
 import yarl
 
@@ -15,7 +15,7 @@ __all__ = [
 
 
 def generate_url(query: QueryData, verb: str, validate: bool = True,
-                 endpoint: Optional[yarl.URL] = None) -> yarl.URL:
+                 endpoint: yarl.URL | None = None) -> yarl.URL:
     """Generate the URL for a given query.
 
     This will also recursively process any joined queries.
@@ -213,7 +213,7 @@ def _process_sorts(sorts: Iterable[Union[str, Tuple[str, bool]]]) -> List[str]:
     return processed
 
 
-def _process_tree(tree: Dict[str, Optional[Union[str, bool]]]) -> str:
+def _process_tree(tree: Dict[str, Union[str, bool] | None]) -> str:
     """Process the dict created by the :meth:`Query.as_tree` method.
 
     :param tree: The dictionary to process.

@@ -2,7 +2,7 @@ import asyncio
 import contextlib
 import json
 import logging
-from typing import (Any, Callable, Coroutine, Dict, List, Optional, Type,
+from typing import (Any, Callable, Coroutine, Dict, List, Type,
                     TypeVar, Union, cast, overload)
 
 import pydantic
@@ -79,7 +79,7 @@ class EventClient(Client):
             self.ess_endpoint = yarl.URL(ess_endpoint)
 
         self.triggers: List[Trigger] = []
-        self.websocket: Optional[websockets.ClientConnection] = None
+        self.websocket: websockets.ClientConnection | None = None
         self._endpoint_status: Dict[str, bool] = {}
         self._send_queue: List[str] = []
         self._open: bool = False
@@ -320,7 +320,7 @@ class EventClient(Client):
                 await self.websocket.send(msg)
 
     @overload
-    def trigger(self, event: Type[_EventT], *, name: Optional[str] = None,
+    def trigger(self, event: Type[_EventT], *, name: str | None = None,
                 **kwargs: Any) -> Callable[[_CallbackT[_EventT]], None]:
         # Single event variant (checks callback argument type)
         ...  # pragma: no cover
@@ -328,20 +328,20 @@ class EventClient(Client):
     @overload
     def trigger(self, event: Type[_EventT],
                 arg1: Type[_EventT], *args: Type[_EventT2],
-                name: Optional[str] = None, **kwargs: Any) -> Callable[
+                name: str | None = None, **kwargs: Any) -> Callable[
         [_CallbackT[Union[_EventT, _EventT2]]], None]:
         # Two event variant (checks callback argument type)
         ...  # pragma: no cover
 
     @overload
     def trigger(self, event: Union[str, Type[Event]],
-                *args: Union[str, Type[Event]], name: Optional[str] = None,
+                *args: Union[str, Type[Event]], name: str | None = None,
                 **kwargs: Any) -> Callable[[_CallbackT[Event]], None]:
         # Generic fallback variant (callback argument type not checked)
         ...  # pragma: no cover
 
     def trigger(self, event: Union[str, Type[Event]],
-                *args: Union[str, Type[Event]], name: Optional[str] = None,
+                *args: Union[str, Type[Event]], name: str | None = None,
                 **kwargs: Any) -> Callable[[_CallbackT[Event]], None]:
         """Create and add a trigger for the given action.
 
@@ -427,7 +427,7 @@ class EventClient(Client):
             _log.warning('Unhandled message: %s', data)
 
     async def wait_for(self, trigger: Trigger, *args: Trigger,
-                       timeout: Optional[float] = None) -> Event:
+                       timeout: float | None = None) -> Event:
         """Wait for one or more triggers to fire.
 
         This method will wait until any of the given triggers have
@@ -450,7 +450,7 @@ class EventClient(Client):
         # fires or expires. Think of it as an asynchronous flag.
         async_flag = asyncio.Event()
         # Used to store the event received
-        received_event: Optional[Event] = None
+        received_event: Event | None = None
 
         triggers: List[Trigger] = [trigger]
         triggers.extend(args)

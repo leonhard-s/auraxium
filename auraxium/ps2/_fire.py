@@ -1,7 +1,7 @@
 """Fire modes and group class definitions."""
 
 import enum
-from typing import Any, Dict, Final, Optional, cast
+from typing import Any, Dict, Final, cast
 
 from ..base import Cached
 from ..census import Query
@@ -749,95 +749,95 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
 
     # Type hints for data class fallback attributes
     id: int
-    fire_mode_type_id: Optional[int]
-    ability_id: Optional[int]
-    ammo_slot: Optional[int]
+    fire_mode_type_id: int | None
+    ability_id: int | None
+    ammo_slot: int | None
     automatic: bool
-    grief_immune: Optional[bool]
-    iron_sights: Optional[bool]
-    laser_guided: Optional[bool]
+    grief_immune: bool | None
+    iron_sights: bool | None
+    laser_guided: bool | None
     move_modifier: float
-    projectile_speed_override: Optional[int]
-    sprint_fire: Optional[bool]
+    projectile_speed_override: int | None
+    sprint_fire: bool | None
     turn_modifier: float
-    use_in_water: Optional[bool]
+    use_in_water: bool | None
     zoom_default: float
-    cof_override: Optional[float]
-    cof_pellet_spread: Optional[float]
+    cof_override: float | None
+    cof_pellet_spread: float | None
     cof_range: float
-    cof_recoil: Optional[float]
+    cof_recoil: float | None
     cof_scalar: float
     cof_scalar_moving: float
     player_state_group_id: int
-    damage_direct_effect_id: Optional[int]
-    damage_head_multiplier: Optional[float]
-    damage_indirect_effect_id: Optional[int]
-    damage_legs_multiplier: Optional[float]
-    fire_ammo_per_shot: Optional[int]
-    fire_auto_fire_ms: Optional[int]
-    fire_burst_count: Optional[int]
-    fire_charge_up_ms: Optional[int]
-    fire_delay_ms: Optional[int]
-    fire_detect_range: Optional[float]
-    fire_duration_ms: Optional[int]
-    fire_refire_ms: Optional[int]
-    fire_pellets_per_shot: Optional[int]
-    heat_per_shot: Optional[int]
-    heat_recovery_delay_ms: Optional[int]
-    heat_threshold: Optional[int]
-    lockon_acquire_close_ms: Optional[int]
-    lockon_acquire_far_ms: Optional[int]
-    lockon_acquire_ms: Optional[int]
-    lockon_angle: Optional[float]
-    lockon_lose_ms: Optional[int]
-    lockon_maintain: Optional[bool]
-    lockon_range: Optional[float]
-    lockon_range_close: Optional[float]
-    lockon_range_far: Optional[float]
-    lockon_required: Optional[bool]
-    recoil_angle_max: Optional[float]
-    recoil_angle_min: Optional[float]
-    recoil_first_shot_modifier: Optional[float]
-    recoil_horizontal_max: Optional[float]
-    recoil_horizontal_max_increase: Optional[float]
-    recoil_horizontal_min: Optional[float]
-    recoil_horizontal_min_increase: Optional[float]
-    recoil_horizontal_tolerance: Optional[float]
-    recoil_increase: Optional[float]
-    recoil_increase_crouched: Optional[float]
-    recoil_magnitude_max: Optional[float]
-    recoil_magnitude_min: Optional[float]
-    recoil_max_total_magnitude: Optional[float]
-    recoil_recovery_acceleration: Optional[int]
-    recoil_recovery_delay_ms: Optional[int]
-    recoil_recovery_rate: Optional[int]
-    recoil_shots_at_min_magnitude: Optional[int]
-    reload_block_auto: Optional[bool]
-    reload_continuous: Optional[bool]
-    reload_ammo_fill_ms: Optional[int]
-    reload_chamber_ms: Optional[int]
-    reload_loop_start_ms: Optional[int]
-    reload_loop_end_ms: Optional[int]
-    reload_time_ms: Optional[int]
-    sway_amplitude_x: Optional[float]
-    sway_amplitude_y: Optional[float]
-    sway_can_steady: Optional[bool]
-    sway_period_x: Optional[int]
-    sway_period_y: Optional[int]
-    armor_penetration: Optional[float]
-    max_damage: Optional[int]
-    max_damage_ind: Optional[int]
-    max_damage_ind_radius: Optional[float]
-    max_damage_range: Optional[float]
-    min_damage: Optional[int]
-    min_damage_ind: Optional[int]
-    min_damage_ind_radius: Optional[float]
-    min_damage_range: Optional[float]
-    shield_bypass_pct: Optional[int]
+    damage_direct_effect_id: int | None
+    damage_head_multiplier: float | None
+    damage_indirect_effect_id: int | None
+    damage_legs_multiplier: float | None
+    fire_ammo_per_shot: int | None
+    fire_auto_fire_ms: int | None
+    fire_burst_count: int | None
+    fire_charge_up_ms: int | None
+    fire_delay_ms: int | None
+    fire_detect_range: float | None
+    fire_duration_ms: int | None
+    fire_refire_ms: int | None
+    fire_pellets_per_shot: int | None
+    heat_per_shot: int | None
+    heat_recovery_delay_ms: int | None
+    heat_threshold: int | None
+    lockon_acquire_close_ms: int | None
+    lockon_acquire_far_ms: int | None
+    lockon_acquire_ms: int | None
+    lockon_angle: float | None
+    lockon_lose_ms: int | None
+    lockon_maintain: bool | None
+    lockon_range: float | None
+    lockon_range_close: float | None
+    lockon_range_far: float | None
+    lockon_required: bool | None
+    recoil_angle_max: float | None
+    recoil_angle_min: float | None
+    recoil_first_shot_modifier: float | None
+    recoil_horizontal_max: float | None
+    recoil_horizontal_max_increase: float | None
+    recoil_horizontal_min: float | None
+    recoil_horizontal_min_increase: float | None
+    recoil_horizontal_tolerance: float | None
+    recoil_increase: float | None
+    recoil_increase_crouched: float | None
+    recoil_magnitude_max: float | None
+    recoil_magnitude_min: float | None
+    recoil_max_total_magnitude: float | None
+    recoil_recovery_acceleration: int | None
+    recoil_recovery_delay_ms: int | None
+    recoil_recovery_rate: int | None
+    recoil_shots_at_min_magnitude: int | None
+    reload_block_auto: bool | None
+    reload_continuous: bool | None
+    reload_ammo_fill_ms: int | None
+    reload_chamber_ms: int | None
+    reload_loop_start_ms: int | None
+    reload_loop_end_ms: int | None
+    reload_time_ms: int | None
+    sway_amplitude_x: float | None
+    sway_amplitude_y: float | None
+    sway_can_steady: bool | None
+    sway_period_x: int | None
+    sway_period_y: int | None
+    armor_penetration: float | None
+    max_damage: int | None
+    max_damage_ind: int | None
+    max_damage_ind_radius: float | None
+    max_damage_range: float | None
+    min_damage: int | None
+    min_damage_ind: int | None
+    min_damage_ind_radius: float | None
+    min_damage_range: float | None
+    shield_bypass_pct: int | None
     description: LocaleData
 
     @property
-    def type(self) -> Optional[FireModeType]:
+    def type(self) -> FireModeType | None:
         """Return the type of fire mode as an enum."""
         if self.data.fire_mode_type_id is None:
             return None
@@ -922,11 +922,11 @@ class FireGroup(Cached, cache_size=10, cache_ttu=60.0):
 
     # Type hints for data class fallback attributes
     id: int
-    chamber_duration_ms: Optional[int]
-    transition_duration_ms: Optional[int]
-    spool_up_ms: Optional[int]
-    spool_up_initial_refire_ms: Optional[int]
-    can_chamber_ironsights: Optional[bool]
+    chamber_duration_ms: int | None
+    transition_duration_ms: int | None
+    spool_up_ms: int | None
+    spool_up_initial_refire_ms: int | None
+    can_chamber_ironsights: bool | None
 
     def fire_modes(self) -> SequenceProxy[FireMode]:
         """Return the fire modes in the fire group."""

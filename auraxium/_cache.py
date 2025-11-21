@@ -11,7 +11,7 @@ import logging
 import sys
 from collections import OrderedDict
 from typing import (Dict, Generic, Hashable, Iterable, Iterator, List,
-                    Optional, Tuple, TypeVar)
+                    Tuple, TypeVar)
 
 __all__ = [
     'TLRUCache'
@@ -81,7 +81,7 @@ class TLRUCache(Generic[_K, _V]):
     """
 
     def __init__(self, size: int, ttu: float,
-                 name: Optional[str] = None) -> None:
+                 name: str | None = None) -> None:
         """Initialise a new, empty TLRU cache.
 
         :param int size: The maximum number of items in the cache.
@@ -207,7 +207,7 @@ class TLRUCache(Generic[_K, _V]):
         self.remove_lru(count=count-available)
         return count
 
-    def get(self, key: _K) -> Optional[_V]:
+    def get(self, key: _K) -> _V | None:
         """Retrieve an item from the cache.
 
         :param key: The unique identifier of the object to retrieve.

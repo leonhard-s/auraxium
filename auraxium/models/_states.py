@@ -1,7 +1,5 @@
 """Data classes for :mod:`auraxium.ps2._states`."""
 
-from typing import Optional
-
 from .base import RESTPayload
 
 __all__ = [
@@ -77,11 +75,11 @@ class PlayerStateGroup(RESTPayload):
     player_state_group_id: int
     player_state_id: int
     can_iron_sight: bool
-    cof_grow_rate: Optional[float] = None
+    cof_grow_rate: float | None = None
     cof_max: float
     cof_min: float
-    cof_recovery_delay_ms: Optional[int] = None
+    cof_recovery_delay_ms: int | None = None
     cof_recovery_rate: float
-    cof_shots_before_penalty: Optional[int] = None
-    cof_recovery_delay_threshold: Optional[int] = None
-    cof_turn_penalty: Optional[int] = None
+    cof_shots_before_penalty: int | None = None
+    cof_recovery_delay_threshold: int | None = None
+    cof_turn_penalty: int | None = None

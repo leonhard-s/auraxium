@@ -1,7 +1,5 @@
 """Data classes for :mod:`auraxium.ps2._depot`."""
 
-from typing import Optional
-
 from .base import RESTPayload
 from ..types import LocaleData
 
@@ -22,7 +20,7 @@ class MarketingBundleData(RESTPayload):
     name: LocaleData
     description: LocaleData
     image_id: int
-    cert_price: Optional[int]
+    cert_price: int | None
     station_cash_price: int
     release_time: int
 
@@ -41,5 +39,5 @@ class MarketingBundleSingleData(RESTPayload):
     item_id: int
     item_quantity: int
     station_cash_price: int
-    cert_price: Optional[int]
+    cert_price: int | None
     release_time: int

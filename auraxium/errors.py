@@ -1,6 +1,6 @@
 """Custom exceptions specific to the auraxium module."""
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
 import aiohttp
 import yarl
@@ -57,10 +57,10 @@ class UnknownCollectionError(CensusError):
     """
 
     def __init__(self, message: str, url: yarl.URL, namespace: str,
-                 collection: Optional[str]) -> None:
+                 collection: str | None) -> None:
         super().__init__(message, url)
         self.namespace: str = namespace
-        self.collection: Optional[str] = collection
+        self.collection: str | None = collection
 
 
 class ServiceUnavailableError(CensusError):
@@ -149,21 +149,21 @@ class InvalidSearchTermError(ServerError):
     """
 
     def __init__(self, message: str, url: yarl.URL, namespace: str,
-                 collection: str, field: Optional[str]) -> None:
+                 collection: str, field: str | None) -> None:
         super().__init__(message, url)
         self.namespace: str = namespace
         self.collection: str = collection
-        self.field: Optional[str] = field
+        self.field: str | None = field
 
 
 class MaintenanceError(CensusError):
     """Raised if the API is down or undergoing maintenance."""
 
     def __init__(self, message: str, url: yarl.URL,
-                 response: Optional[aiohttp.ClientResponse]
+                 response: aiohttp.ClientResponse | None
                  ) -> None:  # pragma: no cover
         super().__init__(message, url)
-        self.response: Optional[aiohttp.ClientResponse] = response
+        self.response: aiohttp.ClientResponse | None = response
 
 
 class ResponseError(AuraxiumException):

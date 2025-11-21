@@ -7,7 +7,7 @@ streaming service (ESS).
 
 import logging
 import warnings
-from typing import Any, Callable, List, Optional, Type, TypeVar, cast
+from typing import Any, Callable, List, Type, TypeVar, cast
 
 from .base import Named, Ps2Object
 from .census import Query
@@ -104,7 +104,7 @@ class Client(RequestClient):
             matches, type_.collection)]
 
     async def get(self, type_: Type[_Ps2ObjectT], check_case: bool = True,
-                  **kwargs: Any) -> Optional[_Ps2ObjectT]:
+                  **kwargs: Any) -> _Ps2ObjectT | None:
         """Return the first entry matching the given terms.
 
         Like :meth:`Client.find`, but will only return one item.
@@ -131,7 +131,7 @@ class Client(RequestClient):
         return None
 
     async def get_by_id(self, type_: Type[_Ps2ObjectT], id_: int
-                        ) -> Optional[_Ps2ObjectT]:
+                        ) -> _Ps2ObjectT | None:
         """Retrieve an object by its unique Census ID.
 
         Like :meth:`Client.get`, but checks the local cache before
@@ -151,7 +151,7 @@ class Client(RequestClient):
                 'please report this bug to the project maintainers')
         if data:
             return data[0]
-        hook: Optional[Callable[[int], CensusData]]
+        hook: Callable[[int], CensusData] | None
         if (hook := getattr(type_, 'fallback_hook', None)) is not None:
             try:
                 fallback = hook(id_)
@@ -165,7 +165,7 @@ class Client(RequestClient):
         return None
 
     async def get_by_name(self, type_: Type[_NamedT], name: str, *,
-                          locale: str = 'en') -> Optional[_NamedT]:
+                          locale: str = 'en') -> _NamedT | None:
         """Retrieve an object by its unique name.
 
         Depending on the `type_` specified, this may retrieve a cached
@@ -207,7 +207,7 @@ class Client(RequestClient):
         return cast(_NamedT, type_(payload, locale=locale, client=self))
 
     async def _get_world_by_name(self, name: str, locale: str = 'en',
-                                 ) -> Optional[World]:
+                                 ) -> World | None:
         all_worlds = await self.find(World, results=100)
         for world in all_worlds:
             if getattr(world.name, locale).lower() == name.lower():

@@ -1,6 +1,6 @@
 """Bundles and special offer class definitions."""
 
-from typing import Final, List, Optional, Tuple
+from typing import Final, List, Tuple
 
 from ..base import Named, Cached
 from ..census import Query
@@ -72,7 +72,7 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
     id: int
     description: LocaleData
     image_id: int
-    cert_price: Optional[int]
+    cert_price: int | None
     name: LocaleData
     station_cash_price: int
     release_time: int
@@ -160,7 +160,7 @@ class MarketingBundleSingle(Cached, cache_size=100, cache_ttu=60.0):
     item_quantity: int
     name: LocaleData
     station_cash_price: int
-    cert_price: Optional[int]
+    cert_price: int | None
     release_time: int
 
     def item(self) -> InstanceProxy[Item]:

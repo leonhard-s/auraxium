@@ -1,8 +1,6 @@
 """Armor mapping class definitions."""
 
 import enum
-from typing import Optional
-
 from ..base import Cached
 from ..models import ArmourInfoData
 
@@ -116,7 +114,7 @@ class ArmourInfo(Cached, cache_size=100, cache_ttu=60.0):
     id: int
     armor_facing_id: int
     armor_percent: int
-    armor_amount: Optional[int]
+    armor_amount: int | None
     description: str
 
     @property

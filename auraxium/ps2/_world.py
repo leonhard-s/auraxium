@@ -1,7 +1,7 @@
 """World class definition."""
 
 import datetime
-from typing import Any, Final, List, Optional, Tuple, Type, Union
+from typing import Any, Final, List, Tuple, Type, Union
 
 from ..base import Named, NamedT
 from ..census import Query
@@ -51,7 +51,7 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
     id: int
     name: LocaleData
     state: str
-    description: Optional[LocaleData]
+    description: LocaleData | None
 
     async def events(self, **kwargs: Any) -> List[CensusData]:
         """Return events for this world.
@@ -74,7 +74,7 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
     @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
                           client: RequestClient
-                          ) -> Optional[NamedT]:  # pragma: no cover
+                          ) -> NamedT | None:  # pragma: no cover
         """Retrieve a world by name.
 
         This query is always case-insensitive.

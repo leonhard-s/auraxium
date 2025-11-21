@@ -1,8 +1,6 @@
 """Projectile and flight type class definitions."""
 
 import enum
-from typing import Optional
-
 from ..base import Cached
 from ..models import ProjectileData
 
@@ -163,22 +161,22 @@ class Projectile(Cached, cache_size=100, cache_ttu=60.0):
     id: int
     projectile_flight_type_id: int
     speed: int
-    speed_max: Optional[int]
-    acceleration: Optional[int]
-    turn_rate: Optional[int]
-    lifespan: Optional[float]
-    drag: Optional[float]
-    gravity: Optional[float]
-    lockon_acceleration: Optional[float]
-    lockon_lifespan: Optional[float]
-    arm_distance: Optional[float]
-    tether_distance: Optional[float]
-    detonate_distance: Optional[float]
-    detonate_on_contact: Optional[bool]
-    sticky: Optional[bool]
-    sticks_to_players: Optional[bool]
-    lockon_lose_angle: Optional[int]
-    lockon_seek_in_flight: Optional[bool]
+    speed_max: int | None
+    acceleration: int | None
+    turn_rate: int | None
+    lifespan: float | None
+    drag: float | None
+    gravity: float | None
+    lockon_acceleration: float | None
+    lockon_lifespan: float | None
+    arm_distance: float | None
+    tether_distance: float | None
+    detonate_distance: float | None
+    detonate_on_contact: bool | None
+    sticky: bool | None
+    sticks_to_players: bool | None
+    lockon_lose_angle: int | None
+    lockon_seek_in_flight: bool | None
 
     @property
     def flight_type(self) -> ProjectileFlightType:

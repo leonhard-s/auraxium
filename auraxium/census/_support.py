@@ -2,7 +2,7 @@
 
 import dataclasses
 import enum
-from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar, Union
+from typing import Any, Dict, List, Tuple, Type, TypeVar, Union
 
 __all__ = [
     'CensusValue',
@@ -253,7 +253,7 @@ class QueryBaseData:
     Refer to the corresponding setter methods for details.
     """
 
-    collection: Optional[str]
+    collection: str | None
     hide: List[str] = dataclasses.field(default_factory=list)
     joins: List['JoinedQueryData'] = dataclasses.field(default_factory=list)
     show: List[str] = dataclasses.field(default_factory=list)
@@ -275,11 +275,11 @@ class QueryData(QueryBaseData):
     # pylint: disable=too-many-instance-attributes
 
     case: bool = True
-    distinct: Optional[str] = None
+    distinct: str | None = None
     exact_match_first: bool = False
     has: List[str] = dataclasses.field(default_factory=list)
     include_null: bool = False
-    lang: Optional[str] = None
+    lang: str | None = None
     limit: int = 1
     limit_per_db: int = 1
     namespace: str = 'ps2:v2'
@@ -290,7 +290,7 @@ class QueryData(QueryBaseData):
         default_factory=list)
     start: int = 0
     timing: bool = False
-    tree: Optional[Dict[str, Any]] = None
+    tree: Dict[str, Any] | None = None
 
 
 @dataclasses.dataclass()
@@ -300,8 +300,8 @@ class JoinedQueryData(QueryBaseData):
     Refer to the corresponding setter methods for details.
     """
 
-    inject_at: Optional[str] = None
+    inject_at: str | None = None
     is_list: bool = False
     is_outer: bool = True
-    field_on: Optional[str] = None
-    field_to: Optional[str] = None
+    field_on: str | None = None
+    field_to: str | None = None

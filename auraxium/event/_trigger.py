@@ -2,7 +2,7 @@ import datetime
 import inspect
 import json
 import warnings
-from typing import (Any, Callable, Coroutine, Dict, Iterable, List, Optional,
+from typing import (Any, Callable, Coroutine, Dict, Iterable, List,
                     Set, Type, Union)
 
 from ..errors import CensusError
@@ -79,11 +79,11 @@ class Trigger:
     """
 
     def __init__(self, event: _EventType, *args: _EventType,
-                 characters: Optional[_CharConstraint] = None,
-                 worlds: Optional[_WorldConstraint] = None,
-                 conditions: Optional[List[_Condition]] = None,
-                 action: Optional[_Action] = None,
-                 name: Optional[str] = None,
+                 characters: _CharConstraint | None = None,
+                 worlds: _WorldConstraint | None = None,
+                 conditions: List[_Condition] | None = None,
+                 action: _Action | None = None,
+                 name: str | None = None,
                  single_shot: bool = False) -> None:
         """Initialise a new trigger.
 
@@ -113,15 +113,15 @@ class Trigger:
         :param bool single_shot: If true, trigger will be removed from
            any client when it first fires.
         """
-        self.action: Optional[_Action] = action
+        self.action: _Action | None = action
         self.characters: List[int] = []
         if characters is not None:
             self.characters = [
                 c if isinstance(c, int) else c.id for c in characters]
         self.conditions: List[Callable[[Event], bool]] = conditions or []
         self.events: Set[_EventType] = set((event, *args))
-        self.last_run: Optional[datetime.datetime] = None
-        self.name: Optional[str] = name
+        self.last_run: datetime.datetime | None = None
+        self.name: str | None = name
         self.single_shot: bool = single_shot
         self.worlds: List[int] = []
         if worlds is not None:
@@ -191,7 +191,7 @@ class Trigger:
                 return False
         return True
 
-    def generate_subscription(self, logical_and: Optional[bool] = None) -> str:
+    def generate_subscription(self, logical_and: bool | None = None) -> str:
         """Generate the appropriate subscription for this trigger."""
         json_data: Dict[str, Union[str, List[str]]] = {
             'action': 'subscribe',

@@ -1,8 +1,7 @@
 """Character class definition."""
 
 import logging
-from typing import (Any, ClassVar, Final, List, Optional, Tuple, Type, Union,
-                    cast)
+from typing import Any, ClassVar, Final, List, Tuple, Type, Union, cast
 
 from ..base import Named, NamedT
 from .._cache import TLRUCache
@@ -368,7 +367,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
                           client: RequestClient
-                          ) -> Optional[NamedT]:  # pragma: no cover
+                          ) -> NamedT | None:  # pragma: no cover
         """Retrieve an object by its unique name.
 
         This query is always case-insensitive.

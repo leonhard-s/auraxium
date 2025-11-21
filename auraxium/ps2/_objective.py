@@ -1,6 +1,6 @@
 """Objective class definitions."""
 
-from typing import Final, Optional
+from typing import Final
 from ..base import Cached
 from ..census import Query
 from ..models import ObjectiveData, ObjectiveTypeData
@@ -44,15 +44,15 @@ class ObjectiveType(Cached, cache_size=10, cache_ttu=60.0):
     # Type hints for data class fallback attributes
     id: int
     description: str
-    param1: Optional[str]
-    param2: Optional[str]
-    param3: Optional[str]
-    param4: Optional[str]
-    param5: Optional[str]
-    param6: Optional[str]
-    param7: Optional[str]
-    param8: Optional[str]
-    param9: Optional[str]
+    param1: str | None
+    param2: str | None
+    param3: str | None
+    param4: str | None
+    param5: str | None
+    param6: str | None
+    param7: str | None
+    param8: str | None
+    param9: str | None
 
 
 class Objective(Cached, cache_size=10, cache_ttu=60.0):
@@ -101,15 +101,15 @@ class Objective(Cached, cache_size=10, cache_ttu=60.0):
     id: int
     objective_type_id: int
     objective_group_id: int
-    param1: Optional[str]
-    param2: Optional[str]
-    param3: Optional[str]
-    param4: Optional[str]
-    param5: Optional[str]
-    param6: Optional[str]
-    param7: Optional[str]
-    param8: Optional[str]
-    param9: Optional[str]
+    param1: str | None
+    param2: str | None
+    param3: str | None
+    param4: str | None
+    param5: str | None
+    param6: str | None
+    param7: str | None
+    param8: str | None
+    param9: str | None
 
     @classmethod
     def get_by_objective_group(

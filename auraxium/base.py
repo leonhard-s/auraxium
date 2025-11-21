@@ -7,7 +7,7 @@ throughout the PlanetSide 2 object model.
 
 import abc
 import logging
-from typing import Any, ClassVar, List, Optional, Type, TypeVar, Union, cast
+from typing import Any, ClassVar, List, Type, TypeVar, Union, cast
 
 import pydantic
 
@@ -169,7 +169,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
     @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
     async def get(cls: Type[Ps2ObjectT], client: RequestClient,
                   check_case: bool = True, **kwargs: Any
-                  ) -> Optional[Ps2ObjectT]:
+                  ) -> Ps2ObjectT | None:
         """Return the first entry matching the given terms.
 
         Like :meth:`Ps2Object.get`, but will only return one item.
@@ -189,7 +189,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
     @classmethod
     @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
     async def get_by_id(cls: Type[Ps2ObjectT], id_: int, *,
-                        client: RequestClient) -> Optional[Ps2ObjectT]:
+                        client: RequestClient) -> Ps2ObjectT | None:
         """Retrieve an object by its unique Census ID.
 
         :param int id\\_: The unique ID of the object.
@@ -272,7 +272,7 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
                                name=f'{cls.__name__}_Cache')
 
     @classmethod
-    def alter_cache(cls, size: int, ttu: Optional[float] = None) -> None:
+    def alter_cache(cls, size: int, ttu: float | None = None) -> None:
         """Modify the class cache to use a new size and TTU.
 
         This will update and clear the cache for the current class.
@@ -293,7 +293,7 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
     @classmethod
     @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
     async def get_by_id(cls: Type[CachedT], id_: int, *,
-                        client: RequestClient) -> Optional[CachedT]:
+                        client: RequestClient) -> CachedT | None:
         """Retrieve an object by by ID.
 
         This query uses caches and might return an existing instance if
@@ -325,7 +325,7 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
 
     _cache: ClassVar[TLRUCache[Union[int, str], Any]]  # type: ignore
 
-    def __init__(self, *args: Any, locale: Optional[str] = None,
+    def __init__(self, *args: Any, locale: str | None = None,
                  **kwargs: Any) -> None:
         """Initialise the named object.
 
@@ -364,7 +364,7 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
     @classmethod
     @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
     async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
-                          client: RequestClient) -> Optional[NamedT]:
+                          client: RequestClient) -> NamedT | None:
         """Retrieve an object by its unique name.
 
         If the same query has been performed recently, it may be

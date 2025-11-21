@@ -1,6 +1,5 @@
 """Resistance mapping class definitions."""
 
-from typing import Optional
 from ..base import Cached
 from ..census import Query
 from ..models import ResistInfoData, ResistTypeData
@@ -91,9 +90,9 @@ class ResistInfo(Cached, cache_size=100, cache_ttu=60.0):
     # Type hints for data class fallback attributes
     id: int
     resist_type_id: int
-    resist_percent: Optional[int]
-    resist_amount: Optional[int]
-    multiplier_when_headshot: Optional[float]
+    resist_percent: int | None
+    resist_amount: int | None
+    multiplier_when_headshot: float | None
     description: str
 
     def type(self) -> InstanceProxy[ResistType]:

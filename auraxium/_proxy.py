@@ -4,7 +4,7 @@ import asyncio
 import copy
 import datetime
 import warnings
-from typing import (Any, Awaitable, Dict, Generator, Generic, List, Optional,
+from typing import (Any, Awaitable, Dict, Generator, Generic, List,
                     Type, TypeVar)
 
 from .base import Ps2Object
@@ -175,10 +175,10 @@ class InstanceProxy(Proxy[_Ps2ObjectT]):
     Use this if your joins return a single object.
     """
 
-    def __await__(self) -> Generator[Any, None, Optional[_Ps2ObjectT]]:
+    def __await__(self) -> Generator[Any, None, _Ps2ObjectT | None]:
         return self.resolve().__await__()
 
-    async def resolve(self) -> Optional[_Ps2ObjectT]:
+    async def resolve(self) -> _Ps2ObjectT | None:
         """Return the proxy object.
 
         :return: The object, or :obj:`None` if no match was found.

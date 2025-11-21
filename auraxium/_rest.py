@@ -17,7 +17,7 @@ import json
 import logging
 import sys
 import warnings
-from typing import Literal, List, Optional, Tuple, Type, TypeVar, Union, cast
+from typing import Literal, List, Tuple, Type, TypeVar, Union, cast
 from types import TracebackType
 
 import aiohttp
@@ -50,7 +50,7 @@ _log = logging.getLogger('auraxium.http')
 class RequestClient:
     """The REST request handler for Auraxium."""
 
-    def __init__(self, loop: Optional[asyncio.AbstractEventLoop] = None,
+    def __init__(self, loop: asyncio.AbstractEventLoop | None = None,
                  service_id: str = 's:example', profiling: bool = False,
                  endpoints: Union[yarl.URL, str,
                                   List[yarl.URL], List[str], None] = None
@@ -83,9 +83,9 @@ class RequestClient:
         """Enter the context manager and return the client."""
         return self
 
-    async def __aexit__(self, exc_type: Optional[Type[BaseException]],
-                        exc_value: Optional[BaseException],
-                        traceback: Optional[TracebackType]) -> Literal[False]:
+    async def __aexit__(self, exc_type: Type[BaseException] | None,
+                        exc_value: BaseException | None,
+                        traceback: TracebackType | None) -> Literal[False]:
         """Exit the context manager.
 
         This closes the internal HTTP session before exiting, no error
@@ -165,7 +165,7 @@ class RequestClient:
         return data
 
 
-def get_components(url: yarl.URL) -> Tuple[str, Optional[str]]:
+def get_components(url: yarl.URL) -> Tuple[str, str | None]:
     """Return the namespace and collection of a given query.
 
     :param yarl.URL url: The :class:`yarl.URL` to process. Only REST
@@ -388,7 +388,7 @@ def _process_invalid_search_term(msg: str, url: yarl.URL) -> None:
         fields_str = chopped.split(':', maxsplit=1)[1].strip()
         fields: List[str] = [f.strip() for f in fields_str[1:-1].split(',')]
         # Parse the query string to find the faulty field name
-        culprit: Optional[str] = None
+        culprit: str | None = None
         for field, value in url.query.items():
             if field not in fields:
                 culprit = field

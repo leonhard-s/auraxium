@@ -1,7 +1,5 @@
 """Data classes for :mod:`auraxium.ps2._directive`."""
 
-from typing import Optional
-
 from .base import ImageData, RESTPayload
 from ..types import LocaleData
 
@@ -24,9 +22,9 @@ class DirectiveData(RESTPayload, ImageData):
     directive_tree_id: int
     directive_tier_id: int
     objective_set_id: int
-    qualify_requirement_id: Optional[int] = None
+    qualify_requirement_id: int | None = None
     name: LocaleData
-    description: Optional[LocaleData] = None
+    description: LocaleData | None = None
 
 
 class DirectiveTierData(RESTPayload, ImageData):
@@ -38,7 +36,7 @@ class DirectiveTierData(RESTPayload, ImageData):
 
     directive_tier_id: int
     directive_tree_id: int
-    reward_set_id: Optional[int] = None
+    reward_set_id: int | None = None
     directive_points: int
     completion_count: int
     name: LocaleData
@@ -54,7 +52,7 @@ class DirectiveTreeData(RESTPayload, ImageData):
     directive_tree_id: int
     directive_tree_category_id: int
     name: LocaleData
-    description: Optional[LocaleData] = None
+    description: LocaleData | None = None
 
 
 class DirectiveTreeCategoryData(RESTPayload):

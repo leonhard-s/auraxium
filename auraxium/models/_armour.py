@@ -1,6 +1,5 @@
 """Data classes for :mod:`auraxium.ps2._armour`."""
 
-from typing import Optional
 
 from .base import RESTPayload
 
@@ -19,5 +18,5 @@ class ArmourInfoData(RESTPayload):
     armor_info_id: int
     armor_facing_id: int
     armor_percent: int
-    armor_amount: Optional[int] = None
+    armor_amount: int | None = None
     description: str
