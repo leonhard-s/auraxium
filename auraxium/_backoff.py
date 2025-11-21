@@ -31,12 +31,15 @@ class Details(typing.TypedDict):
 
 
 def expo(base: float, factor: float,
-         max_value: float | None = None) -> Generator[float, None, None]:
+         max_value: typing.Optional[float] = None) -> Generator[float, None, None]:
     """Exponential backoff generator.
 
     :param base: The base of the exponentiation.
+    :type base: float
     :param factor: The factor to multiply the exponentiation by.
+    :type factor: float
     :param max_value: The maximum value to yield.
+    :type max_value: float | None
     :yield: The next backoff time in seconds.
     """
     yield 0.0  # No delay for the first attempt
@@ -54,9 +57,9 @@ def on_exception(
     gen: _BackoffGenerator,
     exceptions: Iterable[type[Exception]],
     max_tries: int,
-    on_backoff: BackoffHandler | None = None,
-    on_giveup: BackoffHandler | None = None,
-    on_success: BackoffHandler | None = None,
+    on_backoff: typing.Optional[BackoffHandler] = None,
+    on_giveup: typing.Optional[BackoffHandler] = None,
+    on_success: typing.Optional[BackoffHandler] = None,
 ) -> Callable[[_FuncT], _FuncT]:
     """Decorator for backoff and retry triggered by exceptions.
 
@@ -65,13 +68,19 @@ def on_exception(
     specified exceptions.
 
     :param gen: A generator yielding successive wait times in seconds.
+    :type gen: Generator[float, None, None]
     :param exceptions: An iterable of exception types which trigger
         backoff.
+    :type exceptions: Iterable[type[Exception]]
     :param max_tries: The maximum number of attempts to make before
         giving up.
+    :type max_tries: int
     :param on_backoff: Optional handler called when backing off.
+    :type on_backoff: BackoffHandler | None
     :param on_giveup: Optional handler called when giving up.
+    :type on_giveup: BackoffHandler | None
     :param on_success: Optional handler called on successful call.
+    :type on_success: BackoffHandler | None
     :return: A decorator which applies the backoff strategy to a function.
     """
     if not inspect.isgenerator(gen):
