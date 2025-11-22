@@ -4,8 +4,8 @@ import asyncio
 import copy
 import datetime
 import warnings
-from typing import (Any, Awaitable, Dict, Generator, Generic, List,
-                    Type, TypeVar)
+from collections.abc import Awaitable, Generator
+from typing import Any, Generic, TypeVar
 
 from .base import Ps2Object
 from .census import JoinedQuery, Query
@@ -36,7 +36,7 @@ class Proxy(Generic[_Ps2ObjectT]):
        The API query used to populate the proxy object.
     """
 
-    def __init__(self, type_: Type[_Ps2ObjectT], query: Query,
+    def __init__(self, type_: type[_Ps2ObjectT], query: Query,
                  client: RequestClient, lifetime: float = 60.0) -> None:
         """Initialise the proxy.
 
@@ -53,7 +53,7 @@ class Proxy(Generic[_Ps2ObjectT]):
         self.query: Query = query
         self._client = client
         self._ttu = lifetime
-        self._data: List[_Ps2ObjectT]
+        self._data: list[_Ps2ObjectT]
         self._index: int
         self._lock = asyncio.Lock()
         self._last_fetched = datetime.datetime.fromtimestamp(
@@ -74,7 +74,7 @@ class Proxy(Generic[_Ps2ObjectT]):
             self._data = [self._type(d, client=self._client) for d in list_]
             self._last_fetched = datetime.datetime.now(datetime.timezone.utc)
 
-    def _resolve_nested_payload(self, payload: CensusData) -> List[CensusData]:
+    def _resolve_nested_payload(self, payload: CensusData) -> list[CensusData]:
         """Resolve the object payload.
 
         This introspects the given query to determine the sub-key for
@@ -89,8 +89,8 @@ class Proxy(Generic[_Ps2ObjectT]):
         :return: The native list of payloads, ready for instantiation.
         """
 
-        def resolve_join(join: JoinedQuery, parent: List[Dict[str, Any]]
-                         ) -> List[Dict[str, Any]]:
+        def resolve_join(join: JoinedQuery, parent: list[dict[str, Any]]
+                         ) -> list[dict[str, Any]]:
             # NOTE: The parent list will always be a list of all items the join
             # has been applied to. The resulting list should be a merged set of
             # the elements therein.
@@ -98,7 +98,7 @@ class Proxy(Generic[_Ps2ObjectT]):
             if (on_ := join.data.field_on) is None:
                 raise RuntimeError('Parent field of None not supported')
             # Filter out the payload sub-dict corresponding to the given join
-            data: List[Dict[str, Any]] = []
+            data: list[dict[str, Any]] = []
             for element in parent:
                 value = element.get(f'{on_}_join_{join.data.collection}')
                 if value is None:
@@ -129,7 +129,7 @@ class Proxy(Generic[_Ps2ObjectT]):
         return data
 
 
-class SequenceProxy(Proxy[_Ps2ObjectT], Awaitable[List[_Ps2ObjectT]]):
+class SequenceProxy(Proxy[_Ps2ObjectT], Awaitable[list[_Ps2ObjectT]]):
     """Proxy for lists of results.
 
     This object supports asynchronous iteration (in which case all
@@ -156,10 +156,10 @@ class SequenceProxy(Proxy[_Ps2ObjectT], Awaitable[List[_Ps2ObjectT]]):
         except IndexError as err:
             raise StopAsyncIteration from err
 
-    def __await__(self) -> Generator[Any, None, List[_Ps2ObjectT]]:
+    def __await__(self) -> Generator[Any, None, list[_Ps2ObjectT]]:
         return self.flatten().__await__()
 
-    async def flatten(self) -> List[_Ps2ObjectT]:
+    async def flatten(self) -> list[_Ps2ObjectT]:
         """Retrieve all elements in the response as a list.
 
         :return: A list of instantiated objects.

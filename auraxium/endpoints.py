@@ -1,6 +1,5 @@
 """Third-party community endpoints compatible with Auraxium."""
 
-from typing import Tuple
 import yarl
 
 # Daybreak Game Company Census API
@@ -21,6 +20,6 @@ NANITE_SYSTEMS = yarl.URL('wss://push.nanite-systems.net/streaming')
 SANCTUARY_CENSUS = yarl.URL('https://census.lithafalcon.cc')
 
 
-def defaults() -> Tuple[yarl.URL, yarl.URL]:
+def defaults() -> tuple[yarl.URL, yarl.URL]:
     """Return the default REST and ESS endpoints as a tuple."""
     return DBG_CENSUS, DBG_STREAMING

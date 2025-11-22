@@ -3,7 +3,7 @@
 import datetime
 import json
 import unittest
-from typing import Any, Dict, List, Type
+from typing import Any
 
 import auraxium
 
@@ -27,11 +27,11 @@ class TriggerTest(unittest.TestCase):
             vehicle_id=0, zone_id=2)
 
     @staticmethod
-    def payload_factory(type_: Type[auraxium.event.Event],
+    def payload_factory(type_: type[auraxium.event.Event],
                         *args: Any) -> auraxium.event.Event:
         """Create a payload for the given event type."""
         fields = type_.model_fields
-        params: Dict[str, Any] = {
+        params: dict[str, Any] = {
             k: v for k, v in zip(fields, args) if k != 'timestamp'}
         params['timestamp'] = str(int(TriggerTest.time.timestamp()))
         return type_(**params)
@@ -112,7 +112,7 @@ class TriggerTest(unittest.TestCase):
             character_id=1)
 
         # Various things to use as conditions
-        list_: List[Any] = []
+        list_: list[Any] = []
 
         def callable_false(_: auraxium.event.Event) -> bool:
             return False

@@ -7,14 +7,13 @@ showcases how to switch between the low-level queries used by the
 """
 
 import asyncio
-from typing import List
 
 import auraxium
 from auraxium import ps2
 
 
 async def get_online_friends(char: ps2.Character, client: auraxium.Client
-                             ) -> List[ps2.Character]:
+                             ) -> list[ps2.Character]:
     """Return the online friends of the given character."""
     query = char.query()
 

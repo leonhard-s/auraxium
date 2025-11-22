@@ -3,8 +3,6 @@
 Achievements include weapon medals and service ribbons.
 """
 
-from typing import List
-
 from ..base import ImageMixin, Named
 from ..census import Query
 from ..models import AchievementData
@@ -117,7 +115,7 @@ class Achievement(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
     image_set_id: int | None
     image_path: str | None
 
-    async def objectives(self) -> List[Objective]:
+    async def objectives(self) -> list[Objective]:
         """Return any objectives in the given objective group."""
         query = Query(
             Objective.collection, service_id=self._client.service_id,

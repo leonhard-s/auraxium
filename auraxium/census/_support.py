@@ -2,7 +2,7 @@
 
 import dataclasses
 import enum
-from typing import Any, Dict, List, Tuple, Type, TypeVar
+from typing import Any, TypeVar
 
 __all__ = [
     'CensusValue',
@@ -15,7 +15,7 @@ __all__ = [
 
 # This list connects the string literals to the enum values. The index of the
 # list element must match the corresponding enum value.
-_MODIFIER_LITERALS: List[str] = ['', '<', '[', '>', ']', '^', '*', '!']
+_MODIFIER_LITERALS: list[str] = ['', '<', '[', '>', ']', '^', '*', '!']
 
 CensusValue = float | int | str
 _QueryBaseDataT = TypeVar('_QueryBaseDataT', bound='QueryBaseData')
@@ -189,7 +189,7 @@ class SearchTerm:
         self.value: CensusValue = value
         self.modifier: SearchModifier = modifier
 
-    def as_tuple(self) -> Tuple[str, str]:
+    def as_tuple(self) -> tuple[str, str]:
         """Return a key/value pair representing the search term.
 
         This is a helper function that calls
@@ -254,13 +254,13 @@ class QueryBaseData:
     """
 
     collection: str | None
-    hide: List[str] = dataclasses.field(default_factory=list)
-    joins: List['JoinedQueryData'] = dataclasses.field(default_factory=list)
-    show: List[str] = dataclasses.field(default_factory=list)
-    terms: List[SearchTerm] = dataclasses.field(default_factory=list)
+    hide: list[str] = dataclasses.field(default_factory=list)
+    joins: list['JoinedQueryData'] = dataclasses.field(default_factory=list)
+    show: list[str] = dataclasses.field(default_factory=list)
+    terms: list[SearchTerm] = dataclasses.field(default_factory=list)
 
     @classmethod
-    def from_base(cls: Type[_QueryBaseDataT],
+    def from_base(cls: type[_QueryBaseDataT],
                   data: 'QueryBaseData') -> _QueryBaseDataT:
         """Helper used to copy the base query data components."""
         return cls(**data.__dict__)
@@ -277,20 +277,20 @@ class QueryData(QueryBaseData):
     case: bool = True
     distinct: str | None = None
     exact_match_first: bool = False
-    has: List[str] = dataclasses.field(default_factory=list)
+    has: list[str] = dataclasses.field(default_factory=list)
     include_null: bool = False
     lang: str | None = None
     limit: int = 1
     limit_per_db: int = 1
     namespace: str = 'ps2:v2'
-    resolve: List[str] = dataclasses.field(default_factory=list)
+    resolve: list[str] = dataclasses.field(default_factory=list)
     retry: bool = True
     service_id: str = 's:example'
-    sort: List[str | Tuple[str, bool]] = dataclasses.field(
+    sort: list[str | tuple[str, bool]] = dataclasses.field(
         default_factory=list)
     start: int = 0
     timing: bool = False
-    tree: Dict[str, Any] | None = None
+    tree: dict[str, Any] | None = None
 
 
 @dataclasses.dataclass()

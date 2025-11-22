@@ -1,6 +1,6 @@
 """Bundles and special offer class definitions."""
 
-from typing import Final, List, Tuple
+from typing import Final
 
 from ..base import Named, Cached
 from ..census import Query
@@ -82,7 +82,7 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
         image_id: int = self.data.image_id
         return str(DBG_FILES / f'{image_id}.png')
 
-    async def items(self) -> List[Tuple[Item, int]]:
+    async def items(self) -> list[tuple[Item, int]]:
         """Return the contents of the bundle.
 
         This returns a list of tuples consisting of the item and the
@@ -97,7 +97,7 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
         payload = await self._client.request(query)
         data = extract_payload(payload, collection)
         key_name = f'{Item.id_field}_join_{Item.collection}'
-        items: List[Tuple[Item, int]] = []
+        items: list[tuple[Item, int]] = []
         for item_data in data:
             item = Item(item_data[key_name], client=self._client)
             count = int(str(item_data['quantity']))

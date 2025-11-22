@@ -2,14 +2,14 @@ import datetime
 import inspect
 import json
 import warnings
-from typing import (Any, Callable, Coroutine, Dict, Iterable, List,
-                    Set, Type)
+from collections.abc import Callable, Coroutine, Iterable
+from typing import Any
 
 from ..errors import CensusError
 from ..models import CharacterEvent, Event, GainExperience
 from ..ps2 import Character, World
 
-_EventType = Type[Event] | str
+_EventType = type[Event] | str
 _Condition = Any | Callable[[Event], bool]
 _Action = Callable[[Event], Coroutine[Any, Any, None] | None]
 _CharConstraint = Iterable[Character] | Iterable[int]
@@ -81,7 +81,7 @@ class Trigger:
     def __init__(self, event: _EventType, *args: _EventType,
                  characters: _CharConstraint | None = None,
                  worlds: _WorldConstraint | None = None,
-                 conditions: List[_Condition] | None = None,
+                 conditions: list[_Condition] | None = None,
                  action: _Action | None = None,
                  name: str | None = None,
                  single_shot: bool = False) -> None:
@@ -114,16 +114,16 @@ class Trigger:
            any client when it first fires.
         """
         self.action: _Action | None = action
-        self.characters: List[int] = []
+        self.characters: list[int] = []
         if characters is not None:
             self.characters = [
                 c if isinstance(c, int) else c.id for c in characters]
-        self.conditions: List[Callable[[Event], bool]] = conditions or []
-        self.events: Set[_EventType] = set((event, *args))
+        self.conditions: list[Callable[[Event], bool]] = conditions or []
+        self.events: set[_EventType] = set((event, *args))
         self.last_run: datetime.datetime | None = None
         self.name: str | None = name
         self.single_shot: bool = single_shot
-        self.worlds: List[int] = []
+        self.worlds: list[int] = []
         if worlds is not None:
             self.worlds = [w if isinstance(w, int) else w.id for w in worlds]
 
@@ -193,7 +193,7 @@ class Trigger:
 
     def generate_subscription(self, logical_and: bool | None = None) -> str:
         """Generate the appropriate subscription for this trigger."""
-        json_data: Dict[str, str | List[str]] = {
+        json_data: dict[str, str | list[str]] = {
             'action': 'subscribe',
             'eventNames': [e if isinstance(e, str) else e.__name__
                            for e in self.events],

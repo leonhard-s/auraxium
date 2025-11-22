@@ -1,7 +1,7 @@
 """Fire modes and group class definitions."""
 
 import enum
-from typing import Any, Dict, Final, cast
+from typing import Any, Final, cast
 
 from ..base import Cached
 from ..census import Query
@@ -843,7 +843,7 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
             return None
         return FireModeType(self.data.fire_mode_type_id)
 
-    async def state_groups(self) -> Dict[PlayerState, PlayerStateGroup]:
+    async def state_groups(self) -> dict[PlayerState, PlayerStateGroup]:
         """Return the state-specific data for a fire mode."""
         collection: Final[str] = 'player_state_group_2'
         query = Query(collection, service_id=self._client.service_id)
@@ -852,7 +852,7 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
         query.limit(10)
         payload = await self._client.request(query)
         data = extract_payload(payload, collection)
-        states: Dict[PlayerState, PlayerStateGroup] = {}
+        states: dict[PlayerState, PlayerStateGroup] = {}
         for group_data in data:
             group = PlayerStateGroup(**cast(Any, group_data))
             state = PlayerState(group.player_state_id)

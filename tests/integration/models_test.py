@@ -3,7 +3,7 @@
 import json
 import os
 import unittest
-from typing import Any, Dict, List, Type
+from typing import Any
 
 from auraxium.base import Ps2Object
 from auraxium.models.base import RESTPayload
@@ -28,14 +28,14 @@ class TestModels(unittest.TestCase):
             filepath = os.path.join(directory, filename)
             # Load the payload
             with open(filepath, encoding='utf-8') as payload_file:
-                payload: Dict[str, Any] = json.load(payload_file)
+                payload: dict[str, Any] = json.load(payload_file)
             # Extract the collection name
             _ = payload.pop('returned')
             _ = payload.pop('timing', None)
             collection = list(payload.keys())[0][:-5]
             # Find the appropriate class for this collection
             type_: Ps2Object
-            cls_: Type[RESTPayload] | None = None
+            cls_: type[RESTPayload] | None = None
             for name in ps2.__dict__['__all__']:
                 type_ = getattr(ps2, name)
                 if not hasattr(type_, 'collection'):
@@ -55,7 +55,7 @@ class TestModels(unittest.TestCase):
         directory = os.path.join(PAYLOAD_DIRECTORY, 'enum_payloads')
         type_name = 'NULL'
 
-        def get_id(type_: Dict[str, str]) -> int:
+        def get_id(type_: dict[str, str]) -> int:
             """A helper function to improve test case readability."""
             return int(type_[f'{type_name}_id'])
 
@@ -63,8 +63,8 @@ class TestModels(unittest.TestCase):
         filepath = os.path.join(directory, 'armor_facing.json')
         type_name = 'armor_facing'
         with open(filepath, encoding='utf-8') as payload_file:
-            payload: Dict[str, Any] = json.load(payload_file)
-        type_list: List[Dict[str, str]] = payload[f'{type_name}_list']
+            payload: dict[str, Any] = json.load(payload_file)
+        type_list: list[dict[str, str]] = payload[f'{type_name}_list']
         self.assertEqual(get_id(type_list[0]), ps2.ArmourFacing.FRONT)
         self.assertEqual(get_id(type_list[1]), ps2.ArmourFacing.RIGHT)
         self.assertEqual(get_id(type_list[2]), ps2.ArmourFacing.TOP)
@@ -77,8 +77,8 @@ class TestModels(unittest.TestCase):
         filepath = os.path.join(directory, 'fire_mode_type.json')
         type_name = 'fire_mode_type'
         with open(filepath, encoding='utf-8') as payload_file:
-            payload: Dict[str, Any] = json.load(payload_file)
-        type_list: List[Dict[str, str]] = payload[f'{type_name}_list']
+            payload: dict[str, Any] = json.load(payload_file)
+        type_list = payload[f'{type_name}_list']
         self.assertEqual(get_id(type_list[0]), ps2.FireModeType.PROJECTILE)
         self.assertEqual(get_id(type_list[1]), ps2.FireModeType.IRON_SIGHT)
         self.assertEqual(get_id(type_list[2]), ps2.FireModeType.MELEE)
@@ -90,8 +90,8 @@ class TestModels(unittest.TestCase):
         filepath = os.path.join(directory, 'metagame_event_state.json')
         type_name = 'metagame_event_state'
         with open(filepath, encoding='utf-8') as payload_file:
-            payload: Dict[str, Any] = json.load(payload_file)
-        type_list: List[Dict[str, str]] = payload[f'{type_name}_list']
+            payload: dict[str, Any] = json.load(payload_file)
+        type_list = payload[f'{type_name}_list']
         self.assertEqual(get_id(type_list[0]), ps2.MetagameEventState.STARTED)
         self.assertEqual(get_id(type_list[1]),
                          ps2.MetagameEventState.RESTARTED)
@@ -105,8 +105,8 @@ class TestModels(unittest.TestCase):
         filepath = os.path.join(directory, 'target_type.json')
         type_name = 'target_type'
         with open(filepath, encoding='utf-8') as payload_file:
-            payload: Dict[str, Any] = json.load(payload_file)
-        type_list: List[Dict[str, str]] = payload[f'{type_name}_list']
+            payload: dict[str, Any] = json.load(payload_file)
+        type_list = payload[f'{type_name}_list']
         self.assertEqual(get_id(type_list[0]), ps2.TargetType.SELF)
         self.assertEqual(get_id(type_list[1]), ps2.TargetType.ANY)
         self.assertEqual(get_id(type_list[2]), ps2.TargetType.ENEMY)

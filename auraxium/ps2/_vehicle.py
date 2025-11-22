@@ -1,6 +1,6 @@
 """Vehicle class definitions."""
 
-from typing import Final, List
+from typing import Final
 
 from ..base import Cached, ImageMixin, Named
 from ..census import Query
@@ -107,7 +107,7 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
 
     @classmethod
     async def get_by_faction(cls, faction: Faction | int, *,
-                             client: RequestClient) -> List['Vehicle']:
+                             client: RequestClient) -> list['Vehicle']:
         """Return all vehicles available to the given faction."""
         collection: Final[str] = 'vehicle_faction'
         faction_id = faction.id if isinstance(faction, Faction) else faction

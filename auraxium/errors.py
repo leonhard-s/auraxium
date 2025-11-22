@@ -1,6 +1,6 @@
 """Custom exceptions specific to the auraxium module."""
 
-from typing import Any, Dict
+from typing import Any
 
 import aiohttp
 import yarl
@@ -185,9 +185,9 @@ class PayloadError(AuraxiumException):
     https://github.com/leonhard-s/auraxium/issues either way.
     """
 
-    def __init__(self, message: str, payload: Dict[str, Any]) -> None:
+    def __init__(self, message: str, payload: dict[str, Any]) -> None:
         super().__init__(message)
-        self.payload: Dict[str, Any] = payload
+        self.payload: dict[str, Any] = payload
 
 
 class NotFoundError(AuraxiumException):

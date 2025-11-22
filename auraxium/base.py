@@ -7,7 +7,7 @@ throughout the PlanetSide 2 object model.
 
 import abc
 import logging
-from typing import Any, ClassVar, List, Type, TypeVar, cast
+from typing import Any, ClassVar, TypeVar, cast
 
 import pydantic
 
@@ -58,7 +58,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
     """
 
     collection: ClassVar[str] = 'bogus'
-    _model: ClassVar[Type[RESTPayload]]
+    _model: ClassVar[type[RESTPayload]]
     id_field: ClassVar[str] = 'bogus_id'
 
     def __init__(self, data: CensusData, client: RequestClient) -> None:
@@ -135,10 +135,10 @@ class Ps2Object(metaclass=abc.ABCMeta):
 
     @classmethod
     @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.find`')  # pragma: no cover
-    async def find(cls: Type[Ps2ObjectT], results: int = 10, *,
+    async def find(cls: type[Ps2ObjectT], results: int = 10, *,
                    offset: int = 0, promote_exact: bool = False,
                    check_case: bool = True, client: RequestClient,
-                   **kwargs: Any) -> List[Ps2ObjectT]:
+                   **kwargs: Any) -> list[Ps2ObjectT]:
         """Return a list of entries matching the given terms.
 
         This returns up to as many entries as indicated by the results
@@ -167,7 +167,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
 
     @classmethod
     @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
-    async def get(cls: Type[Ps2ObjectT], client: RequestClient,
+    async def get(cls: type[Ps2ObjectT], client: RequestClient,
                   check_case: bool = True, **kwargs: Any
                   ) -> Ps2ObjectT | None:
         """Return the first entry matching the given terms.
@@ -188,7 +188,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
 
     @classmethod
     @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
-    async def get_by_id(cls: Type[Ps2ObjectT], id_: int, *,
+    async def get_by_id(cls: type[Ps2ObjectT], id_: int, *,
                         client: RequestClient) -> Ps2ObjectT | None:
         """Retrieve an object by its unique Census ID.
 
@@ -292,7 +292,7 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
 
     @classmethod
     @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
-    async def get_by_id(cls: Type[CachedT], id_: int, *,
+    async def get_by_id(cls: type[CachedT], id_: int, *,
                         client: RequestClient) -> CachedT | None:
         """Retrieve an object by by ID.
 
@@ -363,7 +363,7 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
 
     @classmethod
     @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover
-    async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
+    async def get_by_name(cls: type[NamedT], name: str, *, locale: str = 'en',
                           client: RequestClient) -> NamedT | None:
         """Retrieve an object by its unique name.
 

@@ -2,7 +2,7 @@
 
 import enum
 import warnings
-from typing import Dict, Final, List, Tuple
+from typing import Final
 
 from ..census import Query
 from ..errors import NotFoundError, ServerError
@@ -59,7 +59,7 @@ class Stat(enum.Enum):
 
 async def by_char(stat: Stat, character: int | Character,
                   period: Period = Period.FOREVER,
-                  *, client: RequestClient) -> Tuple[int, int] | None:
+                  *, client: RequestClient) -> tuple[int, int] | None:
     """Return the rank of the player on the leaderboard.
 
     Note that only the top 10'000 players are tracked by the
@@ -87,7 +87,7 @@ async def by_char(stat: Stat, character: int | Character,
 async def by_char_multi(stat: Stat, character: int | Character,
                         *args: int | Character,
                         period: Period = Period.FOREVER,
-                        client: RequestClient) -> List[Tuple[int, int]]:
+                        client: RequestClient) -> list[tuple[int, int]]:
     """Return the rank of the players on the leaderboard.
 
     Like by_char, but takes any number of arguments.
@@ -106,7 +106,7 @@ async def by_char_multi(stat: Stat, character: int | Character,
         return []
     payload = await client.request(query)
     data = extract_payload(payload, collection)
-    return_: Dict[int, Tuple[int, int]] = {i: (-1, -1) for i in char_ids}
+    return_: dict[int, tuple[int, int]] = {i: (-1, -1) for i in char_ids}
     for row in data:
         id_ = int(str(row['character_id']))
         return_[id_] = int(str(row['rank'])), int(str(row['value']))
@@ -115,7 +115,7 @@ async def by_char_multi(stat: Stat, character: int | Character,
 
 async def top(stat: Stat, period: Period = Period.FOREVER, matches: int = 10,
               offset: int = 0, world: int | World | None = None,
-              *, client: RequestClient) -> List[Tuple[int, Character]]:
+              *, client: RequestClient) -> list[tuple[int, Character]]:
     """Retrieve the top entries on the leaderboard for the given stat.
 
     Note that only the top 10'000 players are tracked by the

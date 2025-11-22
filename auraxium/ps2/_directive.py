@@ -1,7 +1,5 @@
 """Directive class definitions."""
 
-from typing import List
-
 from ..base import ImageMixin, Named
 from ..census import Query
 from ..models import (DirectiveData, DirectiveTierData,
@@ -246,7 +244,7 @@ class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
         query.add_term(field='directive_tier_id', value=self.id).limit(100)
         return SequenceProxy(Directive, query, client=self._client)
 
-    async def rewards(self) -> List[Reward]:
+    async def rewards(self) -> list[Reward]:
         """Return the rewards granted upon completion of this tier."""
         if self.reward_set_id is None:
             return []

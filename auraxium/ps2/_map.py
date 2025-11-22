@@ -1,6 +1,6 @@
 """Facility and map class definitions."""
 
-from typing import Final, Set
+from typing import Final
 
 from ..base import Cached, Named
 from ..census import Query
@@ -232,14 +232,14 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
                       facility_id=facility_id)
         return InstanceProxy(MapRegion, query, client=client)
 
-    async def get_connected(self) -> Set['MapRegion']:
+    async def get_connected(self) -> set['MapRegion']:
         """Return the facilities connected to this region."""
         if self.data.facility_id is None:
             return set()
         # NOTE: This operation cannot be done in a single query as there is no
         # "or" operator.
         collection: Final[str] = 'facility_link'
-        connected: Set['MapRegion'] = set()
+        connected: set['MapRegion'] = set()
         # Set up the base query
         query = Query(collection, service_id=self._client.service_id)
         query.limit(10)

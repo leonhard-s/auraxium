@@ -7,7 +7,8 @@ streaming service (ESS).
 
 import logging
 import warnings
-from typing import Any, Callable, List, Type, TypeVar, cast
+from collections.abc import Callable
+from typing import Any, TypeVar, cast
 
 from .base import Named, Ps2Object
 from .census import Query
@@ -54,7 +55,7 @@ class Client(RequestClient):
        The :class:`aiohttp.ClientSession` used for REST API requests.
     """
 
-    async def count(self, type_: Type[Ps2Object], **kwargs: Any) -> int:
+    async def count(self, type_: type[Ps2Object], **kwargs: Any) -> int:
         """Return the number of items matching the given terms.
 
         :param type_: The object type to search for.
@@ -73,9 +74,9 @@ class Client(RequestClient):
             raise PayloadError(
                 f'Invalid count: {result["count"]}', result) from err
 
-    async def find(self, type_: Type[_Ps2ObjectT], results: int = 10,
+    async def find(self, type_: type[_Ps2ObjectT], results: int = 10,
                    offset: int = 0, promote_exact: bool = False,
-                   check_case: bool = True, **kwargs: Any) -> List[_Ps2ObjectT]:
+                   check_case: bool = True, **kwargs: Any) -> list[_Ps2ObjectT]:
         """Return a list of entries matching the given terms.
 
         This returns up to as many entries as indicated by the results
@@ -104,7 +105,7 @@ class Client(RequestClient):
         return [type_(i, client=self) for i in extract_payload(
             matches, type_.collection)]
 
-    async def get(self, type_: Type[_Ps2ObjectT], check_case: bool = True,
+    async def get(self, type_: type[_Ps2ObjectT], check_case: bool = True,
                   **kwargs: Any) -> _Ps2ObjectT | None:
         """Return the first entry matching the given terms.
 
@@ -131,7 +132,7 @@ class Client(RequestClient):
             return data[0]
         return None
 
-    async def get_by_id(self, type_: Type[_Ps2ObjectT], id_: int
+    async def get_by_id(self, type_: type[_Ps2ObjectT], id_: int
                         ) -> _Ps2ObjectT | None:
         """Retrieve an object by its unique Census ID.
 
@@ -165,7 +166,7 @@ class Client(RequestClient):
             return type_(fallback, client=self)
         return None
 
-    async def get_by_name(self, type_: Type[_NamedT], name: str, *,
+    async def get_by_name(self, type_: type[_NamedT], name: str, *,
                           locale: str = 'en') -> _NamedT | None:
         """Retrieve an object by its unique name.
 

@@ -1,7 +1,7 @@
 """Weapon class definition."""
 
 import logging
-from typing import Any, Final, List, cast
+from typing import Any, Final, cast
 
 from ..base import Cached
 from ..census import Query
@@ -141,7 +141,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
             return capacity > 0
         return False
 
-    async def ammo_slots(self) -> List[WeaponAmmoSlot]:
+    async def ammo_slots(self) -> list[WeaponAmmoSlot]:
         """Return the ammo slots for the weapon."""
         collection: Final[str] = 'weapon_ammo_slot'
         query = Query(collection, service_id=self._client.service_id)

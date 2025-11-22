@@ -5,7 +5,7 @@ inner, nested queries respectively.
 """
 
 import copy
-from typing import Any, List, Tuple, Type, TypeVar, cast
+from typing import Any, TypeVar
 
 import yarl
 
@@ -63,7 +63,7 @@ class QueryBase:
         :type kwargs: float | int | str
         """
         self.data: QueryBaseData = QueryBaseData(collection)
-        self.joins: List[JoinedQuery] = []
+        self.joins: list[JoinedQuery] = []
         # Replace and double underscores with dots to allow accessing inner
         # fields like "name.first" or "battle_rank.value"
         kwargs = {k.replace('__', '.'): v for k, v in kwargs.items()}
@@ -118,7 +118,7 @@ class QueryBase:
         return self
 
     @classmethod
-    def copy(cls: Type[_QueryBaseT], template: 'QueryBase',
+    def copy(cls: type[_QueryBaseT], template: 'QueryBase',
              copy_joins: bool = False, deep_copy: bool = False,
              **kwargs: Any) -> _QueryBaseT:
         """Create a new query, copying most data from the template.
@@ -564,8 +564,8 @@ class Query(QueryBase):
             self.data.start = start
         return self
 
-    def sort(self, field: str | Tuple[str, bool],
-             *args: str | Tuple[str, bool]) -> 'Query':
+    def sort(self, field: str | tuple[str, bool],
+             *args: str | tuple[str, bool]) -> 'Query':
         """Sort the results by one or more fields.
 
         By default, this uses ascending sort order. For descending

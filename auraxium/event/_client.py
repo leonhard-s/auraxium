@@ -2,8 +2,8 @@ import asyncio
 import contextlib
 import json
 import logging
-from typing import (Any, Callable, Coroutine, Dict, List, Type,
-                    TypeVar, cast, overload)
+from collections.abc import Callable, Coroutine
+from typing import Any, TypeVar, cast, overload
 
 import pydantic
 import websockets
@@ -78,15 +78,15 @@ class EventClient(Client):
         else:
             self.ess_endpoint = yarl.URL(ess_endpoint)
 
-        self.triggers: List[Trigger] = []
+        self.triggers: list[Trigger] = []
         self.websocket: websockets.ClientConnection | None = None
-        self._endpoint_status: Dict[str, bool] = {}
-        self._send_queue: List[str] = []
+        self._endpoint_status: dict[str, bool] = {}
+        self._send_queue: list[str] = []
         self._open: bool = False
         _log.addFilter(RedactingFilter(self.service_id))
 
     @property
-    def endpoint_status(self) -> Dict[str, bool]:
+    def endpoint_status(self) -> dict[str, bool]:
         """Return endpoint status info.
 
         This returns a dictionary mapping API event server endpoints to
@@ -320,28 +320,28 @@ class EventClient(Client):
                 await self.websocket.send(msg)
 
     @overload
-    def trigger(self, event: Type[_EventT], *, name: str | None = None,
+    def trigger(self, event: type[_EventT], *, name: str | None = None,
                 **kwargs: Any) -> Callable[[_CallbackT[_EventT]], None]:
         # Single event variant (checks callback argument type)
         ...  # pragma: no cover
 
     @overload
-    def trigger(self, event: Type[_EventT],
-                arg1: Type[_EventT], *args: Type[_EventT2],
+    def trigger(self, event: type[_EventT],
+                arg1: type[_EventT], *args: type[_EventT2],
                 name: str | None = None, **kwargs: Any) -> Callable[
         [_CallbackT[_EventT | _EventT2]], None]:
         # Two event variant (checks callback argument type)
         ...  # pragma: no cover
 
     @overload
-    def trigger(self, event: str | Type[Event],
-                *args: str | Type[Event], name: str | None = None,
+    def trigger(self, event: str | type[Event],
+                *args: str | type[Event], name: str | None = None,
                 **kwargs: Any) -> Callable[[_CallbackT[Event]], None]:
         # Generic fallback variant (callback argument type not checked)
         ...  # pragma: no cover
 
-    def trigger(self, event: str | Type[Event],
-                *args: str | Type[Event], name: str | None = None,
+    def trigger(self, event: str | type[Event],
+                *args: str | type[Event], name: str | None = None,
                 **kwargs: Any) -> Callable[[_CallbackT[Event]], None]:
         """Create and add a trigger for the given action.
 
@@ -405,7 +405,7 @@ class EventClient(Client):
                            event.event_name)
                 self.dispatch(event)
             elif data['type'] == 'heartbeat':  # pragma: no cover
-                servers = cast(Dict[str, str], data['online'])
+                servers = cast(dict[str, str], data['online'])
                 self._endpoint_status = {
                     k.split('_', maxsplit=2)[1]: v == 'true'
                     for k, v in servers.items()}
@@ -452,7 +452,7 @@ class EventClient(Client):
         # Used to store the event received
         received_event: Event | None = None
 
-        triggers: List[Trigger] = [trigger]
+        triggers: list[Trigger] = [trigger]
         triggers.extend(args)
 
         def callback(event: Event) -> None:

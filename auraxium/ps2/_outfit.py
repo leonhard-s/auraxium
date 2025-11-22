@@ -1,7 +1,7 @@
 """Outfit and outfit member class definitions."""
 
 import logging
-from typing import Any, ClassVar, Final, List, TYPE_CHECKING, Type, cast
+from typing import Any, ClassVar, Final, TYPE_CHECKING, cast
 
 from ..base import Cached, Named, NamedT
 from .._cache import TLRUCache
@@ -174,7 +174,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
 
     @classmethod
     @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')
-    async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
+    async def get_by_name(cls: type[NamedT], name: str, *, locale: str = 'en',
                           client: RequestClient
                           ) -> NamedT | None:  # pragma: no cover
         """Retrieve an outfit by its unique name.
@@ -237,7 +237,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         query.limit(5000)
         return SequenceProxy(OutfitMember, query, client=self._client)
 
-    async def ranks(self) -> List[OutfitRankData]:
+    async def ranks(self) -> list[OutfitRankData]:
         """Return the list of ranks for the outfit."""
         collection: Final[str] = 'outfit_rank'
         query = Query(collection, service_id=self._client.service_id)

@@ -1,7 +1,7 @@
 """Experience and rank class definitions."""
 
 import logging
-from typing import Any, List, cast
+from typing import Any, cast
 
 import pydantic
 
@@ -190,7 +190,7 @@ class ExperienceRank:
         """Return the default image for this type."""
         if isinstance(faction, Faction):
             faction = faction.id
-        internal_tag: List[str] = ['null', 'vs', 'nc', 'tr', 'nso']
+        internal_tag: list[str] = ['null', 'vs', 'nc', 'tr', 'nso']
         image_id = getattr(self.data, internal_tag[faction])
         return str(DBG_FILES / f'{image_id}.png')
 

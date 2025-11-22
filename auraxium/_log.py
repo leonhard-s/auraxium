@@ -1,5 +1,4 @@
 import logging
-from typing import List
 
 
 class RedactingFilter(logging.Filter):
@@ -12,7 +11,7 @@ class RedactingFilter(logging.Filter):
 
     """
 
-    def __init__(self, secrets: List[str] | str, *args: str) -> None:
+    def __init__(self, secrets: list[str] | str, *args: str) -> None:
         super().__init__()
         if isinstance(secrets, str):
             secrets = [secrets]

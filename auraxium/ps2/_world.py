@@ -1,7 +1,7 @@
 """World class definition."""
 
 import datetime
-from typing import Any, Final, List, Tuple, Type
+from typing import Any, Final
 
 from ..base import Named, NamedT
 from ..census import Query
@@ -53,7 +53,7 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
     state: str
     description: LocaleData | None
 
-    async def events(self, **kwargs: Any) -> List[CensusData]:
+    async def events(self, **kwargs: Any) -> list[CensusData]:
         """Return events for this world.
 
         This provides a REST endpoint for past alerts (MetagameEvent)
@@ -72,7 +72,7 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
 
     @classmethod
     @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')
-    async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
+    async def get_by_name(cls: type[NamedT], name: str, *, locale: str = 'en',
                           client: RequestClient
                           ) -> NamedT | None:  # pragma: no cover
         """Retrieve a world by name.
@@ -94,12 +94,12 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
         return None
 
     async def map(self, zone: int | Zone,
-                  *args: int | Zone) -> List[CensusData]:
+                  *args: int | Zone) -> list[CensusData]:
         """Return the map status of a given zone."""
         collection: Final[str] = 'map'
         query = Query(collection, service_id=self._client.service_id)
         query.add_term(field=self.id_field, value=self.id)
-        zone_ids: List[int] = [zone if isinstance(zone, int) else zone.id]
+        zone_ids: list[int] = [zone if isinstance(zone, int) else zone.id]
         zone_ids.extend(z if isinstance(z, int) else z.id for z in args)
         value = ','.join(str(z) for z in zone_ids)
         query.add_term(field='zone_ids', value=value)
@@ -108,7 +108,7 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
         data = extract_payload(payload, collection=collection)
         return data
 
-    async def status(self) -> Tuple[str, datetime.datetime]:
+    async def status(self) -> tuple[str, datetime.datetime]:
         """Return the online status for the world.
 
         This returns a tuple consisting of the reported server state
