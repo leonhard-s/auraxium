@@ -2,7 +2,7 @@
 
 import abc
 import datetime
-from typing import TypeVar
+from typing import Any, TypeVar
 
 import pydantic
 
@@ -30,7 +30,7 @@ class RESTPayload(Payload):
     @pydantic.field_validator('*', mode='before')
     @classmethod
     def _convert_null(cls, value: _T,
-                      info: pydantic.FieldValidationInfo,
+                      info: Any,
                       ) -> _T | None:
         """Replace any "NULL" string inputs with :obj:`None`.
 
@@ -135,7 +135,7 @@ class Event(Payload):
     @pydantic.field_validator('timestamp', mode='before')
     @classmethod
     def _utc_from_timestamp(cls, value: str,
-                            info: pydantic.FieldValidationInfo,
+                            info: Any,
                             ) -> datetime.datetime:
         """Convert timestamps to UTC datetimes."""
         _ = info

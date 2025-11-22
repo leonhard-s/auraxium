@@ -360,8 +360,8 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
                       endpoint=self._client.endpoints[0],
                       character_id=','.join(character_ids))
         payload = await self._client.request(query)
-        data = extract_payload(payload, self.collection)
-        return [Character(d, client=self._client) for d in data]
+        friends_data = extract_payload(payload, self.collection)
+        return [Character(d, client=self._client) for d in friends_data]
 
     @classmethod
     @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')
@@ -375,7 +375,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         log.debug('%s "%s"[%s] requested', cls.__name__, name, locale)
         if (instance := cls._cache.get(f'_{name.lower()}')) is not None:
             log.debug('%r restored from cache', instance)
-            return instance
+            return cast(NamedT, instance)
         log.debug('%s "%s"[%s] not cached, generating API query...',
                   cls.__name__, name, locale)
         query = Query(cls.collection, service_id=client.service_id,
@@ -431,7 +431,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
                 title_name = getattr(title.name, locale, None)
                 if title_name is not None:
                     return f'{title_name} {self.name.first}'
-        return self.name.first
+        return str(self.name.first)
 
     async def online_status(self) -> int:
         """Return the online status of the character.

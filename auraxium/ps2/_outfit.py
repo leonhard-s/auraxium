@@ -184,7 +184,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         log.debug('%s "%s"[%s] requested', cls.__name__, name, locale)
         if (instance := cls._cache.get(f'_{name.lower()}')) is not None:
             log.debug('%r restored from cache', instance)
-            return instance
+            return cast(NamedT, instance)
         log.debug('%s "%s"[%s] not cached, generating API query...',
                   cls.__name__, name, locale)
         query = Query(cls.collection, service_id=client.service_id,

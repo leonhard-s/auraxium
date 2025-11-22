@@ -168,7 +168,7 @@ class EventClient(Client):
             _log.info('All triggers have been removed, closing websocket')
             self.loop.create_task(self.close())
 
-    def _subscribe_all(self):
+    def _subscribe_all(self) -> None:
         """Add subscription messages for every registered trigger.
 
         This will add a subscription message for every trigger currently registered with the client.

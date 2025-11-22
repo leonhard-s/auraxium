@@ -308,7 +308,7 @@ class Cached(Ps2Object, metaclass=abc.ABCMeta):
         _log.debug('<%s:%d> requested', cls.__name__, id_)
         if (instance := cls._cache.get(id_)) is not None:
             _log.debug('%r restored from cache', instance)
-            return instance
+            return cast(CachedT, instance)
         _log.debug('<%s:%d> not cached, generating API query...',
                    cls.__name__, id_)
         return await super().get_by_id(id_, client=client)

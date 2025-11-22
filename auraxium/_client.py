@@ -11,6 +11,7 @@ from typing import Any, Callable, List, Type, TypeVar, cast
 
 from .base import Named, Ps2Object
 from .census import Query
+from ._cache import TLRUCache
 from .errors import NotFoundError, PayloadError
 from .ps2 import Character, World
 from ._rest import RequestClient, extract_payload, extract_single
@@ -186,8 +187,8 @@ class Client(RequestClient):
         """
         key = f'{locale}_{name.lower()}'
         _log.debug('%s "%s"[%s] requested', type_.__name__, name, locale)
-        # pylint: disable=protected-access
-        if (instance := type_._cache.get(key)) is not None:  # type: ignore
+        cache: TLRUCache[str, _NamedT] | None = getattr(type_, '_cache')
+        if cache is not None and (instance := cache.get(key)) is not None:
             _log.debug('%r restored from cache', instance)
             return instance
         _log.debug('%s "%s"[%s] not cached, generating API query...',
@@ -204,7 +205,7 @@ class Client(RequestClient):
             payload = extract_single(payload, type_.collection)
         except NotFoundError:  # pragma: no cover
             return None
-        return cast(_NamedT, type_(payload, locale=locale, client=self))
+        return type_(payload, locale=locale, client=self)
 
     async def _get_world_by_name(self, name: str, locale: str = 'en',
                                  ) -> World | None:

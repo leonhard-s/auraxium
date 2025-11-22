@@ -745,8 +745,7 @@ class JoinedQuery(QueryBase):
         # If the original query had a non-default limit value, the join should
         # also return a list.
         elif isinstance(template, Query):
-            data = cast(QueryData, template.data)
-            if data.limit > 1 or data.limit_per_db > 1:
+            if template.data.limit > 1 or template.data.limit_per_db > 1:
                 instance.data.is_list = True
         return instance
 

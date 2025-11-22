@@ -255,8 +255,7 @@ class MapRegion(Cached, cache_size=100, cache_ttu=60.0):
         # Modified query B
         query.data.terms = []
         query.add_term(field='facility_id_b', value=self.data.facility_id)
-        proxy: SequenceProxy[MapRegion] = SequenceProxy(
-            MapRegion, query, client=self._client)
+        proxy = SequenceProxy(MapRegion, query, client=self._client)
         connected.update(await proxy.flatten())
         return connected
 
