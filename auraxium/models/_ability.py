@@ -1,7 +1,5 @@
 """Data classes for :mod:`auraxium.ps2._ability`."""
 
-from typing import Optional
-
 from .base import RESTPayload
 
 __all__ = [
@@ -20,34 +18,34 @@ class AbilityData(RESTPayload):
 
     ability_id: int
     ability_type_id: int
-    expire_msec: Optional[int] = None
-    first_use_delay_msec: Optional[int] = None
-    next_use_delay_msec: Optional[int] = None
-    reuse_delay_msec: Optional[int] = None
-    resource_type_id: Optional[int] = None
-    resource_first_cost: Optional[int] = None
-    resource_cost_per_msec: Optional[int] = None
-    distance_max: Optional[float] = None
-    radius_max: Optional[float] = None
-    flag_toggle: Optional[bool] = None
-    param1: Optional[str] = None
-    param2: Optional[str] = None
-    param3: Optional[str] = None
-    param4: Optional[str] = None
-    param5: Optional[str] = None
-    param6: Optional[str] = None
-    param7: Optional[str] = None
-    param8: Optional[str] = None
-    param9: Optional[str] = None
-    param10: Optional[str] = None
-    param11: Optional[str] = None
-    param12: Optional[str] = None
-    param13: Optional[str] = None
-    param14: Optional[str] = None
-    string1: Optional[str] = None
-    string2: Optional[str] = None
-    string3: Optional[str] = None
-    string4: Optional[str] = None
+    expire_msec: int | None = None
+    first_use_delay_msec: int | None = None
+    next_use_delay_msec: int | None = None
+    reuse_delay_msec: int | None = None
+    resource_type_id: int | None = None
+    resource_first_cost: int | None = None
+    resource_cost_per_msec: int | None = None
+    distance_max: float | None = None
+    radius_max: float | None = None
+    flag_toggle: bool | None = None
+    param1: str | None = None
+    param2: str | None = None
+    param3: str | None = None
+    param4: str | None = None
+    param5: str | None = None
+    param6: str | None = None
+    param7: str | None = None
+    param8: str | None = None
+    param9: str | None = None
+    param10: str | None = None
+    param11: str | None = None
+    param12: str | None = None
+    param13: str | None = None
+    param14: str | None = None
+    string1: str | None = None
+    string2: str | None = None
+    string3: str | None = None
+    string4: str | None = None
 
 
 class AbilityTypeData(RESTPayload):
@@ -58,25 +56,25 @@ class AbilityTypeData(RESTPayload):
     """
 
     ability_type_id: int
-    description: Optional[str] = None
-    param1: Optional[str] = None
-    param2: Optional[str] = None
-    param3: Optional[str] = None
-    param4: Optional[str] = None
-    param5: Optional[str] = None
-    param6: Optional[str] = None
-    param7: Optional[str] = None
-    param8: Optional[str] = None
-    param9: Optional[str] = None
-    param10: Optional[str] = None
-    param11: Optional[str] = None
-    param12: Optional[str] = None
-    param13: Optional[str] = None
-    param14: Optional[str] = None
-    string1: Optional[str] = None
-    string2: Optional[str] = None
-    string3: Optional[str] = None
-    string4: Optional[str] = None
+    description: str | None = None
+    param1: str | None = None
+    param2: str | None = None
+    param3: str | None = None
+    param4: str | None = None
+    param5: str | None = None
+    param6: str | None = None
+    param7: str | None = None
+    param8: str | None = None
+    param9: str | None = None
+    param10: str | None = None
+    param11: str | None = None
+    param12: str | None = None
+    param13: str | None = None
+    param14: str | None = None
+    string1: str | None = None
+    string2: str | None = None
+    string3: str | None = None
+    string4: str | None = None
 
 
 class ResourceTypeData(RESTPayload):

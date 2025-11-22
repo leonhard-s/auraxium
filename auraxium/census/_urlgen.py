@@ -1,7 +1,7 @@
 """URL generation and validation utility."""
 
 import warnings
-from typing import Dict, Iterable, List, Optional, Tuple, Union
+from collections.abc import Iterable
 
 import yarl
 
@@ -15,7 +15,7 @@ __all__ = [
 
 
 def generate_url(query: QueryData, verb: str, validate: bool = True,
-                 endpoint: Optional[yarl.URL] = None) -> yarl.URL:
+                 endpoint: yarl.URL | None = None) -> yarl.URL:
     """Generate the URL for a given query.
 
     This will also recursively process any joined queries.
@@ -111,7 +111,7 @@ def process_join(data: JoinedQueryData, verbose: bool) -> str:
 
 
 def _process_query_commands(data: QueryData,
-                            validate: bool = True) -> Dict[str, str]:
+                            validate: bool = True) -> dict[str, str]:
     """Process any query commands defined for the given query.
 
     This also recursively processes any joins defined.
@@ -123,7 +123,7 @@ def _process_query_commands(data: QueryData,
        will be an empty dict if the query does not use any query
        commands.
     """
-    commands: Dict[str, str] = {}
+    commands: dict[str, str] = {}
     # c:show
     if show := data.show:
         commands['show'] = ','.join(str(f) for f in show)
@@ -187,7 +187,7 @@ def _process_query_commands(data: QueryData,
     return commands
 
 
-def _process_sorts(sorts: Iterable[Union[str, Tuple[str, bool]]]) -> List[str]:
+def _process_sorts(sorts: Iterable[str | tuple[str, bool]]) -> list[str]:
     """Process a top-level query's sort_by attribute into a list.
 
     This mostly handles the sorting direction tuples.
@@ -198,7 +198,7 @@ def _process_sorts(sorts: Iterable[Union[str, Tuple[str, bool]]]) -> List[str]:
        encountered.
     :return: A list of sorting fields with sort order tokens.
     """
-    processed: List[str] = []
+    processed: list[str] = []
     for sort in sorts:
         # Plain strings can be kept as-is
         if isinstance(sort, str):
@@ -213,7 +213,7 @@ def _process_sorts(sorts: Iterable[Union[str, Tuple[str, bool]]]) -> List[str]:
     return processed
 
 
-def _process_tree(tree: Dict[str, Optional[Union[str, bool]]]) -> str:
+def _process_tree(tree: dict[str, str | bool | None]) -> str:
     """Process the dict created by the :meth:`Query.as_tree` method.
 
     :param tree: The dictionary to process.

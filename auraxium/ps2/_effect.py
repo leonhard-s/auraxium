@@ -1,8 +1,6 @@
 """Effect and effect type class definitions."""
 
 import enum
-from typing import Optional
-
 from ..base import Cached
 from ..census import Query
 from ..models import (EffectData, EffectTypeData, ZoneEffectData,
@@ -81,19 +79,19 @@ class EffectType(Cached, cache_size=20, cache_ttu=60.0):
     # Type hints for data class fallback attributes
     id: int
     description: str
-    param1: Optional[str]
-    param2: Optional[str]
-    param3: Optional[str]
-    param4: Optional[str]
-    param5: Optional[str]
-    param6: Optional[str]
-    param7: Optional[str]
-    param8: Optional[str]
-    param9: Optional[str]
-    param10: Optional[str]
-    param11: Optional[str]
-    param12: Optional[str]
-    param13: Optional[str]
+    param1: str | None
+    param2: str | None
+    param3: str | None
+    param4: str | None
+    param5: str | None
+    param6: str | None
+    param7: str | None
+    param8: str | None
+    param9: str | None
+    param10: str | None
+    param11: str | None
+    param12: str | None
+    param13: str | None
 
 
 class Effect(Cached, cache_size=10, cache_ttu=60.0):
@@ -187,24 +185,24 @@ class Effect(Cached, cache_size=10, cache_ttu=60.0):
     # Type hints for data class fallback attributes
     id: int
     effect_type_id: int
-    ability_id: Optional[int]
-    target_type_id: Optional[int]
+    ability_id: int | None
+    target_type_id: int | None
     resist_type_id: int
-    is_drain: Optional[bool]
-    duration_seconds: Optional[float]
-    param1: Optional[str]
-    param2: Optional[str]
-    param3: Optional[str]
-    param4: Optional[str]
-    param5: Optional[str]
-    param6: Optional[str]
-    param7: Optional[str]
-    param8: Optional[str]
-    param9: Optional[str]
-    param10: Optional[str]
-    param11: Optional[str]
-    param12: Optional[str]
-    param13: Optional[str]
+    is_drain: bool | None
+    duration_seconds: float | None
+    param1: str | None
+    param2: str | None
+    param3: str | None
+    param4: str | None
+    param5: str | None
+    param6: str | None
+    param7: str | None
+    param8: str | None
+    param9: str | None
+    param10: str | None
+    param11: str | None
+    param12: str | None
+    param13: str | None
 
     def resist_type(self) -> InstanceProxy[ResistType]:
         """Return the resist type of the effect.
@@ -216,7 +214,7 @@ class Effect(Cached, cache_size=10, cache_ttu=60.0):
         query.add_term(field=ResistType.id_field, value=self.resist_type_id)
         return InstanceProxy(ResistType, query, client=self._client)
 
-    def target_type(self) -> Optional[TargetType]:
+    def target_type(self) -> TargetType | None:
         """Return the target type of this effect."""
         if self.data.target_type_id is None:
             return None
@@ -265,12 +263,12 @@ class ZoneEffectType(Cached, cache_size=20, cache_ttu=60.0):
     # Type hints for data class fallback attributes
     id: int
     description: str
-    param1: Optional[str]
-    param2: Optional[str]
-    param3: Optional[str]
-    param4: Optional[str]
-    param5: Optional[str]
-    param6: Optional[str]
+    param1: str | None
+    param2: str | None
+    param3: str | None
+    param4: str | None
+    param5: str | None
+    param6: str | None
 
 
 class ZoneEffect(Cached, cache_size=10, cache_ttu=60.0):
@@ -345,12 +343,12 @@ class ZoneEffect(Cached, cache_size=10, cache_ttu=60.0):
     id: int
     zone_effect_type_id: int
     ability_id: int
-    param1: Optional[str]
-    param2: Optional[str]
-    param3: Optional[str]
-    param4: Optional[str]
-    param5: Optional[str]
-    param6: Optional[str]
+    param1: str | None
+    param2: str | None
+    param3: str | None
+    param4: str | None
+    param5: str | None
+    param6: str | None
 
     def ability(self) -> InstanceProxy[Ability]:
         """Return the ability associated with this zone effect."""

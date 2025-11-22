@@ -1,7 +1,5 @@
 """Data classes for :mod:`auraxium.ps2._projectile`."""
 
-from typing import Optional
-
 from .base import RESTPayload
 
 __all__ = [
@@ -19,19 +17,19 @@ class ProjectileData(RESTPayload):
     projectile_id: int
     projectile_flight_type_id: int
     speed: int
-    speed_max: Optional[int] = None
-    acceleration: Optional[int] = None
-    turn_rate: Optional[int] = None
-    lifespan: Optional[float] = None
-    drag: Optional[float] = None
-    gravity: Optional[float] = None
-    lockon_acceleration: Optional[float] = None
-    lockon_lifespan: Optional[float] = None
-    arm_distance: Optional[float] = None
-    tether_distance: Optional[float] = None
-    detonate_distance: Optional[float] = None
-    detonate_on_contact: Optional[bool] = None
-    sticky: Optional[bool] = None
-    sticks_to_players: Optional[bool] = None
-    lockon_lose_angle: Optional[int] = None
-    lockon_seek_in_flight: Optional[bool] = None
+    speed_max: int | None = None
+    acceleration: int | None = None
+    turn_rate: int | None = None
+    lifespan: float | None = None
+    drag: float | None = None
+    gravity: float | None = None
+    lockon_acceleration: float | None = None
+    lockon_lifespan: float | None = None
+    arm_distance: float | None = None
+    tether_distance: float | None = None
+    detonate_distance: float | None = None
+    detonate_on_contact: bool | None = None
+    sticky: bool | None = None
+    sticks_to_players: bool | None = None
+    lockon_lose_angle: int | None = None
+    lockon_seek_in_flight: bool | None = None

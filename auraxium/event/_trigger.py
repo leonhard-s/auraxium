@@ -2,18 +2,18 @@ import datetime
 import inspect
 import json
 import warnings
-from typing import (Any, Callable, Coroutine, Dict, Iterable, List, Optional,
-                    Set, Type, Union)
+from collections.abc import Callable, Coroutine, Iterable
+from typing import Any
 
 from ..errors import CensusError
 from ..models import CharacterEvent, Event, GainExperience
 from ..ps2 import Character, World
 
-_EventType = Union[Type[Event], str]
-_Condition = Union[Any, Callable[[Event], bool]]
-_Action = Callable[[Event], Union[Coroutine[Any, Any, None], None]]
-_CharConstraint = Union[Iterable[Character], Iterable[int]]
-_WorldConstraint = Union[Iterable[World], Iterable[int]]
+_EventType = type[Event] | str
+_Condition = Any | Callable[[Event], bool]
+_Action = Callable[[Event], Coroutine[Any, Any, None] | None]
+_CharConstraint = Iterable[Character] | Iterable[int]
+_WorldConstraint = Iterable[World] | Iterable[int]
 
 
 class Trigger:
@@ -79,11 +79,11 @@ class Trigger:
     """
 
     def __init__(self, event: _EventType, *args: _EventType,
-                 characters: Optional[_CharConstraint] = None,
-                 worlds: Optional[_WorldConstraint] = None,
-                 conditions: Optional[List[_Condition]] = None,
-                 action: Optional[_Action] = None,
-                 name: Optional[str] = None,
+                 characters: _CharConstraint | None = None,
+                 worlds: _WorldConstraint | None = None,
+                 conditions: list[_Condition] | None = None,
+                 action: _Action | None = None,
+                 name: str | None = None,
                  single_shot: bool = False) -> None:
         """Initialise a new trigger.
 
@@ -113,17 +113,17 @@ class Trigger:
         :param bool single_shot: If true, trigger will be removed from
            any client when it first fires.
         """
-        self.action: Optional[_Action] = action
-        self.characters: List[int] = []
+        self.action: _Action | None = action
+        self.characters: list[int] = []
         if characters is not None:
             self.characters = [
                 c if isinstance(c, int) else c.id for c in characters]
-        self.conditions: List[Callable[[Event], bool]] = conditions or []
-        self.events: Set[_EventType] = set((event, *args))
-        self.last_run: Optional[datetime.datetime] = None
-        self.name: Optional[str] = name
+        self.conditions: list[Callable[[Event], bool]] = conditions or []
+        self.events: set[_EventType] = set((event, *args))
+        self.last_run: datetime.datetime | None = None
+        self.name: str | None = name
         self.single_shot: bool = single_shot
-        self.worlds: List[int] = []
+        self.worlds: list[int] = []
         if worlds is not None:
             self.worlds = [w if isinstance(w, int) else w.id for w in worlds]
 
@@ -191,9 +191,9 @@ class Trigger:
                 return False
         return True
 
-    def generate_subscription(self, logical_and: Optional[bool] = None) -> str:
+    def generate_subscription(self, logical_and: bool | None = None) -> str:
         """Generate the appropriate subscription for this trigger."""
-        json_data: Dict[str, Union[str, List[str]]] = {
+        json_data: dict[str, str | list[str]] = {
             'action': 'subscribe',
             'eventNames': [e if isinstance(e, str) else e.__name__
                            for e in self.events],

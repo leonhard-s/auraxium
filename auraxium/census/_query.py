@@ -5,7 +5,7 @@ inner, nested queries respectively.
 """
 
 import copy
-from typing import Any, List, Optional, Tuple, Type, TypeVar, Union, cast
+from typing import Any, TypeVar
 
 import yarl
 
@@ -49,7 +49,7 @@ class QueryBase:
        added to this query.
     """
 
-    def __init__(self, collection: Optional[str] = None,
+    def __init__(self, collection: str | None = None,
                  **kwargs: CensusValue) -> None:
         """Initialise a new query.
 
@@ -63,7 +63,7 @@ class QueryBase:
         :type kwargs: float | int | str
         """
         self.data: QueryBaseData = QueryBaseData(collection)
-        self.joins: List[JoinedQuery] = []
+        self.joins: list[JoinedQuery] = []
         # Replace and double underscores with dots to allow accessing inner
         # fields like "name.first" or "battle_rank.value"
         kwargs = {k.replace('__', '.'): v for k, v in kwargs.items()}
@@ -118,7 +118,7 @@ class QueryBase:
         return self
 
     @classmethod
-    def copy(cls: Type[_QueryBaseT], template: 'QueryBase',
+    def copy(cls: type[_QueryBaseT], template: 'QueryBase',
              copy_joins: bool = False, deep_copy: bool = False,
              **kwargs: Any) -> _QueryBaseT:
         """Create a new query, copying most data from the template.
@@ -255,9 +255,9 @@ class Query(QueryBase):
 
     """
 
-    def __init__(self, collection: Optional[str] = None,
+    def __init__(self, collection: str | None = None,
                  namespace: str = 'ps2:v2', service_id: str = 's:example',
-                 endpoint: Optional[yarl.URL] = None,
+                 endpoint: yarl.URL | None = None,
                  **kwargs: CensusValue) -> None:
         """Create a new top-level query.
 
@@ -357,7 +357,7 @@ class Query(QueryBase):
         """
         copy_func = copy.deepcopy if deep_copy else _dummy_copy
         instance = super().copy(template, copy_joins=copy_joins,
-                                deep_copy=deep_copy, *kwargs)
+                                deep_copy=deep_copy, **kwargs)
         assert isinstance(instance, Query)
         if isinstance(template, Query):
             # Additional attributes to include when copying a top-level query
@@ -391,7 +391,7 @@ class Query(QueryBase):
         self.data.has.extend(args)
         return self
 
-    def distinct(self, field: Optional[str]) -> 'Query':
+    def distinct(self, field: str | None) -> 'Query':
         """Query command used to show all unique values for a field.
 
         :param distinct: The field to show unique values for. Set to
@@ -434,7 +434,7 @@ class Query(QueryBase):
         self.data.include_null = value
         return self
 
-    def lang(self, lang: Optional[str] = None) -> 'Query':
+    def lang(self, lang: str | None = None) -> 'Query':
         """Set the locale to user for the query.
 
         By default, queries return all locales for localised strings.
@@ -564,8 +564,8 @@ class Query(QueryBase):
             self.data.start = start
         return self
 
-    def sort(self, field: Union[str, Tuple[str, bool]],
-             *args: Union[str, Tuple[str, bool]]) -> 'Query':
+    def sort(self, field: str | tuple[str, bool],
+             *args: str | tuple[str, bool]) -> 'Query':
         """Sort the results by one or more fields.
 
         By default, this uses ascending sort order. For descending
@@ -603,7 +603,7 @@ class Query(QueryBase):
         return self
 
     def tree(self, field: str, is_list: bool = False, prefix: str = '',
-             start: Optional[str] = None) -> 'Query':
+             start: str | None = None) -> 'Query':
         """Reformat a result list into a data tree.
 
         This is useful for lists of data with obvious categorisation,
@@ -745,8 +745,7 @@ class JoinedQuery(QueryBase):
         # If the original query had a non-default limit value, the join should
         # also return a list.
         elif isinstance(template, Query):
-            data = cast(QueryData, template.data)
-            if data.limit > 1 or data.limit_per_db > 1:
+            if template.data.limit > 1 or template.data.limit_per_db > 1:
                 instance.data.is_list = True
         return instance
 
@@ -764,7 +763,7 @@ class JoinedQuery(QueryBase):
         data.joins = [j.serialise() for j in self.joins]
         return data
 
-    def set_fields(self, parent: Optional[str], child: Optional[str] = None
+    def set_fields(self, parent: str | None, child: str | None = None
                    ) -> 'JoinedQuery':
         """Set the field names to use for the join.
 
@@ -793,7 +792,7 @@ class JoinedQuery(QueryBase):
             self.data.field_to = child
         return self
 
-    def set_inject_at(self, key: Optional[str]) -> 'JoinedQuery':
+    def set_inject_at(self, key: str | None) -> 'JoinedQuery':
         """Set the name of the field to insert the joined data at.
 
         By default, the inserted is added to a dynamically generated

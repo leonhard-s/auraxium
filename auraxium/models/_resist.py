@@ -1,7 +1,5 @@
 """Data classes for :mod:`auraxium.ps2._resist`."""
 
-from typing import Optional
-
 from .base import RESTPayload
 
 __all__ = [
@@ -19,9 +17,9 @@ class ResistInfoData(RESTPayload):
 
     resist_info_id: int
     resist_type_id: int
-    resist_percent: Optional[int] = None
-    resist_amount: Optional[int] = None
-    multiplier_when_headshot: Optional[float] = None
+    resist_percent: int | None = None
+    resist_amount: int | None = None
+    multiplier_when_headshot: float | None = None
     description: str
 
 

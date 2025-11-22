@@ -1,7 +1,5 @@
 """Ability and ability type class definitions."""
 
-from typing import Optional
-
 from ..base import Cached
 from ..census import Query
 from ..models import AbilityData, AbilityTypeData, ResourceTypeData
@@ -107,25 +105,25 @@ class AbilityType(Cached, cache_size=20, cache_ttu=60.0):
 
     # Type hints for data class fallback attributes
     id: int
-    description: Optional[str]
-    param1: Optional[str]
-    param2: Optional[str]
-    param3: Optional[str]
-    param4: Optional[str]
-    param5: Optional[str]
-    param6: Optional[str]
-    param7: Optional[str]
-    param8: Optional[str]
-    param9: Optional[str]
-    param10: Optional[str]
-    param11: Optional[str]
-    param12: Optional[str]
-    param13: Optional[str]
-    param14: Optional[str]
-    string1: Optional[str]
-    string2: Optional[str]
-    string3: Optional[str]
-    string4: Optional[str]
+    description: str | None
+    param1: str | None
+    param2: str | None
+    param3: str | None
+    param4: str | None
+    param5: str | None
+    param6: str | None
+    param7: str | None
+    param8: str | None
+    param9: str | None
+    param10: str | None
+    param11: str | None
+    param12: str | None
+    param13: str | None
+    param14: str | None
+    string1: str | None
+    string2: str | None
+    string3: str | None
+    string4: str | None
 
 
 class Ability(Cached, cache_size=10, cache_ttu=60.0):
@@ -278,34 +276,34 @@ class Ability(Cached, cache_size=10, cache_ttu=60.0):
     # Type hints for data class fallback attributes
     id: int
     ability_type_id: int
-    expire_msec: Optional[int]
-    first_use_delay_msec: Optional[int]
-    next_use_delay_msec: Optional[int]
-    reuse_delay_msec: Optional[int]
-    resource_type_id: Optional[int]
-    resource_first_cost: Optional[int]
-    resource_cost_per_msec: Optional[int]
-    distance_max: Optional[float]
-    radius_max: Optional[float]
-    flag_toggle: Optional[bool]
-    param1: Optional[str]
-    param2: Optional[str]
-    param3: Optional[str]
-    param4: Optional[str]
-    param5: Optional[str]
-    param6: Optional[str]
-    param7: Optional[str]
-    param8: Optional[str]
-    param9: Optional[str]
-    param10: Optional[str]
-    param11: Optional[str]
-    param12: Optional[str]
-    param13: Optional[str]
-    param14: Optional[str]
-    string1: Optional[str]
-    string2: Optional[str]
-    string3: Optional[str]
-    string4: Optional[str]
+    expire_msec: int | None
+    first_use_delay_msec: int | None
+    next_use_delay_msec: int | None
+    reuse_delay_msec: int | None
+    resource_type_id: int | None
+    resource_first_cost: int | None
+    resource_cost_per_msec: int | None
+    distance_max: float | None
+    radius_max: float | None
+    flag_toggle: bool | None
+    param1: str | None
+    param2: str | None
+    param3: str | None
+    param4: str | None
+    param5: str | None
+    param6: str | None
+    param7: str | None
+    param8: str | None
+    param9: str | None
+    param10: str | None
+    param11: str | None
+    param12: str | None
+    param13: str | None
+    param14: str | None
+    string1: str | None
+    string2: str | None
+    string3: str | None
+    string4: str | None
 
     def resource_type(self) -> InstanceProxy[ResourceType]:
         """Return the resource type used by this ability, if any.

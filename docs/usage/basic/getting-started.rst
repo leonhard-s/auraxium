@@ -5,9 +5,7 @@ Getting Started
 Prerequisites
 =============
 
-To lower maintenance costs, Auraxium currently requires `Python`_ version 3.9 or higher. Support for older versions can be added/restored if there is demand, get in touch via the `repository issues`_ if your use case requires compatibility with these older versions.
-
-Using the latest version of Python is generally recommended.
+Auraxium supports all maintained versions of `Python`_, currently 3.10 and above. Using the latest version of Python is generally recommended.
 
 Installation
 ============

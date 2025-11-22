@@ -17,7 +17,7 @@ import json
 import logging
 import sys
 import warnings
-from typing import Literal, List, Optional, Tuple, Type, TypeVar, Union, cast
+from typing import Literal, TypeVar, cast
 from types import TracebackType
 
 import aiohttp
@@ -50,13 +50,12 @@ _log = logging.getLogger('auraxium.http')
 class RequestClient:
     """The REST request handler for Auraxium."""
 
-    def __init__(self, loop: Optional[asyncio.AbstractEventLoop] = None,
+    def __init__(self, loop: asyncio.AbstractEventLoop | None = None,
                  service_id: str = 's:example', profiling: bool = False,
-                 endpoints: Union[yarl.URL, str,
-                                  List[yarl.URL], List[str], None] = None
+                 endpoints: yarl.URL | str | list[yarl.URL] | list[str] | None = None,
                  ) -> None:
 
-        self.endpoints: List[yarl.URL] = []
+        self.endpoints: list[yarl.URL] = []
         if endpoints is None:
             self.endpoints = [default_endpoints()[0]]
         else:
@@ -76,16 +75,16 @@ class RequestClient:
         self.profiling: bool = profiling
         self.service_id: str = service_id
         self.session: aiohttp.ClientSession = aiohttp.ClientSession()
-        self._timing_cache: List[float] = []
+        self._timing_cache: list[float] = []
         _log.addFilter(RedactingFilter(self.service_id))
 
     async def __aenter__(self: _T) -> _T:
         """Enter the context manager and return the client."""
         return self
 
-    async def __aexit__(self, exc_type: Optional[Type[BaseException]],
-                        exc_value: Optional[BaseException],
-                        traceback: Optional[TracebackType]) -> Literal[False]:
+    async def __aexit__(self, exc_type: type[BaseException] | None,
+                        exc_value: BaseException | None,
+                        traceback: TracebackType | None) -> Literal[False]:
         """Exit the context manager.
 
         This closes the internal HTTP session before exiting, no error
@@ -165,7 +164,7 @@ class RequestClient:
         return data
 
 
-def get_components(url: yarl.URL) -> Tuple[str, Optional[str]]:
+def get_components(url: yarl.URL) -> tuple[str, str | None]:
     """Return the namespace and collection of a given query.
 
     :param yarl.URL url: The :class:`yarl.URL` to process. Only REST
@@ -228,7 +227,7 @@ async def response_to_dict(response: aiohttp.ClientResponse) -> CensusData:
     return data
 
 
-def extract_payload(data: CensusData, collection: str) -> List[CensusData]:
+def extract_payload(data: CensusData, collection: str) -> list[CensusData]:
     """Extract the payload from a census response dictionary.
 
     :param auraxium.types.CensusData data: The response dictionary to
@@ -239,7 +238,7 @@ def extract_payload(data: CensusData, collection: str) -> List[CensusData]:
     :return: All dictionaries in the response list.
     """
     try:
-        list_ = cast(List[CensusData], data[f'{collection}_list'])
+        list_ = cast(list[CensusData], data[f'{collection}_list'])
     except KeyError as err:
         raise PayloadError(
             f'Unable to extract list of results due to missing key '
@@ -386,9 +385,9 @@ def _process_invalid_search_term(msg: str, url: yarl.URL) -> None:
     if chopped.startswith('Invalid search term. Valid search terms:'):
         # Retrieve the list of valid field names from the error message
         fields_str = chopped.split(':', maxsplit=1)[1].strip()
-        fields: List[str] = [f.strip() for f in fields_str[1:-1].split(',')]
+        fields: list[str] = [f.strip() for f in fields_str[1:-1].split(',')]
         # Parse the query string to find the faulty field name
-        culprit: Optional[str] = None
+        culprit: str | None = None
         for field, value in url.query.items():
             if field not in fields:
                 culprit = field
@@ -424,7 +423,7 @@ def _process_invalid_search_term(msg: str, url: yarl.URL) -> None:
 
 
 async def run_query(query: Query, session: aiohttp.ClientSession,
-                    endpoints: List[yarl.URL], verb: str = 'get'
+                    endpoints: list[yarl.URL], verb: str = 'get'
                     ) -> CensusData:
     """Perform a top-level Query using the provided HTTP session.
 

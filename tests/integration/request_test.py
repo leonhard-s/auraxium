@@ -3,7 +3,7 @@
 import json
 import os
 import unittest
-from typing import Any, Dict, cast
+from typing import Any, cast
 import warnings
 
 import aiohttp
@@ -86,7 +86,7 @@ class TestPayloadParsing(unittest.IsolatedAsyncioTestCase):
         def raise_helper(name: str) -> None:
             filepath = os.path.join(PAYLOADS, 'errors', f'{name}.json')
             with open(filepath, encoding='utf-8') as payload_file:
-                payload: Dict[str, Any] = json.load(payload_file)
+                payload: dict[str, Any] = json.load(payload_file)
             url = yarl.URL(payload.pop('_URL'))
             request.raise_for_dict(payload, url)
 

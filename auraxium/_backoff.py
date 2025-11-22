@@ -31,7 +31,7 @@ class Details(typing.TypedDict):
 
 
 def expo(base: float, factor: float,
-         max_value: typing.Optional[float] = None) -> Generator[float, None, None]:
+         max_value: float | None = None) -> Generator[float, None, None]:
     """Exponential backoff generator.
 
     :param base: The base of the exponentiation.
@@ -57,9 +57,9 @@ def on_exception(
     gen: _BackoffGenerator,
     exceptions: Iterable[type[Exception]],
     max_tries: int,
-    on_backoff: typing.Optional[BackoffHandler] = None,
-    on_giveup: typing.Optional[BackoffHandler] = None,
-    on_success: typing.Optional[BackoffHandler] = None,
+    on_backoff: BackoffHandler | None = None,
+    on_giveup: BackoffHandler | None = None,
+    on_success: BackoffHandler | None = None,
 ) -> Callable[[_FuncT], _FuncT]:
     """Decorator for backoff and retry triggered by exceptions.
 

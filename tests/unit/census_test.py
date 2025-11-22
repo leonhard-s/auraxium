@@ -6,7 +6,6 @@ to be performed as part of this module.
 
 import unittest
 import warnings
-from typing import Dict, List
 
 import yarl
 from auraxium import census, endpoints
@@ -708,7 +707,7 @@ class TestURLsQueryCommands(unittest.TestCase):
         self.assertIn('c:tree', dict(url.query),
                       'Missing query key: c:tree')
         tree_pairs = url.query['c:tree'].split('^')
-        tree_dict: Dict[str, str] = {}
+        tree_dict: dict[str, str] = {}
         for pair in tree_pairs:
             try:
                 key, value = pair.split(':')
@@ -769,7 +768,7 @@ class TestCustomEndpoints(unittest.TestCase):
         self.assertEqual(url.path, '/get/ps2:v2/character')
 
 
-def find_warning(caught: List[warnings.WarningMessage], msg: str) -> bool:
+def find_warning(caught: list[warnings.WarningMessage], msg: str) -> bool:
     """Return whether exactly one matching warning was caught.
 
     This only works for UserWarning subclasses.

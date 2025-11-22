@@ -18,7 +18,7 @@ The following is a set of guidelines and resources for contributing to Auraxium.
 
     > **Example:** If your function only has to iterate over the argument, use `Iterable`. If it also has to access its members by index, use `Sequence`.
     >
-    > Only use the more restrictive type `List` if you require list-specific methods like `.append()` or `.clear()`.
+    > Only use the more restrictive type `list` if you require list-specific methods like `.append()` or `.clear()`.
 
     Refer to the [Mypy docs](https://mypy.readthedocs.io/en/stable/protocols.html#protocol-types) for more information.
 

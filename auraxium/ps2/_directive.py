@@ -1,7 +1,5 @@
 """Directive class definitions."""
 
-from typing import List, Optional
-
 from ..base import ImageMixin, Named
 from ..census import Query
 from ..models import (DirectiveData, DirectiveTierData,
@@ -116,11 +114,11 @@ class DirectiveTree(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     # Type hints for data class fallback attributes
     id: int
     directive_tree_category_id: int
-    description: Optional[LocaleData]
+    description: LocaleData | None
     name: LocaleData
-    image_id: Optional[int]
-    image_set_id: Optional[int]
-    image_path: Optional[str]
+    image_id: int | None
+    image_set_id: int | None
+    image_path: str | None
 
     def category(self) -> InstanceProxy[DirectiveTreeCategory]:
         """Return the category of the directive tree.
@@ -230,12 +228,12 @@ class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     id: int
     directive_tree_id: int
     name: LocaleData
-    reward_set_id: Optional[int]
+    reward_set_id: int | None
     directive_points: int
     completion_count: int
-    image_id: Optional[int]
-    image_set_id: Optional[int]
-    image_path: Optional[str]
+    image_id: int | None
+    image_set_id: int | None
+    image_path: str | None
 
     def directives(self) -> SequenceProxy['Directive']:
         """Return the list of directives in this tier.
@@ -246,7 +244,7 @@ class DirectiveTier(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
         query.add_term(field='directive_tier_id', value=self.id).limit(100)
         return SequenceProxy(Directive, query, client=self._client)
 
-    async def rewards(self) -> List[Reward]:
+    async def rewards(self) -> list[Reward]:
         """Return the rewards granted upon completion of this tier."""
         if self.reward_set_id is None:
             return []
@@ -346,11 +344,11 @@ class Directive(Named, ImageMixin, cache_size=30, cache_ttu=60.0):
     directive_tier_id: int
     name: LocaleData
     objective_set_id: int
-    qualify_requirement_id: Optional[int]
-    description: Optional[LocaleData]
-    image_id: Optional[int]
-    image_set_id: Optional[int]
-    image_path: Optional[str]
+    qualify_requirement_id: int | None
+    description: LocaleData | None
+    image_id: int | None
+    image_set_id: int | None
+    image_path: str | None
 
     def objectives(self) -> SequenceProxy[Objective]:
         """Return the objectives for this directive.

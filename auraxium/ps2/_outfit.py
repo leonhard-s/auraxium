@@ -1,8 +1,7 @@
 """Outfit and outfit member class definitions."""
 
 import logging
-from typing import (Any, ClassVar, Final, List, Optional, TYPE_CHECKING, Type,
-                    Union, cast)
+from typing import Any, ClassVar, Final, TYPE_CHECKING, cast
 
 from ..base import Cached, Named, NamedT
 from .._cache import TLRUCache
@@ -153,7 +152,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
        The number of members in the outfit.
     """
 
-    _cache: ClassVar[TLRUCache[Union[int, str], 'Outfit']]
+    _cache: ClassVar[TLRUCache[int | str, 'Outfit']]
     collection = 'outfit'
     data: OutfitData
     id_field = 'outfit_id'
@@ -175,9 +174,9 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
 
     @classmethod
     @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')
-    async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
+    async def get_by_name(cls: type[NamedT], name: str, *, locale: str = 'en',
                           client: RequestClient
-                          ) -> Optional[NamedT]:  # pragma: no cover
+                          ) -> NamedT | None:  # pragma: no cover
         """Retrieve an outfit by its unique name.
 
         This query is always case-insensitive.
@@ -185,7 +184,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         log.debug('%s "%s"[%s] requested', cls.__name__, name, locale)
         if (instance := cls._cache.get(f'_{name.lower()}')) is not None:
             log.debug('%r restored from cache', instance)
-            return instance
+            return cast(NamedT, instance)
         log.debug('%s "%s"[%s] not cached, generating API query...',
                   cls.__name__, name, locale)
         query = Query(cls.collection, service_id=client.service_id,
@@ -200,7 +199,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
     @classmethod
     @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')
     async def get_by_tag(cls, tag: str, client: RequestClient
-                         ) -> Optional['Outfit']:  # pragma: no cover
+                         ) -> 'Outfit | None':  # pragma: no cover
         """Return an outfit by its unique tag.
 
         This query is always case-insensitive.
@@ -238,7 +237,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
         query.limit(5000)
         return SequenceProxy(OutfitMember, query, client=self._client)
 
-    async def ranks(self) -> List[OutfitRankData]:
+    async def ranks(self) -> list[OutfitRankData]:
         """Return the list of ranks for the outfit."""
         collection: Final[str] = 'outfit_rank'
         query = Query(collection, service_id=self._client.service_id)

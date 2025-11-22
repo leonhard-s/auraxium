@@ -1,7 +1,5 @@
 """Data classes for event streaming service payloads."""
 
-from typing import Optional
-
 from .base import Event, CharacterEvent, WorldEvent
 
 __all__ = [
@@ -205,10 +203,10 @@ class Death(Event, CharacterEvent):
     attacker_team_id: int
     character_id: int
     character_loadout_id: int
-    is_critical: Optional[bool] = None  # Always false
+    is_critical: bool | None = None  # Always false
     is_headshot: bool
     team_id: int
-    vehicle_id: Optional[int] = None
+    vehicle_id: int | None = None
     zone_id: int
 
 

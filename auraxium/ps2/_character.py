@@ -1,8 +1,7 @@
 """Character class definition."""
 
 import logging
-from typing import (Any, ClassVar, Final, List, Optional, Tuple, Type, Union,
-                    cast)
+from typing import Any, ClassVar, Final, cast
 
 from ..base import Named, NamedT
 from .._cache import TLRUCache
@@ -143,7 +142,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
        The prestige (or A.S.P.) rank for the character.
     """
 
-    _cache: ClassVar[TLRUCache[Union[int, str], 'Character']]
+    _cache: ClassVar[TLRUCache[int | str, 'Character']]
     collection = 'character'
     data: CharacterData
     id_field = 'character_id'
@@ -160,7 +159,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     profile_id: int
     prestige_level: int
 
-    async def achievements(self, **kwargs: Any) -> List[CharacterAchievement]:
+    async def achievements(self, **kwargs: Any) -> list[CharacterAchievement]:
         """Helper method for retrieving character achievements.
 
         Any keyword arguments passed are forwarded to
@@ -181,7 +180,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         data = extract_payload(payload, collection)
         return [CharacterAchievement(**cast(Any, d)) for d in data]
 
-    async def currency(self) -> Tuple[int, int]:
+    async def currency(self) -> tuple[int, int]:
         """Helper method for retrieving a character's balance.
 
         This returns a tuple of the number of Nanites and ASP tokens
@@ -198,7 +197,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         return int(str(data['quantity'])), int(str(data['prestige_currency']))
 
     async def directive(self, results: int = 1,
-                        **kwargs: Any) -> List[CharacterDirective]:
+                        **kwargs: Any) -> list[CharacterDirective]:
         """Helper method for retrieving character directive progress.
 
         The payloads returned show if and when the character has
@@ -221,7 +220,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         return [CharacterDirective(**cast(Any, d)) for d in data]
 
     async def directive_objective(self, results: int = 1, **kwargs: Any
-                                  ) -> List[CharacterDirectiveObjective]:
+                                  ) -> list[CharacterDirectiveObjective]:
         """Helper method for retrieving directive progress.
 
         The payloads returned show the progress towards a given
@@ -244,7 +243,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         return [CharacterDirectiveObjective(**cast(Any, d)) for d in data]
 
     async def directive_tier(self, results: int = 1,
-                             **kwargs: Any) -> List[CharacterDirectiveTier]:
+                             **kwargs: Any) -> list[CharacterDirectiveTier]:
         """Helper method for retrieving directive tier progress.
 
         The payloads returned show if and when the character has
@@ -267,7 +266,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         return [CharacterDirectiveTier(**cast(Any, d)) for d in data]
 
     async def directive_tree(self, results: int = 1,
-                             **kwargs: Any) -> List[CharacterDirectiveTree]:
+                             **kwargs: Any) -> list[CharacterDirectiveTree]:
         """Helper method for retrieving directive tree progress.
 
         The payloads returned show the current progress of the
@@ -289,7 +288,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         data = extract_payload(payload, collection)
         return [CharacterDirectiveTree(**cast(Any, d)) for d in data]
 
-    async def events(self, **kwargs: Any) -> List[CensusData]:
+    async def events(self, **kwargs: Any) -> list[CensusData]:
         """Return and process past events for this character.
 
         This provides a REST endpoint for past character events. This
@@ -312,7 +311,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         data = extract_payload(payload, collection=collection)
         return data
 
-    async def events_grouped(self, **kwargs: Any) -> List[CensusData]:
+    async def events_grouped(self, **kwargs: Any) -> list[CensusData]:
         """Helper method for retrieving deaths and kills by player.
 
         Any keyword arguments passed are forwarded to
@@ -340,7 +339,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.add_term(field=Faction.id_field, value=self.data.faction_id)
         return InstanceProxy(Faction, query, client=self._client)
 
-    async def friends(self) -> List['Character']:
+    async def friends(self) -> list['Character']:
         """Return the friends list of the character."""
         # NOTE: Due to the strange formatting of the characters_friend
         # collection, I does not seem possible to retrieve the associated
@@ -354,21 +353,21 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         join.set_list(True)
         payload = await self._client.request(query)
         data = extract_single(payload, collection)
-        character_ids: List[str] = [
+        character_ids: list[str] = [
             str(d['character_id'])
-            for d in cast(List[CensusData], data['friend_list'])]
+            for d in cast(list[CensusData], data['friend_list'])]
         query = Query(self.collection, service_id=self._client.service_id,
                       endpoint=self._client.endpoints[0],
                       character_id=','.join(character_ids))
         payload = await self._client.request(query)
-        data = extract_payload(payload, self.collection)
-        return [Character(d, client=self._client) for d in data]
+        friends_data = extract_payload(payload, self.collection)
+        return [Character(d, client=self._client) for d in friends_data]
 
     @classmethod
     @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')
-    async def get_by_name(cls: Type[NamedT], name: str, *, locale: str = 'en',
+    async def get_by_name(cls: type[NamedT], name: str, *, locale: str = 'en',
                           client: RequestClient
-                          ) -> Optional[NamedT]:  # pragma: no cover
+                          ) -> NamedT | None:  # pragma: no cover
         """Retrieve an object by its unique name.
 
         This query is always case-insensitive.
@@ -376,7 +375,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         log.debug('%s "%s"[%s] requested', cls.__name__, name, locale)
         if (instance := cls._cache.get(f'_{name.lower()}')) is not None:
             log.debug('%r restored from cache', instance)
-            return instance
+            return cast(NamedT, instance)
         log.debug('%s "%s"[%s] not cached, generating API query...',
                   cls.__name__, name, locale)
         query = Query(cls.collection, service_id=client.service_id,
@@ -390,7 +389,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
     @classmethod
     async def get_online(cls, id_: int, *args: int, client: RequestClient
-                         ) -> List['Character']:  # pragma: no cover
+                         ) -> list['Character']:  # pragma: no cover
         """Retrieve the characters that are online from a list."""
         char_ids = [id_]
         char_ids.extend(args)
@@ -426,13 +425,13 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         This includes an optional player title if the player has
         selected one.
         """
-        if self.title_id != 0:
+        if self.title_id:
             title = await self.title()
             if title is not None:
                 title_name = getattr(title.name, locale, None)
                 if title_name is not None:
                     return f'{title_name} {self.name.first}'
-        return self.name.first
+        return str(self.name.first)
 
     async def online_status(self) -> int:
         """Return the online status of the character.
@@ -476,7 +475,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         query.add_term(field=Profile.id_field, value=self.data.profile_id)
         return InstanceProxy(Profile, query, client=self._client)
 
-    async def skill(self, results: int = 1, **kwargs: Any) -> List[CensusData]:
+    async def skill(self, results: int = 1, **kwargs: Any) -> list[CensusData]:
         """Return skills unlocked by the player.
 
         Any keyword arguments passed are forwarded to
@@ -495,7 +494,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         data = extract_payload(payload, collection)
         return data
 
-    async def stat(self, results: int = 1, **kwargs: Any) -> List[CensusData]:
+    async def stat(self, results: int = 1, **kwargs: Any) -> list[CensusData]:
         """Return global statistics for this character.
 
         Any keyword arguments passed are forwarded to
@@ -515,7 +514,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         return data
 
     async def stat_by_faction(self, results: int = 1,
-                              **kwargs: Any) -> List[CensusData]:
+                              **kwargs: Any) -> list[CensusData]:
         """Return faction-specific statistics for this character.
 
         Any keyword arguments passed are forwarded to
@@ -535,7 +534,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         return data
 
     async def stat_history(self, results: int = 1,
-                           **kwargs: Any) -> List[CensusData]:
+                           **kwargs: Any) -> list[CensusData]:
         """Return historical statistics for this character.
 
         Any keyword arguments passed are forwarded to
@@ -555,7 +554,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         return data
 
     async def weapon_stat(self, results: int = 1,
-                          **kwargs: Any) -> List[CensusData]:
+                          **kwargs: Any) -> list[CensusData]:
         """Return weapon-specific statistics for this character.
 
         Any keyword arguments passed are forwarded to
@@ -575,7 +574,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         return data
 
     async def weapon_stat_by_faction(self, results: int = 1,
-                                     **kwargs: Any) -> List[CensusData]:
+                                     **kwargs: Any) -> list[CensusData]:
         """Return per-faction weapon statistics for this character.
 
         Any keyword arguments passed are forwarded to

@@ -68,7 +68,7 @@ This requires us to switch to a coroutine, as well as pass the client instance t
    :emphasize-lines: 1-2,10
 
    async def get_online_friends(char: auraxium.ps2.Character,
-                         client: auraxium.Client) -> Dict[str, Any]:
+                         client: auraxium.Client) -> dict[str, Any]:
        """Return the online friends of the given character."""
        query = char.query()
 
@@ -118,7 +118,7 @@ Let's add a list comprehension to filter the friends list by their online status
 
    async def get_online_friends(char: auraxium.ps2.Character,
                                 client: auraxium.Client
-                                ) -> List[int]:
+                                ) -> list[int]:
        """Return the online friends of the given character."""
        query = char.query()
 
@@ -153,7 +153,7 @@ To achieve this, another join is added to the friends list, which will contain t
 
    async def get_online_friends(char: auraxium.ps2.Character,
                                 client: auraxium.Client
-                                ) -> List[Dict[str, Any]]:
+                                ) -> list[dict[str, Any]]:
        """Return the online friends of the given character."""
        query = char.query()
 

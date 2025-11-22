@@ -88,7 +88,7 @@ Outfits
 
    .. automethod:: members() -> auraxium.SequenceProxy[OutfitMember]
 
-   .. automethod:: ranks() -> List[auraxium.models.OutfitRankData]
+   .. automethod:: ranks() -> list[auraxium.models.OutfitRankData]
 
 .. autoclass:: OutfitMember
 

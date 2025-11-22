@@ -2,7 +2,7 @@
 
 import dataclasses
 import enum
-from typing import Any, Dict, List, Optional, Tuple, Type, TypeVar, Union
+from typing import Any, TypeVar
 
 __all__ = [
     'CensusValue',
@@ -15,9 +15,9 @@ __all__ = [
 
 # This list connects the string literals to the enum values. The index of the
 # list element must match the corresponding enum value.
-_MODIFIER_LITERALS: List[str] = ['', '<', '[', '>', ']', '^', '*', '!']
+_MODIFIER_LITERALS: list[str] = ['', '<', '[', '>', ']', '^', '*', '!']
 
-CensusValue = Union[float, int, str]
+CensusValue = float | int | str
 _QueryBaseDataT = TypeVar('_QueryBaseDataT', bound='QueryBaseData')
 
 
@@ -119,7 +119,7 @@ class SearchModifier(enum.Enum):
             return cls(cls.EQUAL_TO)
 
     @staticmethod
-    def serialise(enum_value: Union[int, 'SearchModifier']) -> str:
+    def serialise(enum_value: 'int | SearchModifier') -> str:
         """Return the string literal for the given enum value.
 
         This is primarily used during URL generation.
@@ -189,7 +189,7 @@ class SearchTerm:
         self.value: CensusValue = value
         self.modifier: SearchModifier = modifier
 
-    def as_tuple(self) -> Tuple[str, str]:
+    def as_tuple(self) -> tuple[str, str]:
         """Return a key/value pair representing the search term.
 
         This is a helper function that calls
@@ -253,14 +253,14 @@ class QueryBaseData:
     Refer to the corresponding setter methods for details.
     """
 
-    collection: Optional[str]
-    hide: List[str] = dataclasses.field(default_factory=list)
-    joins: List['JoinedQueryData'] = dataclasses.field(default_factory=list)
-    show: List[str] = dataclasses.field(default_factory=list)
-    terms: List[SearchTerm] = dataclasses.field(default_factory=list)
+    collection: str | None
+    hide: list[str] = dataclasses.field(default_factory=list)
+    joins: list['JoinedQueryData'] = dataclasses.field(default_factory=list)
+    show: list[str] = dataclasses.field(default_factory=list)
+    terms: list[SearchTerm] = dataclasses.field(default_factory=list)
 
     @classmethod
-    def from_base(cls: Type[_QueryBaseDataT],
+    def from_base(cls: type[_QueryBaseDataT],
                   data: 'QueryBaseData') -> _QueryBaseDataT:
         """Helper used to copy the base query data components."""
         return cls(**data.__dict__)
@@ -275,22 +275,22 @@ class QueryData(QueryBaseData):
     # pylint: disable=too-many-instance-attributes
 
     case: bool = True
-    distinct: Optional[str] = None
+    distinct: str | None = None
     exact_match_first: bool = False
-    has: List[str] = dataclasses.field(default_factory=list)
+    has: list[str] = dataclasses.field(default_factory=list)
     include_null: bool = False
-    lang: Optional[str] = None
+    lang: str | None = None
     limit: int = 1
     limit_per_db: int = 1
     namespace: str = 'ps2:v2'
-    resolve: List[str] = dataclasses.field(default_factory=list)
+    resolve: list[str] = dataclasses.field(default_factory=list)
     retry: bool = True
     service_id: str = 's:example'
-    sort: List[Union[str, Tuple[str, bool]]] = dataclasses.field(
+    sort: list[str | tuple[str, bool]] = dataclasses.field(
         default_factory=list)
     start: int = 0
     timing: bool = False
-    tree: Optional[Dict[str, Any]] = None
+    tree: dict[str, Any] | None = None
 
 
 @dataclasses.dataclass()
@@ -300,8 +300,8 @@ class JoinedQueryData(QueryBaseData):
     Refer to the corresponding setter methods for details.
     """
 
-    inject_at: Optional[str] = None
+    inject_at: str | None = None
     is_list: bool = False
     is_outer: bool = True
-    field_on: Optional[str] = None
-    field_to: Optional[str] = None
+    field_on: str | None = None
+    field_to: str | None = None

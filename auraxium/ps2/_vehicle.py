@@ -1,6 +1,6 @@
 """Vehicle class definitions."""
 
-from typing import Final, List, Optional, Union
+from typing import Final
 
 from ..base import Cached, ImageMixin, Named
 from ..census import Query
@@ -84,15 +84,15 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
 
     # Type hints for data class fallback attributes
     id: int
-    description: Optional[LocaleData]
+    description: LocaleData | None
     name: LocaleData
     type_id: int
     type_name: str
-    cost: Optional[int]
-    cost_resource_id: Optional[int]
-    image_id: Optional[int]
-    image_set_id: Optional[int]
-    image_path: Optional[str]
+    cost: int | None
+    cost_resource_id: int | None
+    image_id: int | None
+    image_set_id: int | None
+    image_path: str | None
 
     def factions(self) -> SequenceProxy[Faction]:
         """Return the factions that have access to this vehicle.
@@ -106,8 +106,8 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
         return SequenceProxy(Faction, query, client=self._client)
 
     @classmethod
-    async def get_by_faction(cls, faction: Union[Faction, int], *,
-                             client: RequestClient) -> List['Vehicle']:
+    async def get_by_faction(cls, faction: Faction | int, *,
+                             client: RequestClient) -> list['Vehicle']:
         """Return all vehicles available to the given faction."""
         collection: Final[str] = 'vehicle_faction'
         faction_id = faction.id if isinstance(faction, Faction) else faction
@@ -120,7 +120,7 @@ class Vehicle(Named, ImageMixin, cache_size=50, cache_ttu=3600.0):
             cls, query, client=client)
         return await proxy.flatten()
 
-    def skill_sets(self, faction: Optional[Union[Faction, int]] = None
+    def skill_sets(self, faction: Faction | int | None = None
                    ) -> SequenceProxy[SkillSet]:
         """Return the skill sets associated with this vehicle.
 

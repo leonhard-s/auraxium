@@ -1,7 +1,5 @@
 """Data classes for :mod:`auraxium.ps2._metagame`."""
 
-from typing import Optional
-
 from .base import RESTPayload
 from ..types import LocaleData
 
@@ -22,4 +20,4 @@ class MetagameEventData(RESTPayload):
     description: LocaleData
     type: int
     duration_minutes: float
-    experience_bonus: Optional[float] = None
+    experience_bonus: float | None = None

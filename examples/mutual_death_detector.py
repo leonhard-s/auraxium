@@ -7,7 +7,6 @@ same time.
 
 import asyncio
 import datetime
-from typing import Dict, Tuple
 
 import auraxium
 from auraxium import event, ps2
@@ -22,7 +21,7 @@ async def main() -> None:
     client = auraxium.event.EventClient(service_id='s:example')
 
     # This dictionary is used to track recent deaths
-    cache: Dict[int, Tuple[int, datetime.datetime]] = {}
+    cache: dict[int, tuple[int, datetime.datetime]] = {}
 
     @client.trigger(event.Death)
     async def on_death(evt: event.Death) -> None:

@@ -1,7 +1,5 @@
 """Data classes for :mod:`auraxium.ps2._skill`."""
 
-from typing import Optional
-
 from .base import ImageData, RESTPayload
 from ..types import LocaleData
 
@@ -24,9 +22,9 @@ class SkillData(RESTPayload, ImageData):
     skill_line_id: int
     skill_line_index: int
     skill_points: int
-    grant_item_id: Optional[int] = None
+    grant_item_id: int | None = None
     name: LocaleData
-    description: Optional[LocaleData] = None
+    description: LocaleData | None = None
 
 
 class SkillCategoryData(RESTPayload, ImageData):
@@ -41,7 +39,7 @@ class SkillCategoryData(RESTPayload, ImageData):
     skill_set_index: int
     skill_points: int
     name: LocaleData
-    description: Optional[LocaleData] = None
+    description: LocaleData | None = None
 
 
 class SkillLineData(RESTPayload, ImageData):
@@ -53,10 +51,10 @@ class SkillLineData(RESTPayload, ImageData):
 
     skill_line_id: int
     skill_points: int
-    skill_category_id: Optional[int] = None
-    skill_category_index: Optional[int] = None
+    skill_category_id: int | None = None
+    skill_category_index: int | None = None
     name: LocaleData
-    description: Optional[LocaleData] = None
+    description: LocaleData | None = None
 
 
 class SkillSetData(RESTPayload, ImageData):
@@ -67,7 +65,7 @@ class SkillSetData(RESTPayload, ImageData):
     """
 
     skill_set_id: int
-    skill_points: Optional[int] = None
-    required_item_id: Optional[int] = None
+    skill_points: int | None = None
+    required_item_id: int | None = None
     name: LocaleData
-    description: Optional[LocaleData] = None
+    description: LocaleData | None = None

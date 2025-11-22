@@ -1,7 +1,7 @@
 """Weapon class definition."""
 
 import logging
-from typing import Any, Final, List, Optional, cast
+from typing import Any, Final, cast
 
 from ..base import Cached
 from ..census import Query
@@ -116,19 +116,19 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
 
     # Type hints for data class fallback attributes
     id: int
-    weapon_group_id: Optional[int]
+    weapon_group_id: int | None
     turn_modifier: float
     move_modifier: float
-    sprint_recovery_ms: Optional[int]
-    equip_ms: Optional[int]
-    unequip_ms: Optional[int]
-    to_iron_sights_ms: Optional[int]
-    from_iron_sights_ms: Optional[int]
-    heat_capacity: Optional[int]
-    heat_bleed_off_rate: Optional[float]
-    heat_overheat_penalty_ms: Optional[int]
-    melee_detect_width: Optional[float]
-    melee_detect_height: Optional[float]
+    sprint_recovery_ms: int | None
+    equip_ms: int | None
+    unequip_ms: int | None
+    to_iron_sights_ms: int | None
+    from_iron_sights_ms: int | None
+    heat_capacity: int | None
+    heat_bleed_off_rate: float | None
+    heat_overheat_penalty_ms: int | None
+    melee_detect_width: float | None
+    melee_detect_height: float | None
 
     @property
     def is_heat_weapon(self) -> bool:
@@ -141,7 +141,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
             return capacity > 0
         return False
 
-    async def ammo_slots(self) -> List[WeaponAmmoSlot]:
+    async def ammo_slots(self) -> list[WeaponAmmoSlot]:
         """Return the ammo slots for the weapon."""
         collection: Final[str] = 'weapon_ammo_slot'
         query = Query(collection, service_id=self._client.service_id)
@@ -166,7 +166,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
         join.set_outer(False)
         return SequenceProxy(Item, query, client=self._client)
 
-    async def datasheet(self) -> Optional[WeaponDatasheet]:
+    async def datasheet(self) -> WeaponDatasheet | None:
         """Return the datasheet for the weapon."""
         collection: Final[str] = 'weapon_datasheet'
         if (item := await self.item()) is None:  # pragma: no cover
@@ -197,7 +197,7 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
     @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')
     async def get_by_name(cls, name: str, *, locale: str = 'en',
                           client: RequestClient
-                          ) -> Optional['Weapon']:  # pragma: no cover
+                          ) -> 'Weapon | None':  # pragma: no cover
         """Retrieve a weapon by name.
 
         This is a helper method provided as weapons themselves do not

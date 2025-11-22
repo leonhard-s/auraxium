@@ -1,7 +1,7 @@
 """Experience and rank class definitions."""
 
 import logging
-from typing import Any, List, Optional, Union, cast
+from typing import Any, cast
 
 import pydantic
 
@@ -67,7 +67,7 @@ class Experience(Cached, cache_size=100, cache_ttu=3600.0):
     id: int
     description: str
     xp: int
-    experience_award_type_id: Optional[int]
+    experience_award_type_id: int | None
 
     def experience_award_type(self) -> InstanceProxy['ExperienceAwardType']:
         """Return the faction that has access to this item.
@@ -186,11 +186,11 @@ class ExperienceRank:
                 f'Unable to populate {self.__class__.__name__} due to a '
                 f'missing key: {err.args[0]}', data) from err
 
-    def image(self, faction: Union[int, Faction]) -> str:
+    def image(self, faction: int | Faction) -> str:
         """Return the default image for this type."""
         if isinstance(faction, Faction):
             faction = faction.id
-        internal_tag: List[str] = ['null', 'vs', 'nc', 'tr', 'nso']
+        internal_tag: list[str] = ['null', 'vs', 'nc', 'tr', 'nso']
         image_id = getattr(self.data, internal_tag[faction])
         return str(DBG_FILES / f'{image_id}.png')
 

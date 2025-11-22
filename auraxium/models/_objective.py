@@ -1,7 +1,5 @@
 """Data classes for :mod:`auraxium.ps2._objective`."""
 
-from typing import Optional
-
 from .base import RESTPayload
 
 __all__ = [
@@ -20,15 +18,15 @@ class ObjectiveData(RESTPayload):
     objective_id: int
     objective_type_id: int
     objective_group_id: int
-    param1: Optional[str] = None
-    param2: Optional[str] = None
-    param3: Optional[str] = None
-    param4: Optional[str] = None
-    param5: Optional[str] = None
-    param6: Optional[str] = None
-    param7: Optional[str] = None
-    param8: Optional[str] = None
-    param9: Optional[str] = None
+    param1: str | None = None
+    param2: str | None = None
+    param3: str | None = None
+    param4: str | None = None
+    param5: str | None = None
+    param6: str | None = None
+    param7: str | None = None
+    param8: str | None = None
+    param9: str | None = None
 
 
 class ObjectiveTypeData(RESTPayload):
@@ -40,12 +38,12 @@ class ObjectiveTypeData(RESTPayload):
 
     objective_type_id: int
     description: str
-    param1: Optional[str] = None
-    param2: Optional[str] = None
-    param3: Optional[str] = None
-    param4: Optional[str] = None
-    param5: Optional[str] = None
-    param6: Optional[str] = None
-    param7: Optional[str] = None
-    param8: Optional[str] = None
-    param9: Optional[str] = None
+    param1: str | None = None
+    param2: str | None = None
+    param3: str | None = None
+    param4: str | None = None
+    param5: str | None = None
+    param6: str | None = None
+    param7: str | None = None
+    param8: str | None = None
+    param9: str | None = None

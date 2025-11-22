@@ -1,7 +1,5 @@
 """Shared custom types and global type aliases."""
 
-from typing import Dict, List, Optional, Union
-
 import pydantic
 
 from ._support import deprecated
@@ -11,8 +9,7 @@ __all__ = [
     'LocaleData'
 ]
 
-CensusData = Dict[
-    str, Union[str, int, float, 'CensusData', List['CensusData']]]
+CensusData = dict[str, 'str | int | float | CensusData | list[CensusData]']
 
 
 class LocaleData(pydantic.BaseModel):
@@ -24,15 +21,15 @@ class LocaleData(pydantic.BaseModel):
 
     model_config = pydantic.ConfigDict(extra='ignore', frozen=True)
 
-    de: Optional[str] = None
-    en: Optional[str] = None
-    es: Optional[str] = None
-    fr: Optional[str] = None
-    it: Optional[str] = None
+    de: str | None = None
+    en: str | None = None
+    es: str | None = None
+    fr: str | None = None
+    it: str | None = None
 
     @deprecated('0.3', '0.5', ':attr:`auraxium.types.LocaleData.name`')
     def __call__(self, locale: str = 'en') -> str:  # pragma: no cover
-        return getattr(self, locale)
+        return str(getattr(self, locale))
 
     def __str__(self) -> str:
         return self.en or repr(self)

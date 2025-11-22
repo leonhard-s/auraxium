@@ -1,7 +1,5 @@
 """Data classes for :mod:`auraxium.ps2._map`."""
 
-from typing import Optional
-
 from .base import RESTPayload
 from ..types import LocaleData
 
@@ -49,15 +47,15 @@ class MapRegionData(RESTPayload):
     # NOTE: "SWG" stands for "The Shattered Warpgate" on Esamir
     map_region_id: int
     zone_id: int
-    facility_id: Optional[int] = None  # Only missing for SWG
+    facility_id: int | None = None  # Only missing for SWG
     facility_name: str
-    facility_type_id: Optional[int] = None  # Only missing for SWG
-    facility_type: Optional[str] = None  # Only missing for SWG
-    location_x: Optional[float] = None
-    location_y: Optional[float] = None
-    location_z: Optional[float] = None
-    reward_amount: Optional[int] = None
-    reward_currency_id: Optional[int] = None
+    facility_type_id: int | None = None  # Only missing for SWG
+    facility_type: str | None = None  # Only missing for SWG
+    location_x: float | None = None
+    location_y: float | None = None
+    location_z: float | None = None
+    reward_amount: int | None = None
+    reward_currency_id: int | None = None
 
 
 class RegionData(RESTPayload):

@@ -2,7 +2,7 @@
 
 import asyncio
 import unittest
-from typing import ClassVar, Optional
+from typing import ClassVar
 
 import auraxium
 from auraxium import census
@@ -23,7 +23,7 @@ class LiveApiTestCase(unittest.IsolatedAsyncioTestCase):
     as well as checking for API availability before running any tests.
     """
 
-    _api_available: ClassVar[Optional[bool]] = None
+    _api_available: ClassVar[bool | None] = None
 
     async def asyncSetUp(self) -> None:
         await super().asyncSetUp()
