@@ -425,7 +425,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         This includes an optional player title if the player has
         selected one.
         """
-        if self.title_id != 0:
+        if self.title_id:
             title = await self.title()
             if title is not None:
                 title_name = getattr(title.name, locale, None)

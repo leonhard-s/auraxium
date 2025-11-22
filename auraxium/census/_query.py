@@ -357,7 +357,7 @@ class Query(QueryBase):
         """
         copy_func = copy.deepcopy if deep_copy else _dummy_copy
         instance = super().copy(template, copy_joins=copy_joins,
-                                deep_copy=deep_copy, *kwargs)
+                                deep_copy=deep_copy, **kwargs)
         assert isinstance(instance, Query)
         if isinstance(template, Query):
             # Additional attributes to include when copying a top-level query

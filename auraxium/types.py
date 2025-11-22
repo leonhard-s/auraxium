@@ -1,10 +1,13 @@
 """Shared custom types and global type aliases."""
 
-from typing import Dict, List
+from typing import Dict, TYPE_CHECKING
 
 import pydantic
 
 from ._support import deprecated
+
+if TYPE_CHECKING:
+    from typing import List
 
 __all__ = [
     'CensusData',

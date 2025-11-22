@@ -10,8 +10,8 @@ import datetime
 import logging
 import sys
 from collections import OrderedDict
-from typing import (Dict, Generic, Hashable, Iterable, Iterator, List,
-                    Tuple, TypeVar)
+from collections.abc import Hashable, Iterable, Iterator
+from typing import Dict, Generic, List, Tuple, TypeVar
 
 __all__ = [
     'TLRUCache'

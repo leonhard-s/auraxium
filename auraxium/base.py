@@ -79,7 +79,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
                 f'Missing field "{self.id_field}"', data) from err
         _log.debug('Instantiating <%s:%d> using payload: %s',
                    self.__class__.__name__, id_, data)
-        self.id: int = id_  # pylint: disable=invalid-name
+        self.id: int = id_
         self._client = client
         try:
             self.data: RESTPayload = self._model(**data)
@@ -88,7 +88,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
                 f'Unable to instantiate {self.__class__.__name__} instance '
                 f'from given payload: {err}', data) from err
 
-    def __eq__(self, o: Any) -> bool:  # pylint: disable=invalid-name
+    def __eq__(self, o: Any) -> bool:
         if not isinstance(o, self.__class__):
             return False
         return self.id == o.id
