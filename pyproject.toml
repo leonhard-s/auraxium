@@ -1,0 +1,43 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "auraxium"
+authors = [
+    {name = "Leonhard S.", email="leonhard-sei@outlook.com"},
+]
+description = "A python wrapper for the PlanetSide 2 Census API."
+readme = "README.md"
+requires-python = ">= 3.10"
+keywords = ["daybreak", "census", "planetside", "ps2", "ess", "live"]
+license = "MIT"
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
+]
+dependencies = [
+    "aiohttp>=3.12",
+    "pydantic>=2.11",
+    "yarl>=1.20",
+    "websockets>=15.0",
+]
+dynamic = ["version"]
+
+[project.optional-dependencies]
+docs = [
+    "sphinx>=8.2",
+    "sphinx_rtd_theme>=3.0",
+]
+
+[tool.setuptools]
+packages = { find = { include = ["auraxium*"] } }
+include-package-data = true
+package-data = { "auraxium" = ["py.typed"] }
+
+[tool.setuptools.dynamic]
+version = { attr = "auraxium.__version__" }
