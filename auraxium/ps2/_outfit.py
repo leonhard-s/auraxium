@@ -220,6 +220,7 @@ class Outfit(Named, cache_size=20, cache_ttu=300.0):
 
         This returns an :class:`auraxium.InstanceProxy`.
         """
+        assert self.data.leader_character_id is not None
         query = Query(
             OutfitMember.collection, service_id=self._client.service_id)
         query.add_term(

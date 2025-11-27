@@ -79,8 +79,8 @@ class MarketingBundle(Named, cache_size=100, cache_ttu=60.0):
 
     def image(self) -> str:
         """Return the default image for this type."""
-        image_id: int = self.data.image_id
-        return str(DBG_FILES / f'{image_id}.png')
+        assert self.data.image_id is not None
+        return str(DBG_FILES / f'{self.data.image_id}.png')
 
     async def items(self) -> list[tuple[Item, int]]:
         """Return the contents of the bundle.

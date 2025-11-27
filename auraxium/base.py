@@ -82,7 +82,7 @@ class Ps2Object(metaclass=abc.ABCMeta):
         self.id: int = id_
         self._client = client
         try:
-            self.data: RESTPayload = self._model(**data)
+            self.data: Any = self._model(**data)
         except pydantic.ValidationError as err:
             raise PayloadError(
                 f'Unable to instantiate {self.__class__.__name__} instance '
@@ -357,8 +357,7 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
         This will take the form of ``<class:id:name>``, e.g.
         ``<Item:2:NC4 Mag-Shot>``.
         """
-        return (f'<{self.__class__.__name__}:{self.id}:'
-                f'\'{self.name}\'>')
+        return f'<{self.__class__.__name__}:{self.id}:\'{str(self)}\'>'
 
     def __str__(self) -> str:
         """Return the string representation of this object.
@@ -366,7 +365,10 @@ class Named(Cached, cache_size=0, cache_ttu=0.0, metaclass=abc.ABCMeta):
         This retrieves the :atr:``Named.name`` attribute for the
         English locale.
         """
-        return str(self.name)
+        name = self.name
+        if not isinstance(name, str):
+            name = getattr(name, 'en', 'unknown')
+        return name
 
     @classmethod
     @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')  # pragma: no cover

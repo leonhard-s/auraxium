@@ -342,6 +342,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
         This returns an :class:`auraxium.InstanceProxy`.
         """
+        assert self.data.faction_id is not None
         query = Query(Faction.collection, service_id=self._client.service_id)
         query.add_term(field=Faction.id_field, value=self.data.faction_id)
         return InstanceProxy(Faction, query, client=self._client)
@@ -478,6 +479,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
         This returns an :class:`auraxium.InstanceProxy`.
         """
+        assert self.data.profile_id is not None
         query = Query(Profile.collection, service_id=self._client.service_id)
         query.add_term(field=Profile.id_field, value=self.data.profile_id)
         return InstanceProxy(Profile, query, client=self._client)

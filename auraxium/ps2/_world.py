@@ -115,6 +115,7 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
         (e.g. "locked", "low", or "high", the latter referring to
         population numbers), and the last time this value was updated.
         """
+        assert self.data.name is not None
         query = Query('game_server_status', namespace='global',
                       service_id=self._client.service_id, game_code='ps2',
                       name=f'^{self.data.name.en}')
