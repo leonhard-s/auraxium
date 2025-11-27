@@ -9,7 +9,6 @@ from ..errors import NotFoundError
 from ..collections import WeaponAmmoSlot, WeaponData, WeaponDatasheet
 from .._proxy import InstanceProxy, SequenceProxy
 from .._rest import RequestClient, extract_payload, extract_single
-from .._support import deprecated
 
 from ._fire import FireGroup
 from ._item import Item
@@ -192,26 +191,6 @@ class Weapon(Cached, cache_size=128, cache_ttu=3600.0):
         join = query.create_join(FireGroup.collection)
         join.set_fields(FireGroup.id_field)
         return SequenceProxy(FireGroup, query, client=self._client)
-
-    @classmethod
-    @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')
-    async def get_by_name(cls, name: str, *, locale: str = 'en',
-                          client: RequestClient
-                          ) -> 'Weapon | None':  # pragma: no cover
-        """Retrieve a weapon by name.
-
-        This is a helper method provided as weapons themselves do not
-        have a name. This looks up an item by name, then returns the
-        weapon associated with this item.
-
-        Returns:
-            The weapon associated with the given item, or None
-
-        """
-        item = await Item.get_by_name(name, locale=locale, client=client)
-        if item is None:
-            return None
-        return await item.weapon().resolve()
 
     def item(self) -> InstanceProxy[Item]:
         """Return the item associated with this weapon."""

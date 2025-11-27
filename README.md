@@ -223,7 +223,7 @@ See the [Caching](#caching) section for details on the caching system.
 
 #### Named Objects
 
-Named objects are based off the `Named` class and always cached. This base class guarantees a `.name`] attribute and allows the use of the [`.get_by_name()`](https://auraxium.readthedocs.io/en/latest/api/rest.html#auraxium.base.Named.get_by_name) method, which is also cached.
+Named objects are based off the `Named` class and always cached. This base class guarantees a `.name`] attribute and allows the use of the [`.get_by_name()`](https://auraxium.readthedocs.io/en/latest/api/rest.html#auraxium.Client.get_by_name) method, which is also cached.
 
 This caching strategy is almost identical to the one used for IDs, except that it uses a string constructed of the lower-case name and locale identifier to store objects (e.g. `'en_sunderer'`).
 

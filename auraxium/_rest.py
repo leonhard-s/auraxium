@@ -33,7 +33,6 @@ from .errors import (PayloadError, BadRequestSyntaxError, CensusError,
                      UnknownCollectionError)
 from ._log import RedactingFilter
 from .types import CensusData
-from ._support import deprecated
 
 __all__ = [
     'RequestClient',
@@ -64,13 +63,7 @@ class RequestClient:
             else:
                 self.endpoints = [yarl.URL(e) for e in endpoints]
         if loop is None:
-            try:
-                loop = asyncio.get_running_loop()
-            except RuntimeError:  # pragma: no cover
-                # Hacky way to deprecate things that are not functions
-                deprecated('0.3', '0.5', ':meth:`asyncio.new_event_loop()')(
-                    lambda: None)()
-                loop = asyncio.new_event_loop()
+            loop = asyncio.get_running_loop()
         self.loop: asyncio.AbstractEventLoop = loop
         self.profiling: bool = profiling
         self.service_id: str = service_id
