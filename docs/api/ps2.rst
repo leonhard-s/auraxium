@@ -11,17 +11,17 @@ Player Characters
 
    .. automethod:: __init__(data: auraxium.types.CensusData, client: auraxium.Client) -> None
 
-   .. automethod:: achievements(**kwargs) -> list[auraxium.models.CharacterAchievement]
+   .. automethod:: achievements(**kwargs) -> list[auraxium.collections.CharacterAchievement]
 
    .. automethod:: currency(**kwargs) -> tuple[int, int]
 
    .. automethod:: directive(results: int = 1, **kwargs) -> list[auraxium.types.CensusData]
 
-   .. automethod:: directive_objective(results: int = 1, **kwargs) -> list[auraxium.models.CharacterDirectiveObjective]
+   .. automethod:: directive_objective(results: int = 1, **kwargs) -> list[auraxium.collections.CharacterDirectiveObjective]
 
-   .. automethod:: directive_tier(results: int = 1, **kwargs) -> list[auraxium.models.CharacterDirectiveTier]
+   .. automethod:: directive_tier(results: int = 1, **kwargs) -> list[auraxium.collections.CharacterDirectiveTier]
 
-   .. automethod:: directive_tree(results: int = 1, **kwargs) -> list[auraxium.models.CharacterDirectiveTree]
+   .. automethod:: directive_tree(results: int = 1, **kwargs) -> list[auraxium.collections.CharacterDirectiveTree]
 
    .. automethod:: events(**kwargs) -> list[auraxium.types.CensusData]
 
@@ -88,7 +88,7 @@ Outfits
 
    .. automethod:: members() -> auraxium.SequenceProxy[OutfitMember]
 
-   .. automethod:: ranks() -> list[auraxium.models.OutfitRankData]
+   .. automethod:: ranks() -> list[auraxium.collections.OutfitRankData]
 
 .. autoclass:: OutfitMember
 
@@ -167,7 +167,7 @@ Firing Mechanics
 
    .. automethod:: type() -> FireModeType
 
-   .. automethod:: state_groups() -> dict[PlayerState, auraxium.models.PlayerStateGroup]
+   .. automethod:: state_groups() -> dict[PlayerState, auraxium.collections.PlayerStateGroup]
 
    .. automethod:: projectile() -> auraxium.InstanceProxy[Projectile]
 
@@ -201,7 +201,7 @@ Items & Weapons
 
    .. automethod:: faction() -> auraxium.InstanceProxy[Faction]
 
-   .. automethod:: datasheet() -> auraxium.models.WeaponDatasheet
+   .. automethod:: datasheet() -> auraxium.collections.WeaponDatasheet
 
    .. automethod:: profiles() -> auraxium.SequenceProxy[Profile]
 
@@ -217,11 +217,11 @@ Items & Weapons
 
    .. automethod:: is_heat_weapon() -> bool
 
-   .. automethod:: ammo_slots() -> list[auraxium.models.WeaponAmmoSlot]
+   .. automethod:: ammo_slots() -> list[auraxium.collections.WeaponAmmoSlot]
 
    .. automethod:: attachments() -> auraxium.SequenceProxy[Item]
 
-   .. automethod:: datasheet() -> auraxium.models.WeaponDatasheet
+   .. automethod:: datasheet() -> auraxium.collections.WeaponDatasheet
 
    .. automethod:: fire_groups() -> auraxium.SequenceProxy[FireGroup]
 

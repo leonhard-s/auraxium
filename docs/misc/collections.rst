@@ -42,6 +42,7 @@ Census Collection                      Auraxium                                 
 ``effect_type``                        :class:`auraxium.ps2.EffectType`                                    --
 ``empire_scores``                      --                                                                  Unused
 ``experience``                         :class:`auraxium.ps2.Experience`                                    --
+``experience_award_type``              :class:`auraxium.ps2.ExperienceAwardType`                           --
 ``experience_rank``                    :class:`auraxium.ps2.ExperienceRank`                                --
 ``event``                              --                                                                  Not yet implemented
 ``facility_link``                      :meth:`auraxium.ps2.MapRegion.get_connected`                        --
@@ -53,6 +54,7 @@ Census Collection                      Auraxium                                 
 ``fire_mode_2``                        :class:`auraxium.ps2.FireMode`                                      --
 ``fire_mode_to_projectile``            :meth:`auraxium.ps2.FireMode.projectile`                            --
 ``fire_mode_type``                     :class:`auraxium.ps2.FireModeType`                                  --
+``fish``                               :class:`auraxium.ps2.Fish`                                          --
 ``image``                              --                                                                  Not yet implemented
 ``image_set``                          --                                                                  Not yet implemented
 ``image_set_default``                  --                                                                  Not yet implemented
@@ -81,7 +83,7 @@ Census Collection                      Auraxium                                 
 ``outfit_rank``                        :meth:`auraxium.ps2.Outfit.ranks`                                   --
 ``player_state``                       :class:`auraxium.ps2.PlayerState`                                   --
 ``player_state_group``                 --                                                                  Superceded by ``player_state_group_2``
-``player_state_group_2``               :class:`auraxium.models.PlayerStateGroup`                              --
+``player_state_group_2``               :class:`auraxium.collections.PlayerStateGroup`                      --
 ``profile``                            --                                                                  Superceded by ``profile_2``
 ``profile_2``                          :class:`auraxium.ps2.Profile`                                       --
 ``profile_armor_map``                  :meth:`auraxium.ps2.Profile.armour_info`                            --
