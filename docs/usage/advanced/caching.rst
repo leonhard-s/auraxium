@@ -14,7 +14,7 @@ Additionally, cache items have a maximum lifetime to force updates for regularly
 
    Restoring items from cache is currently only supported when using :meth:`Client.get_by_id <auraxium.Client.get_by_id>`.
 
-   For :class:`Named <auraxium.base.Named.get_by_name>` subclasses, the :meth:`Client.get_by_name <auraxium.Client.get_by_name>` method is similarly cached by locale. This means that looking up the same name in two different locales will create two separate cache entries.
+   For :class:`Named <auraxium.base.Named>` subclasses, the :meth:`Client.get_by_name <auraxium.Client.get_by_name>` method is similarly cached by locale. This means that looking up the same name in two different locales will create two separate cache entries.
 
 Customizing Caches
 ------------------

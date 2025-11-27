@@ -2,8 +2,6 @@
 
 import pydantic
 
-from ._support import deprecated
-
 __all__ = [
     'CensusData',
     'LocaleData'
@@ -26,10 +24,6 @@ class LocaleData(pydantic.BaseModel):
     es: str | None = None
     fr: str | None = None
     it: str | None = None
-
-    @deprecated('0.3', '0.5', ':attr:`auraxium.types.LocaleData.name`')
-    def __call__(self, locale: str = 'en') -> str:  # pragma: no cover
-        return str(getattr(self, locale))
 
     def __str__(self) -> str:
         return self.en or repr(self)

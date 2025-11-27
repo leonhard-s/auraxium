@@ -31,8 +31,6 @@ Player Characters
 
    .. automethod:: friends() -> list[Character]
 
-   .. automethod:: get_by_name(name: str, *, locale: str = 'en', client: auraxium.Client) -> typing.Awaitable[Character | None]
-
    .. automethod:: get_online(id_: int, *args: int, client: auraxium.Client) -> list[Character]
 
    .. automethod:: items() -> auraxium.SequenceProxy[Item]
@@ -80,10 +78,6 @@ Outfits
 
    .. automethod:: tag() -> str
 
-   .. automethod:: get_by_name(name: str, *, locale: str = 'en', client: auraxium.Client) -> typing.Awaitable[Outfit | None]
-
-   .. automethod:: get_by_tag(tag: str, client: auraxium.Client) -> typing.Awaitable[Outfit | None]
-
    .. automethod:: leader() -> auraxium.InstanceProxy[OutfitMember]
 
    .. automethod:: members() -> auraxium.SequenceProxy[OutfitMember]
@@ -110,8 +104,6 @@ Game World & Servers
 .. autoclass:: World
 
    .. automethod:: events(**kwargs: Any) -> list[auraxium.types.CensusData]
-
-   .. automethod:: get_by_name(name: str, *, locale: str = 'en', client: auraxium.Client) -> typing.Awaitable[World | None]
 
    .. automethod:: map(zone: int | Zone, *args: int | Zone) -> list[auraxium.types.CensusData]
 
@@ -224,8 +216,6 @@ Items & Weapons
    .. automethod:: datasheet() -> auraxium.collections.WeaponDatasheet
 
    .. automethod:: fire_groups() -> auraxium.SequenceProxy[FireGroup]
-
-   .. automethod:: get_by_name(name: str, *, locale: str = 'en', client: auraxium.Client) -> typing.Awaitable[Weapon | None]
 
    .. automethod:: item() -> auraxium.InstanceProxy[Item]
 

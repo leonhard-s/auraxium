@@ -3,10 +3,9 @@
 import logging
 from typing import Any, ClassVar, Final, cast
 
-from ..base import Named, NamedT
+from ..base import Named
 from .._cache import TLRUCache
 from ..census import Query
-from ..errors import NotFoundError
 from ..collections import (CharacterAchievement, CharacterBattleRankData,
                            CharacterCertsData, CharacterData,
                            CharacterDirective, CharacterDirectiveObjective,
@@ -15,7 +14,6 @@ from ..collections import (CharacterAchievement, CharacterBattleRankData,
 from .._proxy import InstanceProxy, SequenceProxy
 from .._rest import RequestClient, extract_payload, extract_single
 from ..types import CensusData, LocaleData
-from .._support import deprecated
 
 from ._faction import Faction
 from ._item import Item
@@ -370,30 +368,6 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
         payload = await self._client.request(query)
         friends_data = extract_payload(payload, self.collection)
         return [Character(d, client=self._client) for d in friends_data]
-
-    @classmethod
-    @deprecated('0.2', '0.5', replacement=':meth:`auraxium.Client.get`')
-    async def get_by_name(cls: type[NamedT], name: str, *, locale: str = 'en',
-                          client: RequestClient
-                          ) -> NamedT | None:  # pragma: no cover
-        """Retrieve an object by its unique name.
-
-        This query is always case-insensitive.
-        """
-        log.debug('%s "%s"[%s] requested', cls.__name__, name, locale)
-        if (instance := cls._cache.get(f'_{name.lower()}')) is not None:
-            log.debug('%r restored from cache', instance)
-            return cast(NamedT, instance)
-        log.debug('%s "%s"[%s] not cached, generating API query...',
-                  cls.__name__, name, locale)
-        query = Query(cls.collection, service_id=client.service_id,
-                      name__first_lower=name.lower()).limit(1)
-        data = await client.request(query)
-        try:
-            payload = extract_single(data, cls.collection)
-        except NotFoundError:
-            return None
-        return cls(payload, client=client)
 
     @classmethod
     async def get_online(cls, id_: int, *args: int, client: RequestClient
