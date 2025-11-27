@@ -2,7 +2,7 @@
 
 import enum
 from ..base import Cached
-from ..models import ArmourInfoData
+from ..collections import ArmourInfoData
 
 __all__ = [
     'ArmourFacing',

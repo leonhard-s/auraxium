@@ -2,7 +2,7 @@
 
 import enum
 from ..base import Cached
-from ..models import ProjectileData
+from ..collections import ProjectileData
 
 __all__ = [
     'Projectile',

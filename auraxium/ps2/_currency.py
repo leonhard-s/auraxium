@@ -1,7 +1,7 @@
 """Currency class definition."""
 
 from ..base import Cached
-from ..models import CurrencyData
+from ..collections import CurrencyData
 from ..types import LocaleData
 
 __all__ = [

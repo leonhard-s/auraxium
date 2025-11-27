@@ -9,8 +9,8 @@ from ..base import Cached
 from ..census import Query
 from ..endpoints import DBG_FILES
 from ..errors import PayloadError
-from ..models import (ExperienceAwardTypeData, ExperienceData,
-                      ExperienceRankData)
+from ..collections import (ExperienceAwardTypeData, ExperienceData,
+                           ExperienceRankData, ExperienceRankFactionData)
 from .._proxy import InstanceProxy
 from .._rest import RequestClient
 from ..types import CensusData
@@ -126,7 +126,7 @@ class ExperienceRank:
           "lost" part of their experience to a level cap in the past.
 
     .. attribute:: vs
-       :type: auraxium.models.ExperienceRankData.EmpireData
+       :type: auraxium.collections.experience_rank.ExperienceRankFaction
 
        Empire-specific rank data for VS.
 
@@ -136,7 +136,7 @@ class ExperienceRank:
        The VS-specific default image path.
 
     .. attribute:: nc
-       :type: auraxium.models.ExperienceRankData.EmpireData
+       :type: auraxium.collections.experience_rank.ExperienceRankFaction
 
        Empire-specific rank data for NC.
 
@@ -146,7 +146,7 @@ class ExperienceRank:
        The NC-specific default image path.
 
     .. attribute:: tr
-       :type: auraxium.models.ExperienceRankData.EmpireData
+       :type: auraxium.collections.experience_rank.ExperienceRankFaction
 
        Empire-specific rank data for TR.
 
@@ -163,11 +163,11 @@ class ExperienceRank:
     # Type hints for data class fallback attributes
     rank: int
     xp_max: int
-    vs: ExperienceRankData.EmpireData
+    vs: ExperienceRankFactionData
     vs_image_path: str
-    nc: ExperienceRankData.EmpireData
+    nc: ExperienceRankFactionData
     nc_image_path: str
-    tr: ExperienceRankData.EmpireData
+    tr: ExperienceRankFactionData
     tr_image_path: str
 
     def __init__(self, data: CensusData, client: RequestClient) -> None:
@@ -190,8 +190,10 @@ class ExperienceRank:
         """Return the default image for this type."""
         if isinstance(faction, Faction):
             faction = faction.id
-        internal_tag: list[str] = ['null', 'vs', 'nc', 'tr', 'nso']
-        image_id = getattr(self.data, internal_tag[faction])
+        if faction <= 0 or faction >= 4:
+            raise ValueError(f'Invalid faction ID: {faction}, only 1-3 allowed.')
+        internal_tag: list[str] = ['null', 'vs', 'nc', 'tr']
+        image_id = getattr(self.data, internal_tag[faction]).image_id
         return str(DBG_FILES / f'{image_id}.png')
 
     def __repr__(self) -> str:
@@ -200,5 +202,12 @@ class ExperienceRank:
         This will take the form of ``<Class:rank:type>``, e.g.
         ``<ExperienceRank:50:ASP>``.
         """
-        mode = 'ASP' if self.data.nc.image_id == 88685 else 'Default'
+        # NOTE: Titles are messed up; A.S.P. (i.e. prestige) just copy-pasted
+        # all ranks and changed the image, and NSO is not modelled at all.
+        # This is a best-effort to at least tell A.S.P. and regular ranks
+        # apart for the non-robot factions.
+        if '94469' in (self.data.vs_image_path or ''):
+            mode = 'ASP'
+        else:
+            mode = 'Default'
         return f'<{self.__class__.__name__}:{self.data.rank}:{mode}>'

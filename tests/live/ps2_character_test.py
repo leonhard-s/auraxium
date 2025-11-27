@@ -3,7 +3,7 @@
 import asyncio
 
 import auraxium
-from auraxium import models, ps2
+from auraxium import collections, ps2
 
 from tests.live._base import LiveApiTestCase
 from tests.utils import SERVICE_ID
@@ -47,7 +47,7 @@ class TestCharacterMethods(LiveApiTestCase):
         """Test the achievements() helper method."""
         achievements = await self.character.achievements()
         self.assertGreater(len(achievements), 0)
-        self.assertIsInstance(achievements[0], models.CharacterAchievement)
+        self.assertIsInstance(achievements[0], collections.CharacterAchievement)
 
     async def test_currency(self) -> None:
         """Test the currency() helper method."""
@@ -59,25 +59,25 @@ class TestCharacterMethods(LiveApiTestCase):
         """Test the directive() helper method."""
         directives = await self.character.directive()
         self.assertGreater(len(directives), 0)
-        self.assertIsInstance(directives[0], models.CharacterDirective)
+        self.assertIsInstance(directives[0], collections.CharacterDirective)
 
     async def test_directive_objective(self) -> None:
         """Test the directive_objective() helper method."""
         results = await self.character.directive_objective()
         self.assertGreater(len(results), 0)
-        self.assertIsInstance(results[0], models.CharacterDirectiveObjective)
+        self.assertIsInstance(results[0], collections.CharacterDirectiveObjective)
 
     async def test_directive_tier(self) -> None:
         """Test the directive_tier() helper method."""
         results = await self.character.directive_tier()
         self.assertGreater(len(results), 0)
-        self.assertIsInstance(results[0], models.CharacterDirectiveTier)
+        self.assertIsInstance(results[0], collections.CharacterDirectiveTier)
 
     async def test_directive_tree(self) -> None:
         """Test the directive_tree() helper method."""
         results = await self.character.directive_tree()
         self.assertGreater(len(results), 0)
-        self.assertIsInstance(results[0], models.CharacterDirectiveTree)
+        self.assertIsInstance(results[0], collections.CharacterDirectiveTree)
 
     async def test_events(self) -> None:
         """Test the events() helper method."""

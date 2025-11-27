@@ -1,7 +1,7 @@
 """Zone class definition."""
 
 from ..base import Named
-from ..models import ZoneData
+from ..collections import ZoneData
 from ..types import LocaleData
 
 __all__ = [

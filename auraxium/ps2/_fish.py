@@ -1,7 +1,7 @@
 """Fishing class definitions."""
 
 from ..base import ImageMixin, Named
-from ..models import FishData
+from ..collections import FishData
 from ..types import LocaleData
 
 __all__ = [

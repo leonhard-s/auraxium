@@ -5,7 +5,7 @@ from typing import Any, Final
 
 from ..base import Named, NamedT
 from ..census import Query
-from ..models import WorldData
+from ..collections import WorldData
 from .._rest import RequestClient, extract_payload, extract_single
 from ..types import CensusData, LocaleData
 from .._support import deprecated
@@ -115,6 +115,7 @@ class World(Named, cache_size=20, cache_ttu=3600.0):
         (e.g. "locked", "low", or "high", the latter referring to
         population numbers), and the last time this value was updated.
         """
+        assert self.data.name is not None
         query = Query('game_server_status', namespace='global',
                       service_id=self._client.service_id, game_code='ps2',
                       name=f'^{self.data.name.en}')

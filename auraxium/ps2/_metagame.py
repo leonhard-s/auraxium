@@ -2,7 +2,7 @@
 
 import enum
 from ..base import Cached
-from ..models import MetagameEventData
+from ..collections import MetagameEventData
 from ..types import LocaleData
 
 __all__ = [

@@ -1,7 +1,7 @@
 """Player state group class definitions."""
 
 import enum
-from ..models import PlayerStateGroup
+from ..collections import PlayerStateGroup
 
 __all__ = [
     'PlayerState',

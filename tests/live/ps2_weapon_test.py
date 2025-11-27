@@ -1,7 +1,7 @@
 """Test cases for the ps2.Weapon class."""
 
 import auraxium
-from auraxium import models, ps2
+from auraxium import collections, ps2
 
 from tests.live._base import LiveApiTestCase
 from tests.utils import SERVICE_ID
@@ -34,7 +34,7 @@ class TestWeaponMethods(LiveApiTestCase):
         """Test the ammo_slots() helper method."""
         ammo = await self.weapon.ammo_slots()
         self.assertGreater(len(ammo), 0)
-        self.assertIsInstance(ammo[0], models.WeaponAmmoSlot)
+        self.assertIsInstance(ammo[0], collections.WeaponAmmoSlot)
 
     async def test_attachments(self) -> None:
         """Test the attachments() helper method."""
@@ -47,7 +47,7 @@ class TestWeaponMethods(LiveApiTestCase):
         data = await self.weapon.datasheet()
         if data is None:
             self.fail('Weapon datasheet not found')
-        self.assertIsInstance(data, models.WeaponDatasheet)
+        self.assertIsInstance(data, collections.WeaponDatasheet)
 
     async def test_fire_groups(self) -> None:
         """Test the fire_groups() helper method."""

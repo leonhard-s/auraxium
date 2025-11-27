@@ -62,7 +62,7 @@ class QueryBase:
            :meth:`SearchTerm.infer`.
         :type kwargs: float | int | str
         """
-        self.data: QueryBaseData = QueryBaseData(collection)
+        self._data: Any = QueryBaseData(collection)
         self.joins: list[JoinedQuery] = []
         # Replace and double underscores with dots to allow accessing inner
         # fields like "name.first" or "battle_rank.value"
@@ -70,6 +70,11 @@ class QueryBase:
         # Run the add_term method for each of the converted key/value pairs
         _ = [self.add_term(k, v, parse_modifier=True)
              for k, v in kwargs.items()]
+
+    @property
+    def data(self) -> QueryBaseData:
+        """Provide typed access to the query's data attribute."""
+        return self._data
 
     def add_join(self: _QueryBaseT, query: 'QueryBase',
                  **kwargs: Any) -> _QueryBaseT:
@@ -276,10 +281,14 @@ class Query(QueryBase):
         """
         super().__init__(collection, **kwargs)
         self.endpoint = endpoint or default_endpoints()[0]
-        data: QueryBaseData = self.data
-        self.data: QueryData = QueryData.from_base(data)
+        self._data = QueryData.from_base(self._data)
         self.data.namespace = namespace
         self.data.service_id = service_id
+
+    @property
+    def data(self) -> QueryData:
+        """Provide typed access to the query's data attribute."""
+        return self._data
 
     def __str__(self) -> str:
         """Generate and return the URL defined by this query.
@@ -673,8 +682,12 @@ class JoinedQuery(QueryBase):
         :type kwargs: float | int | str
         """
         super().__init__(collection, **kwargs)
-        data: QueryBaseData = self.data
-        self.data: JoinedQueryData = JoinedQueryData.from_base(data)
+        self._data = JoinedQueryData.from_base(self._data)
+
+    @property
+    def data(self) -> JoinedQueryData:
+        """Provide typed access to the query's data attribute."""
+        return self._data
 
     @classmethod
     def copy(cls, template: QueryBase,

@@ -4,7 +4,7 @@ from typing import Final
 
 from ..base import Cached
 from ..census import Query
-from ..models import RewardData, RewardTypeData
+from ..collections import RewardData, RewardTypeData
 from .._rest import RequestClient
 from .._proxy import InstanceProxy, SequenceProxy
 

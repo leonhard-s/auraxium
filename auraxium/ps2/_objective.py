@@ -3,7 +3,7 @@
 from typing import Final
 from ..base import Cached
 from ..census import Query
-from ..models import ObjectiveData, ObjectiveTypeData
+from ..collections import ObjectiveData, ObjectiveTypeData
 from .._rest import RequestClient
 from .._proxy import InstanceProxy, SequenceProxy
 

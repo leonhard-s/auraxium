@@ -4,7 +4,7 @@ from typing import Final
 
 from ..base import Cached, ImageMixin, Named
 from ..census import Query
-from ..models import VehicleAttachmentData, VehicleData
+from ..collections import VehicleAttachmentData, VehicleData
 from .._rest import RequestClient
 from .._proxy import InstanceProxy, SequenceProxy
 from ..types import LocaleData
@@ -211,6 +211,7 @@ class VehicleAttachment(Cached, cache_size=250, cache_ttu=180.0):
 
         This returns an :class:`auraxium.InstanceProxy`.
         """
+        assert self.data.item_id is not None
         query = Query(Item.collection, service_id=self._client.service_id)
         query.add_term(field=Item.id_field, value=self.data.item_id)
         return InstanceProxy(Item, query, client=self._client)

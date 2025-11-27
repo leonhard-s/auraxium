@@ -1,7 +1,7 @@
 """Object definition for the faction type."""
 
 from ..base import ImageMixin, Named
-from ..models import FactionData
+from ..collections import FactionData
 from ..types import LocaleData
 
 __all__ = [

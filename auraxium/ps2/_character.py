@@ -7,9 +7,11 @@ from ..base import Named, NamedT
 from .._cache import TLRUCache
 from ..census import Query
 from ..errors import NotFoundError
-from ..models import (CharacterAchievement, CharacterData, CharacterDirective,
-                      CharacterDirectiveObjective, CharacterDirectiveTier,
-                      CharacterDirectiveTree, TitleData)
+from ..collections import (CharacterAchievement, CharacterBattleRankData,
+                           CharacterCertsData, CharacterData,
+                           CharacterDirective, CharacterDirectiveObjective,
+                           CharacterDirectiveTier, CharacterDirectiveTree,
+                           CharacterNameData, CharacterTimesData, TitleData)
 from .._proxy import InstanceProxy, SequenceProxy
 from .._rest import RequestClient, extract_payload, extract_single
 from ..types import CensusData, LocaleData
@@ -27,6 +29,11 @@ __all__ = [
 ]
 
 log = logging.getLogger('auraxium.ps2')
+
+
+# Monkey-patch the pydantic-generated CharacterNameData to inject a sensible
+# __str__ implementation.
+CharacterNameData.__str__ = lambda self: self.first or ''  # type: ignore
 
 
 class Title(Named, cache_size=300, cache_ttu=300.0):
@@ -107,17 +114,17 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
           the character (i.e. including their :class:`Title`, if any).
 
     .. attribute:: times
-       :type: auraxium.models.CharacterData.Times
+       :type: auraxium.collections.character.CharacterTimesData
 
        Login times and minutes played for the given character.
 
     .. attribute:: certs
-       :type: auraxium.models.CharacterData.Certs
+       :type: auraxium.collections.character.CharacterCertsData
 
        Current, past and total certification points for the character.
 
     .. attribute:: battle_rank
-       :type: auraxium.models.CharacterData.BattleRank
+       :type: auraxium.collections.character.CharacterBattleRankData
 
        The current battle rank of the character, and their progress
        until the next rankup.
@@ -153,9 +160,9 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
     faction_id: int
     head_id: int
     title_id: int
-    times: CharacterData.Times
-    certs: CharacterData.Certs
-    battle_rank: CharacterData.BattleRank
+    times: CharacterTimesData
+    certs: CharacterCertsData
+    battle_rank: CharacterBattleRankData
     profile_id: int
     prestige_level: int
 
@@ -335,6 +342,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
         This returns an :class:`auraxium.InstanceProxy`.
         """
+        assert self.data.faction_id is not None
         query = Query(Faction.collection, service_id=self._client.service_id)
         query.add_term(field=Faction.id_field, value=self.data.faction_id)
         return InstanceProxy(Faction, query, client=self._client)
@@ -471,6 +479,7 @@ class Character(Named, cache_size=256, cache_ttu=30.0):
 
         This returns an :class:`auraxium.InstanceProxy`.
         """
+        assert self.data.profile_id is not None
         query = Query(Profile.collection, service_id=self._client.service_id)
         query.add_term(field=Profile.id_field, value=self.data.profile_id)
         return InstanceProxy(Profile, query, client=self._client)

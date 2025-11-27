@@ -254,10 +254,18 @@ class QueryBaseData:
     """
 
     collection: str | None
-    hide: list[str] = dataclasses.field(default_factory=list)
-    joins: list['JoinedQueryData'] = dataclasses.field(default_factory=list)
-    show: list[str] = dataclasses.field(default_factory=list)
-    terms: list[SearchTerm] = dataclasses.field(default_factory=list)
+
+    # Redundant annotation is required to appease both pyright/pylance
+    # and the dataclass runtime checks, see
+    # https://github.com/microsoft/pyright/issues/10277
+    hide: list[str] = (
+        dataclasses.field(default_factory=list[str]))
+    joins: list['JoinedQueryData'] = (
+        dataclasses.field(default_factory=list['JoinedQueryData']))
+    show: list[str] = (
+        dataclasses.field(default_factory=list[str]))
+    terms: list[SearchTerm] = (
+        dataclasses.field(default_factory=list[SearchTerm]))
 
     @classmethod
     def from_base(cls: type[_QueryBaseDataT],
@@ -277,17 +285,17 @@ class QueryData(QueryBaseData):
     case: bool = True
     distinct: str | None = None
     exact_match_first: bool = False
-    has: list[str] = dataclasses.field(default_factory=list)
+    has: list[str] = dataclasses.field(default_factory=list[str])
     include_null: bool = False
     lang: str | None = None
     limit: int = 1
     limit_per_db: int = 1
     namespace: str = 'ps2:v2'
-    resolve: list[str] = dataclasses.field(default_factory=list)
+    resolve: list[str] = dataclasses.field(default_factory=list[str])
     retry: bool = True
     service_id: str = 's:example'
-    sort: list[str | tuple[str, bool]] = dataclasses.field(
-        default_factory=list)
+    sort: list[str | tuple[str, bool]] = (
+        dataclasses.field(default_factory=list[str | tuple[str, bool]]))
     start: int = 0
     timing: bool = False
     tree: dict[str, Any] | None = None
