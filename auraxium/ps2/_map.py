@@ -4,7 +4,7 @@ from typing import Final
 
 from ..base import Cached, Named
 from ..census import Query
-from ..models import FacilityTypeData, MapHexData, MapRegionData, RegionData
+from ..collections import FacilityTypeData, MapHexData, MapRegionData, RegionData
 from .._proxy import InstanceProxy, SequenceProxy
 from .._rest import RequestClient
 from ..types import LocaleData

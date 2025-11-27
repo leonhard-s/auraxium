@@ -2,7 +2,7 @@
 
 from ..base import Cached
 from ..census import Query
-from ..models import ResistInfoData, ResistTypeData
+from ..collections import ResistInfoData, ResistTypeData
 from .._proxy import InstanceProxy
 
 __all__ = [

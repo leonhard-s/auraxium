@@ -5,7 +5,7 @@ from typing import Final
 from ..base import Named, Cached
 from ..census import Query
 from ..endpoints import DBG_FILES
-from ..models import MarketingBundleData, MarketingBundleSingleData
+from ..collections import MarketingBundleData, MarketingBundleSingleData
 from .._proxy import InstanceProxy
 from .._rest import extract_payload
 from ..types import LocaleData

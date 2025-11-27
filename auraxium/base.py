@@ -17,7 +17,7 @@ from .census import Query
 from .endpoints import DBG_FILES
 from .errors import PayloadError
 from ._rest import RequestClient
-from .types import CensusData
+from .types import CensusData, LocaleData
 from ._support import deprecated
 
 __all__ = [
@@ -105,7 +105,14 @@ class Ps2Object(metaclass=abc.ABCMeta):
         # Re-raising or propagating the inner exception would only clutter up
         # the exception traceback, so we raise one "from scratch" instead.
         if hasattr(self.data, name):
-            return getattr(self.data, name)
+            value = getattr(self.data, name)
+
+            # HACK: Workaround for pydantic creating duplicate models
+            # for each type using "LocalizedString"
+            if value.__class__.__name__ == 'LocalizedString':
+                return LocaleData(**value.__dict__)
+
+            return value
         raise AttributeError(name)
 
     def __hash__(self) -> int:

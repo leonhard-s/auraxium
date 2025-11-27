@@ -4,7 +4,7 @@ from typing import Final
 
 from ..base import Cached, ImageMixin, Named
 from ..census import Query
-from ..models import VehicleAttachmentData, VehicleData
+from ..collections import VehicleAttachmentData, VehicleData
 from .._rest import RequestClient
 from .._proxy import InstanceProxy, SequenceProxy
 from ..types import LocaleData

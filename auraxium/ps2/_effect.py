@@ -3,7 +3,7 @@
 import enum
 from ..base import Cached
 from ..census import Query
-from ..models import (EffectData, EffectTypeData, ZoneEffectData,
+from ..collections import (EffectData, EffectTypeData, ZoneEffectData,
                       ZoneEffectTypeData)
 from .._proxy import InstanceProxy
 

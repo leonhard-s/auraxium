@@ -9,8 +9,8 @@ from ..base import Cached
 from ..census import Query
 from ..endpoints import DBG_FILES
 from ..errors import PayloadError
-from ..models import (ExperienceAwardTypeData, ExperienceData,
-                      ExperienceRankData)
+from ..collections import (ExperienceAwardTypeData, ExperienceData,
+                           ExperienceRankData, ExperienceRankFactionData)
 from .._proxy import InstanceProxy
 from .._rest import RequestClient
 from ..types import CensusData
@@ -126,7 +126,7 @@ class ExperienceRank:
           "lost" part of their experience to a level cap in the past.
 
     .. attribute:: vs
-       :type: auraxium.models.ExperienceRankData.EmpireData
+       :type: auraxium.collections.experience_rank.ExperienceRankFaction
 
        Empire-specific rank data for VS.
 
@@ -136,7 +136,7 @@ class ExperienceRank:
        The VS-specific default image path.
 
     .. attribute:: nc
-       :type: auraxium.models.ExperienceRankData.EmpireData
+       :type: auraxium.collections.experience_rank.ExperienceRankFaction
 
        Empire-specific rank data for NC.
 
@@ -146,7 +146,7 @@ class ExperienceRank:
        The NC-specific default image path.
 
     .. attribute:: tr
-       :type: auraxium.models.ExperienceRankData.EmpireData
+       :type: auraxium.collections.experience_rank.ExperienceRankFaction
 
        Empire-specific rank data for TR.
 
@@ -163,11 +163,11 @@ class ExperienceRank:
     # Type hints for data class fallback attributes
     rank: int
     xp_max: int
-    vs: ExperienceRankData.EmpireData
+    vs: ExperienceRankFactionData
     vs_image_path: str
-    nc: ExperienceRankData.EmpireData
+    nc: ExperienceRankFactionData
     nc_image_path: str
-    tr: ExperienceRankData.EmpireData
+    tr: ExperienceRankFactionData
     tr_image_path: str
 
     def __init__(self, data: CensusData, client: RequestClient) -> None:

@@ -2,7 +2,7 @@
 
 from ..base import Cached
 from ..census import Query
-from ..models import AbilityData, AbilityTypeData, ResourceTypeData
+from ..collections import AbilityData, AbilityTypeData, ResourceTypeData
 from .._proxy import InstanceProxy
 
 __all__ = [

@@ -1,7 +1,7 @@
 """Test cases for the ps2.Item class."""
 
 import auraxium
-from auraxium import models, ps2
+from auraxium import collections, ps2
 
 from tests.live._base import LiveApiTestCase
 from tests.utils import SERVICE_ID
@@ -53,7 +53,7 @@ class TestItemMethods(LiveApiTestCase):
         data = await self.item.datasheet()
         if data is None:
             self.fail('Item datasheet not found')
-        self.assertIsInstance(data, models.WeaponDatasheet)
+        self.assertIsInstance(data, collections.WeaponDatasheet)
         self.assertEqual(data.item_id, self.item.id)
 
     async def test_profiles(self) -> None:

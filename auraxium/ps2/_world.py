@@ -5,7 +5,7 @@ from typing import Any, Final
 
 from ..base import Named, NamedT
 from ..census import Query
-from ..models import WorldData
+from ..collections import WorldData
 from .._rest import RequestClient, extract_payload, extract_single
 from ..types import CensusData, LocaleData
 from .._support import deprecated

@@ -2,7 +2,7 @@
 
 from ..base import ImageMixin, Named
 from ..census import Query
-from ..models import (DirectiveData, DirectiveTierData,
+from ..collections import (DirectiveData, DirectiveTierData,
                       DirectiveTreeCategoryData, DirectiveTreeData)
 from .._proxy import InstanceProxy, SequenceProxy
 from ..types import LocaleData

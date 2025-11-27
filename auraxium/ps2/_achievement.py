@@ -5,7 +5,7 @@ Achievements include weapon medals and service ribbons.
 
 from ..base import ImageMixin, Named
 from ..census import Query
-from ..models import AchievementData
+from ..collections import AchievementData
 from .._rest import extract_payload
 from .._proxy import InstanceProxy
 from ..types import LocaleData
@@ -74,7 +74,7 @@ class Achievement(Named, ImageMixin, cache_size=50, cache_ttu=60.0):
        .. note::
 
           Repeatable achievements are tracked differently than one-off
-          ones. See the :class:`auraxium.models.CharacterAchievement`
+          ones. See the :class:`auraxium.collections.characters_achievement.CharactersAchievement`
           model for details.
 
     .. attribute:: description

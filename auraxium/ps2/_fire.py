@@ -5,7 +5,7 @@ from typing import Any, Final, cast
 
 from ..base import Cached
 from ..census import Query
-from ..models import FireGroupData, FireModeData
+from ..collections import FireGroupData, FireModeData
 from .._proxy import InstanceProxy, SequenceProxy
 from .._rest import extract_payload
 from ..types import LocaleData
@@ -212,9 +212,9 @@ class FireMode(Cached, cache_size=10, cache_ttu=3600.0):
     .. attribute:: player_state_group_id
        :type: int
 
-       The ID of the :class:`~auraxium.models.PlayerStateGroup` for
-       this fire mode. State groups are used to modify weapon accuracy
-       depending on the current :class:`~auraxium.ps2.PlayerState`,
+       The ID of the :class:`~auraxium.collections.player_state_group_2.PlayerStateGroup2`
+       for this fire mode. State groups are used to modify weapon
+       accuracy depending on the current :class:`~auraxium.ps2.PlayerState`,
        i.e. whether the player is standing, crouching, etc.
 
     .. attribute:: damage_direct_effect_id

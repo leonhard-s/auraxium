@@ -6,7 +6,7 @@ from typing import Any, Final, cast
 from ..base import Cached
 from ..census import Query
 from ..errors import NotFoundError
-from ..models import WeaponAmmoSlot, WeaponData, WeaponDatasheet
+from ..collections import WeaponAmmoSlot, WeaponData, WeaponDatasheet
 from .._proxy import InstanceProxy, SequenceProxy
 from .._rest import RequestClient, extract_payload, extract_single
 from .._support import deprecated

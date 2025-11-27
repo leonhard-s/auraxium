@@ -5,7 +5,7 @@ from typing import Any, Final, TYPE_CHECKING, cast
 from ..base import Cached, ImageMixin, Named
 from ..census import Query
 from ..errors import NotFoundError
-from ..models import ItemCategoryData, ItemData, ItemTypeData
+from ..collections import ItemCategoryData, ItemData, ItemTypeData
 from .._rest import extract_single
 from .._proxy import InstanceProxy, SequenceProxy
 from ..types import LocaleData

@@ -2,7 +2,7 @@
 
 from ..base import ImageMixin, Named
 from ..census import Query
-from ..models import SkillData, SkillCategoryData, SkillLineData, SkillSetData
+from ..collections import SkillData, SkillCategoryData, SkillLineData, SkillSetData
 from .._proxy import InstanceProxy, SequenceProxy
 from ..types import LocaleData
 
