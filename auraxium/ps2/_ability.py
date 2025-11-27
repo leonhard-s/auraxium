@@ -7,7 +7,6 @@ from .._proxy import InstanceProxy
 
 __all__ = [
     'Ability',
-    'AbilityData',
     'AbilityType',
     'ResourceType'
 ]
