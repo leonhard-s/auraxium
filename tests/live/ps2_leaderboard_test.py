@@ -57,7 +57,7 @@ class TestLeaderboard(LiveApiTestCase):
     async def test_top(self) -> None:
         """Test the top() query."""
         results = await ps2.leaderboard.top(
-            ps2.leaderboard.Stat.KILLS, world=13, client=self.client)
+            ps2.leaderboard.Stat.KILLS, client=self.client)
         if not results:
             self.skipTest('Leaderboard endpoints are down')
             return
