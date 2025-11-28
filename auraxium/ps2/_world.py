@@ -3,10 +3,10 @@
 import datetime
 from typing import Any, Final
 
-from ..base import Named, NamedT
+from ..base import Named
 from ..census import Query
 from ..collections import WorldData
-from .._rest import RequestClient, extract_payload, extract_single
+from .._rest import extract_payload, extract_single
 from ..types import CensusData, LocaleData
 
 from ._zone import Zone
